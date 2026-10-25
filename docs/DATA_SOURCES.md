@@ -2,6 +2,8 @@
 
 Updated: 2026-10-25.
 
+**Label-history boundary:** NSE launched NIFTY 50 weekly options from 11 February 2019; the first expiry was 14 February 2019. Minute bars before that date are lookback history only. Source: https://nsearchives.nseindia.com/content/circulars/FAOP39894.pdf.
+
 ## Primary source register
 | Source | Intended variables | Historical coverage / granularity | Priority | Known issues / gate |
 |---|---|---|---|---|
