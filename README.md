@@ -149,3 +149,13 @@ The workflow is bounded, caches downloaded official source snapshots, and record
 
 ### Independent minute-source audit
 The previous Phase 3 “alternative” dataset was not independent: the main fetch script and cross-check both read technovusin/nifty50-historical-data. The completed comparison found 1,901/1,901 exact matching daily closes, so it is marked MIRROR_NOT_INDEPENDENT and is not counted as cross-validation. A separate published dataset from sandeepkapri/Nifty50-Minute-Data is now being checked for 2019-02 through 2024-03; its underlying vendor lineage is not proven and it cannot alone pass the official-source gate.
+
+
+## ExtraTrees as-of prediction page
+
+- **Prediction page source:** [docs/prediction/index.html](docs/prediction/index.html)
+- **Latest as-of forecast data:** [latest_prediction.json](docs/prediction/latest_prediction.json)
+- **Historical leakage-safe walk-forward predictions:** [prediction_history.csv](docs/prediction/prediction_history.csv)
+- **Generator:** [scripts/predict_asof.py](scripts/predict_asof.py)
+- The NIFTY Weekly Expiry Research workflow generates the forecast after the research pipeline completes. The page shows the latest forecast as of the first available 10:00 IST anchor after the latest verified expiry, plus selectable historical walk-forward predictions.
+- The future expiry date is explicitly provisional when the available official files do not verify the future holiday-adjusted date. Forecasts remain exploratory while the source gate is blocked; this page is not a trading recommendation and does not calculate options P&L.
