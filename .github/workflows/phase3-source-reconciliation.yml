@@ -135,5 +135,6 @@ jobs:
           git add README.md logs/RESEARCH_LOG.md logs/ERROR_LOG.md data/reconciliation
           if git diff --cached --quiet; then echo "No compact reconciliation changes."; else
             git commit -m "Record official source reconciliation status [skip ci]"
+            git pull --rebase --autostash origin "${{ github.ref_name }}"
             git push origin "HEAD:${{ github.ref_name }}"
           fi
