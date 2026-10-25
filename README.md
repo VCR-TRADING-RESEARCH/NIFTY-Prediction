@@ -21,9 +21,9 @@ The research target is on the spot index. Any executable strategy must separatel
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
 
-Last status refresh: 2026-10-25 07:52 UTC
+Last status refresh: 2026-10-25 08:07 UTC
 
-- Run ID: 40174191439
+- Run ID: 40175103450
 - Target labels: 398
 - Binary rows with sufficient features: 398
 - Development / final holdout rows: 318 / 80
@@ -35,7 +35,7 @@ The current pipeline labels the weekday-derived expiry calendar as exploratory; 
 
 - Source CSV files: 19
 - Valid minute bars after checks: 882839
-- Yahoo daily-close check (prior diagnostic): 2,352 rows; 368 expiry-date mismatches over tolerance. Official NSE reconciliation: 1,901 rows compared; 1,717 mismatches >1 point; median absolute difference 8.25 points; P95 32.45 points.
+- Yahoo daily-close check: available; compared rows: 2352; expiry-date mismatches over tolerance: 368
 
 ### Final holdout metrics (exploratory)
 - extra_trees: accuracy 0.575, balanced accuracy 0.559, n=80
