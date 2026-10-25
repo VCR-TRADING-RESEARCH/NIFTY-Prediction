@@ -153,3 +153,11 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Counts: {"candidate_expiries_checked": 402, "contract_unverified_expiries": 26, "contract_verified_expiries": 338, "daily_source_rows_compared": 1901, "daily_source_rows_expected": 1901, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 38, "minute_vs_official_abs_difference_max_points": 200.7, "minute_vs_official_abs_difference_median_points": 8.25, "minute_vs_official_abs_difference_p95_points": 32.45, "minute_vs_official_mismatches_over_1_point": 1717, "minute_vs_official_within_1_point": 184, "official_daily_rows": 1913}
 - Errors: 338/402 candidate dates were confirmed; 26 were not verified and 38 produced source-validation errors. Detailed failure diagnostics were not preserved by this run.; 1,717 of 1,901 daily minute-source closes differ from official NSE NIFTY 50 closes by more than the pre-registered 1-point tolerance.
 - Detailed outputs: data/reconciliation/
+
+
+## E0010 — 2026-10-25 — Holiday-shift helper test expected only two sessions
+- Severity: Medium / validation-run failure.
+- Symptom: unit test candidate_verification_checks_nearby_previous_sessions_for_holiday_shift failed because the helper returned all official trading sessions within the four-calendar-day inspection window (Nov 4, 3, 2 and 1), while the assertion expected only Nov 4 and Nov 3.
+- Root cause: test expectation did not match the documented four-calendar-day window; the implementation's output was correct.
+- Fix: update the expected list to include every trading session within the window. The expiry verifier stops once it finds an expiry, so additional dates are not fetched unnecessarily after a match.
+- Validation required: rerun both workflow unit-test gates; no source reconciliation result is inferred from this test-only correction.

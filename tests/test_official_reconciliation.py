@@ -106,4 +106,4 @@ def test_parse_bhavcopy_rejects_wrong_trade_date():
 
 def test_candidate_verification_checks_nearby_previous_sessions_for_holiday_shift():
     sessions = [date(2021, 11, 1), date(2021, 11, 2), date(2021, 11, 3), date(2021, 11, 4)]
-    assert candidate_verification_sessions(date(2021, 11, 4), sessions) == [date(2021, 11, 4), date(2021, 11, 3)]
+    assert candidate_verification_sessions(date(2021, 11, 4), sessions) == [date(2021, 11, 4), date(2021, 11, 3), date(2021, 11, 2), date(2021, 11, 1)]

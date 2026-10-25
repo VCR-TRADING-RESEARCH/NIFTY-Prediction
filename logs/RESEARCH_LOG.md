@@ -126,3 +126,9 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Counts: {"candidate_expiries_checked": 402, "contract_unverified_expiries": 26, "contract_verified_expiries": 338, "daily_source_rows_compared": 1901, "daily_source_rows_expected": 1901, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 38, "minute_vs_official_abs_difference_max_points": 200.7, "minute_vs_official_abs_difference_median_points": 8.25, "minute_vs_official_abs_difference_p95_points": 32.45, "minute_vs_official_mismatches_over_1_point": 1717, "minute_vs_official_within_1_point": 184, "official_daily_rows": 1913}
 - Errors: 338/402 candidate dates were confirmed; 26 were not verified and 38 produced source-validation errors. Detailed failure diagnostics were not preserved by this run.; 1,717 of 1,901 daily minute-source closes differ from official NSE NIFTY 50 closes by more than the pre-registered 1-point tolerance.
 - Detailed outputs: data/reconciliation/
+
+
+## Test correction — run 40175798910 / 40175799013
+- The first run after adding the OHLC/holiday-shift diagnostics stopped at unit tests: 14 passed, 1 failed. The only failure was a test expecting two nearby sessions, while the helper correctly returned all four sessions within the four-calendar-day window.
+- Corrected the test expectation; code was not weakened. Both workflows are set to rerun from the latest branch tip.
+- No official-source results were produced by these runs because test failure prevents the reconciliation step from starting.
