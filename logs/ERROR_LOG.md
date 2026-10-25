@@ -90,3 +90,11 @@
 - Result record: UP, raw UP score 0.5131, target expiry 2024-09-26, 147 training labels, 268,510 valid minute bars, 20/20 features present, training labels through 2024-09-19.
 - No leakage was detected by the existing cutoff check. Independent anchor reconciliation and transaction-cost backtest remain BLOCKED, so this is not cleared for trading.
 - Separate cache warning observed on earlier run: `cache write denied: token has no writable scopes`. Added `actions: write` to workflow permissions in commit `04f55a01c7ce65b086aa73d82b6bad955b065e05`; confirm with next run before marking persistent caching resolved.
+
+
+## E0015 — 2026-10-25 — GitHub Issue submission did not meet one-click requirement
+- **Severity:** High — user-facing requirement mismatch.
+- **Observed:** User screenshot shows the Pages Predict flow still asks them to open a prefilled GitHub issue and click Submit. The deep-link change only fixed loading an already published result; it did not remove the manual trigger.
+- **Root cause:** GitHub Pages cannot securely call the authenticated GitHub Actions workflow without a private credential. The previous workaround was technically functional but not the requested user experience.
+- **Correction prepared:** Replace issue creation/polling with the existing FastAPI `/predict` + `/jobs/{job_id}` API and deploy that service separately. Added a Render deployment manifest and root-context Dockerfile; frontend now fails closed when the public API URL is blank/unhealthy.
+- **Status:** Code prepared on `phase/render-one-click-prediction`; service deployment and browser end-to-end test remain blocked pending authorized Render account connection and private Dhan runtime variables. Do not claim one-click works until a real browser request succeeds.

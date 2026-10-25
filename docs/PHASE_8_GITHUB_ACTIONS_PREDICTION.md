@@ -39,3 +39,9 @@
 - Public issue submissions by non-members do not receive Dhan secrets or run the job. If the signed-in account is not a repository owner/member, the request will not execute.
 - GitHub Pages deployment may take a short time to publish a new JSON file after the workflow pushes it.
 - Confirm the Pages deep link displays the saved result in a browser and verify that the new `actions: write` permission enables persistent cache writes on a future run. Live Dhan inference and result publication have been verified for the 2024-09-20 historical cutoff.
+
+
+## 2026-10-25 — One-click UX requirement
+- The prior issue-based flow is a workaround, not acceptance of the requested one-click experience.
+- Current replacement work is tracked in `docs/PHASE_RENDER_ONE_CLICK.md`.
+- Status: BLOCKED pending secure API deployment and browser end-to-end validation.

@@ -80,27 +80,17 @@ The research target is on the spot index. Any executable strategy must separatel
 
 ## ExtraTrees as-of-date prediction page
 
-**Current implementation status:** The GitHub Actions Python route has completed its first fresh Dhan-backed ExtraTrees inference. Test record for 2024-09-20: **UP**, raw UP score 51.3%, target expiry 2024-09-26, 147 eligible training labels through 2024-09-19, 268,510 minute bars, 20/20 features. [View the result JSON](docs/assets/predictions/2024-09-20.json) and [successful Actions run](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201653154). This is a historical result and **not trading-ready**: independent 10:00 anchor validation and executable costs/slippage are still blocked. From Pages, Predict currently prepares a GitHub issue link that must be submitted; the page then polls the date-specific result. Manual dispatch is also available in Actions.
+**Current status:** The previous GitHub Issue submission flow did not meet the one-click requirement. A replacement branch, [`phase/render-one-click-prediction`](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/render-one-click-prediction), changes the page to call the existing secure FastAPI service directly and adds a Render deployment manifest. The public endpoint URL intentionally remains blank until the service is deployed and health-checked; until then the page fails closed and will not ask users to submit an issue.
 
-- **Prediction page:** [Open the GitHub Pages source](docs/index.html) (deployment status is tracked in [Actions](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions)).
-- **Forecast records and selectable history:** [docs/data/extra_trees_forecasts.json](docs/data/extra_trees_forecasts.json).
-- **Leakage-aware forecast exporter:** [scripts/build_pages_forecasts.py](scripts/build_pages_forecasts.py).
-- **Model/feature pipeline:** [scripts/research_core.py](scripts/research_core.py), [scripts/run_research.py](scripts/run_research.py).
-- **Previous page specification:** [docs/PHASE_6_PREDICTION_PAGES.md](docs/PHASE_6_PREDICTION_PAGES.md).
-- **Live Dhan API plan (superseded hosting path):** [docs/PHASE_7_LIVE_DHAN_INFERENCE.md](docs/PHASE_7_LIVE_DHAN_INFERENCE.md).
-- **Current on-demand Actions flow:** [Phase 8 — GitHub Actions prediction](docs/PHASE_8_GITHUB_ACTIONS_PREDICTION.md), [workflow](.github/workflows/on-demand-prediction.yml), [runner](scripts/run_live_prediction.py), [request template](.github/ISSUE_TEMPLATE/prediction_request.yml).
-- **Published live-result directory:** [docs/assets/predictions/](docs/assets/predictions/). A result is only fresh when its generation timestamp follows the request.
-- **Backend service:** [live_api/app.py](live_api/app.py).
-- **Automated backend deployment:** [.github/workflows/deploy-live-api.yml](.github/workflows/deploy-live-api.yml).
-- **Deployment script:** [scripts/deploy_live_api_space.py](scripts/deploy_live_api_space.py).
-- **Page API endpoint config (URL only):** [docs/assets/live-api-config.json](docs/assets/live-api-config.json).
-- **Research manuscript:** [research/manuscript.md](research/manuscript.md).
-- **Deployment workflow:** [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml).
-- **Research workflow:** [.github/workflows/nifty-research.yml](.github/workflows/nifty-research.yml).
+- [One-click deployment plan](docs/PHASE_RENDER_ONE_CLICK.md)
+- [Render service manifest](render.yaml)
+- [Render Dockerfile](live_api/Dockerfile.render)
+- [Secure API app](live_api/app.py)
+- [Live inference workflow / historical result details](docs/PHASE_8_GITHUB_ACTIONS_PREDICTION.md)
 
-**Current forecast record (last generated 2026-10-25 UTC):** as-of 2026-10-21 10:00 IST; target expiry 2026-10-27; model direction DOWN; model score for UP 0.3848. This is a previously generated exploratory forecast, not a new forecast for 2026-10-25. The data-quality gate remains **BLOCKED** because the 10:00 anchor is not independently validated. The page must show this warning and must not present the score as a probability of profit. No options strategy is certified.
+**Deployment gate:** BLOCKED pending authorization to deploy a service and configure private Dhan runtime variables. No claim of one-click live inference until a browser end-to-end request succeeds.
 
-**Live behavior (Phase 7):** Clicking Predict is wired to a secure backend that refreshes Dhan authentication, fetches or reuses DhanHQ one-minute NIFTY 50 bars through the selected date, rebuilds the research features and fits ExtraTrees on settled historical labels. Backend deployment is currently **BLOCKED by Hugging Face HTTP 402**: current Hugging Face docs say Docker Spaces on CPU-basic require an eligible Pro/Team/Enterprise plan. To enable live requests, either provide eligible Hugging Face compute or set HF_SPACE_ID to an existing writable Docker Space, or provide deployment credentials for an alternative host such as Render or Cloudflare. GOOGLE_API_KEY alone does not authorize deployment of a Google Cloud service. The page stays disabled until the secure endpoint is configured and passes `/health`; it never falls back to saved forecasts. See [Phase 7 plan](docs/PHASE_7_LIVE_DHAN_INFERENCE.md) and [deployment Actions](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions).
+Historical inference evidence (not a current signal): [successful GitHub Actions run](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201653154), [published JSON record for 2024-09-20](docs/assets/predictions/2024-09-20.json), [historical result page](https://vcr-trading-research.github.io/NIFTY-Prediction/?as_of_date=2024-09-20). That result is exploratory and not cleared for trading because anchor reconciliation and executable instrument-cost validation remain blocked.
 
 ## Research approach
 

@@ -7,6 +7,7 @@
   const inputError = $("input-error");
   const resultSection = $("result-section");
   let apiBaseUrl = "";
+  let apiReady = false;
   const originalButtonLabel = predictButton.innerHTML;
 
   function showInputError(message) {
@@ -95,61 +96,64 @@
     resultSection.hidden = false;
   }
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-  async function runPrediction(asOfDate, clickStartedAt) {
-    const link = $("prediction-request-link");
-    const issueTitle = "[NIFTY PREDICT] " + asOfDate;
-    const issueBody = "Please run a fresh Dhan-backed ExtraTrees prediction for the 10:00 IST anchor date " + asOfDate + ".\n\nSubmitted from the GitHub Pages prediction screen.";
-    link.href = "https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/issues/new?title=" +
-      encodeURIComponent(issueTitle) + "&body=" + encodeURIComponent(issueBody) + "&labels=prediction-request";
-    link.hidden = false;
-    link.textContent = "Open GitHub request for " + asOfDate + " (submit it to start Python)";
-    showInputError("Click the GitHub request link, then click 'Submit new issue'. Keep this page open; it will poll for the fresh result.");
+  async function runPrediction(asOfDate) {
+    if (!apiBaseUrl) throw new Error("Secure prediction service is not configured yet. Please retry after deployment.");
+    const response = await fetch(apiBaseUrl + "/predict", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({as_of_date: asOfDate})
+    });
+    const job = await responseJson(response);
+    if (!job.job_id) throw new Error("The prediction service did not return a job ID.");
+    setPageStatus("Python model running", "status-loading");
     for (let attempt = 0; attempt < 360; attempt += 1) {
-      await delay(5000);
-      const url = "./assets/predictions/" + encodeURIComponent(asOfDate) + ".json?ts=" + Date.now();
-      let response;
-      try { response = await fetch(url, {cache:"no-store"}); } catch (_) { continue; }
-      if (!response.ok) continue;
-      const record = await response.json();
-      const generatedAt = Date.parse(record.generated_at_utc || "");
-      if (record.as_of_date !== asOfDate || !Number.isFinite(generatedAt) || generatedAt < clickStartedAt) continue;
-      if (record.status !== "succeeded") throw new Error(record.error || "The requested prediction was blocked.");
-      renderPrediction(record);
-      setPageStatus("Live prediction complete", "status-ready");
-      return;
-    }
-    throw new Error("No fresh result appeared within 30 minutes. Submit the GitHub issue and confirm your account is a repository owner/member. Check the Actions link below.");
-  }
-  async function initialize() {
-    predictButton.disabled = false;
-    setPageStatus("GitHub Actions prediction ready", "status-ready");
-    $("generated-at").textContent = "Predict prepares a secured GitHub request. Open the link and submit it; Python then runs in GitHub Actions.";
-    // Deep links let the user return to a completed result without creating a
-    // duplicate issue or rerunning a historical prediction.
-    const requestedDate = parseInputDate(new URLSearchParams(window.location.search).get("as_of_date"));
-    if (!requestedDate) return;
-    dateInput.value = requestedDate;
-    try {
-      const response = await fetch("./assets/predictions/" + encodeURIComponent(requestedDate) + ".json?ts=" + Date.now(), {cache:"no-store"});
-      if (!response.ok) return;
-      const record = await response.json();
-      if (record.as_of_date !== requestedDate) return;
-      if (record.status !== "succeeded") {
-        setPageStatus("Prediction blocked", "status-blocked");
-        showInputError(record.error || "The saved prediction failed its data/model checks.");
+      await delay(3000);
+      const statusResponse = await fetch(apiBaseUrl + "/jobs/" + encodeURIComponent(job.job_id), {cache:"no-store"});
+      const status = await responseJson(statusResponse);
+      if (status.status === "succeeded" && status.result) {
+        renderPrediction(status.result);
+        setPageStatus("Live prediction complete", "status-ready");
         return;
       }
-      renderPrediction(record);
-      setPageStatus("Saved prediction loaded", "status-ready");
-      clearInputError();
-    } catch (_) {
-      // Keep the form usable if Pages has not published the requested JSON yet.
+      if (status.status === "failed") throw new Error(status.error || "The prediction failed its data/model checks.");
     }
+    throw new Error("Prediction is taking too long. Please retry; no old forecast was substituted.");
+  }
+  async function initialize() {
+    setPageStatus("Checking secure prediction service", "status-loading");
+    $("generated-at").textContent = "Checking whether the secure Python inference service is available.";
+    try {
+      const configResponse = await fetch("./assets/live-api-config.json?ts=" + Date.now(), {cache:"no-store"});
+      if (!configResponse.ok) throw new Error("Could not load the live-service configuration.");
+      const config = await configResponse.json();
+      apiBaseUrl = typeof config.api_base_url === "string" ? config.api_base_url.replace(/\/$/, "") : "";
+      if (!apiBaseUrl || !/^https:\/\//i.test(apiBaseUrl)) {
+        predictButton.disabled = true;
+        setPageStatus("Secure service not deployed", "status-blocked");
+        showInputError("One-click prediction is not active yet because the secure Python service has not been deployed. This page will not ask you to submit a GitHub issue or expose credentials.");
+        $("generated-at").textContent = "Deployment is pending. Dhan credentials must remain server-side.";
+      } else {
+        const healthResponse = await fetch(apiBaseUrl + "/health", {cache:"no-store"});
+        const health = await responseJson(healthResponse);
+        if (health.status !== "ready") throw new Error("The secure service is online but Dhan credentials are not fully configured.");
+        apiReady = true;
+        predictButton.disabled = false;
+        setPageStatus("Live prediction ready", "status-ready");
+        $("generated-at").textContent = "Predict calls the secure Python service directly. Dhan credentials stay server-side; the model is refit for each request.";
+      }
+    } catch (error) {
+      apiReady = false;
+      predictButton.disabled = true;
+      setPageStatus("Secure service unavailable", "status-blocked");
+      showInputError(error && error.message ? error.message : "The secure prediction service could not be reached.");
+      $("generated-at").textContent = "Live prediction is unavailable until the secure Python service is deployed and healthy.";
+    }
+    const requestedDate = parseInputDate(new URLSearchParams(window.location.search).get("as_of_date"));
+    if (requestedDate) dateInput.value = requestedDate;
   }
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     clearInputError();
-    $("prediction-request-link").hidden = true;
     resultSection.hidden = true;
     const asOfDate = parseInputDate(dateInput.value);
     if (!asOfDate) {
@@ -158,16 +162,17 @@
       return;
     }
     predictButton.disabled = true;
-    predictButton.textContent = "Waiting…";
-    setPageStatus("Waiting for GitHub Actions", "status-loading");
+    predictButton.textContent = "Running…";
+    setPageStatus("Starting Python inference", "status-loading");
     try {
-      await runPrediction(asOfDate, Date.now());
+      await runPrediction(asOfDate);
     } catch (error) {
       setPageStatus("Prediction not confirmed", "status-blocked");
       showInputError(error && error.message ? error.message : "Could not retrieve the new prediction.");
     } finally {
       predictButton.disabled = false;
       predictButton.innerHTML = originalButtonLabel;
+      predictButton.disabled = !apiReady;
     }
   });
   initialize();
