@@ -118,9 +118,12 @@
 - No secrets or provider response bodies are copied into logs.
 
 
-## Scheduled prediction failure — run 40204498793
+## Scheduled prediction — run 40204498793 (retry outcome)
 - Date: 2024-06-07
-- Status: FAILED; inspect the linked Actions run for the failing step.
+- First attempt: FAILED at inference with the reported prior-expiry/session validation error.
+- Retry: SUCCEEDED; current published record is `docs/assets/predictions/2024-06-07.json` and the workflow run is green.
+- The successful retry shows the earlier failure was not a deterministic rejection of this date. The exact transient cause of the first attempt is not proven; preserve this history rather than claiming a confirmed root cause.
+- Data-quality status remains BLOCKED for independent anchor reconciliation and executable costs/slippage.
 - No secrets or provider response bodies are copied into logs.
 
 
@@ -130,3 +133,12 @@
 - **Correction staged:** Failed inference now overwrites same-date output with an explicit failed record. The Pages date form opens the workflow page with the selected date encoded in the URL; user must confirm Run workflow because static Pages cannot securely dispatch authenticated Actions.
 - **Validation:** Pending branch CI and workflow run.
 - **Security:** No credentials or private reasoning logged.
+
+
+## E0012 — 2026-10-25 — Historical date inference succeeds on rerun
+- **Run:** [40204498793](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40204498793), successful retry.
+- **Date:** 2024-06-07, first NSE session after verified NIFTY weekly expiry 2024-06-06.
+- **Result:** UP; raw ExtraTrees UP score 0.547499; target expiry 2024-06-13; anchor 22,978.3; 132 completed training rows through 2024-06-06; 20/20 features; 241,516 minute bars.
+- **Interpretation:** The successful retry disproves the earlier assumption that the date is consistently rejected by the current workflow. The exact cause of the initial failed attempt remains unverified and may have been transient/data-dependent. Do not label the score as a calibrated probability or profitability estimate.
+- **Remaining gate:** Independent 10:00 anchor validation and executable options P&L including Paytm Money costs, spreads and slippage are still BLOCKED.
+- **Security:** No secrets logged.
