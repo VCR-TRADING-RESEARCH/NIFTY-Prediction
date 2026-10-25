@@ -9,6 +9,8 @@ on:
       - "scripts/fetch_data.py"
       - "scripts/research_core.py"
       - "scripts/run_research.py"
+      - "scripts/build_pages_forecasts.py"
+      - "tests/test_pages_forecasts.py"
       - "scripts/refresh_dhan_token.py"
       - "scripts/fetch_dhan_recent.py"
       - "tests/test_research_core.py"
@@ -121,6 +123,7 @@ jobs:
           path: |
             data/processed/**
             research/results/**
+            docs/data/extra_trees_forecasts.json
             logs/ERROR_LOG.md
             logs/RESEARCH_LOG.md
           if-no-files-found: ignore
@@ -139,6 +142,7 @@ jobs:
           git add README.md logs/RESEARCH_LOG.md logs/ERROR_LOG.md
           if [ -d data/processed ]; then git add -A data/processed; fi
           if [ -d research/results ]; then git add -A research/results; fi
+          if [ -d docs/data ]; then git add -A docs/data; fi
           if git diff --cached --quiet; then
             echo "No status/result changes to commit."
           else
