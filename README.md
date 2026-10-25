@@ -80,12 +80,16 @@ The research target is on the spot index. Any executable strategy must separatel
 
 ## ExtraTrees as-of-date prediction page
 
+**Current implementation status:** The new GitHub Actions route runs Python inside GitHub Actions and keeps Dhan credentials in GitHub Secrets. From Pages, Predict prepares a GitHub issue link; submit that request while signed in as a repository owner/member. The page then polls the date-specific result JSON. Manual dispatch is also available in Actions. End-to-end Dhan execution is not yet verified; do not treat a prediction as trading-ready.
+
 - **Prediction page:** [Open the GitHub Pages source](docs/index.html) (deployment status is tracked in [Actions](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions)).
 - **Forecast records and selectable history:** [docs/data/extra_trees_forecasts.json](docs/data/extra_trees_forecasts.json).
 - **Leakage-aware forecast exporter:** [scripts/build_pages_forecasts.py](scripts/build_pages_forecasts.py).
 - **Model/feature pipeline:** [scripts/research_core.py](scripts/research_core.py), [scripts/run_research.py](scripts/run_research.py).
 - **Previous page specification:** [docs/PHASE_6_PREDICTION_PAGES.md](docs/PHASE_6_PREDICTION_PAGES.md).
-- **Live Dhan API plan:** [docs/PHASE_7_LIVE_DHAN_INFERENCE.md](docs/PHASE_7_LIVE_DHAN_INFERENCE.md).
+- **Live Dhan API plan (superseded hosting path):** [docs/PHASE_7_LIVE_DHAN_INFERENCE.md](docs/PHASE_7_LIVE_DHAN_INFERENCE.md).
+- **Current on-demand Actions flow:** [Phase 8 — GitHub Actions prediction](docs/PHASE_8_GITHUB_ACTIONS_PREDICTION.md), [workflow](.github/workflows/on-demand-prediction.yml), [runner](scripts/run_live_prediction.py), [request template](.github/ISSUE_TEMPLATE/prediction_request.yml).
+- **Published live-result directory:** [docs/assets/predictions/](docs/assets/predictions/). A result is only fresh when its generation timestamp follows the request.
 - **Backend service:** [live_api/app.py](live_api/app.py).
 - **Automated backend deployment:** [.github/workflows/deploy-live-api.yml](.github/workflows/deploy-live-api.yml).
 - **Deployment script:** [scripts/deploy_live_api_space.py](scripts/deploy_live_api_space.py).
