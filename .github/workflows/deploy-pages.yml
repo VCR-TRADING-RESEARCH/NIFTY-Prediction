@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - research/phase-6-prediction-pages
     paths:
       - "docs/**"
       - ".github/workflows/deploy-pages.yml"
