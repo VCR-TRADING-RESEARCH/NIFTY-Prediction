@@ -9,7 +9,6 @@ on:
       - "scripts/fetch_data.py"
       - "scripts/research_core.py"
       - "scripts/run_research.py"
-      - "scripts/update_status.py"
       - "scripts/refresh_dhan_token.py"
       - "scripts/fetch_dhan_recent.py"
       - "tests/test_research_core.py"
