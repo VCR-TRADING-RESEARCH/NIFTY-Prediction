@@ -2,7 +2,7 @@
 
 Version: 1.0
 Registered: 2026-10-25
-Status: locked for the first research cycle. Change only via documented plan-version update.
+Status: locked for the first research cycle. Change only via documented plan-version update. Empirical run 40167611476 completed on 2026-10-25; Phase 1 is BLOCKED by independent daily-close discrepancies and an unverified expiry calendar. See research/manuscript.md and logs/RESEARCH_LOG.md.
 
 ## 1. Title and scope
 NIFTY Weekly Expiry Direction Prediction: estimate whether the NIFTY 50 spot-index close at weekly options expiry is greater than or less than its value at 10:00 IST on the next trading day after the preceding weekly expiry. This is a binary direction task; magnitude forecasting is secondary and only used for risk/cost analysis.
