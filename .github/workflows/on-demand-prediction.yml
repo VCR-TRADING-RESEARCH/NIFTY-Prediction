@@ -31,12 +31,12 @@ jobs:
           import os, re
           from datetime import date
           title = os.environ["ISSUE_TITLE"]
-          match = re.fullmatch(r"\\[NIFTY PREDICT\\] (\\d{4}-\\d{2}-\\d{2})", title)
+          match = re.fullmatch(r"\[NIFTY PREDICT\] (\d{4}-\d{2}-\d{2})", title)
           if not match:
               raise SystemExit("Invalid title. Expected [NIFTY PREDICT] YYYY-MM-DD.")
           date.fromisoformat(match.group(1))
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
-              f.write("as_of_date=" + match.group(1) + "\\n")
+              f.write("as_of_date=" + match.group(1) + "\n")
           PY
 
       - uses: actions/checkout@v4
