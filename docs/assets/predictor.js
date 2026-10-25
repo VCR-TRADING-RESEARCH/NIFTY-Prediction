@@ -151,7 +151,7 @@
         " To run a fresh inference, open the GitHub Actions workflow manually; this page does not redirect automatically.");
     } finally {
       predictButton.disabled = false;
-      predictButton.innerHTML = "<span>Load prediction</span><span class=\\"button-arrow\\" aria-hidden=\\"true\\">→</span>";
+      predictButton.textContent = "Load prediction →";
     }
   });
   initialize();
