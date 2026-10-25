@@ -35,10 +35,10 @@
       <form id="predict-form">
         <label for="as-of-date">Data cutoff / 10:00 IST anchor date</label>
         <div class="input-row">
-          <input id="as-of-date" name="as-of-date" type="date" required>
+          <input id="as-of-date" name="as-of-date" type="text" inputmode="numeric" autocomplete="off" placeholder="DD/MM/YYYY" aria-describedby="date-format-help" required>
           <button id="predict-button" type="submit" disabled><span>Predict</span><span class="button-arrow" aria-hidden="true">→</span></button>
         </div>
-        <p class="helper">The research target is defined at the first valid minute-bar open from 10:00 to 10:03 IST on the first trading session after the prior expiry. A date without a stored eligible anchor cannot be evaluated by this version.</p>
+        <p id="date-format-help" class="helper">Enter the date as DD/MM/YYYY. The research target is defined at the first valid minute-bar open from 10:00 to 10:03 IST on the first trading session after the prior expiry. A date without a stored eligible anchor cannot be evaluated by this version.</p>
         <div id="input-error" class="input-error" role="alert" hidden></div>
       </form>
     </section>
