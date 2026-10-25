@@ -154,3 +154,6 @@ Last repository status update: 2026-10-25.
 - A missing/failed latest result is shown as unavailable rather than silently substituting a stale forecast.
 - The scheduled workflow must be merged to `main` before cron scheduling becomes active. Until the first successful run, the feature is pending deployment verification.
 - Trading readiness remains **BLOCKED** pending independent 10:00 anchor reconciliation, leakage-safe walk-forward evaluation, and executable option-level P&L including Paytm Money brokerage/fees, bid-ask spreads and slippage.
+
+
+**Validation update:** PR [#13](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/13) was merged to `main` after the branch regression and workflow-validation checks passed. GitHub Pages deployment run [40203599397](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40203599397) was still running at the last check. The first Dhan-backed scheduled/manual inference has not yet been verified; the next scheduled weekday run is expected at 10:30 IST.
