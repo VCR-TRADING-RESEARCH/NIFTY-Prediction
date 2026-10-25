@@ -143,6 +143,57 @@ def fetch_nse_daily_fallback(start: date, end: date, force: bool = False) -> pd.
     return result
 
 
+def fetch_nse_history_api(start: date, end: date) -> pd.DataFrame:
+    """Try NSE's official historicalOR JSON endpoint before per-day archive downloads."""
+    session = requests.Session()
+    headers = {
+        "User-Agent": UA,
+        "Referer": "https://www.nseindia.com/reports-indices-historical-index-data",
+        "Accept": "application/json,text/plain,*/*",
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+    session.headers.update(headers)
+    session.get("https://www.nseindia.com/reports-indices-historical-index-data", timeout=(5, 12))
+    frames: list[pd.DataFrame] = []
+    chunk_start = start
+    while chunk_start <= end:
+        chunk_end = min(end, chunk_start + timedelta(days=55))
+        url = "https://www.nseindia.com/api/historicalOR/indicesHistory"
+        response = session.get(url, params={
+            "indexType": "NIFTY 50",
+            "from": chunk_start.strftime("%d-%m-%Y"),
+            "to": chunk_end.strftime("%d-%m-%Y"),
+        }, timeout=(8, 20))
+        response.raise_for_status()
+        payload = response.json()
+        data = payload.get("data", [])
+        if isinstance(data, dict):
+            rows = data.get("indexCloseOnlineRecords") or data.get("indexCloseRecords") or []
+        elif isinstance(data, list):
+            rows = data
+        else:
+            rows = []
+        if not rows:
+            raise RuntimeError(f"NSE historicalOR returned no index rows for {chunk_start} to {chunk_end}")
+        frame = pd.DataFrame(rows)
+        date_col = next((k for k in ("EOD_TIMESTAMP", "HistoricalDate", "date", "Date") if k in frame), None)
+        close_col = next((k for k in ("EOD_CLOSE_INDEX_VAL", "CLOSE", "Closing Index Value") if k in frame), None)
+        if date_col is None or close_col is None:
+            raise ValueError("Unexpected NSE historicalOR schema: " + ",".join(map(str, frame.columns)))
+        frame["session_date"] = pd.to_datetime(frame[date_col], errors="coerce", dayfirst=True).dt.date
+        frame["official_close"] = pd.to_numeric(frame[close_col].astype(str).str.replace(",", "", regex=False), errors="coerce")
+        frame = frame.dropna(subset=["session_date", "official_close"])
+        frame = frame[(frame["session_date"] >= chunk_start) & (frame["session_date"] <= chunk_end)]
+        if frame.empty:
+            raise RuntimeError(f"NSE historicalOR rows failed date/close validation for {chunk_start} to {chunk_end}")
+        frames.append(frame[["session_date", "official_close"]])
+        chunk_start = chunk_end + timedelta(days=1)
+        time.sleep(0.25)
+    result = pd.concat(frames, ignore_index=True).drop_duplicates("session_date").sort_values("session_date").reset_index(drop=True)
+    result.attrs["source"] = "NSE official historicalOR/indicesHistory JSON endpoint"
+    return result
+
+
 def fetch_official_daily(start: date, end: date, force: bool = False) -> pd.DataFrame:
     """Prefer NiftyIndices history, then fall back to official NSE daily index archives."""
     CACHE.mkdir(parents=True, exist_ok=True)
@@ -189,7 +240,11 @@ def fetch_official_daily(start: date, end: date, force: bool = False) -> pd.Data
         return combined
     except Exception as exc:
         print(f"NIFTYINDICES_ENDPOINT_FAILED: {type(exc).__name__}: {str(exc)[:250]}", file=sys.stderr)
-        return fetch_nse_daily_fallback(start, end, force=force)
+        try:
+            return fetch_nse_history_api(start, end)
+        except Exception as nse_exc:
+            print(f"NSE_HISTORY_API_FAILED: {type(nse_exc).__name__}: {str(nse_exc)[:250]}", file=sys.stderr)
+            return fetch_nse_daily_fallback(start, end, force=force)
 
 
 def weekly_nominals(start: date, end: date) -> list[date]:
