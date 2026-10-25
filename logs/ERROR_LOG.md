@@ -15,3 +15,9 @@
 - Correction: Reuse the existing ExtraTrees pipeline and published forecast schema from the research branch; add the dependencies and pipeline assets; replace the placeholder page; use the dedicated Pages deployment workflow.
 - Residual risk: The integration workflow has not yet been run on main; verify after merge. The model/source gate remains blocked for research reasons, independent of page deployment.
 - Security: No secrets or private reasoning recorded.
+
+
+## GitHub Actions failure — run 40196725878
+- Status: BLOCKED. One or more workflow steps failed; inspect the Actions run for the exact failing step.
+- The workflow is configured to continue with public data when the optional Dhan branch fails.
+- No secrets, access tokens, PINs or TOTP values should be copied from runner diagnostics into repository logs.
