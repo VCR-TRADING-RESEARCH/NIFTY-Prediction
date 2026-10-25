@@ -21,7 +21,13 @@ The research target is on the spot index. Any executable strategy must separatel
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
 
-Not yet run on this branch. No strategy has been validated.
+Last status refresh: 2026-10-25 06:01 UTC
+
+**Status: BLOCKED / NOT YET RUN.** No complete summary.json artifact exists for this branch yet.
+
+A successful workflow must validate the source data and expiry alignment before any strategy can be considered.
+
+See the research log, error log, pre-registered plan, data-quality report, and manuscript for details.
 <!-- AUTO_STATUS_END -->
 
 | Phase | Status | Acceptance gate |

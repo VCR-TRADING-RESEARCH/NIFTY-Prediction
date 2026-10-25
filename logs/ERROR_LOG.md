@@ -23,3 +23,9 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Root cause: Third-party archival/cleaning imperfections can affect anchor and closing-price selection.
 - Fix: Require OHLC invariants, duplicate/missing-session reporting, raw row timestamps, explicit expiry-calendar status and sample comparison to NSE/Dhan.
 - Residual risk: Do not certify confirmatory inference until source validation passes.
+
+
+## GitHub Actions failure — run 40167544027
+- Status: BLOCKED. One or more workflow steps failed; inspect the Actions run for the exact failing step.
+- The workflow is configured to continue with public data when the optional Dhan branch fails.
+- No secrets, access tokens, PINs or TOTP values should be copied from runner diagnostics into repository logs.
