@@ -162,3 +162,17 @@
 - **Method:** Alongside the normal cached/chunked history fetch, request only the selected session once; normalize/validate and deduplicate the combined bars. If anchor remains missing, report aggregate timestamp diagnostics only.
 - **Hypothesis test:** Targeted request returns bars absent from broad request => broad response/cache coverage problem. Targeted request also lacks bars => investigate Dhan response/instrument/time conversion and free-source cross-checks. No inference from fabricated or silently substituted anchors.
 - **Status:** Staged on `fix/target-date-intraday-diagnostic-retry`; CI pending.
+
+
+## 2026-10-26 — Phase 9 new-method research extension started
+- User request: extend the research to identify new methods to predict weekly-expiry NIFTY UP/DOWN.
+- Branch: research/phase-9-new-direction-methods.
+- Repository checks completed before the new phase: README, operating rules, fixed plan, literature review, data-source register, latest research/error/conversation logs, latest summary, feature table, holdout metrics, experiment registry, methodology, source-reconciliation plan, core feature code and workflow definition.
+- Plan change: a dated v1.1 addendum was prepared; v1.0 target definition, causal feature clock, chronological validation rules and cost requirements remain unchanged.
+- Candidate methods: multiscale trend/reversal and range/gap; volatility-regime interactions and optional GARCH/HAR features; point-in-time option IV/skew/straddle/OI; global overnight lead/lag; lagged FII/DII/participant positioning; fold-local regime models; sequential uncertainty/abstention; bounded PySR/Quantevolve. Large sequence models are deferred at this sample size.
+- Literature update: added recent NIFTY SSRN preprints, a time-series conformal paper, an option-implied distribution-shape paper and official NSE/SEBI derivative-report entry points, with limitations.
+- Data gate remains BLOCKED: quality report records 1,719 / 1,903 minute-archive daily closes beyond the one-point tolerance, zero confirmatory-eligible rows and no accepted independent historical 10:00 anchor validation. Existing 80-row ExtraTrees holdout remains exploratory.
+- No new models were trained or tuned; the readiness audit and regression tests are designed to prevent the data gate being silently bypassed.
+- Experiment-registry correction: the manuscript's earlier phrasing that symbolic/evolutionary searches did not beat baseline was inaccurate. The registry records PySR and Quantevolve as NOT RUN, so no performance conclusion exists.
+- Outputs added on the Phase 9 branch: docs/PHASE_9_NEW_DIRECTION_METHODS.md; docs/RESEARCH_PLAN_V1_1_METHODS_ADDENDUM.md; scripts/audit_new_method_readiness.py; tests/test_method_readiness.py; plan/literature/data-source/manuscript updates.
+- Acceptance status at this commit: method-design/documents added; automated audit not yet run; empirical comparison and trading P&L remain blocked pending independent source/anchor repair.
