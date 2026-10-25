@@ -212,8 +212,11 @@ def main() -> int:
             output_path=pages_forecast_path,
         )
         write_json(PROCESSED / "pages_forecast_build_report.json", pages_forecast_report)
+        summary["pages_forecast"] = pages_forecast_report
+        write_json(RESULTS / "summary.json", summary)
 
         append_success(summary, quality)
+        print("Pages forecast:", pages_forecast_report.get("latest_forecast_generated"), pages_forecast_report.get("latest_forecast_error"))
         print("RESEARCH_RUN_OK:", run_id)
         print("Rows:", summary.get("feature_complete_binary_rows"), "held-out:", summary.get("heldout_rows"))
         print("Selected:", summary.get("development_selected_model"))
