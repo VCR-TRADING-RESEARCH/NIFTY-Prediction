@@ -1,7 +1,7 @@
 # Phase 3 — Official Source and Expiry Reconciliation
 
 **Branch:** `research/phase-3-official-source-reconciliation`  
-**Status:** BLOCKED — run 40174191441 completed computation and artifact upload, but its final Git commit collided with the parallel research run. Source routing/parser corrections are being tested in the next bounded run.  
+**Status:** BLOCKED — corrected audit run 40181901081 completed; 402/402 candidate expiries verified, but 1,719/1,903 preserved archive daily closes differ from official closes by more than one point. The prior apparent zero-mismatch PASS was circular and is invalidated.  
 **Objective:** Resolve the known daily-close discrepancy and heuristic expiry calendar using exchange/index-publisher data before any further model discovery.
 
 ## Research questions
@@ -69,3 +69,12 @@ The latest expiry error sample revealed the parser regression: ISO-formatted dat
 
 ## Downstream target correction (25 October 2026)
 Phase 3 run 40178592924 verified 402/402 candidate expiry dates against NSE derivatives records, with zero unverified dates and zero source errors. The primary minute archive differs from official daily close by more than one point on 1,717/1,901 sessions (median absolute difference 8.25 points; P95 32.45). A second published minute dataset covers 1,271 sessions through 2024-03-27 and differs by more than one point on 1,182 sessions; its provider lineage is not independently established. The downstream model now uses official NSE daily close and verified expiry dates. The 10:00 anchor remains minute-archive-derived and unvalidated, so all predictive results remain exploratory.
+
+
+## Corrected independent audit — 25 October 2026
+
+Latest workflow: [40181901081](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40181901081). It verified 402/402 candidate expiries with zero unverified dates/source errors. It compared preserved original archive closes against official closes across 1,903 sessions: 1,719 mismatches above one point, median absolute difference 8.25, P95 32.435, maximum 200.7 points. Source gate remains **BLOCKED**.
+
+A previous zero-mismatch PASS was false because the comparator used a table whose closes had already been overridden by official values. The result was circular and is invalidated. The separate `scripts/reconcile_archive_closes.py` audit compares preserved archive close against official close. See `data/reconciliation/source_reconciliation_report.json`, `data/reconciliation/minute_vs_official_daily.csv`, and `data/reconciliation/daily_close_mismatch_summary_by_year.csv`.
+
+The downstream model run 40181159630 reported 61.25% holdout accuracy on 80 observations, but the 10:00 anchor is still provisional and source validation fails. Results remain exploratory. Do not proceed to further model search or trading-cost optimization until the anchor and source mismatches are resolved. No strategy is accepted.
