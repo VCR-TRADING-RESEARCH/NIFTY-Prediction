@@ -7,6 +7,7 @@ on:
     paths:
       - ".github/workflows/phase3-source-reconciliation.yml"
       - "scripts/reconcile_official_sources.py"
+      - "scripts/reconcile_archive_closes.py"
       - "scripts/compare_alternative_minute_source.py"
       - "scripts/compare_sandeep_minute_source.py"
       - "tests/test_official_reconciliation.py"
@@ -81,6 +82,12 @@ jobs:
           if [ "$FORCE_REFRESH" = "true" ]; then ARGS="$ARGS --force"; fi
           if [ -n "$MAX_EXPIRIES" ] && [ "$MAX_EXPIRIES" != "0" ]; then ARGS="$ARGS --max-expiries $MAX_EXPIRIES"; fi
           python scripts/reconcile_official_sources.py $ARGS
+
+      - name: Recompute close gate from preserved original minute closes
+        id: archive_close_audit
+        if: always()
+        continue-on-error: true
+        run: python scripts/reconcile_archive_closes.py
 
       - name: Check primary source mirror against official OHLC (not independent)
         id: mirror_source
