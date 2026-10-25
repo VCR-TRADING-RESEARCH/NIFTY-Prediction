@@ -1,49 +1,7 @@
 {
-  "generated_utc": "2026-10-25T09:45:35.748071+00:00",
+  "generated_utc": "2026-10-25T09:48:26.685461+00:00",
   "source": "sandeepkapri/Nifty50-Minute-Data",
-  "source_url": "https://raw.githubusercontent.com/sandeepkapri/Nifty50-Minute-Data/main/nifty50_candlestick_data.csv",
-  "source_repository_differs_from_primary_source_repository": true,
-  "underlying_provider_lineage_independently_verified": false,
-  "source_is_official": false,
-  "data_status": "DIAGNOSTIC_ONLY",
-  "coverage_start": "2019-02-01",
-  "coverage_end": "2024-03-27",
-  "official_rows_in_overlap": 1271,
-  "sessions_compared": 1271,
-  "alternative_close_mismatches_over_1_point": 1182,
-  "alternative_close_median_abs_difference_points": 7.549999999999272,
-  "alternative_close_p95_abs_difference_points": 27.199999999999818,
-  "alternative_close_max_abs_difference_points": 161.54999999999927,
-  "primary_close_mismatches_over_1_point": 0,
-  "primary_close_median_abs_difference_points": 0.0,
-  "primary_close_p95_abs_difference_points": 0.0,
-  "secondary_vs_primary_close_median_abs_difference_points": 7.549999999999272,
-  "secondary_vs_primary_close_exact_matches": 3,
-  "secondary_vs_primary_close_comparison_rows": 1267,
-  "source_limitations": [
-    "Different published GitHub repository, but the actual market-data provider is not established by the README.",
-    "Not an official exchange feed and cannot by itself validate the source gate.",
-    "Comparison covers only through 2024-03-27, so it cannot validate 2024-04 through 2026.",
-    "The primary archive may use a different minute timestamp convention; 15:29 bar close may differ from official EOD close."
-  ],
-  "download_manifest": {
-    "source_url": "https://raw.githubusercontent.com/sandeepkapri/Nifty50-Minute-Data/main/nifty50_candlestick_data.csv",
-    "source_repository": "https://github.com/sandeepkapri/Nifty50-Minute-Data",
-    "source_is_official": false,
-    "published_repository_differs_from_primary_source_repository": true,
-    "underlying_provider_lineage_independently_verified": false,
-    "bytes": 51305261,
-    "sha256": "9b347479bb242e8cea8f85011a4d53e8938c1bfea1697fa25d8ef25d8888784d",
-    "downloaded_this_run": false,
-    "cache_path": "data/cache/alternative-minute/sandeep_nifty50_candlestick_data.csv"
-  },
-  "alternative_source_quality": {
-    "source_rows": 852087,
-    "valid_rows_in_comparison_window": 476218,
-    "daily_sessions": 1272,
-    "rows_dropped_or_filtered": 375869,
-    "invalid_ohlc_rows_after_time_filter": 0,
-    "first_session": "2019-02-01",
-    "last_session": "2024-03-27"
-  }
+  "data_status": "SOURCE_FAILED",
+  "error": "KeyError: 'session_close'",
+  "note": "Source failure does not imply that any other source passes validation."
 }
