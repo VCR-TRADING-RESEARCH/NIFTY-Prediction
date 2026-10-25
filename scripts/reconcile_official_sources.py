@@ -182,6 +182,7 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
         candidate["nominal_expiry"] = pd.to_datetime(candidate["nominal_expiry"], errors="coerce").dt.date
         source_cross = pd.read_csv(ROOT / "research" / "results" / "yahoo_daily_crosscheck.csv")
         source_cross["session_date"] = pd.to_datetime(source_cross["session_date"], errors="coerce").dt.date
+        source_cross = source_cross[(source_cross["session_date"] >= start) & (source_cross["session_date"] <= end)].copy()
         official_map = official.set_index("session_date")["official_close"].to_dict()
         source_cross["official_close"] = source_cross["session_date"].map(official_map)
         source_cross["official_abs_difference"] = (source_cross["session_close"] - source_cross["official_close"]).abs()
@@ -239,10 +240,13 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
             "candidate_expiries_checked": n,
             "contract_verified_expiries": good,
             "expiry_source_errors": errs,
+            "daily_source_rows_expected": len(source_cross),
             "daily_source_rows_compared": len(cross_rows),
+            "daily_source_rows_missing_official_close": int(source_cross["official_close"].isna().sum()),
             "minute_vs_official_mismatches_over_1_point": mismatch,
         }
-        report["status"] = "PASS" if n > 0 and good == n and errs == 0 and mismatch == 0 else "BLOCKED"
+        coverage_complete = len(cross_rows) == len(source_cross) and len(source_cross) > 0
+        report["status"] = "PASS" if n > 0 and good == n and errs == 0 and mismatch == 0 and coverage_complete else "BLOCKED"
         if report["status"] == "BLOCKED":
             report["errors"].append("One or more candidate expiry dates were not confirmed in official F&O data, or minute archive daily closes differ from official NIFTY 50 closes by >1 point.")
     except Exception as exc:
