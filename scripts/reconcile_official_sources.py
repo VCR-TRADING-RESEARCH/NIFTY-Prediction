@@ -138,8 +138,8 @@ def parse_bhavcopy_contract_expiries(blob: bytes, trade_date: date) -> set[date]
     canonical = {re.sub(r"[^a-z0-9]", "", str(c).lower()): c for c in frame.columns}
     symbol_col = next((canonical[k] for k in ("symbol", "tckrsymb", "underlying") if k in canonical), None)
     instrument_col = next((canonical[k] for k in ("instrument", "fininstrmtp", "instrumenttype") if k in canonical), None)
-    expiry_col = next((canonical[k] for k in ("expiry", "expirydate", "xprydt", "expiry_dt") if k in canonical), None)
-    option_type_col = next((canonical[k] for k in ("optiontype", "optn", "optn_tp", "option_type") if k in canonical), None)
+    expiry_col = next((canonical[k] for k in ("expiry", "expirydate", "expirydt", "xprydt", "expiry_dt") if k in canonical), None)
+    option_type_col = next((canonical[k] for k in ("optiontype", "optiontyp", "optn", "optn_tp", "opntp", "option_type") if k in canonical), None)
     if symbol_col is None or expiry_col is None:
         raise ValueError("Unrecognized NSE F&O bhavcopy schema: " + ",".join(map(str, frame.columns)))
     symbols = frame[symbol_col].astype(str).str.upper().str.strip().eq("NIFTY")
