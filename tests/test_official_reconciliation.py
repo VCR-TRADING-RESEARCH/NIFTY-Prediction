@@ -62,3 +62,14 @@ def test_weekly_nominal_schedule_changes_to_tuesday_in_sep_2025():
     assert date(2025, 9, 2) in dates
     assert all(d.weekday() == 3 for d in dates if d < date(2025, 9, 1))
     assert all(d.weekday() == 1 for d in dates if d >= date(2025, 9, 1))
+
+
+
+def test_parse_udiff_index_derivative_option_code_ido():
+    csv = (
+        "FinInstrmTp,TckrSymb,XpryDt,OptnTp,StrkPric\n"
+        "IDO,NIFTY,2025-10-28,CE,25000\n"
+        "IDO,NIFTY,2025-10-28,PE,25000\n"
+        "IDF,NIFTY,2025-11-25,,25000\n"
+    )
+    assert parse_bhavcopy_contract_expiries(csv.encode(), date(2025, 10, 28)) == {date(2025, 10, 28)}
