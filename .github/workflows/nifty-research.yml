@@ -109,6 +109,11 @@ jobs:
         id: research
         run: python scripts/run_research.py
 
+      - name: Generate ExtraTrees as-of predictions
+        id: asof_prediction
+        if: steps.research.outcome == 'success'
+        run: python scripts/predict_asof.py
+
       - name: Refresh README status block
         if: always() && steps.checkout.outcome == 'success'
         run: python scripts/update_status.py
@@ -121,6 +126,8 @@ jobs:
           path: |
             data/processed/**
             research/results/**
+            docs/prediction/latest_prediction.json
+            docs/prediction/prediction_history.csv
             logs/ERROR_LOG.md
             logs/RESEARCH_LOG.md
           if-no-files-found: ignore
