@@ -22,10 +22,11 @@ jobs:
   predict:
     # Only repository owners/members can start a job that receives Dhan secrets.
     if: >-
-      github.event_name == 'workflow_dispatch' ||
-      ((github.event.issue.author_association == 'OWNER' ||
-        github.event.issue.author_association == 'MEMBER') &&
-       startsWith(github.event.issue.title, '[NIFTY PREDICT] '))
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+       ((github.event.issue.author_association == 'OWNER' ||
+         github.event.issue.author_association == 'MEMBER') &&
+        startsWith(github.event.issue.title, '[NIFTY PREDICT] ')))
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -87,6 +88,10 @@ jobs:
           NIFTY_REQUEST_ISSUE: ${{ github.event.issue.number }}
           NIFTY_REQUEST_STARTED_AT: ${{ github.event.issue.created_at }}
         run: python scripts/run_live_prediction.py
+
+      - name: Ensure cache directory exists
+        if: always()
+        run: mkdir -p "${{ runner.temp }}/nifty-dhan-cache"
 
       - name: Save refreshed Dhan minute-data cache
         if: always()
