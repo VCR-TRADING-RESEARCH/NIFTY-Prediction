@@ -167,9 +167,9 @@ def daily_aggregates(minutes: pd.DataFrame) -> pd.DataFrame:
     for session_date, indices in ordered.groupby("session_date", sort=True).groups.items():
         group = ordered.loc[indices].sort_values("timestamp")
         unchanged = group["close"].eq(group["close"].shift()).fillna(False)
-        run_ids = (~unchanged).cumsum()
-        run_lengths = unchanged.groupby(run_ids).cumcount() + 1
-        max_run = int(run_lengths[unchanged].max()) + 1 if unchanged.any() else 1
+        run_ids = group["close"].ne(group["close"].shift()).cumsum()
+        run_lengths = group.groupby(run_ids)["close"].transform("size")
+        max_run = int(run_lengths.max()) if len(run_lengths) else 0
         same_fraction = float(unchanged.mean()) if len(group) else 0.0
         mask = result["session_date"].eq(pd.Timestamp(session_date))
         result.loc[mask, "max_unchanged_close_run"] = max_run
@@ -391,8 +391,9 @@ def construct_weekly_table(minutes: pd.DataFrame, daily: pd.DataFrame) -> tuple[
     previous_returns: list[float | None] = []
     previous_labels: list[str | None] = []
     for idx, row in cycles.iterrows():
-        prev_return = cycles.iloc[idx - 1]["return_pct"] if idx > 0 else None
-        prev_label = cycles.iloc[idx - 1]["label"] if idx > 0 else None
+        linked_previous = idx > 0 and pd.Timestamp(cycles.iloc[idx - 1]["expiry_date"]) == pd.Timestamp(row["previous_expiry"])
+        prev_return = cycles.iloc[idx - 1]["return_pct"] if linked_previous else None
+        prev_label = cycles.iloc[idx - 1]["label"] if linked_previous else None
         previous_returns.append(float(prev_return) if prev_return is not None else None)
         previous_labels.append(str(prev_label) if prev_label is not None else None)
         feat = _calculate_features(
