@@ -4,6 +4,12 @@
 
 > **Research status (2026-10-25):** Repository bootstrap in progress. No live or historical out-of-sample strategy is certified yet. A strategy is accepted only after leakage checks, walk-forward evaluation, robustness tests, and date-aware costs/slippage are passed. A workflow run or model score is not proof of profitability.
 
+<!-- AUTO_STATUS_START -->
+## Latest automated research status
+
+Status refresh pending first passing workflow.
+<!-- AUTO_STATUS_END -->
+
 ## Definition of the target
 
 For each actual weekly expiry date \(E_t\), let \(A_t\) be the first valid NIFTY 50 spot price at or after 10:00 IST on the next NSE trading day after the preceding expiry \(E_{t-1}\), and let \(C_t\) be the official/validated NIFTY 50 spot close on \(E_t\).
