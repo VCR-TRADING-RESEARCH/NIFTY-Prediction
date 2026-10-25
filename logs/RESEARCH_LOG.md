@@ -40,5 +40,6 @@
 ## 2026-10-25 — Live inference deployment status
 - Live inference code merged to `main` in commit `35ebee7d1cd621047d3cf2113803c79f93b36a13`.
 - Validation passed before merge and the first main-branch deployment run installed dependencies and passed the backend tests (12 passed).
-- First provider deployment attempt failed with `HfHubHTTPError` before publishing endpoint config; no user-facing live result is being presented as if this deployment succeeded.
-- Added sanitized diagnostics (stage, HTTP status, no secret/body logging) and retriggered deployment. Await its conclusion before reporting backend availability.
+- First provider deployment attempt failed with `HfHubHTTPError` and HTTP 402 before publishing endpoint config. Current Hugging Face documentation confirms Docker Space CPU-basic requires Pro for individual accounts or Team/Enterprise for organizations.
+- Added sanitized stage/status diagnostics and corrected a shadowed stage variable. No secret values or response bodies are logged.
+- **Status: BLOCKED awaiting eligible Hugging Face compute or an existing eligible writable Space ID.** The page does not fall back to static records.
