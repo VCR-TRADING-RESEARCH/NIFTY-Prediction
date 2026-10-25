@@ -202,7 +202,7 @@ def apply_official_daily_closes(daily: pd.DataFrame, official_path: Path) -> tup
     if len(missing):
         raise ValueError(f"Official close missing for {len(missing)} in-scope sessions; examples: {missing.head(8).dt.strftime('%Y-%m-%d').tolist()}")
     overlap = result["official_close"].notna()
-    if int(overlap.sum()) < 100:
+    if int(overlap.sum()) < min(100, int(scope.sum())):
         raise ValueError("Official daily close overlap unexpectedly small")
     result.loc[overlap, "session_close"] = result.loc[overlap, "official_close"]
     result["session_return"] = result["session_close"].pct_change()
@@ -459,7 +459,7 @@ def construct_weekly_table(minutes: pd.DataFrame, daily: pd.DataFrame, verificat
             "previous_calendar_status": p_status,
             "calendar_status": calendar_status,
             "source_quality_status": "official_EOD_close_with_provisional_minute_anchor" if closing_source == "NSE_official_daily_close" else "unverified_minute_close_and_anchor",
-            "confirmatory_eligible": bool(previous_event.get("calendar_verified", False) and current_event.get("calendar_verified", False) and closing_source == "NSE_official_daily_close"),
+            "confirmatory_eligible": False,
             "anchor_bar_delay_minutes": int((pd.Timestamp(arow["timestamp"]) - anchor_date.tz_localize(IST) - pd.Timedelta(hours=10)).total_seconds() // 60),
             "anchor_session_bars": int(daily_anchor["bars"].iloc[0]),
             "expiry_session_bars": int(daily_expiry["bars"].iloc[0]),
