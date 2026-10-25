@@ -324,9 +324,9 @@ def _parse_date_values(values: pd.Series) -> pd.Series:
     text = values.astype(str).str.strip()
     parsed = pd.Series(pd.NaT, index=values.index, dtype="datetime64[ns]")
 
-    compact_mask = text.str.fullmatch(r"\\d{8}")
-    iso_day_mask = text.str.fullmatch(r"\\d{4}-\\d{2}-\\d{2}")
-    iso_datetime_mask = text.str.match(r"^\\d{4}-\\d{2}-\\d{2}[T ]")
+    compact_mask = text.str.fullmatch(r"\d{8}")
+    iso_day_mask = text.str.fullmatch(r"\d{4}-\d{2}-\d{2}")
+    iso_datetime_mask = text.str.match(r"^\d{4}-\d{2}-\d{2}[T ]")
     year_first_mask = iso_day_mask | iso_datetime_mask
     legacy_mask = ~(compact_mask | year_first_mask)
 
