@@ -161,3 +161,13 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Root cause: test expectation did not match the documented four-calendar-day window; the implementation's output was correct.
 - Fix: update the expected list to include every trading session within the window. The expiry verifier stops once it finds an expiry, so additional dates are not fetched unnecessarily after a match.
 - Validation required: rerun both workflow unit-test gates; no source reconciliation result is inferred from this test-only correction.
+
+
+## Dhan authentication attempt — run 40175978898
+- Status: FAILED or incomplete. The public archive route will still be attempted.
+- Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.
+
+
+## Dhan data cross-check — run 40175978898
+- Status: FAILED or unavailable. The public archive will remain the core input; independent Dhan cross-check did not pass.
+- Failure responses and credentials were not added to the log. Inspect only sanitized Actions step diagnostics.

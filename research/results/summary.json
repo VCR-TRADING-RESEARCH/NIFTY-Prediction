@@ -1,5 +1,5 @@
 {
-  "run_utc": "2026-10-25T08:07:28.990417+00:00",
+  "run_utc": "2026-10-25T08:20:23.444079+00:00",
   "observations_total_labels": 398,
   "binary_rows": 398,
   "feature_complete_binary_rows": 398,
@@ -14,7 +14,7 @@
   "usable_trading_strategy_validated": false,
   "trading_strategy_blocker": "No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.",
   "important_warning": "All metrics are exploratory until the official expiry calendar and underlying data quality are verified; model discovery does not certify future performance.",
-  "run_id": "40175103450",
+  "run_id": "40175978898",
   "source_quality": {
     "source_files_read": 19,
     "valid_in_session_rows": 882839,

@@ -132,3 +132,14 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - The first run after adding the OHLC/holiday-shift diagnostics stopped at unit tests: 14 passed, 1 failed. The only failure was a test expecting two nearby sessions, while the helper correctly returned all four sessions within the four-calendar-day window.
 - Corrected the test expectation; code was not weakened. Both workflows are set to rerun from the latest branch tip.
 - No official-source results were produced by these runs because test failure prevents the reconciliation step from starting.
+
+
+## Automated run 40175978898 — 2026-10-25T08:20:24.495172+00:00
+- Status: pipeline completed; empirical findings remain exploratory until calendar and instrument-cost gates pass.
+- Source files read: 19; valid minute bars: 882839.
+- Weekly labels: 398; binary rows: 398; feature-complete rows: 398.
+- Development rows / held-out rows: 318 / 80.
+- Development-selected model: logistic.
+- Calendar gate: EXPLORATORY_ONLY — Weekly expiry dates were generated from weekday regimes and inferred from available bars; official historical expiry calendar and holiday shifts are not independently reconciled.
+- Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
+- Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.
