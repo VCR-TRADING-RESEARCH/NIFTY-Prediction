@@ -50,12 +50,12 @@ See the research log, error log, pre-registered plan, data-quality report, and m
 
 | Phase | Status | Acceptance gate |
 |---|---|---|
-| 0. Repository bootstrap and governance | In progress | Repository files, logs, workflow and test scaffolding present |
-| 1. Data and label validation | Pending automated run | Reconciled timestamps, expiry calendar, data coverage and missingness report |
-| 2. Baselines and leakage-safe features | Pending automated run | Majority-class and simple momentum/range baselines reproduced |
-| 3. Model and indicator discovery | Pending automated run | Walk-forward performance versus baselines; nested feature/model selection |
-| 4. Robustness, uncertainty and costs | Pending automated run | Regime/stability tests, calibrated probabilities, realistic cost model |
-| 5. Final manuscript and independent audit | Pending automated run | Results reproducible, limitations explicit, no unsupported profitability claims |
+| 0. Repository bootstrap and governance | Implemented; workflow and unit tests pass | Files, logs, workflow and test scaffolding present |
+| 1. Data and label validation | **BLOCKED** | 368/402 expiry-date close mismatches >1 point; official expiry calendar not reconciled; Dhan cross-check unavailable |
+| 2. Baselines and leakage-safe features | Exploratory pass only | Provisional labels/features and baseline outputs generated; cannot accept while Phase 1 fails |
+| 3. Model and indicator discovery | Exploratory pass only | 80-row holdout evaluated; no model certified; Quantevolve/PySR/TradingAgents deferred |
+| 4. Robustness, uncertainty and costs | **BLOCKED** | Validated source and contract-level cost/P&L data unavailable |
+| 5. Manuscript and independent audit | Manuscript drafted; independent audit pending | Exploratory results and blockers documented; no unsupported profitability claim |
 
 ## Repository map
 
