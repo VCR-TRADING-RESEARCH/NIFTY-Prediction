@@ -26,7 +26,7 @@ import requests
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "reconciliation"
 CACHE = ROOT / "data" / "cache" / "official"
-NIFTY_URL = "https://www.niftyindices.com/Backpage.aspx/getHistoricaldatatabletoString"
+NIFTY_URL = "https://www.niftyindices.com/BackPage.aspx/getHistoricaldatatabletoString"
 NIFTY_REFERER = "https://www.niftyindices.com/reports/historical-data"
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36"
 FIRST_WEEKLY = date(2019, 2, 14)
