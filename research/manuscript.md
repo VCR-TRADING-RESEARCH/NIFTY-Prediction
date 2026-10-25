@@ -85,3 +85,95 @@ Limitations: inferred expiry calendar; material daily-close mismatch; repeated-c
 - Holdout metrics and predictions: results/holdout_metrics.csv and results/holdout_predictions.csv
 - Experiment registry: results/experiment_registry.json
 - Logs: ../logs/RESEARCH_LOG.md, ../logs/ERROR_LOG.md and ../logs/CONVERSATION_LOG.md
+
+
+## Phase 3 official-source reconciliation update (25 October 2026)
+
+### Methods and source-audit outcome
+The third phase attempted to reconcile the candidate minute archive against the official NSE NIFTY 50 daily index history and NSE derivative contract bhavcopies. The completed run returned 1,913 official daily records and matched 1,901 of 1,901 comparison sessions. The daily-close comparison exceeded the pre-registered one-index-point tolerance on 1,717 sessions; the median absolute difference was 8.25 points, the 95th percentile was 32.45 points, and the maximum was 200.7 points. The independent audit therefore remains blocked. These differences are not silently corrected and the tolerance has not been widened.
+
+| Phase 3 metric | Result | Interpretation |
+|---|---:|---|
+| Official daily close rows | 1,913 | Official series retrieved |
+| Sessions compared | 1,901 / 1,901 | No missing official close in the matched comparison |
+| Minute/session close differences >1 index point | 1,717 / 1,901 (90.3%) | Fails the registered close-agreement gate |
+| Median absolute close difference | 8.25 points | Material discrepancy |
+| 95th percentile absolute close difference | 32.45 points | Large upper-tail errors |
+| Maximum absolute close difference | 200.7 points | The candidate close series needs investigation |
+| Candidate weekly expiries checked | 402 | Calendar remains provisional |
+| Confirmations in run 40174991974 | 338 / 402 (84.1%) | 26 unverified and 38 source-validation errors |
+
+### Interpretation and limitations
+The current minute archive is not accepted as ground truth merely because basic OHLC/timestamp validation passes. Its publisher documents missing bars, frozen-price stretches and partial/special sessions. The largest observed close mismatch includes a day with a 239-bar unchanged-close run, but high close differences also occur on sessions without such a long run; freezing alone is insufficient to explain the pattern. Official closing-index methodology and underlying minute source quality therefore remain competing explanations that require direct open/high/low and alternative-source comparison.
+
+The expiry result is also inconclusive. The first strict-parser run used a source downloader whose diagnostics preserved only exception types, which is not adequate for a defensible audit. The next bounded pass warms the NSE archive session, captures sanitized validation reasons, checks the nearby prior session only when no expiry is found on the nominal day, and writes yearly status summaries. These corrections do not convert a source error into a confirmed expiry.
+
+### Decision
+Phase 1 remains **BLOCKED**. All previously reported model metrics remain exploratory; 398 heuristic labels and the 318/80 chronological split are not confirmatory evidence. No executable strategy is selected. The next stage compares official daily open/high/low to diagnose the mismatch and validates a second independent intraday archive for the 10:00 anchor, while preserving the existing close-tolerance gate. Only after the label/source gates pass should a specified futures/options instrument be backtested with date-effective Paytm Money costs, spread, slippage and conservative fills.
+
+
+## Second-source diagnostics added (25 October 2026)
+
+The source gate is still blocked. The current official-vs-primary report compared 1,901 sessions; 1,717 close differences exceeded one point, with median absolute difference 8.25, P95 32.45 and maximum 200.7. Official open/high/low mismatches above one point were 587, 197 and 185. The distribution warrants a separate timestamp/aggregation examination rather than changing the one-point tolerance.
+
+An independent public 1-minute NIFTY 50 dataset is now included as a diagnostic comparator. It publishes annual files for 2019-2025 and monthly files in 2026, states timestamps are IST, and describes known remaining missing/frozen/special-session bars. Each session is aggregated from bars timestamped 09:15-15:29 IST and compared to official daily OHLC and the current archive. This third-party archive is not official ground truth; the audit is intended to test whether the discrepancy is specific to the current candidate source. Results await the latest automated run.
+
+
+## Audit correction and additional source plan (25 October 2026)
+
+The previous Phase 3 “alternative” minute dataset is not independent. The main data-fetch script reads technovusin/nifty50-historical-data, and the purported cross-check reads the same repository. Across 1,901 overlapping daily closes, the values matched exactly; this documents consistency of a duplicate read, not independent source validation. No inference about reliability may be drawn from that match.
+
+Inspection of the Phase 3 expiry artifact also identified a date-parsing error. On UDiFF records with ISO strings, applying a generic day-first fallback interpreted dates such as 2024-12-04 as 2024-04-12. A parser that handles YYYYMMDD and ISO year-first dates before legacy day-first strings has been added with regression tests. The previous 340/402 expiry confirmation remains the latest valid result until the corrected full workflow finishes.
+
+A second published dataset from sandeepkapri/Nifty50-Minute-Data is being compared with official NSE daily OHLC for the overlapping period 2019-02-01 to 2024-03-27. It is hosted in a separate repository, but the underlying data provider is not established by its README; therefore agreement will be diagnostic evidence only, not proof of independent vendor lineage. It cannot validate dates after March 2024. Phase 1 remains blocked and all model results remain exploratory.
+
+
+## Preliminary second-published-dataset comparison (25 October 2026)
+
+The separately published sandeepkapri/Nifty50-Minute-Data dataset was successfully downloaded and aggregated for the overlapping period 1 February 2019 through 27 March 2024. Using the last minute bar in the 09:15-15:29 IST window, 1,271 sessions overlapped the latest available official daily snapshot. Its closing value differed from the official daily close by more than one point on 1,182 sessions; median absolute difference was 7.55 points, P95 27.20 and maximum 161.55 points. The primary candidate series on the same overlapping sessions differed on 1,176 sessions, median 7.65 and P95 26.985. 574 of 1,267 compared daily closes matched exactly between the two published minute datasets.
+
+These comparisons are preliminary diagnostic evidence only. The official-source reconciliation did not run in that particular job because unit tests failed first, so the comparison used the last committed official daily snapshot. The separate dataset is a different repository, but its underlying provider lineage is not independently established, and its coverage ends in March 2024. It does not validate the full 2019-2026 range and does not resolve the source gate.
+
+
+## Updated source reconciliation and target construction (25 October 2026)
+NSE derivatives bhavcopy reconciliation verified all 402 candidate weekly-expiry records with no source errors. The primary public minute archive's daily close differs from official NSE daily close by more than one index point in 1,717 of 1,901 sessions (median absolute difference 8.25 points; 95th percentile 32.45; maximum 200.7). A separately published minute dataset overlaps for 1,271 sessions through 27 March 2024 and has 1,182 close mismatches over one point; its underlying provider lineage is not independently verified.
+
+Target construction now uses the official NSE daily close on the verified expiry trade date. Lagged daily closes also use official NSE values where available, while the archive close is retained for audit. The 10:00 anchor still uses the first eligible minute-bar open from the primary public archive and is not independently validated. Results remain exploratory until the anchor source and instrument-level execution costs are validated.
+
+
+## 9. Corrected official-source audit and final interpretation (25 October 2026)
+
+### Research question and methods
+The final bounded audit tested whether original minute-archive daily closes match official NSE NIFTY 50 daily closes within the pre-specified one-point tolerance, and whether candidate expiry dates have official derivatives evidence. To avoid circular validation, the audit compared preserved `session_close_archive` values from the original minute bars directly with official `official_close`, not a cross-check table whose close values had already been replaced by official closes.
+
+### Results
+| Audit measure | Result |
+|---|---:|
+| Candidate expiry dates checked | 402 |
+| Candidate expiry dates officially verified | 402 / 402 |
+| Unverified expiry dates / source errors | 0 / 0 |
+| Official daily records retrieved | 1,913 |
+| Preserved archive sessions compared | 1,903 |
+| Close differences above one point | 1,719 / 1,903 (90.3%) |
+| Median absolute close difference | 8.25 points |
+| 95th percentile absolute close difference | 32.435 points |
+| Maximum absolute close difference | 200.7 points |
+
+The corrected audit invalidates an earlier apparent PASS that reported zero close mismatches. That result was circular because the comparison table used official-close-overridden values. The separate audit's non-zero discrepancy result is authoritative. The cause of the differences is not fully identified; source integrity, session aggregation, timestamp alignment or other processing issues remain possible.
+
+### Updated model result (exploratory only)
+The official-close/verified-expiry pipeline (run 40181159630) produced 398 labelled cycles, with 318 development observations and 80 chronological holdout observations. ExtraTrees was selected on development data. Holdout accuracy was 61.25%, balanced accuracy 60.18%, MCC 0.213, Brier score 0.246, log loss 0.686 and ROC AUC 0.574. The approximate 95% Wilson interval for accuracy is 50.3%–71.2%. This is not confirmatory evidence: the 10:00 anchor still comes from the unvalidated minute archive, and the preserved archive daily closes fail independent comparison. These metrics must not be interpreted as a proven predictive edge.
+
+### Statistical interpretation
+The holdout has only 80 observations and a wide uncertainty interval. Accuracy modestly exceeds 50%, while ROC AUC is 0.574 and probability scores are weak. Evidence is insufficient to distinguish a stable economic edge from sampling variability, regime effects or residual label/source errors. Recorded evolutionary and symbolic-regression experiments did not improve on the simpler baseline. Further searching now would compound multiple-testing risk without fixing the data defect.
+
+### Strengths and limitations
+Strengths include chronological holdout evaluation, explicit target semantics, official expiry-date verification, preservation of original archive closes, a fixed one-point mismatch tolerance, automated tests, and correction logs that invalidate the false PASS rather than conceal it.
+
+Limitations include 1,719/1,903 close discrepancies above tolerance; an unvalidated 10:00 anchor; no verified contract-level fills; no historical bid-ask spread/slippage series; no date-effective Paytm Money brokerage, exchange fees, statutory levies or GST accounting; no net-of-cost futures/options backtest; a small holdout; and incomplete point-in-time coverage for options IV/OI, FII/DII, global-market, news and regime features. A spot-index classification score is not an executable trading return.
+
+### Conclusion and stopping decision
+**Final bounded result: BLOCKED — NO USABLE TRADING STRATEGY VALIDATED.** The official expiry calendar is verified for all 402 candidate dates, but the price-source gate fails and the anchor remains provisional. Do not trade these model outputs. Pause at the pre-defined data-quality gate rather than run further model searches on potentially incorrect labels. No profitability or cost-adjusted expectancy claim is made.
+
+### Future direction
+If resumed, the next justified step is a bounded source-diagnosis phase: inspect date-level/year-level mismatch patterns; test session aggregation, timezone and close selection; independently validate 10:00 minute prices using a reliable free source first and Dhan if access can be repaired; preserve immutable raw-source values; rebuild labels and re-register the holdout. Only after source and anchor gates pass should contract-level simulation include historical futures/options prices, date-effective Paytm Money charges, bid-ask spread, slippage, lot sizing and conservative fills.

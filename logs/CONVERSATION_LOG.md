@@ -36,3 +36,38 @@ Purpose: preserve available visible project statements and decisions for audit. 
 
 ## Conversation log maintenance
 Append user-visible project messages/assistant responses and references to project decisions as available. Never record secrets, private account identifiers, raw tokens, PINs, TOTP seeds or hidden private reasoning. When older turns are inaccessible, document the limitation rather than reconstructing missing dialogue.
+
+
+## 2026-10-25 — Current continuation
+- User command: “Ok proceed” / “Proceed”.
+- Visible assistant update: continue Phase 3, inspect completed workflow outputs/failure logs, correct the next concrete issue, maintain research logs/status, and advance only if source gates pass.
+- Visible finding recorded: Phase 3 run 40174991974 completed but data remained blocked (338/402 expiry dates confirmed, 26 not verified, 38 source errors; 1,717/1,901 official-close differences >1 point). Main research run 40175103450 completed successfully, but its model metrics remain exploratory.
+- Corrections being made: detailed validation error visibility, per-session NSE warm-up, nearby-session expiry verification for shifted dates, official daily OHLC comparisons, branch-tip checkout for Phase 3, and automatic yearly summaries.
+- This file records visible decisions and reproducible research actions; it does not copy hidden reasoning.
+
+
+## 2026-10-25 — Resume continued
+- User asked to resume the paused Phase 3 research.
+- Phase 3 run 40175978915: 1,913 official daily rows, 1,901 sessions compared; 1,717 close mismatches >1 point; median 8.25, P95 32.45, maximum 200.7. Official open/high/low mismatch counts were 587/197/185.
+- Expiry verification: 340 candidate dates confirmed (including two shifted), 22 unverified, 40 source-validation errors. Parser now prioritizes TradDt over BizDt.
+- Added independent 1-minute archive audit using technovusin/nifty50-historical-data, cached and compared with official NSE daily OHLC. Third-party data remains diagnostic only.
+
+
+## 2026-10-25 — Research resumed after Phase 3 run 40177007732
+- Run completed all automation steps. Official source data covered 1,901/1,901 candidate sessions; close mismatches >1 point were 1,717, median 8.25, P95 32.45, maximum 200.7.
+- Expiry check: 340 confirmed (including 2 shifted), 22 not verified, 40 source errors. Inspection showed explicit ISO dates were parsed day-first, swapping month/day; a format-aware parser and tests are being added.
+- Important correction: the “alternative” technovusin dataset was the same repository as the primary source. All 1,901 overlap closes were identical, so it is a mirror consistency test, not independent evidence.
+- Added a separate-published dataset comparator for sandeepkapri/Nifty50-Minute-Data covering dates through 2024-03-27. Underlying provider lineage is not independently verified; it is diagnostic only.
+
+
+## 2026-10-25 — Test correction checkpoint
+- The first follow-up workflow exposed two fixture/serialization bugs: regex strings remained double-escaped after an initial patch, and the separate-source test used a date after the advertised coverage end. Both were corrected.
+- Main research workflow push filters were narrowed so Phase 3-specific code and tests do not start the full baseline/model pipeline on each source-audit change.
+- The ISO parser fix and Sandeep source metrics still require a fresh successful Phase 3 run.
+
+
+## 2026-10-25 — ExtraTrees prediction-page request
+- User clarified the intended deliverable: a repository page showing an ExtraTrees prediction with an as-of date for the upcoming weekly expiry, not merely a historical CSV.
+- Added `scripts/predict_asof.py`, `docs/prediction/index.html`, and workflow integration to generate and commit `latest_prediction.json` plus historical walk-forward `prediction_history.csv`.
+- The page labels the source gate BLOCKED and the future expiry estimate PROVISIONAL; it does not claim a validated trading signal.
+- Status at log time: files committed to `research/phase-3-official-source-reconciliation`; an end-to-end Actions run and generated JSON/CSV still need verification. Do not claim the page is live/deployed until verified.

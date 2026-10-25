@@ -1,0 +1,7 @@
+{
+  "generated_utc": "2026-10-25T09:54:21.915520+00:00",
+  "source": "sandeepkapri/Nifty50-Minute-Data",
+  "data_status": "SOURCE_FAILED",
+  "error": "KeyError: 'session_close'",
+  "note": "Source failure does not imply that any other source passes validation."
+}

@@ -19,7 +19,7 @@ LOGS = ROOT / "logs"
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from research_core import (  # noqa: E402
-    load_minute_files, daily_aggregates, construct_weekly_table,
+    load_minute_files, daily_aggregates, apply_official_daily_closes, construct_weekly_table,
     evaluate_research, try_yahoo_daily_validation, save_figures,
 )
 
@@ -119,13 +119,19 @@ def main() -> int:
             raise FileNotFoundError("No raw CSV files exist under " + str(RAW))
         minutes, quality = load_minute_files(files)
         daily = daily_aggregates(minutes)
+        official_close_path = ROOT / "data" / "reconciliation" / "nifty50_official_daily.csv"
+        expiry_verification_path = ROOT / "data" / "reconciliation" / "expiry_verification.csv"
+        daily, official_close_quality = apply_official_daily_closes(daily, official_close_path)
+        quality["official_daily_close_validation"] = official_close_quality
+        if not expiry_verification_path.is_file():
+            raise FileNotFoundError("Official NSE expiry verification table is required.")
         quality["daily_sessions"] = int(len(daily))
         quality["sessions_with_less_than_250_bars"] = int((daily["bars"] < 250).sum())
         quality["sessions_with_unchanged_close_run_over_10"] = int((daily["max_unchanged_close_run"] > 10).sum())
         quality["maximum_unchanged_close_run"] = int(daily["max_unchanged_close_run"].max()) if len(daily) else None
         daily.to_csv(PROCESSED / "daily_aggregates.csv", index=False)
 
-        cycles, calendar, construction_report = construct_weekly_table(minutes, daily)
+        cycles, calendar, construction_report = construct_weekly_table(minutes, daily, expiry_verification_path)
         # Keep a minimal expiry schedule plus explicit flags for audit.
         calendar.to_csv(PROCESSED / "candidate_expiry_calendar.csv", index=False)
         cycles.to_csv(PROCESSED / "weekly_labels_features.csv", index=False)
@@ -141,8 +147,8 @@ def main() -> int:
             "target_construction": construction_report,
             "independent_daily_close_crosscheck": yahoo_check,
             "independent_recent_minute_crosscheck": dhan_check,
-            "confirmatory_status": "BLOCKED: candidate expiry dates are not yet reconciled against a complete official historical weekly-contract expiry calendar.",
-            "data_scope_warning": "The public minute archive is a candidate source with known missing/frozen/partial sessions. Spot bar checks and Yahoo comparisons are diagnostics, not proof of official exchange data lineage.",
+            "confirmatory_status": "BLOCKED: expiry dates and EOD closes use NSE records, but the 10:00 anchor remains minute-archive-derived and is not independently validated.",
+            "data_scope_warning": "Expiry outcomes and lagged closes use NSE official daily values. The 10:00 anchor still uses a public minute archive with unverified provider lineage; no instrument-level costs or fills are validated.",
         }
         write_json(PROCESSED / "data_quality_report.json", quality_report)
         summary = evaluate_research(cycles, RESULTS)
@@ -158,8 +164,11 @@ def main() -> int:
             "dhan_minute_match_count": dhan_check.get("matched_timestamps"),
             "dhan_minute_mismatches": dhan_check.get("mismatched_closes_over_1_point"),
         }
-        summary["target_definition"] = "Expiry-day last valid 15:25-15:29 bar close relative to 10:00-10:03 first-bar open on first session after preceding weekly expiry."
-        summary["calendar_status"] = "EXPLORATORY_ONLY"
+        summary["target_definition"] = "NSE official daily close on verified weekly expiry date relative to the first minute-archive bar open at or after 10:00 and no later than 10:03 on the first trading session after the previous verified expiry."
+        summary["calendar_status"] = "OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL"
+        summary["confirmatory_status"] = quality_report["confirmatory_status"]
+        summary["reason_not_confirmatory"] = "The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested."
+        summary["important_warning"] = "All results remain exploratory until the anchor and realistic trading costs are validated."
         write_json(RESULTS / "summary.json", summary)
         created_plots = save_figures(cycles, RESULTS)
         summary["plots_created"] = created_plots

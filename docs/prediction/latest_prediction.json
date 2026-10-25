@@ -1,0 +1,25 @@
+{
+  "generated_utc": "2026-10-25T13:10:33.283846+00:00",
+  "as_of_date": "2026-10-21",
+  "forecast_time_ist": "2026-10-21 10:00 IST",
+  "reference_price": 23022.8,
+  "target_expiry_date": "2026-10-27",
+  "target_expiry_status": "PROVISIONAL \u2014 next Tuesday estimate; holiday adjustment not independently verified",
+  "prediction": "DOWN",
+  "p_up": 0.409045,
+  "p_down": 0.590955,
+  "training_rows": 394,
+  "model": "ExtraTreesClassifier",
+  "model_parameters": "300 trees; max_depth=3; min_samples_leaf=8; max_features=0.8; class_weight=balanced; random_state=42",
+  "historical_source_gate": "BLOCKED",
+  "archive_close_mismatches_over_1_point": 1719,
+  "official_sessions_compared": 1903,
+  "anchor_source": "Public minute archive; not independently validated",
+  "prediction_status": "EXPLORATORY ONLY \u2014 NOT FOR LIVE TRADING",
+  "limitations": [
+    "Historical archive closes fail the registered independent close-agreement gate.",
+    "The 10:00 anchor source is not independently validated.",
+    "The upcoming expiry date is a weekday estimate, not a verified future contract record.",
+    "Spot direction is not options P&L; contract quotes, spreads, fills and date-effective Paytm Money costs are not included."
+  ]
+}

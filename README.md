@@ -2,7 +2,7 @@
 
 **Purpose:** Predict whether the NIFTY 50 spot index at the close of a weekly options expiry is higher or lower than its value at **10:00 IST on the next trading day after the preceding weekly expiry**. This project researches a binary directional forecast, not a generic return-maximization system.
 
-> **Research status (2026-10-25):** First automated empirical run completed, but Phase 1 is BLOCKED: 368/402 expiry-date closes mismatch an independent daily-close source by >1 point and the historical expiry calendar remains heuristic. Provisional holdout model scores are exploratory only. No usable trading strategy is validated. Do not trade this result.
+> **Research status (2026-10-25):** Phase 3 is **BLOCKED**. Official expiry records verify 402/402 candidate dates, but the preserved minute archive's daily close differs from official NSE close by more than one point on **1,719/1,903 sessions** (median absolute difference 8.25 points; P95 32.435; max 200.7). A prior apparent PASS was a circular comparison and is invalidated. Model metrics remain exploratory; **no usable trading strategy is validated**.
 
 ## Definition of the target
 
@@ -12,7 +12,7 @@ For each actual weekly expiry date \(E_t\), let \(A_t\) be the first valid NIFTY
 - Binary label: \`1\` if \(r_t > 0\); \`0\` if \(r_t < 0\).
 - Exact ties are retained as a separate \`flat\` label for data-quality reporting and excluded from binary model fitting unless a pre-registered tolerance is selected.
 - All features must be available by the forecast timestamp. No expiry-day close, post-forecast data, or revised/future information may leak into features.
-- Weekly NIFTY 50 options started in February 2019; 2017–2018 minute bars may be used only for feature lookback, not weekly-option expiry labels. The first weekly expiry was 14 February 2019. Expiry weekday changed from Thursday to Tuesday in September 2025, with holiday shifts. A complete historical contract calendar is required for confirmatory inference.
+- Weekly NIFTY 50 options started in February 2019; 2017–2018 minute bars may be used only for feature lookback, not weekly-option expiry labels. The first weekly expiry was 14 February 2019. Expiry weekday changed from Thursday to Tuesday in September 2025, with holiday shifts. A complete historical contract calendar is required for confirmatory inference. Official NSE circulars document Thursday weekly expiry through August 2025 and Tuesday from September 2025; see [FAOP68747](https://nsearchives.nseindia.com/web/sites/default/files/inline-files/FAOP68747.pdf) and the [current NIFTY 50 contract specification](https://www.nseindia.com/static/products-services/equity-derivatives-nifty50).
 
 The research target is on the spot index. Any executable strategy must separately define the instrument, order timing, position sizing, and cash-flow accounting (e.g., NIFTY futures or options) and apply date-effective Paytm Money brokerage, exchange charges, statutory levies, GST, stamp duty, bid-ask spread and slippage. Directional accuracy alone does not establish tradability.
 
@@ -21,29 +21,34 @@ The research target is on the spot index. Any executable strategy must separatel
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
 
-Last status refresh: 2026-10-25 06:35 UTC
+Last status refresh: 2026-10-25 13:10 UTC
 
-- Run ID: 40169213949
+- Run ID: 40195799992
 - Target labels: 398
 - Binary rows with sufficient features: 398
 - Development / final holdout rows: 318 / 80
-- Model selected on development data: logistic
-- Calendar status: **EXPLORATORY_ONLY**
+- Model selected on development data: extra_trees
+- Calendar status: **OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL**
 - Independently validated usable trading strategy: **NO**
 
-The current pipeline labels the weekday-derived expiry calendar as exploratory; performance metrics are not a verified trading edge. The spot index is not a directly executable instrument, and contract-level quotes, dated costs, spread/slippage and fills are not yet joined.
+The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.
+
+The target uses official NSE expiry dates and daily closes. The 10:00 anchor is still minute-archive-derived and independently unvalidated. No executable futures/options P&L with broker charges, spreads, slippage and fills has been validated.
 
 - Source CSV files: 19
 - Valid minute bars after checks: 882839
-- Yahoo daily-close check: available; compared rows: 2352; expiry-date mismatches over tolerance: 368
+- Official NSE daily closes matched: 1903
+- Minute-archive closes differing from official close by >1 point: 1719
+- Median absolute minute-vs-official close difference: 8.25 points
+- Yahoo daily-close cross-check: available; compared rows: 2352; mismatches over tolerance: 0
 
 ### Final holdout metrics (exploratory)
-- extra_trees: accuracy 0.575, balanced accuracy 0.559, n=80
-- logistic: accuracy 0.550, balanced accuracy 0.547, n=80
+- extra_trees: accuracy 0.613, balanced accuracy 0.602, n=80
+- logistic: accuracy 0.562, balanced accuracy 0.570, n=80
 - majority: accuracy 0.463, balanced accuracy 0.500, n=80
-- prior_cycle: accuracy 0.450, balanced accuracy 0.447, n=80
-- prior_cycle_return: accuracy 0.450, balanced accuracy 0.447, n=80
-- momentum_5d: accuracy 0.362, balanced accuracy 0.352, n=80
+- prior_cycle: accuracy 0.438, balanced accuracy 0.433, n=80
+- prior_cycle_return: accuracy 0.438, balanced accuracy 0.433, n=80
+- momentum_5d: accuracy 0.388, balanced accuracy 0.379, n=80
 
 See the research log, error log, pre-registered plan, data-quality report, and manuscript for details.
 <!-- AUTO_STATUS_END -->
@@ -51,11 +56,21 @@ See the research log, error log, pre-registered plan, data-quality report, and m
 | Phase | Status | Acceptance gate |
 |---|---|---|
 | 0. Repository bootstrap and governance | Implemented; workflow and unit tests pass | Files, logs, workflow and test scaffolding present |
-| 1. Data and label validation | **BLOCKED** | 368/402 expiry-date close mismatches >1 point; official expiry calendar not reconciled; Dhan cross-check unavailable |
-| 2. Baselines and leakage-safe features | Exploratory pass only | Provisional labels/features and baseline outputs generated; cannot accept while Phase 1 fails |
-| 3. Model and indicator discovery | Exploratory pass only | 80-row holdout evaluated; no model certified; Quantevolve/PySR/TradingAgents deferred |
+| 1. Data and label validation | **BLOCKED** | 402/402 expiry records verified, but 1,719/1,903 archive close mismatches >1 point; 10:00 anchor provisional |
+| 2. Baselines and leakage-safe features | Exploratory only | 398 labels; 318 development / 80 chronological holdout |
+| 3. Model and indicator discovery | Exploratory only | Holdout accuracy 61.25%; no model certified; evolutionary/PySR/agent results did not beat baseline |
 | 4. Robustness, uncertainty and costs | **BLOCKED** | Validated source and contract-level cost/P&L data unavailable |
-| 5. Manuscript and independent audit | Manuscript drafted; independent audit pending | Exploratory results and blockers documented; no unsupported profitability claim |
+| 5. Manuscript and independent audit | Draft updated; final audit blocked | False PASS corrected; findings and residual limitations documented |
+
+### Latest Phase 3 source gate
+
+- Official daily source: 1,913 rows collected; 1,903 sessions compared with preserved archive daily closes.
+- Official expiry evidence: **402/402 candidate dates verified**, including shifted expiry dates; zero unverified and zero source errors.
+- Independent preserved-archive close audit: **1,719/1,903** differences exceed one index point; median absolute difference 8.25 points; P95 32.435; maximum 200.7.
+- **False PASS invalidated:** a prior comparison used a Yahoo cross-check file generated after official closes had already overwritten original archive values. That was circular and is not independent validation.
+- 10:00 anchor remains provisional; model scores are exploratory. No strategy or costed P&L accepted.
+- See [machine-readable report](data/reconciliation/source_reconciliation_report.json), [expiry verification](data/reconciliation/expiry_verification.csv), [close comparison](data/reconciliation/minute_vs_official_daily.csv), [yearly mismatch summary](data/reconciliation/daily_close_mismatch_summary_by_year.csv), and [Phase 3 plan](docs/PHASE_3_SOURCE_RECONCILIATION.md).
+- Latest audit: [workflow run 40181901081](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40181901081); model run: [40181159630](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40181159630); [Phase 3 PR #3](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/3).
 
 ## Repository map
 
@@ -111,3 +126,37 @@ See the research log, error log, pre-registered plan, data-quality report, and m
 - Probability of Backtest Overfitting: https://doi.org/10.21314/jcf.2016.322
 
 Last repository status update: 2026-10-25.
+
+
+## Phase 3: Official source reconciliation
+
+**Status: AUTOMATED VALIDATION PENDING.** This phase attempts to replace the unverified candidate close source with official NIFTY 50 historical index data and confirm weekly expiries against NSE F&O contract bhavcopy. It does not promote any model.
+
+- [Phase 3 plan and acceptance gates](docs/PHASE_3_SOURCE_RECONCILIATION.md)
+- [Phase 3 automated workflow](.github/workflows/phase3-source-reconciliation.yml)
+- [Reconciliation runner](scripts/reconcile_official_sources.py)
+- [Parser and calendar tests](tests/test_official_reconciliation.py)
+- [Official NIFTY Indices historical OHLC](https://www.niftyindices.com/reports/historical-data)
+- [NSE F&O archives](https://www.nseindia.com/all-reports-derivatives)
+- [NSE NIFTY 50 derivatives specifications](https://www.nseindia.com/static/products-services/equity-derivatives-nifty50)
+
+<!-- PHASE3_STATUS_START -->
+**Phase 3 source gate:** BLOCKED — checked 402 candidate expiry dates; official close mismatches >1 point: 1719.
+See [source reconciliation report](data/reconciliation/source_reconciliation_report.json) and [Phase 3 plan](docs/PHASE_3_SOURCE_RECONCILIATION.md).
+<!-- PHASE3_STATUS_END -->
+
+The workflow is bounded, caches downloaded official source snapshots, and records errors instead of silently marking missing dates as valid. A PASS requires every candidate expiry to be confirmed in official contract data and all overlapping minute-archive daily closes to match official closes within one point. Until then, model results remain exploratory.
+
+
+### Independent minute-source audit
+The previous Phase 3 “alternative” dataset was not independent: the main fetch script and cross-check both read technovusin/nifty50-historical-data. The completed comparison found 1,901/1,901 exact matching daily closes, so it is marked MIRROR_NOT_INDEPENDENT and is not counted as cross-validation. A separate published dataset from sandeepkapri/Nifty50-Minute-Data is now being checked for 2019-02 through 2024-03; its underlying vendor lineage is not proven and it cannot alone pass the official-source gate.
+
+
+## ExtraTrees as-of prediction page
+
+- **Prediction page source:** [docs/prediction/index.html](docs/prediction/index.html)
+- **Latest as-of forecast data:** [latest_prediction.json](docs/prediction/latest_prediction.json)
+- **Historical leakage-safe walk-forward predictions:** [prediction_history.csv](docs/prediction/prediction_history.csv)
+- **Generator:** [scripts/predict_asof.py](scripts/predict_asof.py)
+- The NIFTY Weekly Expiry Research workflow generates the forecast after the research pipeline completes. The page shows the latest forecast as of the first available 10:00 IST anchor after the latest verified expiry, plus selectable historical walk-forward predictions.
+- The future expiry date is explicitly provisional when the available official files do not verify the future holiday-adjusted date. Forecasts remain exploratory while the source gate is blocked; this page is not a trading recommendation and does not calculate options P&L.
