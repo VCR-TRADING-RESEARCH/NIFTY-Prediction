@@ -2,7 +2,7 @@ name: On-demand NIFTY ExtraTrees prediction
 
 on:
   issues:
-    types: [opened, reopened]
+    types: [opened, reopened, edited]
   workflow_dispatch:
     inputs:
       as_of_date:
@@ -22,12 +22,11 @@ jobs:
   predict:
     # Only repository owners/members can start a job that receives Dhan secrets.
     if: >-
-      github.ref == 'refs/heads/main' &&
-      (github.event_name == 'workflow_dispatch' ||
-       ((github.event.issue.author_association == 'OWNER' ||
-         github.event.issue.author_association == 'MEMBER' ||
-         github.event.issue.author_association == 'COLLABORATOR') &&
-        startsWith(github.event.issue.title, '[NIFTY PREDICT] ')))
+      github.event_name == 'workflow_dispatch' ||
+      ((github.event.issue.author_association == 'OWNER' ||
+        github.event.issue.author_association == 'MEMBER' ||
+        github.event.issue.author_association == 'COLLABORATOR') &&
+       startsWith(github.event.issue.title, '[NIFTY PREDICT] '))
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
