@@ -334,51 +334,66 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
         if max_expiries:
             candidate_dates = candidate_dates[:max_expiries]
         sessions = sorted(official_map)
-        session = requests.Session()
-        session.headers.update({"User-Agent": UA, "Accept": "*/*"})
-        verified: list[dict[str, Any]] = []
-        consecutive_source_errors = 0
-        for index, candidate_date in enumerate(candidate_dates):
-            # Find last official session on or before candidate date; official price sessions
-            # encode holidays, but the contract must still appear in the NSE F&O bhavcopy.
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        import threading
+        local = threading.local()
+        def get_fo_session() -> requests.Session:
+            s = getattr(local, "session", None)
+            if s is None:
+                s = requests.Session()
+                s.headers.update({"User-Agent": UA, "Accept": "*/*"})
+                local.session = s
+            return s
+
+        candidate_jobs: list[tuple[date, date]] = []
+        for candidate_date in candidate_dates:
             possible = [d for d in sessions if d <= candidate_date]
-            if not possible:
-                verified.append({"candidate_date": candidate_date.isoformat(), "status": "no_official_session"})
-                continue
-            actual = possible[-1]
+            if possible:
+                candidate_jobs.append((candidate_date, possible[-1]))
+
+        def verify_candidate(job: tuple[date, date]) -> dict[str, Any]:
+            candidate_date, actual = job
             try:
                 cache_file = CACHE / "fo" / f"fo_{actual:%Y%m%d}.zip"
                 if cache_file.exists() and not force:
                     blob = cache_file.read_bytes()
                 else:
-                    blob = fetch_bhavcopy(actual, session)
+                    blob = fetch_bhavcopy(actual, get_fo_session())
                     cache_file.parent.mkdir(parents=True, exist_ok=True)
                     cache_file.write_bytes(blob)
                 expiries = parse_bhavcopy_contract_expiries(blob, actual)
                 exists = actual in expiries
-                verified.append({
+                return {
                     "candidate_date": candidate_date.isoformat(),
                     "candidate_previous_session": actual.isoformat(),
                     "contract_expiry_present": exists,
                     "status": "verified_nifty_weekly_expiry" if exists else "not_verified_in_bhavcopy",
                     "nifty_option_expiries_in_bhavcopy": sorted(x.isoformat() for x in expiries),
-                })
+                }
             except Exception as exc:
-                verified.append({
+                return {
                     "candidate_date": candidate_date.isoformat(),
                     "candidate_previous_session": actual.isoformat(),
                     "status": "source_error",
                     "error_type": type(exc).__name__,
                     "error": str(exc)[:250],
-                })
-                consecutive_source_errors += 1
-            else:
-                consecutive_source_errors = 0
-            if consecutive_source_errors >= 8:
-                for remaining in candidate_dates[index + 1:]:
-                    verified.append({"candidate_date": remaining.isoformat(), "status": "source_unavailable_after_repeated_errors"})
-                break
-            time.sleep(0.15)
+                }
+
+        verified: list[dict[str, Any]] = []
+        # Four workers reduce a long sequential run while limiting pressure on NSE.
+        # Work in bounded batches; if a whole batch has source failures, stop rather
+        # than hammering a blocked endpoint across the remaining calendar.
+        batch_size = 24
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            for batch_start in range(0, len(candidate_jobs), batch_size):
+                batch = candidate_jobs[batch_start:batch_start + batch_size]
+                results = list(pool.map(verify_candidate, batch))
+                verified.extend(results)
+                batch_errors = sum(row.get("status") == "source_error" for row in results)
+                if batch and batch_errors == len(batch):
+                    for candidate_date in candidate_dates[len(verified):]:
+                        verified.append({"candidate_date": candidate_date.isoformat(), "status": "source_unavailable_after_repeated_errors"})
+                    break
         pd.DataFrame(verified).to_csv(OUT / "expiry_verification.csv", index=False)
         n = len(verified)
         good = sum(x.get("status") == "verified_nifty_weekly_expiry" for x in verified)
