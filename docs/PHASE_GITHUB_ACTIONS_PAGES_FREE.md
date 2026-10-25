@@ -21,7 +21,7 @@ GitHub Pages is static hosting. A browser button cannot securely dispatch a priv
 - Keep `DHAN_CLIENT_ID`, `DHAN_PIN`, and `DHAN_TOTP_SECRET` in repository/organization Actions secrets only.
 - Never embed a PAT, Actions token, Dhan token, PIN, or TOTP in JavaScript or Pages assets.
 - Validate ISO dates before using them.
-- Publish failed status records and log failures; do not silently substitute a stale prediction.
+- Publish failed status records and log failures; overwrite prior same-date output on failed inference, never silently substitute a stale prediction.
 - Reuse cached historical data where available; cache misses may cause a fetch.
 - Do not label the raw ExtraTrees score as probability of profit.
 - No prediction is cleared for trading until independent 10:00 anchor reconciliation, leakage-safe walk-forward validation, and instrument-level options P&L with Paytm Money charges, bid/ask spreads and slippage pass.

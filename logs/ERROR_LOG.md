@@ -122,3 +122,11 @@
 - Date: 2024-06-07
 - Status: FAILED; inspect the linked Actions run for the failing step.
 - No secrets or provider response bodies are copied into logs.
+
+
+## E0011 — 2026-10-25 — Date dispatch and stale-result publication safety
+- **Finding:** The supplied screenshot shows a run for 2024-06-07 rejected by the calendar gate: it was not recognized as the first NSE session after the reported prior verified expiry, 2024-06-06. This does not prove whether the calendar data or session construction is wrong; do not bypass the gate without auditing source rows.
+- **Additional defect:** The Pages publish step could preserve an existing date JSON after failed inference and copy it to latest.json, risking stale output being shown as fresh.
+- **Correction staged:** Failed inference now overwrites same-date output with an explicit failed record. The Pages date form opens the workflow page with the selected date encoded in the URL; user must confirm Run workflow because static Pages cannot securely dispatch authenticated Actions.
+- **Validation:** Pending branch CI and workflow run.
+- **Security:** No credentials or private reasoning logged.

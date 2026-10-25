@@ -6,7 +6,6 @@
   const predictButton = $("predict-button");
   const inputError = $("input-error");
   const resultSection = $("result-section");
-  let apiBaseUrl = "";
   const originalButtonLabel = predictButton.innerHTML;
 
   function showInputError(message) {
@@ -139,19 +138,10 @@
       return;
     }
     predictButton.disabled = true;
-    predictButton.innerHTML = "<span>Loading…</span>";
-    setPageStatus("Loading published result", "status-loading");
-    try {
-      const record = await fetchPrediction(asOfDate);
-      renderPrediction(record);
-      setPageStatus("Published prediction loaded", "status-ready");
-    } catch (error) {
-      setPageStatus("Prediction unavailable", "status-blocked");
-      showInputError(error && error.message ? error.message : "Could not load the published prediction.");
-    } finally {
-      predictButton.disabled = false;
-      predictButton.innerHTML = "<span>Load prediction</span><span class=\"button-arrow\" aria-hidden=\"true\">→</span>";
-    }
+    const workflowUrl = "https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/workflows/free-pages-prediction.yml?workflow=free-pages-prediction.yml&inputs%5Bas_of_date%5D=" + encodeURIComponent(asOfDate);
+    setPageStatus("Ready to run selected date", "status-ready");
+    showInputError("GitHub Actions will open. Choose Run workflow, confirm the date " + asOfDate + ", then start the run. This page cannot start a private workflow directly.");
+    window.location.href = workflowUrl;
   });
   initialize();
 })();
