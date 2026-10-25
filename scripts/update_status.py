@@ -45,16 +45,22 @@ def render() -> str:
             "- Calendar status: **" + str(summary.get("calendar_status", "UNKNOWN")) + "**",
             "- Independently validated usable trading strategy: **NO**",
             "",
-            "The current pipeline labels the weekday-derived expiry calendar as exploratory; performance metrics are not a verified trading edge. The spot index is not a directly executable instrument, and contract-level quotes, dated costs, spread/slippage and fills are not yet joined.",
+            str(summary.get("reason_not_confirmatory", "All results are exploratory until source validation is complete.")),
+            "",
+            "The target uses official NSE expiry dates and daily closes. The 10:00 anchor is still minute-archive-derived and independently unvalidated. No executable futures/options P&L with broker charges, spreads, slippage and fills has been validated.",
         ]
         if quality:
             source = quality.get("source_quality", {})
             yahoo = quality.get("independent_daily_close_crosscheck", {})
+            close_check = source.get("official_daily_close_validation", {})
             lines += [
                 "",
                 "- Source CSV files: " + str(source.get("source_files_read", "n/a")),
                 "- Valid minute bars after checks: " + str(source.get("valid_in_session_rows", "n/a")),
-                "- Yahoo daily-close check: " + ("available" if yahoo.get("available") else "unavailable / failed") + "; compared rows: " + str(yahoo.get("matched_rows", "n/a")) + "; expiry-date mismatches over tolerance: " + str(yahoo.get("mismatch_rows", "n/a")),
+                "- Official NSE daily closes matched: " + str(close_check.get("official_sessions_matched", "n/a")),
+                "- Minute-archive closes differing from official close by >1 point: " + str(close_check.get("archive_close_mismatches_over_1_point", "n/a")),
+                "- Median absolute minute-vs-official close difference: " + str(close_check.get("archive_close_median_abs_difference_points", "n/a")) + " points",
+                "- Yahoo daily-close cross-check: " + ("available" if yahoo.get("available") else "unavailable / failed") + "; compared rows: " + str(yahoo.get("matched_rows", "n/a")) + "; mismatches over tolerance: " + str(yahoo.get("mismatch_rows", "n/a")),
             ]
         if METRICS.exists():
             try:
