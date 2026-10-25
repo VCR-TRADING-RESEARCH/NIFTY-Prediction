@@ -17,3 +17,14 @@
 - **Latest saved forecast:** As-of 2026-10-21 10:00 IST; target expiry 2026-10-27; direction DOWN; model p_up 0.384781. This is a previously generated record, not a new calculation on 2026-10-25.
 - **Acceptance status:** UI/data contract is implemented; full automated run and GitHub Pages deployment still need to pass. Data-quality gate remains BLOCKED; anchor prices are not independently validated. No executable trading strategy is certified.
 - **Next:** Merge integration PR, inspect the Actions runs, correct failures, and verify the published Pages URL.
+
+
+## Automated run 40196840830 — 2026-10-25T13:19:54.501227+00:00
+- Status: pipeline completed; empirical findings remain exploratory until calendar and instrument-cost gates pass.
+- Source files read: 19; valid minute bars: 882839.
+- Weekly labels: 398; binary rows: 398; feature-complete rows: 398.
+- Development rows / held-out rows: 318 / 80.
+- Development-selected model: extra_trees.
+- Calendar gate: OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL — The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.
+- Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
+- Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.

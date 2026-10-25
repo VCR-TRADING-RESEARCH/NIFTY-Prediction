@@ -4,7 +4,7 @@
   "latest_forecast_generated": true,
   "latest_forecast_error": null,
   "data_quality_status": "BLOCKED",
-  "generated_at_utc": "2026-10-25T12:48:21.327640+00:00",
+  "generated_at_utc": "2026-10-25T13:19:54.499015+00:00",
   "payload_schema_valid": true,
   "temporal_leakage_checks": "PASS"
 }

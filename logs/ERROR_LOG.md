@@ -21,3 +21,8 @@
 - Status: BLOCKED. One or more workflow steps failed; inspect the Actions run for the exact failing step.
 - The workflow is configured to continue with public data when the optional Dhan branch fails.
 - No secrets, access tokens, PINs or TOTP values should be copied from runner diagnostics into repository logs.
+
+
+## Dhan authentication attempt — run 40196840830
+- Status: FAILED or incomplete. The public archive route will still be attempted.
+- Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.

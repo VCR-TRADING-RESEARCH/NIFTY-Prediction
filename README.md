@@ -7,7 +7,36 @@
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
 
-Status refresh pending first passing workflow.
+Last status refresh: 2026-10-25 13:19 UTC
+
+- Run ID: 40196840830
+- Target labels: 398
+- Binary rows with sufficient features: 398
+- Development / final holdout rows: 318 / 80
+- Model selected on development data: extra_trees
+- Calendar status: **OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL**
+- Independently validated usable trading strategy: **NO**
+
+The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.
+
+The target uses official NSE expiry dates and daily closes. The 10:00 anchor is still minute-archive-derived and independently unvalidated. No executable futures/options P&L with broker charges, spreads, slippage and fills has been validated.
+
+- Source CSV files: 19
+- Valid minute bars after checks: 882839
+- Official NSE daily closes matched: 1903
+- Minute-archive closes differing from official close by >1 point: 1719
+- Median absolute minute-vs-official close difference: 8.25 points
+- Yahoo daily-close cross-check: available; compared rows: 2352; mismatches over tolerance: 0
+
+### Final holdout metrics (exploratory)
+- extra_trees: accuracy 0.613, balanced accuracy 0.602, n=80
+- logistic: accuracy 0.562, balanced accuracy 0.570, n=80
+- majority: accuracy 0.463, balanced accuracy 0.500, n=80
+- prior_cycle: accuracy 0.438, balanced accuracy 0.433, n=80
+- prior_cycle_return: accuracy 0.438, balanced accuracy 0.433, n=80
+- momentum_5d: accuracy 0.388, balanced accuracy 0.379, n=80
+
+See the research log, error log, pre-registered plan, data-quality report, and manuscript for details.
 <!-- AUTO_STATUS_END -->
 
 ## Definition of the target
