@@ -107,3 +107,12 @@
 - Pages deployment was still in progress at the latest check.
 - First fresh Dhan inference/publication/browser acceptance remains pending; the scheduled workflow runs weekdays at 10:30 IST and has a manual dispatch control.
 - No trading-readiness upgrade: anchor reconciliation and option-level transaction cost/slippage checks remain BLOCKED.
+
+
+## 2026-10-25 — Date dispatch and stale-result correction
+- **Phase:** Free GitHub Actions + Pages integration
+- **Status:** Staged on `fix/date-dispatch-and-failure-publication`; validation pending.
+- **Observed run:** Screenshot shows the 2024-06-07 date rejected by the “first session after prior verified expiry” gate; prior expiry reported as 2024-06-06. Gate remains intact pending calendar audit.
+- **Changes:** Date form opens Actions workflow for the selected date; publication writes explicit failure status after failed inference to prevent stale predictions appearing fresh.
+- **Limit:** User must confirm Run workflow in GitHub; no token is exposed to the static page. Research-only, not trading-cleared.
+- **Next:** CI and review of date-specific workflow behavior.
