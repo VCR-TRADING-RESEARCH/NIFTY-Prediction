@@ -61,49 +61,126 @@ def parse_niftyindices_response(payload: dict[str, Any]) -> pd.DataFrame:
     return frame.reset_index(drop=True)
 
 
-def fetch_official_daily(start: date, end: date, force: bool = False) -> pd.DataFrame:
-    """Fetch official NIFTY 50 price-return index closes in <= 360-day chunks."""
-    CACHE.mkdir(parents=True, exist_ok=True)
-    session = requests.Session()
-    session.headers.update({
-        "User-Agent": UA,
-        "Referer": NIFTY_REFERER,
-        "X-Requested-With": "XMLHttpRequest",
-        "Content-Type": "application/json; charset=UTF-8",
-        "Accept": "application/json, text/javascript, */*; q=0.01",
-    })
-    frames: list[pd.DataFrame] = []
-    chunk_start = start
-    while chunk_start <= end:
-        chunk_end = min(end, chunk_start + timedelta(days=350))
-        cache_file = CACHE / f"nifty50_official_{chunk_start:%Y%m%d}_{chunk_end:%Y%m%d}.csv"
+def fetch_nse_daily_fallback(start: date, end: date, force: bool = False) -> pd.DataFrame:
+    """Fallback to NSE's official daily all-index-close archives for known session dates."""
+    source_path = ROOT / "research" / "results" / "yahoo_daily_crosscheck.csv"
+    source = pd.read_csv(source_path)
+    source["session_date"] = pd.to_datetime(source["session_date"], errors="coerce").dt.date
+    dates = sorted(set(d for d in source["session_date"].dropna() if start <= d <= end))
+    if not dates:
+        raise RuntimeError("No source-session dates available to request NSE ind_close_all files")
+    (CACHE / "nse_daily").mkdir(parents=True, exist_ok=True)
+
+    def get_one(day: date) -> dict[str, Any]:
+        cache_file = CACHE / "nse_daily" / f"ind_close_all_{day:%d%m%Y}.csv"
         if cache_file.exists() and not force:
-            frames.append(pd.read_csv(cache_file, parse_dates=["session_date"]).assign(
-                session_date=lambda x: x["session_date"].dt.date
-            ))
+            content = cache_file.read_bytes()
         else:
-            info = {
-                "name": "NIFTY 50",
-                "startDate": chunk_start.strftime("%d-%b-%Y"),
-                "endDate": chunk_end.strftime("%d-%b-%Y"),
-                "indexName": "NIFTY 50",
-            }
-            body = {"cinfo": "{" + ",".join(f"'{k}':'{v}'" for k, v in info.items()) + "}"}
-            response = session.post(NIFTY_URL, json=body, timeout=(15, 60))
+            session = requests.Session()
+            session.headers.update({
+                "User-Agent": UA,
+                "Referer": "https://www.nseindia.com/all-reports",
+                "Accept": "text/csv,text/plain,*/*",
+            })
+            try:
+                # Establish the archive session first; the report host sometimes requires it.
+                session.get("https://www.nseindia.com/all-reports", timeout=(8, 15))
+            except requests.RequestException:
+                pass
+            url = f"https://nsearchives.nseindia.com/content/indices/ind_close_all_{day:%d%m%Y}.csv"
+            response = session.get(url, timeout=(8, 20))
             response.raise_for_status()
-            payload = response.json()
-            frame = parse_niftyindices_response(payload)
-            frame = frame[(frame["session_date"] >= chunk_start) & (frame["session_date"] <= chunk_end)]
-            if frame.empty:
-                raise RuntimeError(f"Official NIFTY data empty for {chunk_start} to {chunk_end}")
-            frame.to_csv(cache_file, index=False)
-            frames.append(frame)
-            time.sleep(1.0)
-        chunk_start = chunk_end + timedelta(days=1)
-    combined = pd.concat(frames, ignore_index=True).drop_duplicates("session_date").sort_values("session_date")
-    if combined.empty:
-        raise RuntimeError("Official NIFTY history is empty")
-    return combined.reset_index(drop=True)
+            content = response.content
+            if len(content) < 100:
+                raise RuntimeError("NSE ind_close_all response is too small")
+            cache_file.write_bytes(content)
+        try:
+            frame = pd.read_csv(io.BytesIO(content), low_memory=False)
+            cols = {re.sub(r"[^a-z0-9]", "", str(col).lower()): col for col in frame.columns}
+            name_col = next((cols[k] for k in ("indexname", "index") if k in cols), None)
+            close_col = next((cols[k] for k in ("closingindexvalue", "close", "closingvalue") if k in cols), None)
+            if name_col is None or close_col is None:
+                raise ValueError("Unexpected NSE index-close schema: " + ",".join(map(str, frame.columns)))
+            selected = frame[frame[name_col].astype(str).str.strip().str.casefold().eq("nifty 50")]
+            if selected.empty:
+                raise ValueError("NIFTY 50 row absent from official daily index file")
+            close = pd.to_numeric(selected.iloc[0][close_col], errors="coerce")
+            if pd.isna(close) or float(close) <= 0:
+                raise ValueError("Invalid official NIFTY 50 close")
+            return {"session_date": day, "official_close": float(close), "status": "ok"}
+        except Exception as exc:
+            return {"session_date": day, "official_close": None, "status": type(exc).__name__ + ": " + str(exc)[:180]}
+
+    # Keep request pressure bounded; every day is cached and missing rows are visible.
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    rows: list[dict[str, Any]] = []
+    with ThreadPoolExecutor(max_workers=5) as pool:
+        futures = {pool.submit(get_one, day): day for day in dates}
+        for future in as_completed(futures):
+            try:
+                rows.append(future.result())
+            except Exception as exc:
+                rows.append({"session_date": futures[future], "official_close": None, "status": type(exc).__name__ + ": " + str(exc)[:180]})
+    result = pd.DataFrame(rows)
+    failed = result[result["official_close"].isna()]
+    if len(failed):
+        failure_path = OUT / "nse_daily_fetch_errors.csv"
+        failed.to_csv(failure_path, index=False)
+    result = result.dropna(subset=["official_close"])[["session_date", "official_close"]]
+    result = result.drop_duplicates("session_date").sort_values("session_date").reset_index(drop=True)
+    if result.empty:
+        raise RuntimeError("NSE daily archive fallback returned no usable NIFTY 50 closes")
+    result.attrs["source"] = "NSE official ind_close_all daily archive (fallback after NiftyIndices endpoint failed)"
+    return result
+
+
+def fetch_official_daily(start: date, end: date, force: bool = False) -> pd.DataFrame:
+    """Prefer NiftyIndices history, then fall back to official NSE daily index archives."""
+    CACHE.mkdir(parents=True, exist_ok=True)
+    try:
+        session = requests.Session()
+        session.headers.update({
+            "User-Agent": UA,
+            "Referer": NIFTY_REFERER,
+            "X-Requested-With": "XMLHttpRequest",
+            "Content-Type": "application/json; charset=UTF-8",
+            "Accept": "application/json, text/javascript, */*; q=0.01",
+        })
+        frames: list[pd.DataFrame] = []
+        chunk_start = start
+        while chunk_start <= end:
+            chunk_end = min(end, chunk_start + timedelta(days=350))
+            cache_file = CACHE / f"nifty50_official_{chunk_start:%Y%m%d}_{chunk_end:%Y%m%d}.csv"
+            if cache_file.exists() and not force:
+                frames.append(pd.read_csv(cache_file, parse_dates=["session_date"]).assign(
+                    session_date=lambda x: x["session_date"].dt.date
+                ))
+            else:
+                info = {
+                    "name": "NIFTY 50",
+                    "startDate": chunk_start.strftime("%d-%b-%Y"),
+                    "endDate": chunk_end.strftime("%d-%b-%Y"),
+                    "indexName": "NIFTY 50",
+                }
+                body = {"cinfo": "{" + ",".join(f"'{k}':'{v}'" for k, v in info.items()) + "}"}
+                response = session.post(NIFTY_URL, json=body, timeout=(10, 25))
+                response.raise_for_status()
+                frame = parse_niftyindices_response(response.json())
+                frame = frame[(frame["session_date"] >= chunk_start) & (frame["session_date"] <= chunk_end)]
+                if frame.empty:
+                    raise RuntimeError(f"Official NIFTY data empty for {chunk_start} to {chunk_end}")
+                frame.to_csv(cache_file, index=False)
+                frames.append(frame)
+                time.sleep(0.5)
+            chunk_start = chunk_end + timedelta(days=1)
+        combined = pd.concat(frames, ignore_index=True).drop_duplicates("session_date").sort_values("session_date").reset_index(drop=True)
+        if combined.empty:
+            raise RuntimeError("Official NIFTY history is empty")
+        combined.attrs["source"] = "NSE Indices official NIFTY 50 historical price-index OHLC endpoint"
+        return combined
+    except Exception as exc:
+        print(f"NIFTYINDICES_ENDPOINT_FAILED: {type(exc).__name__}: {str(exc)[:250]}", file=sys.stderr)
+        return fetch_nse_daily_fallback(start, end, force=force)
 
 
 def weekly_nominals(start: date, end: date) -> list[date]:
@@ -171,12 +248,13 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
     report: dict[str, Any] = {
         "generated_utc": datetime.utcnow().isoformat(timespec="seconds") + "Z",
         "start_date": start.isoformat(), "end_date": end.isoformat(),
-        "official_price_source": "NSE Indices NIFTY 50 historical price-index OHLC endpoint",
+        "official_price_source": "NSE Indices historical OHLC with NSE ind_close_all archive fallback",
         "official_expiry_source": "NSE F&O daily bhavcopy, NIFTY OPTIDX CE/PE contracts",
         "status": "BLOCKED", "errors": [], "counts": {},
     }
     try:
         official = fetch_official_daily(start, end, force=force)
+        report["official_price_source_used"] = official.attrs.get("source", "official daily index source; source label unavailable")
         official.to_csv(OUT / "nifty50_official_daily.csv", index=False)
         candidate = pd.read_csv(ROOT / "data" / "processed" / "candidate_expiry_calendar.csv")
         candidate["nominal_expiry"] = pd.to_datetime(candidate["nominal_expiry"], errors="coerce").dt.date
