@@ -1,8 +1,31 @@
 {
-  "status": "failed",
   "as_of_date": "2024-09-20",
+  "as_of_time_ist": "10:00",
+  "target_expiry_date": "2024-09-26",
+  "direction": "UP",
+  "p_up": 0.5130503183912554,
+  "training_rows": 147,
+  "trained_through_expiry_date": "2024-09-19",
+  "prediction_kind": "LIVE_DHAN_POINT_IN_TIME",
+  "data_source": "DhanHQ v2 one-minute NIFTY 50 index bars; official NSE daily closes for completed training labels",
+  "security_id": "13",
+  "bars_used": 268510,
+  "data_from": "2021-10-26T09:16:00+05:30",
+  "data_through": "2024-09-20T15:29:00+05:30",
+  "anchor_price": 25586.7,
+  "anchor_source": "DhanHQ v2 intraday minute bar; independent anchor reconciliation not passed",
+  "data_quality": {
+    "status": "BLOCKED",
+    "detail": "Fresh Dhan inference completed, but independent 10:00 anchor validation and executable-cost validation remain incomplete.",
+    "official_close_sessions_matched": 717,
+    "training_rows_leakage_check": "PASS",
+    "features_available": 20,
+    "features_total": 20,
+    "target_calendar_status": "official_verified"
+  },
+  "generated_at_utc": "2026-10-25T14:20:14.048122+00:00",
+  "note": "ExtraTrees was fit again for this request. This is a spot-direction classification, not a calibrated probability, options P&L or trading instruction.",
+  "status": "succeeded",
   "request_issue_number": 11,
-  "request_started_at_utc": "2026-10-25T14:11:11Z",
-  "generated_at_utc": "2026-10-25T14:14:56.374132+00:00",
-  "error": "Dhan token refresh failed (HTTP 405). Check the configured credentials and Dhan authentication."
+  "request_started_at_utc": "2026-10-25T14:11:11Z"
 }
