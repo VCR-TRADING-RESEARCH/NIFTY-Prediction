@@ -1,0 +1,34 @@
+{
+  "run_utc": "2026-10-25T06:35:50.091587+00:00",
+  "observations_total_labels": 398,
+  "binary_rows": 398,
+  "feature_complete_binary_rows": 398,
+  "development_rows": 318,
+  "heldout_rows": 80,
+  "split_date_first_holdout_expiry": "2025-04-09",
+  "minimum_training_history": 104,
+  "pre_registered_target_training_history": 104,
+  "development_selected_model": "logistic",
+  "calendar_status": "EXPLORATORY_ONLY",
+  "reason_not_confirmatory": "Weekly expiry dates were generated from weekday regimes and inferred from available bars; official historical expiry calendar and holiday shifts are not independently reconciled.",
+  "usable_trading_strategy_validated": false,
+  "trading_strategy_blocker": "No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.",
+  "important_warning": "All metrics are exploratory until the official expiry calendar and underlying data quality are verified; model discovery does not certify future performance.",
+  "run_id": "40169213949",
+  "source_quality": {
+    "source_files_read": 19,
+    "valid_in_session_rows": 882839,
+    "daily_sessions": 2356,
+    "data_quality_warnings": 0,
+    "independent_close_check_available": true,
+    "independent_close_check_mismatches": 368,
+    "dhan_minute_check_available": false,
+    "dhan_minute_match_count": 0,
+    "dhan_minute_mismatches": null
+  },
+  "target_definition": "Expiry-day last valid 15:25-15:29 bar close relative to 10:00-10:03 first-bar open on first session after preceding weekly expiry.",
+  "plots_created": [
+    "annual_up_prevalence.png",
+    "cycle_return_distribution.png"
+  ]
+}

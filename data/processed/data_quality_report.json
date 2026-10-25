@@ -1,0 +1,67 @@
+{
+  "run_id": "40169213949",
+  "generated_utc": "2026-10-25T06:33:35.361131+00:00",
+  "source_quality": {
+    "source_files_read": 19,
+    "raw_rows_before_deduplication": 884673,
+    "unparsed_timestamps": 0,
+    "duplicate_timestamp_rows": 0,
+    "conflicting_duplicate_timestamp_groups": 0,
+    "invalid_ohlc_rows_removed": 0,
+    "valid_in_session_rows": 882839,
+    "first_timestamp": "2017-04-03T09:15:00+05:30",
+    "last_timestamp": "2026-10-23T15:29:00+05:30",
+    "timezone": "Asia/Kolkata",
+    "timestamp_assumption": "Naive source timestamps are interpreted as IST; offset-aware values converted to IST.",
+    "source_archive": "technovusin/nifty50-historical-data",
+    "daily_sessions": 2356,
+    "sessions_with_less_than_250_bars": 2,
+    "sessions_with_unchanged_close_run_over_10": 63,
+    "maximum_unchanged_close_run": 239
+  },
+  "target_construction": {
+    "candidate_expiry_events": 402,
+    "weekly_cycles_labelled": 398,
+    "label_counts": {
+      "UP": 223,
+      "DOWN": 175
+    },
+    "calendar_status_counts": {
+      "weekday_heuristic_nominal": 362,
+      "shift_or_data_gap_inferred": 34,
+      "uncertain_low_coverage": 2
+    },
+    "confirmatory_eligible_rows": 0,
+    "calendar_warning": "The weekly schedule is inferred from known weekday regimes. Holiday shifts are not independently linked to official contract archives; all results remain exploratory until this is resolved.",
+    "excluded_cycle_candidates": 3,
+    "exclusion_reason_counts": {
+      "low_session_coverage": 1,
+      "anchor_session_gap_too_large": 1,
+      "missing_expiry_close_bar": 1
+    }
+  },
+  "independent_daily_close_crosscheck": {
+    "attempted": true,
+    "available": true,
+    "source": "Yahoo Finance ^NSEI via yfinance",
+    "matched_rows": 2352,
+    "mismatch_rows": 368,
+    "expiry_dates_compared": 402,
+    "tolerance_index_points": 1.0,
+    "median_abs_difference": 7.200390624999272,
+    "p95_abs_difference": 30.52210937500112,
+    "note": "Daily close cross-check is an independent public-data diagnostic, not official expiry-calendar proof."
+  },
+  "independent_recent_minute_crosscheck": {
+    "attempted": false,
+    "available": false,
+    "matched_timestamps": 0,
+    "mismatched_closes_over_1_point": null,
+    "median_absolute_close_difference": null,
+    "p95_absolute_close_difference": null,
+    "raw_dhan_bars_committed": false,
+    "note": "Dhan recent cross-check bars were not available for this run."
+  },
+  "confirmatory_status": "BLOCKED: candidate expiry dates are not yet reconciled against a complete official historical weekly-contract expiry calendar.",
+  "data_scope_warning": "The public minute archive is a candidate source with known missing/frozen/partial sessions. Spot bar checks and Yahoo comparisons are diagnostics, not proof of official exchange data lineage."
+}

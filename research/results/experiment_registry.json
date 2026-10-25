@@ -1,0 +1,46 @@
+{
+  "run_id": "40169213949",
+  "generated_utc": "2026-10-25T06:35:51.040575+00:00",
+  "models": [
+    {
+      "name": "expanding_majority",
+      "type": "baseline",
+      "pre_registered": true
+    },
+    {
+      "name": "prior_cycle_direction",
+      "type": "rule",
+      "pre_registered": true
+    },
+    {
+      "name": "5_session_momentum_sign",
+      "type": "rule",
+      "pre_registered": true
+    },
+    {
+      "name": "prior_cycle_return_sign",
+      "type": "rule",
+      "pre_registered": true
+    },
+    {
+      "name": "logistic",
+      "type": "regularized_logistic_regression",
+      "pre_registered": true
+    },
+    {
+      "name": "extra_trees",
+      "type": "shallow_ensemble",
+      "pre_registered": true
+    }
+  ],
+  "model_selection": "Development walk-forward balanced accuracy; tie-break by Brier score. Held-out block not used for selection.",
+  "candidate_search_budget": "Fixed v1.0 candidate list; no unrestricted evolutionary search during the core confirmatory pipeline.",
+  "not_run": [
+    "PySR symbolic-regression expansion",
+    "Quantevolve evolutionary search",
+    "TradingAgents multi-agent feature research",
+    "Futures/options instrument-level P&L simulation",
+    "Options open-interest/IV/skew and FII/DII/global-feature model"
+  ],
+  "why_not_run": "Core target/calendar data-quality validation is a prerequisite; additional model searches would magnify data-mining risk before the label and instrument execution data are verified."
+}

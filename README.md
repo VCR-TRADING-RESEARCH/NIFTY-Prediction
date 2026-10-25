@@ -2,7 +2,7 @@
 
 **Purpose:** Predict whether the NIFTY 50 spot index at the close of a weekly options expiry is higher or lower than its value at **10:00 IST on the next trading day after the preceding weekly expiry**. This project researches a binary directional forecast, not a generic return-maximization system.
 
-> **Research status (2026-10-25):** Repository bootstrap in progress. No live or historical out-of-sample strategy is certified yet. A strategy is accepted only after leakage checks, walk-forward evaluation, robustness tests, and date-aware costs/slippage are passed. A workflow run or model score is not proof of profitability.
+> **Research status (2026-10-25):** First automated empirical run completed, but Phase 1 is BLOCKED: 368/402 expiry-date closes mismatch an independent daily-close source by >1 point and the historical expiry calendar remains heuristic. Provisional holdout model scores are exploratory only. No usable trading strategy is validated. Do not trade this result.
 
 ## Definition of the target
 
@@ -12,20 +12,50 @@ For each actual weekly expiry date \(E_t\), let \(A_t\) be the first valid NIFTY
 - Binary label: \`1\` if \(r_t > 0\); \`0\` if \(r_t < 0\).
 - Exact ties are retained as a separate \`flat\` label for data-quality reporting and excluded from binary model fitting unless a pre-registered tolerance is selected.
 - All features must be available by the forecast timestamp. No expiry-day close, post-forecast data, or revised/future information may leak into features.
-- Expiry dates must come from an exchange calendar/contract archive; the weekday changed from Thursday to Tuesday in September 2025, with holiday shifts. Do not infer every historical expiry from a fixed weekday.
+- Weekly NIFTY 50 options started in February 2019; 2017–2018 minute bars may be used only for feature lookback, not weekly-option expiry labels. The first weekly expiry was 14 February 2019. Expiry weekday changed from Thursday to Tuesday in September 2025, with holiday shifts. A complete historical contract calendar is required for confirmatory inference.
 
 The research target is on the spot index. Any executable strategy must separately define the instrument, order timing, position sizing, and cash-flow accounting (e.g., NIFTY futures or options) and apply date-effective Paytm Money brokerage, exchange charges, statutory levies, GST, stamp duty, bid-ask spread and slippage. Directional accuracy alone does not establish tradability.
 
 ## Research status
 
+<!-- AUTO_STATUS_START -->
+## Latest automated research status
+
+Last status refresh: 2026-10-25 06:35 UTC
+
+- Run ID: 40169213949
+- Target labels: 398
+- Binary rows with sufficient features: 398
+- Development / final holdout rows: 318 / 80
+- Model selected on development data: logistic
+- Calendar status: **EXPLORATORY_ONLY**
+- Independently validated usable trading strategy: **NO**
+
+The current pipeline labels the weekday-derived expiry calendar as exploratory; performance metrics are not a verified trading edge. The spot index is not a directly executable instrument, and contract-level quotes, dated costs, spread/slippage and fills are not yet joined.
+
+- Source CSV files: 19
+- Valid minute bars after checks: 882839
+- Yahoo daily-close check: available; compared rows: 2352; expiry-date mismatches over tolerance: 368
+
+### Final holdout metrics (exploratory)
+- extra_trees: accuracy 0.575, balanced accuracy 0.559, n=80
+- logistic: accuracy 0.550, balanced accuracy 0.547, n=80
+- majority: accuracy 0.463, balanced accuracy 0.500, n=80
+- prior_cycle: accuracy 0.450, balanced accuracy 0.447, n=80
+- prior_cycle_return: accuracy 0.450, balanced accuracy 0.447, n=80
+- momentum_5d: accuracy 0.362, balanced accuracy 0.352, n=80
+
+See the research log, error log, pre-registered plan, data-quality report, and manuscript for details.
+<!-- AUTO_STATUS_END -->
+
 | Phase | Status | Acceptance gate |
 |---|---|---|
-| 0. Repository bootstrap and governance | In progress | Repository files, logs, workflow and test scaffolding present |
-| 1. Data and label validation | Pending automated run | Reconciled timestamps, expiry calendar, data coverage and missingness report |
-| 2. Baselines and leakage-safe features | Pending automated run | Majority-class and simple momentum/range baselines reproduced |
-| 3. Model and indicator discovery | Pending automated run | Walk-forward performance versus baselines; nested feature/model selection |
-| 4. Robustness, uncertainty and costs | Pending automated run | Regime/stability tests, calibrated probabilities, realistic cost model |
-| 5. Final manuscript and independent audit | Pending automated run | Results reproducible, limitations explicit, no unsupported profitability claims |
+| 0. Repository bootstrap and governance | Implemented; workflow and unit tests pass | Files, logs, workflow and test scaffolding present |
+| 1. Data and label validation | **BLOCKED** | 368/402 expiry-date close mismatches >1 point; official expiry calendar not reconciled; Dhan cross-check unavailable |
+| 2. Baselines and leakage-safe features | Exploratory pass only | Provisional labels/features and baseline outputs generated; cannot accept while Phase 1 fails |
+| 3. Model and indicator discovery | Exploratory pass only | 80-row holdout evaluated; no model certified; Quantevolve/PySR/TradingAgents deferred |
+| 4. Robustness, uncertainty and costs | **BLOCKED** | Validated source and contract-level cost/P&L data unavailable |
+| 5. Manuscript and independent audit | Manuscript drafted; independent audit pending | Exploratory results and blockers documented; no unsupported profitability claim |
 
 ## Repository map
 
@@ -73,6 +103,7 @@ The research target is on the spot index. Any executable strategy must separatel
 ## Primary external references
 
 - NSE NIFTY 50 derivatives expiry specifications: https://www.nseindia.com/static/products-services/equity-derivatives-nifty50
+- NSE circular introducing weekly NIFTY 50 options and first expiry (14 February 2019): https://nsearchives.nseindia.com/content/circulars/FAOP39894.pdf
 - NSE contract specifications: https://www.nseindia.com/static/products-services/equity-derivatives-contract-specifications
 - NSE historical index/VIX reports: https://www.nseindia.com/all-reports
 - Open NIFTY minute-data candidate (validate independently before use): https://github.com/technovusin/nifty50-historical-data

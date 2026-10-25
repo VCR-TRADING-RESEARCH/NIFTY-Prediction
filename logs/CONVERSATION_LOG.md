@@ -1,0 +1,38 @@
+# Visible Project Conversation Log
+
+Purpose: preserve available visible project statements and decisions for audit. This is not a copy of hidden private chain-of-thought. Runtime context did not provide the full plain-text history of every older project turn, so historical coverage is explicitly incomplete rather than fabricated.
+
+## Prior project context available on 2026-10-25
+- Project conversation title: “Establish GitHub connection” (2026-10-25 10:49 local, Asia/Kolkata).
+- User-visible text available in project summary:
+  > NIFTY WEEKLY CANDLE PREDICTION
+  >
+  > This research's sole purpose is just to predict if nifty value at the end of weekly expiry would be greater than or lesser than that of nifty value at 10 am of the next trading day to the previous weekly expiry!
+  >
+  > Use quant evolve, tradingview open source pine code indicators/strategies, your own new invented indicators, etc
+- Additional visible user statements:
+  > Hey first establish the connection with the organization
+  >
+  > I'm the owner
+  >
+  > No options
+  >
+  > How to create a new connection with my organization
+- The context indicates screenshots were supplied. Their full contents are not transcribed here, so this log does not invent details.
+
+## Current research request — 2026-10-25
+> NIFTY WEEKLY CANDLE PREDICTION
+>
+> This research's sole purpose is just to predict if nifty value at the end of weekly expiry would be greater than or lesser than that of nifty value at 10 am of the next trading day to the previous weekly expiry!
+>
+> Use quant evolve, tradingview open source pine code indicators/strategies, your own new invented indicators, etc
+>
+> I want you to keep on discovering or inventing new strategies to predict the nifty weekly expiry until you find an actual working one!
+
+## Visible assistant updates — 2026-10-25
+- “I’ll treat this as a bounded research run: first inspect the main repository and its existing plans/logs, then define the exact expiry-direction label and leakage-safe evaluation, run the strongest feasible data-backed tests, and commit the results and manuscript to the repo. I’ll keep the objective strictly binary—whether expiry NIFTY is above or below the specified next-trading-day 10:00 reference—and won’t call a strategy “working” unless it beats sensible baselines out of sample after realistic costs.”
+- “The repository connection works, but the main repository is currently empty—there is no README, research plan, error log, or prior experiment to resume. I also confirmed the present NSE weekly-expiry rule is Tuesday, with a historical change from Thursday in September 2025, so the research must use the actual expiry calendar rather than assume one weekday for all years. I’m initializing an auditable research structure and will clearly separate verified results from tests that still require Actions/data access.”
+- “The data plan now has a viable free starting point: a public NIFTY 50 one-minute OHLC archive covering 2017 onward, with a stated MIT repository license and documented known data quirks. I’m treating it as a candidate—not unquestioned ground truth—and the pipeline will flag missing bars and expiry-calendar uncertainty instead of silently inventing labels. The Dhan access token is documented as valid for only 24 hours, so any refresh flow must run securely in Actions and never expose credentials in logs.”
+
+## Conversation log maintenance
+Append user-visible project messages/assistant responses and references to project decisions as available. Never record secrets, private account identifiers, raw tokens, PINs, TOTP seeds or hidden private reasoning. When older turns are inaccessible, document the limitation rather than reconstructing missing dialogue.

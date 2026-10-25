@@ -1,0 +1,54 @@
+//@version=6
+indicator("NIFTY Expiry-Cycle Pressure (Research Prototype)", shorttitle="NECP-R", overlay=false, precision=3)
+
+// Research indicator, not a validated trading signal. Use on a NIFTY 50 1-minute chart.
+// The weekly expiry weekday changed from Thursday to Tuesday in 2025. This switch only
+// sets the expected anchor weekday: Friday pre-change, Wednesday post-change.
+// Holiday-shifted sessions and the official historical expiry list must be handled in Python.
+
+post2025 = input.bool(true, "Use Tuesday-expiry regime (anchor Wednesday)")
+threshold = input.float(0.22, "Directional threshold", minval=0.05, maxval=0.9, step=0.01)
+showComponents = input.bool(true, "Show feature components")
+
+// Each expression uses completed daily bars only; the [1] offsets make lookahead_on causal.
+prior5dReturn = request.security(syminfo.tickerid, "D", close[1] / close[6] - 1.0, barmerge.gaps_off, barmerge.lookahead_on)
+priorClose = request.security(syminfo.tickerid, "D", close[1], barmerge.gaps_off, barmerge.lookahead_on)
+
+newSession = ta.change(time("D")) != 0
+var float sessionOpen = na
+if newSession
+    sessionOpen := open
+if na(sessionOpen)
+    sessionOpen := open
+
+// At the beginning of the 10:00 candle its Open is observable; do not use its Close.
+morningReturn = open / sessionOpen - 1.0
+openingGap = open / priorClose - 1.0
+
+clip(value) =>
+    math.max(-1.0, math.min(1.0, value))
+
+trendComponent = clip(prior5dReturn / 0.015)
+morningComponent = clip(morningReturn / 0.004)
+gapComponent = clip(openingGap / 0.006)
+
+// Custom expiry-cycle pressure: fixed ex-ante weights; no optimization implied.
+pressure = 0.50 * trendComponent + 0.35 * morningComponent + 0.15 * gapComponent
+
+anchorDay = post2025 ? dayofweek.wednesday : dayofweek.friday
+isAnchorBar = hour == 10 and minute == 0 and dayofweek == anchorDay
+
+plot(pressure, "Expiry-cycle pressure", color=color.blue, linewidth=2)
+hline(threshold, "UP threshold", color=color.green, linestyle=hline.style_dashed)
+hline(-threshold, "DOWN threshold", color=color.red, linestyle=hline.style_dashed)
+hline(0, "Neutral", color=color.gray)
+plot(showComponents ? trendComponent : na, "5-session trend component", color=color.teal)
+plot(showComponents ? morningComponent : na, "Morning drift component", color=color.orange)
+plot(showComponents ? gapComponent : na, "Overnight gap component", color=color.purple)
+
+plotshape(isAnchorBar and pressure >= threshold, title="Research UP call", style=shape.triangleup, location=location.bottom, color=color.green, text="UP", size=size.tiny)
+plotshape(isAnchorBar and pressure <= -threshold, title="Research DOWN call", style=shape.triangledown, location=location.top, color=color.red, text="DOWN", size=size.tiny)
+plotshape(isAnchorBar and pressure > -threshold and pressure < threshold, title="Abstain", style=shape.circle, location=location.bottom, color=color.gray, text="WAIT", size=size.tiny)
+
+alertcondition(isAnchorBar and pressure >= threshold, title="NECP research UP", message="NIFTY Expiry-Cycle Pressure prototype indicates UP; research only.")
+alertcondition(isAnchorBar and pressure <= -threshold, title="NECP research DOWN", message="NIFTY Expiry-Cycle Pressure prototype indicates DOWN; research only.")
