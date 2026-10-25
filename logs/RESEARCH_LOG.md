@@ -57,3 +57,10 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Tests: tests/test_official_reconciliation.py covers the official response parser, legacy and UDiFF bhavcopy schemas, and the Thursday-to-Tuesday weekly expiry regime.
 - Caching: official daily history and F&O bhavcopy files are cached under data/cache/official; compact row-level results are written to data/reconciliation.
 - Acceptance: remains blocked until the automated report verifies all expiry dates and the daily-close comparison meets the one-point tolerance. No model is promoted.
+
+
+## Phase 3 official-source reconciliation — 2026-10-25T07:17:36.789826+00:00
+- Status: BLOCKED
+- Counts: {}
+- Errors: HTTPError: 401 Client Error: Unauthorized for url: https://www.niftyindices.com/Backpage.aspx/getHistoricaldatatabletoString
+- Detailed outputs: data/reconciliation/

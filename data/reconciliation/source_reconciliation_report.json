@@ -1,0 +1,12 @@
+{
+  "generated_utc": "2026-10-25T07:17:33Z",
+  "start_date": "2019-02-01",
+  "end_date": "2026-10-25",
+  "official_price_source": "NSE Indices NIFTY 50 historical price-index OHLC endpoint",
+  "official_expiry_source": "NSE F&O daily bhavcopy, NIFTY OPTIDX CE/PE contracts",
+  "status": "BLOCKED",
+  "errors": [
+    "HTTPError: 401 Client Error: Unauthorized for url: https://www.niftyindices.com/Backpage.aspx/getHistoricaldatatabletoString"
+  ],
+  "counts": {}
+}
