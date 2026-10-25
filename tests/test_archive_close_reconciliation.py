@@ -1,6 +1,6 @@
 import pandas as pd
 
-from scripts.reconcile_archive_closes import compare_archive_to_official
+from scripts.reconcile_archive_closes import compare_archive_to_official  # keep source comparison isolated from transformed target closes
 
 
 def test_archive_close_audit_uses_preserved_archive_close_not_overridden_close():
