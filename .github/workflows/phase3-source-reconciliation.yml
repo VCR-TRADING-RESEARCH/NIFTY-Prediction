@@ -11,6 +11,7 @@ on:
       - "scripts/compare_alternative_minute_source.py"
       - "scripts/compare_sandeep_minute_source.py"
       - "tests/test_official_reconciliation.py"
+      - "tests/test_archive_close_reconciliation.py"
       - "docs/PHASE_3_SOURCE_RECONCILIATION.md"
   schedule:
     - cron: "30 3 1 * *"
