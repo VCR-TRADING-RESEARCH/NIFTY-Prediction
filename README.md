@@ -134,7 +134,7 @@ Last repository status update: 2026-10-25.
 - [NSE NIFTY 50 derivatives specifications](https://www.nseindia.com/static/products-services/equity-derivatives-nifty50)
 
 <!-- PHASE3_STATUS_START -->
-**Phase 3 source gate:** BLOCKED — checked 0 candidate expiry dates; official close mismatches >1 point: unknown.
+**Phase 3 source gate:** BLOCKED — checked 402 candidate expiry dates; official close mismatches >1 point: 1717.
 See [source reconciliation report](data/reconciliation/source_reconciliation_report.json) and [Phase 3 plan](docs/PHASE_3_SOURCE_RECONCILIATION.md).
 <!-- PHASE3_STATUS_END -->
 

@@ -93,3 +93,10 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Corrections in the current commit: date-aware legacy/UDiFF URL ordering, documented nsearchives UDiFF host, schema/trade-date validation, actual-expiry-field preference, parser tests, shared workflow concurrency, and rebase-before-push for research status commits.
 - Main research run 40174191439 completed calculations: 398 labels; 318 development / 80 holdout. Exploratory holdout: ExtraTrees accuracy 0.575 / balanced accuracy 0.559; logistic accuracy 0.550 / balanced accuracy 0.547. Labels remain heuristic; no strategy is validated.
 - Phase gate: Phase 1 BLOCKED; Phase 2/3 exploratory only; Phase 4 blocked because no verified instrument-level P&L, dated Paytm Money costs, spread/slippage/fills; Phase 5 manuscript exists but independent audit remains pending.
+
+
+## Phase 3 official-source reconciliation — 2026-10-25T08:03:49.299759+00:00
+- Status: BLOCKED
+- Counts: {"candidate_expiries_checked": 402, "contract_verified_expiries": 338, "daily_source_rows_compared": 1901, "daily_source_rows_expected": 1901, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 38, "minute_vs_official_mismatches_over_1_point": 1717, "official_daily_rows": 1913}
+- Errors: One or more candidate expiry dates were not confirmed in official F&O data, or minute archive daily closes differ from official NIFTY 50 closes by >1 point.
+- Detailed outputs: data/reconciliation/

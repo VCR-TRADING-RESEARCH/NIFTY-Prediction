@@ -108,3 +108,10 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Fix attempted: both workflows now share a per-ref concurrency group with cancellation disabled; the main research commit step rebases with autostash before pushing.
 - Validation required: confirm the next jobs serialize and status/results commit successfully. Artifacts remain the fallback evidence.
 - Residual risk: an external push or rebase conflict can still require Git repair.
+
+
+## Phase 3 official-source reconciliation — 2026-10-25T08:03:49.299759+00:00
+- Status: BLOCKED
+- Counts: {"candidate_expiries_checked": 402, "contract_verified_expiries": 338, "daily_source_rows_compared": 1901, "daily_source_rows_expected": 1901, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 38, "minute_vs_official_mismatches_over_1_point": 1717, "official_daily_rows": 1913}
+- Errors: One or more candidate expiry dates were not confirmed in official F&O data, or minute archive daily closes differ from official NIFTY 50 closes by >1 point.
+- Detailed outputs: data/reconciliation/
