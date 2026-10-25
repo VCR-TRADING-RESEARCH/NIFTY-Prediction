@@ -129,4 +129,4 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           REQUEST_DATE: ${{ steps.request.outputs.as_of_date }}
         run: |
-          gh issue comment "$ISSUE_NUMBER" --repo "$GH_REPO" --body "Prediction workflow finished for $REQUEST_DATE. View sanitized diagnostics: $RUN_URL. The result appears on the prediction page after Pages updates; failed data/model checks are reported as failures and never replaced by an old forecast."
+          gh issue comment "$ISSUE_NUMBER" --repo "$GH_REPO" --body "Prediction workflow finished for $REQUEST_DATE. [Open the result on GitHub Pages](https://vcr-trading-research.github.io/NIFTY-Prediction/?as_of_date=$REQUEST_DATE). [View Actions diagnostics]($RUN_URL). Failed data/model checks are shown as failures; an old forecast is never substituted."
