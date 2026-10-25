@@ -277,7 +277,7 @@ def fetch_official_daily(start: date, end: date, force: bool = False) -> pd.Data
         combined.attrs["source"] = "NSE Indices official NIFTY 50 historical price-index OHLC endpoint"
         return combined
     except Exception as exc:
-        print(f"NIFTYINDICES_ENDPOINT_FAILED: {type(exc).__name__}: {str(exc)[:250]}", file=sys.stderr)
+        print(f"NIFTYINDICES_ENDPOINT_FAILED: {type(exc).__name__}: {str(exc)[:400]}", file=sys.stderr)
         try:
             return fetch_nse_history_api(start, end)
         except Exception as nse_exc:
@@ -336,7 +336,7 @@ def _validate_bhavcopy_blob(blob: bytes, trade_date: date) -> None:
     expiry_col = next((canonical[k] for k in ("expiry", "expirydate", "expirydt", "xprydt", "fininstrmactlxprydt") if k in canonical), None)
     if symbol_col is None or expiry_col is None:
         raise ValueError("Unrecognized NSE F&O bhavcopy schema: " + ",".join(map(str, frame.columns)))
-    trade_col = next((canonical[k] for k in ("bizdt", "businessdate", "timestamp", "tradedate", "tradedt", "traddate") if k in canonical), None)
+    trade_col = next((canonical[k] for k in ("traddt", "tradedate", "bizdt", "businessdate", "timestamp", "tradedt", "traddate") if k in canonical), None)
     if trade_col:
         parsed = _parse_date_values(frame[trade_col])
         source_dates = set(parsed.dropna().dt.date)
@@ -357,7 +357,7 @@ def parse_bhavcopy_contract_expiries(blob: bytes, trade_date: date) -> set[date]
     frame = pd.read_csv(io.BytesIO(raw), low_memory=False)
     canonical = {re.sub(r"[^a-z0-9]", "", str(c).lower()): c for c in frame.columns}
 
-    trade_col = next((canonical[k] for k in ("bizdt", "businessdate", "timestamp", "tradedate", "tradedt", "traddate") if k in canonical), None)
+    trade_col = next((canonical[k] for k in ("traddt", "tradedate", "bizdt", "businessdate", "timestamp", "tradedt", "traddate") if k in canonical), None)
     if trade_col:
         parsed_trade_dates = _parse_date_values(frame[trade_col])
         source_dates = set(parsed_trade_dates.dropna().dt.date)
@@ -428,7 +428,7 @@ def fetch_bhavcopy(trade_date: date, session: requests.Session) -> bytes:
             try:
                 _validate_bhavcopy_blob(response.content, trade_date)
             except Exception as exc:
-                failures.append(f"invalid:{url.rsplit('/', 1)[-1]}:{type(exc).__name__}:{str(exc)[:140]}")
+                failures.append(f"invalid:{url.rsplit('/', 1)[-1]}:{type(exc).__name__}:{str(exc)[:260]}")
                 continue
             return response.content
         except requests.RequestException as exc:
@@ -545,7 +545,7 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
                             "nifty_option_expiries_in_bhavcopy": sorted(x.isoformat() for x in expiries),
                         }
                 except Exception as exc:
-                    source_errors.append(f"{verify_day.isoformat()}: {type(exc).__name__}: {str(exc)[:140]}")
+                    source_errors.append(f"{verify_day.isoformat()}: {type(exc).__name__}: {str(exc)[:260]}")
             if source_errors:
                 return {
                     "candidate_date": candidate_date.isoformat(),

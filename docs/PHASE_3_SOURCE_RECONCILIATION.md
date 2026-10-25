@@ -53,3 +53,7 @@ The workflow runs on branch push, monthly schedule, and manual dispatch. It has 
 ## Current prior blockers
 
 The completed official-source pass (40174191441) compared 1,901 sessions: 1,717 daily closes differ from official NSE close by more than one point (median absolute difference 8.25; P95 32.45; maximum 200.7 index points). The latest run (40174991974) reported 338/402 confirmed, 26 not verified and 38 source-validation errors. The error strings previously retained only the exception type, so the downloader is being amended to preserve a sanitized validation reason and warm an NSE session before archive requests. The downloader was found to try the UDiFF URL first even for pre-8-Jul-2024 dates, and to use an alternate host as the primary UDiFF URL. The next run prioritizes the format matching each historical period and validates archive trade dates. The 43 rows remain unresolved until revalidation.
+
+
+## Independent minute archive
+Phase 3 now retrieves the public 1-minute NIFTY 50 dataset at https://github.com/technovusin/nifty50-historical-data (annual files 2019-2025, monthly files for 2026), caches it, aggregates 09:15-15:29 IST sessions, and compares OHLC against official NSE daily bars and the incumbent archive. The publisher identifies remaining missing bars, frozen stretches and special-session exceptions, so it cannot be treated as official ground truth. Outputs are alternative_minute_source_report.json, alternative_minute_vs_official_daily.csv, and alternative_minute_comparison_by_year.csv.

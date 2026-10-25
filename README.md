@@ -139,3 +139,7 @@ See [source reconciliation report](data/reconciliation/source_reconciliation_rep
 <!-- PHASE3_STATUS_END -->
 
 The workflow is bounded, caches downloaded official source snapshots, and records errors instead of silently marking missing dates as valid. A PASS requires every candidate expiry to be confirmed in official contract data and all overlapping minute-archive daily closes to match official closes within one point. Until then, model results remain exploratory.
+
+
+### Independent minute-source audit
+The Phase 3 workflow now cross-checks an independent public NIFTY 50 1-minute dataset: https://github.com/technovusin/nifty50-historical-data. The publisher documents residual data-quality caveats, so this is diagnostic—not official ground truth. Row-level comparisons and yearly metrics are stored in data/reconciliation/.

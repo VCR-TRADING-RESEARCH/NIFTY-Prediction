@@ -110,3 +110,10 @@ The expiry result is also inconclusive. The first strict-parser run used a sourc
 
 ### Decision
 Phase 1 remains **BLOCKED**. All previously reported model metrics remain exploratory; 398 heuristic labels and the 318/80 chronological split are not confirmatory evidence. No executable strategy is selected. The next stage compares official daily open/high/low to diagnose the mismatch and validates a second independent intraday archive for the 10:00 anchor, while preserving the existing close-tolerance gate. Only after the label/source gates pass should a specified futures/options instrument be backtested with date-effective Paytm Money costs, spread, slippage and conservative fills.
+
+
+## Second-source diagnostics added (25 October 2026)
+
+The source gate is still blocked. The current official-vs-primary report compared 1,901 sessions; 1,717 close differences exceeded one point, with median absolute difference 8.25, P95 32.45 and maximum 200.7. Official open/high/low mismatches above one point were 587, 197 and 185. The distribution warrants a separate timestamp/aggregation examination rather than changing the one-point tolerance.
+
+An independent public 1-minute NIFTY 50 dataset is now included as a diagnostic comparator. It publishes annual files for 2019-2025 and monthly files in 2026, states timestamps are IST, and describes known remaining missing/frozen/special-session bars. Each session is aggregated from bars timestamped 09:15-15:29 IST and compared to official daily OHLC and the current archive. This third-party archive is not official ground truth; the audit is intended to test whether the discrepancy is specific to the current candidate source. Results await the latest automated run.

@@ -7,6 +7,7 @@ on:
     paths:
       - ".github/workflows/phase3-source-reconciliation.yml"
       - "scripts/reconcile_official_sources.py"
+      - "scripts/compare_alternative_minute_source.py"
       - "tests/test_official_reconciliation.py"
       - "docs/PHASE_3_SOURCE_RECONCILIATION.md"
   schedule:
@@ -58,7 +59,9 @@ jobs:
       - name: Restore official-source cache
         uses: actions/cache@v4
         with:
-          path: data/cache/official
+          path: |
+            data/cache/official
+            data/cache/alternative-minute
           key: nifty-official-cache-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             nifty-official-cache-${{ runner.os }}-
@@ -78,6 +81,12 @@ jobs:
           if [ -n "$MAX_EXPIRIES" ] && [ "$MAX_EXPIRIES" != "0" ]; then ARGS="$ARGS --max-expiries $MAX_EXPIRIES"; fi
           python scripts/reconcile_official_sources.py $ARGS
 
+      - name: Compare independent public minute archive against official OHLC
+        id: alternative_source
+        if: always()
+        continue-on-error: true
+        run: python scripts/compare_alternative_minute_source.py
+
       - name: Log acceptance status
         if: always()
         run: |
@@ -89,6 +98,9 @@ jobs:
               r=json.loads(p.read_text())
               print("SOURCE_RECONCILIATION_STATUS:", r.get("status"))
               print(json.dumps(r.get("counts", {}), indent=2))
+          q=Path("data/reconciliation/alternative_minute_source_report.json")
+          if q.exists():
+              print("ALTERNATIVE_MINUTE_SOURCE_REPORT:", q.read_text()[:6000])
           else:
               print("SOURCE_RECONCILIATION_STATUS: NO_REPORT")
           PY
@@ -101,6 +113,7 @@ jobs:
           path: |
             data/reconciliation/**
             data/cache/official/nifty50_official_*.csv
+            data/reconciliation/alternative_minute_*
           if-no-files-found: ignore
           retention-days: 90
 

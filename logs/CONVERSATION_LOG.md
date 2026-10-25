@@ -44,3 +44,10 @@ Append user-visible project messages/assistant responses and references to proje
 - Visible finding recorded: Phase 3 run 40174991974 completed but data remained blocked (338/402 expiry dates confirmed, 26 not verified, 38 source errors; 1,717/1,901 official-close differences >1 point). Main research run 40175103450 completed successfully, but its model metrics remain exploratory.
 - Corrections being made: detailed validation error visibility, per-session NSE warm-up, nearby-session expiry verification for shifted dates, official daily OHLC comparisons, branch-tip checkout for Phase 3, and automatic yearly summaries.
 - This file records visible decisions and reproducible research actions; it does not copy hidden reasoning.
+
+
+## 2026-10-25 — Resume continued
+- User asked to resume the paused Phase 3 research.
+- Phase 3 run 40175978915: 1,913 official daily rows, 1,901 sessions compared; 1,717 close mismatches >1 point; median 8.25, P95 32.45, maximum 200.7. Official open/high/low mismatch counts were 587/197/185.
+- Expiry verification: 340 candidate dates confirmed (including two shifted), 22 unverified, 40 source-validation errors. Parser now prioritizes TradDt over BizDt.
+- Added independent 1-minute archive audit using technovusin/nifty50-historical-data, cached and compared with official NSE daily OHLC. Third-party data remains diagnostic only.

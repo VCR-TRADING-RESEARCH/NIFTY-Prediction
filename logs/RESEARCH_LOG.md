@@ -150,3 +150,12 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Counts: {"candidate_expiries_checked": 402, "contract_unverified_expiries": 22, "contract_verified_expiries": 340, "daily_source_rows_compared": 1901, "daily_source_rows_expected": 1901, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 40, "minute_vs_official_abs_difference_max_points": 200.70000000000073, "minute_vs_official_abs_difference_median_points": 8.25, "minute_vs_official_abs_difference_p95_points": 32.44999999999709, "minute_vs_official_high_abs_difference_median_points": 0.049999999999272404, "minute_vs_official_high_mismatches_over_1_point": 197, "minute_vs_official_high_rows_compared": 1901, "minute_vs_official_low_abs_difference_median_points": 0.049999999999272404, "minute_vs_official_low_mismatches_over_1_point": 185, "minute_vs_official_low_rows_compared": 1901, "minute_vs_official_mismatches_over_1_point": 1717, "minute_vs_official_open_abs_difference_median_points": 0.0, "minute_vs_official_open_mismatches_over_1_point": 587, "minute_vs_official_open_rows_compared": 1901, "minute_vs_official_within_1_point": 184, "official_daily_rows": 1913}
 - Errors: One or more candidate expiry dates were not confirmed in official F&O data, or minute archive daily closes differ from official NIFTY 50 closes by >1 point.
 - Detailed outputs: data/reconciliation/
+
+
+## Resume — independent minute-source cross-check added
+- Added a bounded data audit for the independent public NIFTY 50 1-minute repository https://github.com/technovusin/nifty50-historical-data.
+- Cache policy: reuse yearly 2019-2025 files and monthly 2026 files in data/cache/alternative-minute rather than downloading each run.
+- Aggregation: chronologically sorted rows, ordinary 09:15-15:29 IST session, daily open/high/low/close and bar count; compare to official NSE daily OHLC and primary candidate archive.
+- Phase 3 run 40175978915: 1,913 official daily rows, 1,901 sessions; 1,717 close mismatches >1 point; median 8.25, P95 32.45, max 200.7. Official open/high/low mismatches were 587/197/185.
+- Expiry check: 340/402 confirmed including two shifted dates, 22 not verified, 40 source-validation errors. The new parser prioritizes TradDt ahead of BizDt and retains longer sanitized diagnostics.
+- Phase 1 stays BLOCKED; model metrics exploratory only.
