@@ -12,3 +12,9 @@
 - Repository inspection found an existing research-backed forecast payload and exporter on the research/phase-6-prediction-pages branch. The latest saved forecast was as-of 2026-10-21 10:00 IST for candidate expiry 2026-10-27, direction DOWN, p_up approximately 0.3848; source gate blocked.
 - Corrective decision: integrate the existing walk-forward exporter, page JavaScript/CSS, JSON payload, research pipeline, data artifacts, tests and workflows rather than maintain a duplicate stub.
 - Visible conversation decisions only; hidden chain-of-thought is not stored.
+
+## 2026-10-25 — Live inference requirement clarified
+- User clarified the desired behavior: on clicking Predict, refresh the Dhan token, fetch the NIFTY data required through the chosen as-of date from Dhan API, run the ExtraTrees classifier, and show that newly computed prediction.
+- Decision recorded: keep credentials on a server-side inference service; GitHub Pages must not contain Dhan/GitHub/Hugging Face secrets. Static CSV/JSON lookup was not acceptable as the Predict action.
+- Implementation branch: `phase/live-dhan-inference`. See [Phase 7 plan](../docs/PHASE_7_LIVE_DHAN_INFERENCE.md).
+- Only visible conversation decisions and engineering rationales are logged; hidden private chain-of-thought is not stored.

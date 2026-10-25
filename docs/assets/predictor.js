@@ -1,185 +1,175 @@
 (() => {
   "use strict";
-
   const $ = (id) => document.getElementById(id);
   const form = $("predict-form");
   const dateInput = $("as-of-date");
   const predictButton = $("predict-button");
   const inputError = $("input-error");
   const resultSection = $("result-section");
-
-  let payload = null;
-  let availablePredictions = [];
+  let apiBaseUrl = "";
+  const originalButtonLabel = predictButton.innerHTML;
 
   function showInputError(message) {
     inputError.textContent = message;
     inputError.hidden = false;
   }
-
   function clearInputError() {
     inputError.textContent = "";
     inputError.hidden = true;
   }
-
   function formatDate(value) {
     if (!value) return "—";
     const parts = value.split("-");
     if (parts.length !== 3) return value;
-    const dt = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-    return new Intl.DateTimeFormat("en-IN", {
-      day: "2-digit", month: "short", year: "numeric"
-    }).format(dt);
+    const dt = new Date(Date.UTC(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])));
+    return new Intl.DateTimeFormat("en-IN", {day:"2-digit", month:"short", year:"numeric", timeZone:"UTC"}).format(dt);
   }
-
   function parseInputDate(value) {
-    const match = /^\s*(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})\s*$/.exec(value || "");
-    if (!match) return null;
-    const day = Number(match[1]), month = Number(match[2]), year = Number(match[3]);
-    const date = new Date(Date.UTC(year, month - 1, day));
-    if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null;
-    return year + "-" + String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+    const text = String(value || "").trim();
+    let match;
+    if ((match = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(text))) {
+      const year = Number(match[1]), month = Number(match[2]), day = Number(match[3]);
+      const dt = new Date(Date.UTC(year, month - 1, day));
+      if (dt.getUTCFullYear() !== year || dt.getUTCMonth() !== month - 1 || dt.getUTCDate() !== day) return null;
+      return year + "-" + String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+    }
+    if ((match = /^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/.exec(text))) {
+      const day = Number(match[1]), month = Number(match[2]), year = Number(match[3]);
+      const dt = new Date(Date.UTC(year, month - 1, day));
+      if (dt.getUTCFullYear() !== year || dt.getUTCMonth() !== month - 1 || dt.getUTCDate() !== day) return null;
+      return year + "-" + String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+    }
+    return null;
   }
-
-  function displayDateInput(isoDate) {
-    const parts = isoDate.split("-");
-    return parts.length === 3 ? parts[2] + "/" + parts[1] + "/" + parts[0] : isoDate;
-  }
-
   function formatPercent(value) {
-    if (typeof value !== "number" || !Number.isFinite(value)) return "—";
-    return (value * 100).toFixed(1) + "%";
+    return typeof value === "number" && Number.isFinite(value) ? (value * 100).toFixed(1) + "%" : "—";
   }
-
   function setPageStatus(text, statusClass) {
     const element = $("page-status");
     element.className = "status-pill " + statusClass;
-    element.innerHTML = '<span class="status-dot"></span>' + text;
+    element.textContent = text;
   }
-
-  function choosePrediction(date) {
-    if (payload && payload.latest_forecast && payload.latest_forecast.as_of_date === date) {
-      return payload.latest_forecast;
+  async function responseJson(response) {
+    let body = {};
+    try { body = await response.json(); } catch (_) {}
+    if (!response.ok) {
+      const detail = body.detail || body.error || ("HTTP " + response.status);
+      throw new Error(typeof detail === "string" ? detail : "The live API request failed.");
     }
-    return availablePredictions.find((record) => record.as_of_date === date) || null;
+    return body;
   }
-
   function renderPrediction(record) {
-    const isLatest = record.prediction_kind === "LATEST_FORWARD_FORECAST";
-    const direction = record.direction;
-    const isUp = direction === "UP";
-    $("forecast-kind").textContent = isLatest
-      ? "Forward forecast for the next scheduled expiry"
-      : "Historical out-of-sample forecast";
+    const isUp = record.direction === "UP";
+    $("forecast-kind").textContent = "Fresh point-in-time inference from Dhan data";
     $("result-date").textContent = "Anchor: " + formatDate(record.as_of_date) + " · " + (record.as_of_time_ist || "10:00 IST");
     $("direction-symbol").textContent = isUp ? "↗" : "↘";
     $("direction-symbol").classList.toggle("down", !isUp);
-    $("direction-value").textContent = direction;
+    $("direction-value").textContent = record.direction;
     $("direction-value").classList.toggle("down", !isUp);
     $("direction-description").textContent = isUp
-      ? "The model classifies the NIFTY spot expiry close as higher than the 10:00 anchor."
-      : "The model classifies the NIFTY spot expiry close as lower than the 10:00 anchor.";
+      ? "ExtraTrees classifies the NIFTY 50 spot close at the target expiry as higher than the selected 10:00 anchor."
+      : "ExtraTrees classifies the NIFTY 50 spot close at the target expiry as lower than the selected 10:00 anchor.";
     $("target-expiry").textContent = formatDate(record.target_expiry_date);
     $("p-up").textContent = formatPercent(record.p_up);
     $("train-count").textContent = Number.isFinite(record.training_rows) ? String(record.training_rows) : "—";
     $("train-through").textContent = formatDate(record.trained_through_expiry_date);
-
-    const expiryNote = $("expiry-note");
-    const notes = [];
-    if (isLatest && record.target_calendar_status) {
-      notes.push("Expiry calendar: " + record.target_calendar_status.replaceAll("_", " ").toLowerCase() + ".");
-      notes.push("Confirm the actual contract expiry date with NSE before using this forecast.");
-    }
-    const targetDate = record.target_expiry_date ? new Date(record.target_expiry_date + "T00:00:00") : null;
+    $("anchor-price").textContent = Number.isFinite(record.anchor_price)
+      ? record.anchor_price.toLocaleString("en-IN", {maximumFractionDigits:2}) : "—";
+    $("bars-used").textContent = Number.isFinite(record.bars_used) ? record.bars_used.toLocaleString("en-IN") : "—";
+    const gate = record.data_quality || {};
+    $("gate-status").textContent = gate.status || "BLOCKED";
+    $("gate-description").textContent = (gate.detail || "Independent source validation is incomplete.") +
+      " The output is exploratory, not cleared for trading.";
+    $("generated-at").textContent = "Computed " + new Intl.DateTimeFormat("en-IN", {
+      dateStyle:"medium", timeStyle:"short", timeZone:"Asia/Kolkata"
+    }).format(new Date(record.generated_at_utc || Date.now())) +
+      " IST. Dhan token refreshed for this request; ExtraTrees refitted. Older minute-data chunks may be reused from the backend cache.";
+    const targetDate = record.target_expiry_date ? new Date(record.target_expiry_date + "T00:00:00Z") : null;
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (targetDate && targetDate < today) {
-      notes.push("This target expiry is in the past; this is a historical forecast, not a current signal.");
-    }
-    expiryNote.textContent = notes.join(" ");
-    expiryNote.hidden = notes.length === 0;
+    today.setUTCHours(0, 0, 0, 0);
+    const notes = [];
+    if (targetDate && targetDate < today) notes.push("This is a historical point-in-time forecast, not a current signal.");
+    if (record.note) notes.push(record.note);
+    $("expiry-note").textContent = notes.join(" ");
+    $("expiry-note").hidden = notes.length === 0;
     resultSection.hidden = false;
   }
-
-  function handlePrediction(date) {
-    clearInputError();
-    const normalizedDate = parseInputDate(date);\n    if (!normalizedDate) {\n      showInputError("Enter a valid date as DD/MM/YYYY, for example 21/10/2026.");\n      resultSection.hidden = true;\n      return;\n    }\n    const record = choosePrediction(normalizedDate);
-    if (!record) {
-      const sorted = availablePredictions.map((item) => item.as_of_date).sort();
-      const nearestBefore = sorted.filter((value) => value < date).pop();
-      const nearestAfter = sorted.find((value) => value > date);
-      let hint = "No saved forecast exists for this date. The model is defined for the first session after the previous expiry, using the first eligible 10:00–10:03 IST minute bar.";
-      if (nearestBefore || nearestAfter) {
-        hint += " Available nearby anchor dates: " +
-          (nearestBefore ? formatDate(nearestBefore) : "") +
-          (nearestBefore && nearestAfter ? " or " : "") +
-          (nearestAfter ? formatDate(nearestAfter) : "") + ".";
+  async function runPrediction(asOfDate) {
+    const response = await fetch(apiBaseUrl + "/predict", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({as_of_date:asOfDate})
+    });
+    const queued = await responseJson(response);
+    if (!queued.job_id) throw new Error("The live service did not return a prediction job ID.");
+    setPageStatus("Refreshing Dhan data and fitting ExtraTrees", "status-loading");
+    for (let attempt = 0; attempt < 360; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const poll = await fetch(apiBaseUrl + "/jobs/" + encodeURIComponent(queued.job_id), {cache:"no-store"});
+      const job = await responseJson(poll);
+      if (job.status === "succeeded" && job.result) {
+        renderPrediction(job.result);
+        setPageStatus("Live prediction complete", "status-ready");
+        return;
       }
-      showInputError(hint);
-      resultSection.hidden = true;
+      if (job.status === "failed") throw new Error(job.error || "Dhan inference failed. Check the date and retry.");
+      setPageStatus(job.status === "queued" ? "Live prediction queued" : "Fetching history and training model", "status-loading");
+    }
+    throw new Error("The live request is taking too long. Check the API deployment status before retrying.");
+  }
+  async function initialize() {
+    predictButton.disabled = true;
+    try {
+      const configResponse = await fetch("./assets/live-api-config.json?ts=" + Date.now(), {cache:"no-store"});
+      const config = await responseJson(configResponse);
+      apiBaseUrl = String(config.api_base_url || "").replace(/\/+$/, "");
+      if (!apiBaseUrl) {
+        setPageStatus("Live API not deployed", "status-blocked");
+        showInputError("The secure Dhan inference service has not published its endpoint yet. Check the 'Deploy Live Dhan ExtraTrees API' workflow.");
+        $("generated-at").textContent = "Waiting for secure backend deployment; Dhan credentials are not stored in this page.";
+        return;
+      }
+      const health = await responseJson(await fetch(apiBaseUrl + "/health", {cache:"no-store"}));
+      if (health.status !== "ready") {
+        setPageStatus("Dhan API needs setup", "status-blocked");
+        showInputError("The service is reachable but Dhan credentials are not configured. Check backend deployment secrets.");
+        $("generated-at").textContent = "Live API endpoint: " + apiBaseUrl;
+        return;
+      }
+      setPageStatus("Live Dhan API ready", "status-ready");
+      $("generated-at").textContent = "Ready: Predict refreshes Dhan authentication, obtains the selected cutoff's minute data, and refits ExtraTrees on the server.";
+      predictButton.disabled = false;
+    } catch (error) {
+      setPageStatus("Live API unavailable", "status-blocked");
+      showInputError(error && error.message ? error.message : "Could not connect to the secure live API.");
+      $("generated-at").textContent = "The page cannot reach its secure Dhan inference service.";
+    }
+  }
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    clearInputError();
+    resultSection.hidden = true;
+    const asOfDate = parseInputDate(dateInput.value);
+    if (!asOfDate) {
+      showInputError("Enter a valid date as YYYY-MM-DD or DD/MM/YYYY, for example 2024-05-10.");
+      dateInput.focus();
       return;
     }
-    renderPrediction(record);
-  }
-
-  async function initialize() {
-    try {
-      const response = await fetch("./data/extra_trees_forecasts.json", { cache: "no-store" });
-      if (!response.ok) {
-        throw new Error("Forecast data file is not available yet (HTTP " + response.status + ").");
-      }
-      payload = await response.json();
-      if (!Array.isArray(payload.historical_predictions)) payload.historical_predictions = [];
-      availablePredictions = payload.historical_predictions;
-      const dates = availablePredictions.map((record) => record.as_of_date);
-      if (payload.latest_forecast && payload.latest_forecast.as_of_date) {
-        dates.push(payload.latest_forecast.as_of_date);
-      }
-      const uniqueDates = Array.from(new Set(dates)).sort();
-      if (!uniqueDates.length) {
-        throw new Error(payload.latest_forecast_error || "No eligible forecasts have been generated yet.");
-      }
-
-      dateInput.min = uniqueDates[0];
-      dateInput.max = uniqueDates[uniqueDates.length - 1];
-      dateInput.value = payload.latest_forecast && payload.latest_forecast.as_of_date
-        ? payload.latest_forecast.as_of_date
-        : uniqueDates[uniqueDates.length - 1];
-      predictButton.disabled = false;
-      setPageStatus(payload.latest_forecast ? "Forecast record ready" : "Historical records ready", "status-ready");
-
-      const gate = payload.data_quality || {};
-      $("gate-status").textContent = gate.status || "BLOCKED";
-      $("gate-description").textContent =
-        (gate.detail || "Source and anchor validation is incomplete.") +
-        (Number.isFinite(gate.close_mismatches_over_1_point)
-          ? " Independent comparison: " + gate.close_mismatches_over_1_point + " of " +
-            gate.sessions_compared + " daily closes differed from official closes by more than one point."
-          : "") +
-        " The forecast remains exploratory and is not cleared for trading.";
-
-      if (payload.generated_at_utc) {
-        const dt = new Date(payload.generated_at_utc);
-        $("generated-at").textContent = "Prediction data generated " +
-          new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(dt) +
-          " IST. The site does not run a Python model in the browser; predictions are produced by the repository workflow.";
-      } else {
-        $("generated-at").textContent = "Forecast data loaded. Predictions are generated by the repository's Python workflow.";
-      }
-
-      if (payload.latest_forecast_error) {
-        $("gate-description").textContent += " Latest forward forecast unavailable: " + payload.latest_forecast_error;
-      }
-    } catch (error) {
-      setPageStatus("Forecast data unavailable", "status-blocked");
-      showInputError(error && error.message ? error.message : "Unable to load prediction data.");
-      $("generated-at").textContent = "Forecast data could not be loaded. Check the repository workflow and data-quality logs.";
+    if (!apiBaseUrl) {
+      showInputError("The secure live Dhan API is not configured yet. Check the deployment workflow.");
+      return;
     }
-  }
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    handlePrediction(dateInput.value);
+    predictButton.disabled = true;
+    predictButton.textContent = "Running…";
+    setPageStatus("Starting live prediction", "status-loading");
+    try {
+      await runPrediction(asOfDate);
+    } catch (error) {
+      setPageStatus("Prediction failed", "status-blocked");
+      showInputError(error && error.message ? error.message : "Live prediction failed. Please retry.");
+    } finally {
+      predictButton.disabled = false;
+      predictButton.innerHTML = originalButtonLabel;
+    }
   });
-
   initialize();
 })();
