@@ -1,5 +1,5 @@
 {
-  "run_utc": "2026-10-25T09:31:56.885880+00:00",
+  "run_utc": "2026-10-25T09:37:32.325843+00:00",
   "observations_total_labels": 398,
   "binary_rows": 398,
   "feature_complete_binary_rows": 398,
@@ -9,12 +9,12 @@
   "minimum_training_history": 104,
   "pre_registered_target_training_history": 104,
   "development_selected_model": "extra_trees",
-  "calendar_status": "EXPLORATORY_ONLY",
-  "reason_not_confirmatory": "Weekly expiry dates were generated from weekday regimes and inferred from available bars; official historical expiry calendar and holiday shifts are not independently reconciled.",
+  "calendar_status": "OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL",
+  "reason_not_confirmatory": "The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.",
   "usable_trading_strategy_validated": false,
   "trading_strategy_blocker": "No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.",
-  "important_warning": "All metrics are exploratory until the official expiry calendar and underlying data quality are verified; model discovery does not certify future performance.",
-  "run_id": "40180819590",
+  "important_warning": "All results remain exploratory until the anchor and realistic trading costs are validated.",
+  "run_id": "40181159630",
   "source_quality": {
     "source_files_read": 19,
     "valid_in_session_rows": 882839,
@@ -26,7 +26,8 @@
     "dhan_minute_match_count": 0,
     "dhan_minute_mismatches": null
   },
-  "target_definition": "Expiry-day last valid 15:25-15:29 bar close relative to 10:00-10:03 first-bar open on first session after preceding weekly expiry.",
+  "target_definition": "NSE official daily close on verified weekly expiry date relative to the first minute-archive bar open at or after 10:00 and no later than 10:03 on the first trading session after the previous verified expiry.",
+  "confirmatory_status": "BLOCKED: expiry dates and EOD closes use NSE records, but the 10:00 anchor remains minute-archive-derived and is not independently validated.",
   "plots_created": [
     "annual_up_prevalence.png",
     "cycle_return_distribution.png"

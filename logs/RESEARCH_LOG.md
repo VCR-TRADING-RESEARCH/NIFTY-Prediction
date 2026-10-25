@@ -259,3 +259,14 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Counts: {"candidate_expiries_checked": 402, "contract_unverified_expiries": 0, "contract_verified_expiries": 402, "daily_source_rows_compared": 1901, "daily_source_rows_expected": 1901, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 0, "minute_vs_official_abs_difference_max_points": 0.0, "minute_vs_official_abs_difference_median_points": 0.0, "minute_vs_official_abs_difference_p95_points": 0.0, "minute_vs_official_high_abs_difference_median_points": 0.049999999999272404, "minute_vs_official_high_mismatches_over_1_point": 197, "minute_vs_official_high_rows_compared": 1901, "minute_vs_official_low_abs_difference_median_points": 0.049999999999272404, "minute_vs_official_low_mismatches_over_1_point": 185, "minute_vs_official_low_rows_compared": 1901, "minute_vs_official_mismatches_over_1_point": 0, "minute_vs_official_open_abs_difference_median_points": 0.0, "minute_vs_official_open_mismatches_over_1_point": 587, "minute_vs_official_open_rows_compared": 1901, "minute_vs_official_within_1_point": 1901, "official_daily_rows": 1913}
 - Errors: none
 - Detailed outputs: data/reconciliation/
+
+
+## Automated run 40181159630 — 2026-10-25T09:37:33.917356+00:00
+- Status: pipeline completed; empirical findings remain exploratory until calendar and instrument-cost gates pass.
+- Source files read: 19; valid minute bars: 882839.
+- Weekly labels: 398; binary rows: 398; feature-complete rows: 398.
+- Development rows / held-out rows: 318 / 80.
+- Development-selected model: extra_trees.
+- Calendar gate: OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL — The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.
+- Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
+- Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.

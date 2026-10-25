@@ -21,14 +21,14 @@ The research target is on the spot index. Any executable strategy must separatel
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
 
-Last status refresh: 2026-10-25 09:31 UTC
+Last status refresh: 2026-10-25 09:37 UTC
 
-- Run ID: 40180819590
+- Run ID: 40181159630
 - Target labels: 398
 - Binary rows with sufficient features: 398
 - Development / final holdout rows: 318 / 80
 - Model selected on development data: extra_trees
-- Calendar status: **EXPLORATORY_ONLY**
+- Calendar status: **OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL**
 - Independently validated usable trading strategy: **NO**
 
 The current pipeline labels the weekday-derived expiry calendar as exploratory; performance metrics are not a verified trading edge. The spot index is not a directly executable instrument, and contract-level quotes, dated costs, spread/slippage and fills are not yet joined.

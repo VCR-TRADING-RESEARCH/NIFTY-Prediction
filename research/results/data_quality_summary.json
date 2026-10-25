@@ -1,6 +1,6 @@
 {
-  "run_id": "40180819590",
-  "generated_utc": "2026-10-25T09:30:22.561406+00:00",
+  "run_id": "40181159630",
+  "generated_utc": "2026-10-25T09:36:26.201972+00:00",
   "source_quality": {
     "source_files_read": 19,
     "raw_rows_before_deduplication": 884673,
@@ -36,10 +36,11 @@
       "DOWN": 175
     },
     "calendar_status_counts": {
-      "shift_or_data_gap_inferred": 398
+      "official_verified": 362,
+      "official_verified_with_shift": 36
     },
     "confirmatory_eligible_rows": 0,
-    "calendar_warning": "The weekly schedule is inferred from known weekday regimes. Holiday shifts are not independently linked to official contract archives; all results remain exploratory until this is resolved.",
+    "calendar_warning": "Official NSE expiry verification is available; however, the 10:00 anchor remains minute-archive-derived and is not independently validated.",
     "excluded_cycle_candidates": 3,
     "exclusion_reason_counts": {
       "missing_1000_anchor_bar": 2,
@@ -68,6 +69,6 @@
     "raw_dhan_bars_committed": false,
     "note": "Dhan recent cross-check bars were not available for this run."
   },
-  "confirmatory_status": "BLOCKED: candidate expiry dates are not yet reconciled against a complete official historical weekly-contract expiry calendar.",
-  "data_scope_warning": "The public minute archive is a candidate source with known missing/frozen/partial sessions. Spot bar checks and Yahoo comparisons are diagnostics, not proof of official exchange data lineage."
+  "confirmatory_status": "BLOCKED: expiry dates and EOD closes use NSE records, but the 10:00 anchor remains minute-archive-derived and is not independently validated.",
+  "data_scope_warning": "Expiry outcomes and lagged closes use NSE official daily values. The 10:00 anchor still uses a public minute archive with unverified provider lineage; no instrument-level costs or fills are validated."
 }
