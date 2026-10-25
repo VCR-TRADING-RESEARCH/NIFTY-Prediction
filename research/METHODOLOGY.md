@@ -70,3 +70,11 @@ Before accepting results, verify:
 
 ## 10. Reproducibility
 Save environment versions, commit SHA, source manifest/hashes, run date, model seeds, configuration, split indices, prediction rows and aggregate metric tables. Do not save raw credentials or hidden private reasoning. Workflow runs deterministic baselines first; optional expensive tools run only when data size and runtime justify them.
+
+
+## Phase 3 addendum — official expiry dates and daily closes (25 October 2026)
+
+The latest Phase 3 workflow verified 402/402 candidate weekly-expiry records against NSE F&O daily bhavcopy records, with zero unverified candidates and zero source errors. The downstream research pipeline now reads the verified trade-date table and official daily close table, refuses to fall back to the weekday-only expiry heuristic when the verification file is missing or incomplete, and replaces the minute archive's daily close with the NSE official close where available. The original minute close is retained separately for diagnostics.
+
+The 10:00 anchor remains the open of the first valid 1-minute bar at or after 10:00 and no later than 10:03, sourced from the public minute archive. A second published minute dataset is similar, but its underlying provider lineage is not established; this does not independently validate the anchor. Therefore model results remain exploratory, and no strategy is certified until anchor values are validated and instrument-level costs, slippage, spreads, and fills are simulated.
+
