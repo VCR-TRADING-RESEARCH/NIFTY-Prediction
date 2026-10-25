@@ -71,11 +71,12 @@ def fetch_nse_daily_fallback(start: date, end: date, force: bool = False) -> pd.
         raise RuntimeError("No source-session dates available to request NSE ind_close_all files")
     (CACHE / "nse_daily").mkdir(parents=True, exist_ok=True)
 
-    def get_one(day: date) -> dict[str, Any]:
-        cache_file = CACHE / "nse_daily" / f"ind_close_all_{day:%d%m%Y}.csv"
-        if cache_file.exists() and not force:
-            content = cache_file.read_bytes()
-        else:
+    import threading
+    local = threading.local()
+
+    def get_session() -> requests.Session:
+        session = getattr(local, "session", None)
+        if session is None:
             session = requests.Session()
             session.headers.update({
                 "User-Agent": UA,
@@ -83,12 +84,20 @@ def fetch_nse_daily_fallback(start: date, end: date, force: bool = False) -> pd.
                 "Accept": "text/csv,text/plain,*/*",
             })
             try:
-                # Establish the archive session first; the report host sometimes requires it.
-                session.get("https://www.nseindia.com/all-reports", timeout=(8, 15))
+                session.get("https://www.nseindia.com/all-reports", timeout=(5, 8))
             except requests.RequestException:
                 pass
+            local.session = session
+        return session
+
+    def get_one(day: date) -> dict[str, Any]:
+        cache_file = CACHE / "nse_daily" / f"ind_close_all_{day:%d%m%Y}.csv"
+        if cache_file.exists() and not force:
+            content = cache_file.read_bytes()
+        else:
+            session = get_session()
             url = f"https://nsearchives.nseindia.com/content/indices/ind_close_all_{day:%d%m%Y}.csv"
-            response = session.get(url, timeout=(8, 20))
+            response = session.get(url, timeout=(5, 12))
             response.raise_for_status()
             content = response.content
             if len(content) < 100:
@@ -104,7 +113,7 @@ def fetch_nse_daily_fallback(start: date, end: date, force: bool = False) -> pd.
             selected = frame[frame[name_col].astype(str).str.strip().str.casefold().eq("nifty 50")]
             if selected.empty:
                 raise ValueError("NIFTY 50 row absent from official daily index file")
-            close = pd.to_numeric(selected.iloc[0][close_col], errors="coerce")
+            close = pd.to_numeric(str(selected.iloc[0][close_col]).replace(",", ""), errors="coerce")
             if pd.isna(close) or float(close) <= 0:
                 raise ValueError("Invalid official NIFTY 50 close")
             return {"session_date": day, "official_close": float(close), "status": "ok"}
