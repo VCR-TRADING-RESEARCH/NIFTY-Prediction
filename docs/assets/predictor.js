@@ -124,6 +124,27 @@
     predictButton.disabled = false;
     setPageStatus("GitHub Actions prediction ready", "status-ready");
     $("generated-at").textContent = "Predict prepares a secured GitHub request. Open the link and submit it; Python then runs in GitHub Actions.";
+    // Deep links let the user return to a completed result without creating a
+    // duplicate issue or rerunning a historical prediction.
+    const requestedDate = parseInputDate(new URLSearchParams(window.location.search).get("as_of_date"));
+    if (!requestedDate) return;
+    dateInput.value = requestedDate;
+    try {
+      const response = await fetch("./assets/predictions/" + encodeURIComponent(requestedDate) + ".json?ts=" + Date.now(), {cache:"no-store"});
+      if (!response.ok) return;
+      const record = await response.json();
+      if (record.as_of_date !== requestedDate) return;
+      if (record.status !== "succeeded") {
+        setPageStatus("Prediction blocked", "status-blocked");
+        showInputError(record.error || "The saved prediction failed its data/model checks.");
+        return;
+      }
+      renderPrediction(record);
+      setPageStatus("Saved prediction loaded", "status-ready");
+      clearInputError();
+    } catch (_) {
+      // Keep the form usable if Pages has not published the requested JSON yet.
+    }
   }
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
