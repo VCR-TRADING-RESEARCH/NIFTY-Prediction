@@ -36,3 +36,9 @@
 - **Security:** Dhan credentials are provisioned as runtime secrets to a Hugging Face Docker Space from GitHub Actions. The public JavaScript receives only the endpoint URL, never credentials.
 - **Leakage gates:** The chosen date must be the first session after the prior verified expiry, a valid 10:00–10:03 anchor must exist, training labels must be settled strictly before the selected anchor, and at least 104 eligible training rows and both classes are required.
 - **Validation status:** Automated tests and provider deployment are pending. The independent 10:00 anchor/data-quality gate remains blocked, and no options trading strategy is certified.
+
+## 2026-10-25 — Live inference deployment status
+- Live inference code merged to `main` in commit `35ebee7d1cd621047d3cf2113803c79f93b36a13`.
+- Validation passed before merge and the first main-branch deployment run installed dependencies and passed the backend tests (12 passed).
+- First provider deployment attempt failed with `HfHubHTTPError` before publishing endpoint config; no user-facing live result is being presented as if this deployment succeeded.
+- Added sanitized diagnostics (stage, HTTP status, no secret/body logging) and retriggered deployment. Await its conclusion before reporting backend availability.
