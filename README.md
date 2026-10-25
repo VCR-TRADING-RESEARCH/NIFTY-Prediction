@@ -160,3 +160,6 @@ Last repository status update: 2026-10-25.
 
 
 **Pages navigation correction (2026-10-25):** The date form now loads the already-published date-specific JSON in place and does not redirect to GitHub Actions on submit. If that date has no published successful result, the page reports it as unavailable and the user can open Actions manually. Script cache-busting was added to reduce stale browser JavaScript. See the latest research/error logs for this correction.
+
+
+**All-date session validation correction (2026-10-25):** The live inference gate now determines the first trading session after each verified weekly expiry from the official NSE daily-session reference, not from the dates that happen to be present in Dhan minute bars. Minute bars are still independently required for the 10:00 anchor and training/expiry features; missing market data will fail that explicit data gate instead of producing a false calendar rejection. Regression tests cover the 2026-05-05 → 2026-05-06 session transition.
