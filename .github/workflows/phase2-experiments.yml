@@ -71,7 +71,8 @@ jobs:
               echo "- $d: $(git -C "$d" rev-parse HEAD)"
             done
           } > research/results/upstream_revisions.md
-      - name: Fetch cached/public NIFTY 50 minute data
+      - name: Fetch cached/public NIFTY 50 minute data when rebuilding or snapshot is absent
+        if: ${{ inputs.refresh_features == true || hashFiles('data/processed/weekly_labels_features.csv') == '' }}
         run: python scripts/fetch_data.py
       - name: Rebuild target and feature pipeline on request
         if: ${{ inputs.refresh_features == true }}
