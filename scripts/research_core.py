@@ -270,7 +270,7 @@ def _calculate_features(
         prev_close = close.iloc[-1] if len(close) else np.nan
         values[f"range_{n}"] = float((highs.max() - lows.min()) / prev_close) if len(lows) and prev_close > 0 else np.nan
     prev_close = float(prior["session_close"].iloc[-1]) if len(prior) else np.nan
-    anchor_price = float(anchor_row["open"])
+    anchor_price = float(anchor_row["anchor_price"])
     values["overnight_gap"] = anchor_price / prev_close - 1 if np.isfinite(prev_close) and prev_close > 0 else np.nan
     today_minutes = _day_minutes(minutes, anchor_date)
     time_of_anchor = anchor_row["timestamp"].time()
