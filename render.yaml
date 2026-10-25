@@ -2,7 +2,7 @@ services:
   - type: web
     name: nifty-prediction-live-api
     runtime: docker
-    plan: starter
+    plan: free
     dockerfilePath: ./live_api/Dockerfile.render
     dockerContext: .
     healthCheckPath: /health
