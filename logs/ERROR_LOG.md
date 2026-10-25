@@ -140,3 +140,9 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Root cause not isolated. The candidate archive documents frozen/missing/partial sessions, but many large close differences do not have long unchanged-close runs, so freezing alone cannot explain the full pattern.
 - Fix attempted: retain official daily open/high/low where endpoint fields exist, compare minute-source O/H/L and close separately, and preserve the one-point close tolerance until evidence clarifies the discrepancy.
 - Residual risk: no model advancement or trading strategy approval until the source/close-definition discrepancy is explained or a trusted alternative intraday source is validated.
+
+
+## GitHub Actions failure — run 40175798910
+- Status: BLOCKED. One or more workflow steps failed; inspect the Actions run for the exact failing step.
+- The workflow is configured to continue with public data when the optional Dhan branch fails.
+- No secrets, access tokens, PINs or TOTP values should be copied from runner diagnostics into repository logs.
