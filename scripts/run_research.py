@@ -65,6 +65,48 @@ def append_success(summary: dict, quality: dict) -> None:
         handle.write(entry)
 
 
+def compare_recent_dhan(minutes: pd.DataFrame) -> dict:
+    """Compare recent Dhan bars to the public archive without storing private raw Dhan bars in Git."""
+    path = ROOT / "data" / "raw" / "dhan" / "NIFTY50_DHAN_recent.csv"
+    report = {
+        "attempted": path.exists(),
+        "available": False,
+        "matched_timestamps": 0,
+        "mismatched_closes_over_1_point": None,
+        "median_absolute_close_difference": None,
+        "p95_absolute_close_difference": None,
+        "raw_dhan_bars_committed": False,
+    }
+    if not path.exists():
+        report["note"] = "Dhan recent cross-check bars were not available for this run."
+        return report
+    try:
+        dhan, dhan_quality = load_minute_files([path])
+        overlap = minutes[["timestamp", "close"]].merge(
+            dhan[["timestamp", "close"]], on="timestamp", how="inner", suffixes=("_public", "_dhan")
+        )
+        if overlap.empty:
+            report["note"] = "No exact overlapping minute timestamps between the public archive and Dhan."
+            report["public_bars"] = int(len(minutes))
+            report["dhan_bars"] = int(len(dhan))
+            return report
+        diff = (overlap["close_public"] - overlap["close_dhan"]).abs()
+        report.update({
+            "available": True,
+            "matched_timestamps": int(len(overlap)),
+            "mismatched_closes_over_1_point": int((diff > 1.0).sum()),
+            "median_absolute_close_difference": float(diff.median()),
+            "p95_absolute_close_difference": float(diff.quantile(0.95)),
+            "dhan_source_rows": int(dhan_quality["valid_in_session_rows"]),
+            "comparison_tolerance_index_points": 1.0,
+            "note": "Summary-only comparison; Dhan raw bars are cached in the runner and are not committed.",
+        })
+        return report
+    except Exception as exc:
+        report["error"] = type(exc).__name__ + ": " + str(exc)[:200]
+        return report
+
+
 def main() -> int:
     run_id = os.getenv("GITHUB_RUN_ID", "local")
     PROCESSED.mkdir(parents=True, exist_ok=True)
@@ -91,12 +133,14 @@ def main() -> int:
         pd.DataFrame(excluded).to_csv(PROCESSED / "excluded_cycle_candidates.csv", index=False)
 
         yahoo_check = try_yahoo_daily_validation(daily, calendar, RESULTS)
+        dhan_check = compare_recent_dhan(minutes)
         quality_report = {
             "run_id": run_id,
             "generated_utc": datetime.now(timezone.utc).isoformat(),
             "source_quality": quality,
             "target_construction": construction_report,
             "independent_daily_close_crosscheck": yahoo_check,
+            "independent_recent_minute_crosscheck": dhan_check,
             "confirmatory_status": "BLOCKED: candidate expiry dates are not yet reconciled against a complete official historical weekly-contract expiry calendar.",
             "data_scope_warning": "The public minute archive is a candidate source with known missing/frozen/partial sessions. Spot bar checks and Yahoo comparisons are diagnostics, not proof of official exchange data lineage.",
         }
@@ -110,6 +154,9 @@ def main() -> int:
             "data_quality_warnings": int(quality["conflicting_duplicate_timestamp_groups"]),
             "independent_close_check_available": bool(yahoo_check.get("available")),
             "independent_close_check_mismatches": yahoo_check.get("mismatch_rows"),
+            "dhan_minute_check_available": bool(dhan_check.get("available")),
+            "dhan_minute_match_count": dhan_check.get("matched_timestamps"),
+            "dhan_minute_mismatches": dhan_check.get("mismatched_closes_over_1_point"),
         }
         summary["target_definition"] = "Expiry-day last valid 15:25-15:29 bar close relative to 10:00-10:03 first-bar open on first session after preceding weekly expiry."
         summary["calendar_status"] = "EXPLORATORY_ONLY"
