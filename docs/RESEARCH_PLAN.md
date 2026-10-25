@@ -8,6 +8,8 @@ Status: locked for the first research cycle. Change only via documented plan-ver
 NIFTY Weekly Expiry Direction Prediction: estimate whether the NIFTY 50 spot-index close at weekly options expiry is greater than or less than its value at 10:00 IST on the next trading day after the preceding weekly expiry. This is a binary direction task; magnitude forecasting is secondary and only used for risk/cost analysis.
 
 ## 2. Formal target
+Weekly NIFTY 50 options were introduced for trading from 11 February 2019, with the first weekly expiry on 14 February 2019 (NSE circular FAOP39894). Therefore 2017–2018 minute history is eligible only as a pre-sample feature-lookback window; it must not be used to fabricate weekly-option expiry labels.
+
 For each consecutive pair of actual weekly expiry dates E(t-1), E(t):
 - Anchor date D(t): the first NSE trading session after E(t-1).
 - Anchor price A(t): first valid 1-minute candle open stamped at or after 10:00 IST on D(t), allowing at most a 3-minute delay. If no valid bar exists, exclude the row and log it.
