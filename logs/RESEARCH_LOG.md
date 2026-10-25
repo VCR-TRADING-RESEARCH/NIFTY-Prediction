@@ -210,3 +210,10 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Corrected the regex in commit 542933cd51bb291914678b9adead76c9d559059e and changed the synthetic secondary-source fixture to 2023-01-02.
 - Narrowed the core research workflow push paths so Phase 3 source-code/tests no longer trigger an unrelated full core model run. Both workflows remain serialized on a branch.
 - These are test/automation corrections only. No new source-quality result is inferred.
+
+
+## Phase 3 official-source reconciliation — 2026-10-25T08:53:10.741957+00:00
+- Status: BLOCKED
+- Counts: {"candidate_expiries_checked": 402, "contract_unverified_expiries": 22, "contract_verified_expiries": 340, "daily_source_rows_compared": 1901, "daily_source_rows_expected": 1901, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 40, "minute_vs_official_abs_difference_max_points": 200.70000000000073, "minute_vs_official_abs_difference_median_points": 8.25, "minute_vs_official_abs_difference_p95_points": 32.44999999999709, "minute_vs_official_high_mismatches_over_1_point": 197, "minute_vs_official_low_mismatches_over_1_point": 185, "minute_vs_official_mismatches_over_1_point": 1717, "minute_vs_official_open_mismatches_over_1_point": 587, "minute_vs_official_within_1_point": 184, "official_daily_rows": 1913}
+- Errors: 340 of 402 candidate dates were confirmed (including two shifted expiries), 22 were not verified, and 40 had source-validation errors. Artifact examples reveal ISO dates were incorrectly parsed with a day-first fallback; fix added for revalidation.; 1,717 of 1,901 daily minute-source closes differ from official NSE close by more than the pre-registered 1-point tolerance.
+- Detailed outputs: data/reconciliation/
