@@ -345,3 +345,36 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Counts: {"candidate_expiries_checked": 402, "contract_unverified_expiries": 0, "contract_verified_expiries": 402, "daily_source_rows_compared": 1903, "daily_source_rows_expected": 1903, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 0, "minute_vs_official_abs_difference_max_points": 200.70000000000073, "minute_vs_official_abs_difference_median_points": 8.25, "minute_vs_official_abs_difference_p95_points": 32.43499999999729, "minute_vs_official_close_abs_difference_max_points": 200.70000000000073, "minute_vs_official_close_abs_difference_median_points": 8.25, "minute_vs_official_close_abs_difference_p95_points": 32.43499999999729, "minute_vs_official_close_mismatches_over_1_point": 1719, "minute_vs_official_close_rows_compared": 1903, "minute_vs_official_high_abs_difference_max_points": 229.85000000000036, "minute_vs_official_high_abs_difference_median_points": 0.049999999999272404, "minute_vs_official_high_abs_difference_p95_points": 2.1950000000007934, "minute_vs_official_high_mismatches_over_1_point": 197, "minute_vs_official_high_rows_compared": 1903, "minute_vs_official_low_abs_difference_max_points": 79.09000000000015, "minute_vs_official_low_abs_difference_median_points": 0.049999999999272404, "minute_vs_official_low_abs_difference_p95_points": 1.600000000002001, "minute_vs_official_low_mismatches_over_1_point": 185, "minute_vs_official_low_rows_compared": 1903, "minute_vs_official_mismatches_over_1_point": 1719, "minute_vs_official_open_abs_difference_max_points": 105.84999999999854, "minute_vs_official_open_abs_difference_median_points": 0.0, "minute_vs_official_open_abs_difference_p95_points": 8.889999999997949, "minute_vs_official_open_mismatches_over_1_point": 589, "minute_vs_official_open_rows_compared": 1903, "minute_vs_official_within_1_point": 184, "official_daily_rows": 1913}
 - Errors: Minute-archive daily closes differ from official NSE closes by more than one index point.
 - Detailed outputs: data/reconciliation/
+
+
+## E0008 — 2026-10-25 — Regression fixture overlap threshold
+- Severity: Low / test harness.
+- Symptom: archive reconciliation test failed because the production minimum-overlap threshold was applied to a two-row synthetic fixture.
+- Root cause: threshold did not scale down for small test fixtures.
+- Fix: use the smaller of the production minimum and the in-scope row count.
+- Validation: corrected fixture passed in Phase 3 workflow run 40181901081.
+- Residual risk: production overlap requirements remain unchanged.
+
+## E0009 — 2026-10-25 — Circular comparison created a false PASS
+- Severity: Critical / invalid source acceptance.
+- Symptom: a prior report showed zero close mismatches because the comparator read a cross-check file whose closes had already been overwritten with official NSE closes.
+- Root cause: validation compared derived/overridden values rather than the preserved original minute-archive close.
+- Fix: added `scripts/reconcile_archive_closes.py` to compare preserved `session_close_archive` directly against official `official_close`; audit fails closed.
+- Validation: run 40181901081 reports 1,719/1,903 close differences above one point, median absolute difference 8.25, P95 32.435, maximum 200.7. Source gate is BLOCKED.
+- Residual risk: cause of mismatches is unresolved and 10:00 anchor remains unvalidated. The previous PASS is invalid.
+
+## E0010 — 2026-10-25 — Archive audit merge collided with an existing official_close column
+- Severity: Medium / audit implementation.
+- Symptom: first audit attempt raised `KeyError: 'official_close'` after merge suffixes were created.
+- Root cause: archive input already had an `official_close` column and it was merged with a second official series.
+- Fix: select only required archive and official columns before merging.
+- Validation: corrected test and workflow run 40181901081 completed and produced non-zero mismatch counts.
+- Residual risk: workflow success does not imply scientific acceptance; inspect report status.
+
+## E0011 — 2026-10-25 — Overlapping corrective commits caused redundant Actions runs
+- Severity: Medium / compute and traceability.
+- Symptom: successive commits triggered multiple runs while the source workflow was active.
+- Root cause: small fixes were committed before the previous audit completed.
+- Fix: batch documentation/log changes after a bounded audit and treat the latest corrected run as authoritative.
+- Validation: run 40181901081 is the corrected completed audit.
+- Residual risk: avoid parallel edits to shared log files.
