@@ -6,6 +6,7 @@ on:
       - main
       - "research/**"
     paths:
+      - ".github/workflows/nifty-research.yml"
       - "scripts/fetch_data.py"
       - "scripts/research_core.py"
       - "scripts/run_research.py"
