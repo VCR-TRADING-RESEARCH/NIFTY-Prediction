@@ -74,3 +74,12 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Symptom: ModuleNotFoundError: No module named 'pysr'
 - Response: record failure, retain other tracks, do not promote a model.
 - Secrets: no environment values or request bodies recorded.
+
+
+## E0006 — 2026-10-25 — PySR installation was skipped on first Phase 2 run
+- Severity: Medium; optional track incomplete, other tracks remained available.
+- Symptom: experimental report returned ModuleNotFoundError: No module named 'pysr'.
+- Root cause: workflow conditional evaluated to skip the install step on a push event.
+- Fix: removed the push-sensitive condition; install step now runs and checks import explicitly while allowing other tracks to complete if unavailable.
+- Validation: rerun queued as Actions run 40171512727; final PySR status is pending.
+- Residual risk: PySR depends on Julia runtime availability and can fail for environmental reasons. Do not interpret failure as evidence for or against predictive utility.
