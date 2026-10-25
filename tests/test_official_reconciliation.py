@@ -10,7 +10,7 @@ from datetime import date
 import pandas as pd
 import pytest
 
-from scripts.reconcile_official_sources import parse_bhavcopy_contract_expiries, parse_niftyindices_response, weekly_nominals
+from scripts.reconcile_official_sources import bhavcopy_urls, parse_bhavcopy_contract_expiries, parse_niftyindices_response, weekly_nominals
 
 
 def test_parse_niftyindices_response_uses_official_close():
@@ -73,3 +73,30 @@ def test_parse_udiff_index_derivative_option_code_ido():
         "IDF,NIFTY,2025-11-25,,25000\n"
     )
     assert parse_bhavcopy_contract_expiries(csv.encode(), date(2025, 10, 28)) == {date(2025, 10, 28)}
+
+
+def test_bhavcopy_url_order_matches_nse_format_transition():
+    legacy = bhavcopy_urls(date(2024, 7, 5))
+    udiff = bhavcopy_urls(date(2024, 7, 8))
+    assert "/content/historical/DERIVATIVES/" in legacy[0]
+    assert "nsearchives.nseindia.com/content/fo/" in udiff[0]
+    assert "/content/historical/DERIVATIVES/" in udiff[-1]
+
+
+def test_parse_udiff_prefers_actual_expiry_and_validates_trade_date():
+    csv = (
+        "BizDt,FinInstrmTp,TckrSymb,XpryDt,FinInstrmActlXpryDt,OptnTp,StrkPric\n"
+        "2025-10-21,IDO,NIFTY,2025-10-23,2025-10-21,CE,25000\n"
+        "2025-10-21,IDO,NIFTY,2025-10-23,2025-10-21,PE,25000\n"
+    )
+    assert parse_bhavcopy_contract_expiries(csv.encode(), date(2025, 10, 21)) == {date(2025, 10, 21)}
+
+
+def test_parse_bhavcopy_rejects_wrong_trade_date():
+    csv = (
+        "TIMESTAMP,INSTRUMENT,SYMBOL,EXPIRY_DT,OPTION_TYP\n"
+        "03-JAN-2024,OPTIDX,NIFTY,04-Jan-2024,CE\n"
+        "03-JAN-2024,OPTIDX,NIFTY,04-Jan-2024,PE\n"
+    )
+    with pytest.raises(ValueError, match="trade-date mismatch"):
+        parse_bhavcopy_contract_expiries(_zip_csv(csv), date(2024, 1, 4))

@@ -82,3 +82,14 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Counts: {}
 - Errors: HTTPError: 401 Client Error: Unauthorized for url: https://www.niftyindices.com/Backpage.aspx/getHistoricaldatatabletoString
 - Detailed outputs: data/reconciliation/
+
+
+## Phase 3 bounded official-source pass — run 40174191441
+- Status: BLOCKED; computation and artifact upload completed, but the final Git commit failed while rebasing shared log changes created by the parallel research workflow.
+- Official NSE historical index rows: 1,913; 1,901/1,901 candidate daily sessions matched to an official close.
+- Daily close comparison: 1,717/1,901 exceed the pre-registered 1-point tolerance; absolute difference median 8.25, P95 32.45, maximum 200.7 index points.
+- Initial contract check: 359/402 candidate nominal dates confirmed; 43 unconfirmed; zero download exceptions. This is not a verified calendar.
+- Detailed artifact: https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40174191441
+- Corrections in the current commit: date-aware legacy/UDiFF URL ordering, documented nsearchives UDiFF host, schema/trade-date validation, actual-expiry-field preference, parser tests, shared workflow concurrency, and rebase-before-push for research status commits.
+- Main research run 40174191439 completed calculations: 398 labels; 318 development / 80 holdout. Exploratory holdout: ExtraTrees accuracy 0.575 / balanced accuracy 0.559; logistic accuracy 0.550 / balanced accuracy 0.547. Labels remain heuristic; no strategy is validated.
+- Phase gate: Phase 1 BLOCKED; Phase 2/3 exploratory only; Phase 4 blocked because no verified instrument-level P&L, dated Paytm Money costs, spread/slippage/fills; Phase 5 manuscript exists but independent audit remains pending.

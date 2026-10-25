@@ -91,3 +91,20 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Counts: {}
 - Errors: HTTPError: 401 Client Error: Unauthorized for url: https://www.niftyindices.com/Backpage.aspx/getHistoricaldatatabletoString
 - Detailed outputs: data/reconciliation/
+
+
+## E0006 — 2026-10-25 — Official source gate remains blocked after first full NSE run
+- Severity: Critical / Phase 1 remains blocked.
+- Evidence: run 40174191441 collected 1,913 official daily close rows and compared 1,901 candidate sessions. 1,717 absolute differences exceeded the pre-registered 1-point tolerance; median absolute difference 8.25 points, P95 32.45 and maximum 200.7. The initial expiry check confirmed 359/402 candidate dates and left 43 unconfirmed.
+- Root cause is not fully isolated. Implementation defects found: the downloader tried UDiFF before the legacy format for all historical dates and used archives.nseindia.com as the primary UDiFF host. Daily close differences may additionally arise from the candidate intraday archive or close/session alignment.
+- Fix attempted: prefer legacy URL through 5 July 2024 and UDiFF at nsearchives.nseindia.com from 8 July 2024; validate archive schema/trade date; prefer actual expiry field when populated; add tests for source order, date mismatch and actual expiry; serialize workflows that share a branch.
+- Validation required: tests plus a fresh official reconciliation. Parser tests alone cannot validate 402 historical dates.
+- Residual risk: do not accept model results or begin trade-cost optimization until all candidate labels have official expiry evidence and the price discrepancies are explained.
+
+## E0007 — 2026-10-25 — Parallel Actions commits raced on the same branch
+- Severity: High / research traceability.
+- Symptom: Phase 3 run 40174191441 failed its final commit on a rebase conflict in logs/ERROR_LOG.md and logs/RESEARCH_LOG.md; main research run 40174191439 completed analysis but its push was rejected as non-fast-forward.
+- Root cause: both workflows ran concurrently on research/phase-3-official-source-reconciliation and each changed the same logs/README/results paths.
+- Fix attempted: both workflows now share a per-ref concurrency group with cancellation disabled; the main research commit step rebases with autostash before pushing.
+- Validation required: confirm the next jobs serialize and status/results commit successfully. Artifacts remain the fallback evidence.
+- Residual risk: an external push or rebase conflict can still require Git repair.

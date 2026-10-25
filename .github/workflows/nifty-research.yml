@@ -29,7 +29,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: nifty-weekly-expiry-${{ github.ref }}
+  group: nifty-research-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -143,5 +143,6 @@ jobs:
             echo "No status/result changes to commit."
           else
             git commit -m "Update NIFTY research status and compact artifacts [skip ci]"
+            git pull --rebase --autostash origin "${{ github.ref_name }}"
             git push origin "HEAD:${{ github.ref_name }}"
           fi

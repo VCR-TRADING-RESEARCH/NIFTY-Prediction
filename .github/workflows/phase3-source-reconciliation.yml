@@ -28,8 +28,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: nifty-phase3-source-reconciliation
-  cancel-in-progress: true
+  group: nifty-research-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   reconcile:

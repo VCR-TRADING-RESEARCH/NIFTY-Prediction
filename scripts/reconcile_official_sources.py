@@ -260,24 +260,74 @@ def weekly_nominals(start: date, end: date) -> list[date]:
     return dates
 
 
-def parse_bhavcopy_contract_expiries(blob: bytes, trade_date: date) -> set[date]:
-    """Return NIFTY weekly option expiry dates from legacy or UDiFF NSE F&O bhavcopy."""
+def _extract_bhavcopy_csv(blob: bytes) -> bytes:
+    """Extract the contract CSV from a legacy/UDiFF ZIP or accept a direct CSV."""
     try:
         with zipfile.ZipFile(io.BytesIO(blob)) as zf:
             names = [n for n in zf.namelist() if n.lower().endswith(".csv")]
             if not names:
                 raise ValueError("NSE bhavcopy ZIP contains no CSV")
-            raw = zf.read(names[0])
+            return zf.read(names[0])
     except zipfile.BadZipFile:
-        raw = blob
-    frame = pd.read_csv(io.BytesIO(raw), low_memory=False)
+        return blob
+
+
+def _parse_date_values(values: pd.Series) -> pd.Series:
+    """Parse ISO, compact YYYYMMDD, and legacy DD-Mon-YYYY / DD-MM-YYYY dates."""
+    text = values.astype(str).str.strip()
+    compact = pd.to_datetime(text, format="%Y%m%d", errors="coerce")
+    generic = pd.to_datetime(text, errors="coerce", dayfirst=True)
+    return compact.fillna(generic)
+
+
+def _validate_bhavcopy_blob(blob: bytes, trade_date: date) -> None:
+    """Reject an HTML/error response, unexpected schema, or archive for another date."""
+    raw = _extract_bhavcopy_csv(blob)
+    frame = pd.read_csv(io.BytesIO(raw), low_memory=False, nrows=8)
     canonical = {re.sub(r"[^a-z0-9]", "", str(c).lower()): c for c in frame.columns}
-    symbol_col = next((canonical[k] for k in ("symbol", "tckrsymb", "underlying") if k in canonical), None)
-    instrument_col = next((canonical[k] for k in ("instrument", "fininstrmtp", "instrumenttype") if k in canonical), None)
-    expiry_col = next((canonical[k] for k in ("expiry", "expirydate", "expirydt", "xprydt", "expiry_dt") if k in canonical), None)
-    option_type_col = next((canonical[k] for k in ("optiontype", "optiontyp", "optn", "optn_tp", "optntp", "optntyp", "optn_tp", "option_type") if k in canonical), None)
+    symbol_col = next((canonical[k] for k in ("symbol", "tckrsymb", "underlying", "undrlyginstrm") if k in canonical), None)
+    expiry_col = next((canonical[k] for k in ("expiry", "expirydate", "expirydt", "xprydt", "fininstrmactlxprydt") if k in canonical), None)
     if symbol_col is None or expiry_col is None:
         raise ValueError("Unrecognized NSE F&O bhavcopy schema: " + ",".join(map(str, frame.columns)))
+    trade_col = next((canonical[k] for k in ("bizdt", "businessdate", "timestamp", "tradedate", "tradedt", "traddate") if k in canonical), None)
+    if trade_col:
+        parsed = _parse_date_values(frame[trade_col])
+        source_dates = set(parsed.dropna().dt.date)
+        if source_dates and trade_date not in source_dates:
+            raise ValueError(
+                f"Bhavcopy trade-date mismatch: expected {trade_date.isoformat()}, "
+                f"file identifies {','.join(sorted(d.isoformat() for d in source_dates)[:3])}"
+            )
+
+
+def parse_bhavcopy_contract_expiries(blob: bytes, trade_date: date) -> set[date]:
+    """Return NIFTY option expiries from legacy or UDiFF NSE F&O bhavcopy.
+
+    UDiFF exposes scheduled and actual expiry fields. Prefer actual expiry when
+    populated, and validate that the archive is for the requested trade date.
+    """
+    raw = _extract_bhavcopy_csv(blob)
+    frame = pd.read_csv(io.BytesIO(raw), low_memory=False)
+    canonical = {re.sub(r"[^a-z0-9]", "", str(c).lower()): c for c in frame.columns}
+
+    trade_col = next((canonical[k] for k in ("bizdt", "businessdate", "timestamp", "tradedate", "tradedt", "traddate") if k in canonical), None)
+    if trade_col:
+        parsed_trade_dates = _parse_date_values(frame[trade_col])
+        source_dates = set(parsed_trade_dates.dropna().dt.date)
+        if source_dates and trade_date not in source_dates:
+            raise ValueError(
+                f"Bhavcopy trade-date mismatch: expected {trade_date.isoformat()}, "
+                f"file identifies {','.join(sorted(d.isoformat() for d in source_dates)[:3])}"
+            )
+
+    symbol_col = next((canonical[k] for k in ("symbol", "tckrsymb", "underlying", "undrlyginstrm") if k in canonical), None)
+    instrument_col = next((canonical[k] for k in ("instrument", "fininstrmtp", "instrumenttype") if k in canonical), None)
+    expiry_col = next((canonical[k] for k in ("expiry", "expirydate", "expirydt", "xprydt") if k in canonical), None)
+    actual_expiry_col = canonical.get("fininstrmactlxprydt")
+    option_type_col = next((canonical[k] for k in ("optiontype", "optiontyp", "optn", "optn_tp", "optntp", "optntyp", "option_type") if k in canonical), None)
+    if symbol_col is None or expiry_col is None:
+        raise ValueError("Unrecognized NSE F&O bhavcopy schema: " + ",".join(map(str, frame.columns)))
+
     symbols = frame[symbol_col].astype(str).str.upper().str.strip().eq("NIFTY")
     if instrument_col:
         inst = frame[instrument_col].astype(str).str.upper().str.strip()
@@ -285,27 +335,58 @@ def parse_bhavcopy_contract_expiries(blob: bytes, trade_date: date) -> set[date]
     if option_type_col:
         opts = frame[option_type_col].astype(str).str.upper().str.strip()
         symbols &= opts.isin({"CE", "PE"})
-    expiry = pd.to_datetime(frame.loc[symbols, expiry_col], errors="coerce", dayfirst=True)
-    return set(expiry.dropna().dt.date)
+
+    scheduled = _parse_date_values(frame.loc[symbols, expiry_col])
+    expiry_dates = scheduled.copy()
+    if actual_expiry_col:
+        actual = _parse_date_values(frame.loc[symbols, actual_expiry_col])
+        expiry_dates = actual.where(actual.notna(), scheduled)
+    return set(expiry_dates.dropna().dt.date)
+
+
+def bhavcopy_urls(trade_date: date) -> list[str]:
+    """Return source URLs in the official format's historical date order.
+
+    NSE used the legacy derivative CSV through 5 July 2024; UDiFF replaced it
+    from 8 July 2024. Prefer the matching format and the documented UDiFF host.
+    """
+    mon = trade_date.strftime("%b").upper()
+    legacy = (
+        f"https://archives.nseindia.com/content/historical/DERIVATIVES/"
+        f"{trade_date:%Y}/{mon}/fo{trade_date:%d}{mon}{trade_date:%Y}bhav.csv.zip"
+    )
+    udiff = (
+        "https://nsearchives.nseindia.com/content/fo/"
+        f"BhavCopy_NSE_FO_0_0_0_{trade_date:%Y%m%d}_F_0000.csv.zip"
+    )
+    udiff_alt = (
+        "https://archives.nseindia.com/content/fo/"
+        f"BhavCopy_NSE_FO_0_0_0_{trade_date:%Y%m%d}_F_0000.csv.zip"
+    )
+    if trade_date < date(2024, 7, 8):
+        return [legacy, udiff, udiff_alt]
+    return [udiff, udiff_alt, legacy]
 
 
 def fetch_bhavcopy(trade_date: date, session: requests.Session) -> bytes:
-    """Try official NSE legacy then UDiFF archive URLs for a trading date."""
-    mon = trade_date.strftime("%b").upper()
-    old = f"https://archives.nseindia.com/content/historical/DERIVATIVES/{trade_date:%Y}/{mon}/fo{trade_date:%d}{mon}{trade_date:%Y}bhav.csv.zip"
-    new = f"https://archives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_{trade_date:%Y%m%d}_F_0000.csv.zip"
+    """Fetch the expected official NSE bhavcopy format, validating date and schema."""
     headers = {"User-Agent": UA, "Referer": "https://www.nseindia.com/all-reports-derivatives"}
     failures = []
-    for url in (new, old):
+    for url in bhavcopy_urls(trade_date):
         try:
             response = session.get(url, headers=headers, timeout=(5, 10))
-            if response.status_code == 200 and len(response.content) > 100:
-                return response.content
-            failures.append(f"{response.status_code}:{url.rsplit('/', 1)[-1]}")
+            if response.status_code != 200 or len(response.content) <= 100:
+                failures.append(f"{response.status_code}:{url.rsplit('/', 1)[-1]}")
+                continue
+            try:
+                _validate_bhavcopy_blob(response.content, trade_date)
+            except Exception as exc:
+                failures.append(f"invalid:{url.rsplit('/', 1)[-1]}:{type(exc).__name__}")
+                continue
+            return response.content
         except requests.RequestException as exc:
-            failures.append(type(exc).__name__)
-    raise RuntimeError("NSE F&O bhavcopy unavailable for " + trade_date.isoformat() + " (" + ";".join(failures) + ")")
-
+            failures.append(f"{type(exc).__name__}:{url.rsplit('/', 1)[-1]}")
+    raise RuntimeError("NSE F&O bhavcopy unavailable/invalid for " + trade_date.isoformat() + " (" + ";".join(failures) + ")")
 
 def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> dict[str, Any]:
     OUT.mkdir(parents=True, exist_ok=True)

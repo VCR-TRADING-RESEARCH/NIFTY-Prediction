@@ -1,7 +1,7 @@
 # Phase 3 — Official Source and Expiry Reconciliation
 
 **Branch:** `research/phase-3-official-source-reconciliation`  
-**Status:** AUTOMATED VALIDATION RUN PENDING; no source gate is assumed to pass.  
+**Status:** BLOCKED — run 40174191441 completed computation and artifact upload, but its final Git commit collided with the parallel research run. Source routing/parser corrections are being tested in the next bounded run.  
 **Objective:** Resolve the known daily-close discrepancy and heuristic expiry calendar using exchange/index-publisher data before any further model discovery.
 
 ## Research questions
@@ -15,7 +15,7 @@
 
 - **Official index OHLC:** NSE Indices historical NIFTY 50 price-return OHLC page and its public endpoint. The endpoint is undocumented and may change; all outputs are cached and parsed defensively. Reference: https://www.niftyindices.com/reports/historical-data
 - **Official contract evidence:** NSE F&O daily bhavcopy archives, legacy CSV ZIP through 5 July 2024 and UDiFF CSV ZIP from 8 July 2024 onward. Reference: https://www.nseindia.com/all-reports-derivatives and https://www.nseindia.com/report-detail/fo_eq_security
-- **Expiry rules:** NSE NIFTY 50 derivatives contract specifications; weekly expiry day and holiday-shift rule must be checked against the historical contract evidence rather than trusted from the weekday generator alone. Reference: https://www.nseindia.com/static/products-services/equity-derivatives-nifty50
+- **Expiry rules:** Official circulars show Thursday weekly expiry through August 2025, then Tuesday for September 2025 onward. The March 2025 Monday proposal was withheld. References: [NSE Circular FAOP68747 (25 Jun 2025)](https://nsearchives.nseindia.com/web/sites/default/files/inline-files/FAOP68747.pdf), [NSE Circular FAOP68685 (23 Jun 2025)](https://nsearchives.nseindia.com/content/circulars/FAOP68685.pdf), and [current NIFTY 50 contract specification](https://www.nseindia.com/static/products-services/equity-derivatives-nifty50). Historical contract evidence, not a weekday generator, is the acceptance source.
 - **Candidate input only:** Existing minute archive and candidate calendar. Neither is treated as ground truth.
 
 ## Methods
@@ -52,4 +52,4 @@ The workflow runs on branch push, monthly schedule, and manual dispatch. It has 
 
 ## Current prior blockers
 
-The earlier report recorded 368 of 402 candidate expiry-date closes differing from Yahoo's daily close by more than one index point, and the candidate expiry calendar was heuristic. These are the problems this phase attempts to diagnose; the prior counts are not assumed to persist against official index data.
+The completed official-source pass (40174191441) compared 1,901 sessions: 1,717 daily closes differ from official NSE close by more than one point (median absolute difference 8.25; P95 32.45; maximum 200.7 index points). The initial contract parser reported 359/402 candidate dates confirmed and 43 unconfirmed. The downloader was found to try the UDiFF URL first even for pre-8-Jul-2024 dates, and to use an alternate host as the primary UDiFF URL. The next run prioritizes the format matching each historical period and validates archive trade dates. The 43 rows remain unresolved until revalidation.

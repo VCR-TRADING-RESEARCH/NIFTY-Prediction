@@ -2,7 +2,7 @@
 
 **Purpose:** Predict whether the NIFTY 50 spot index at the close of a weekly options expiry is higher or lower than its value at **10:00 IST on the next trading day after the preceding weekly expiry**. This project researches a binary directional forecast, not a generic return-maximization system.
 
-> **Research status (2026-10-25):** First automated empirical run completed, but Phase 1 is BLOCKED: 368/402 expiry-date closes mismatch an independent daily-close source by >1 point and the historical expiry calendar remains heuristic. Provisional holdout model scores are exploratory only. No usable trading strategy is validated. Do not trade this result.
+> **Research status (2026-10-25):** Phase 3's official-source run completed but failed the data gate: **1,717/1,901** minute-derived daily closes differ from official NSE closes by more than one point; the initial contract parser confirmed 359/402 nominal expiry dates. Source routing/parser corrections and workflow serialization are now being tested. Model metrics remain exploratory, and **no usable trading strategy is validated**.
 
 ## Definition of the target
 
@@ -12,7 +12,7 @@ For each actual weekly expiry date \(E_t\), let \(A_t\) be the first valid NIFTY
 - Binary label: \`1\` if \(r_t > 0\); \`0\` if \(r_t < 0\).
 - Exact ties are retained as a separate \`flat\` label for data-quality reporting and excluded from binary model fitting unless a pre-registered tolerance is selected.
 - All features must be available by the forecast timestamp. No expiry-day close, post-forecast data, or revised/future information may leak into features.
-- Weekly NIFTY 50 options started in February 2019; 2017–2018 minute bars may be used only for feature lookback, not weekly-option expiry labels. The first weekly expiry was 14 February 2019. Expiry weekday changed from Thursday to Tuesday in September 2025, with holiday shifts. A complete historical contract calendar is required for confirmatory inference.
+- Weekly NIFTY 50 options started in February 2019; 2017–2018 minute bars may be used only for feature lookback, not weekly-option expiry labels. The first weekly expiry was 14 February 2019. Expiry weekday changed from Thursday to Tuesday in September 2025, with holiday shifts. A complete historical contract calendar is required for confirmatory inference. Official NSE circulars document Thursday weekly expiry through August 2025 and Tuesday from September 2025; see [FAOP68747](https://nsearchives.nseindia.com/web/sites/default/files/inline-files/FAOP68747.pdf) and the [current NIFTY 50 contract specification](https://www.nseindia.com/static/products-services/equity-derivatives-nifty50).
 
 The research target is on the spot index. Any executable strategy must separately define the instrument, order timing, position sizing, and cash-flow accounting (e.g., NIFTY futures or options) and apply date-effective Paytm Money brokerage, exchange charges, statutory levies, GST, stamp duty, bid-ask spread and slippage. Directional accuracy alone does not establish tradability.
 
@@ -21,9 +21,9 @@ The research target is on the spot index. Any executable strategy must separatel
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
 
-Last status refresh: 2026-10-25 07:28 UTC
+Last status refresh: 2026-10-25 07:52 UTC
 
-- Run ID: 40172557963
+- Run ID: 40174191439
 - Target labels: 398
 - Binary rows with sufficient features: 398
 - Development / final holdout rows: 318 / 80
@@ -35,7 +35,7 @@ The current pipeline labels the weekday-derived expiry calendar as exploratory; 
 
 - Source CSV files: 19
 - Valid minute bars after checks: 882839
-- Yahoo daily-close check: available; compared rows: 2352; expiry-date mismatches over tolerance: 368
+- Yahoo daily-close check (prior diagnostic): 2,352 rows; 368 expiry-date mismatches over tolerance. Official NSE reconciliation: 1,901 rows compared; 1,717 mismatches >1 point; median absolute difference 8.25 points; P95 32.45 points.
 
 ### Final holdout metrics (exploratory)
 - extra_trees: accuracy 0.575, balanced accuracy 0.559, n=80
@@ -51,11 +51,19 @@ See the research log, error log, pre-registered plan, data-quality report, and m
 | Phase | Status | Acceptance gate |
 |---|---|---|
 | 0. Repository bootstrap and governance | Implemented; workflow and unit tests pass | Files, logs, workflow and test scaffolding present |
-| 1. Data and label validation | **BLOCKED** | 368/402 expiry-date close mismatches >1 point; official expiry calendar not reconciled; Dhan cross-check unavailable |
+| 1. Data and label validation | **BLOCKED** | 1,717/1,901 official-close discrepancies >1 point; 43/402 nominal expiry dates not confirmed in first reconciliation; Dhan cross-check unavailable |
 | 2. Baselines and leakage-safe features | Exploratory pass only | Provisional labels/features and baseline outputs generated; cannot accept while Phase 1 fails |
 | 3. Model and indicator discovery | Exploratory pass only | 80-row holdout evaluated; no model certified; Quantevolve/PySR/TradingAgents deferred |
 | 4. Robustness, uncertainty and costs | **BLOCKED** | Validated source and contract-level cost/P&L data unavailable |
 | 5. Manuscript and independent audit | Manuscript drafted; independent audit pending | Exploratory results and blockers documented; no unsupported profitability claim |
+
+### Latest Phase 3 source gate
+
+- Official daily source: 1,913 rows collected; 1,901/1,901 comparison rows had an official close.
+- Daily close mismatches above one point: **1,717 / 1,901** (median absolute difference 8.25 points; P95 32.45; maximum 200.7).
+- Initial contract check: **359 / 402** candidate dates confirmed, **43 unresolved**. Parser/source-routing correction and workflow commit serialization are in progress.
+- See [machine-readable report](data/reconciliation/source_reconciliation_report.json), [expiry summary by year](data/reconciliation/expiry_verification_summary_by_year.csv), [close comparison summary by year](data/reconciliation/daily_close_mismatch_summary_by_year.csv), and [Phase 3 plan](docs/PHASE_3_SOURCE_RECONCILIATION.md).
+- Full row-level result: [workflow artifact 40174191441](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40174191441).
 
 ## Repository map
 
