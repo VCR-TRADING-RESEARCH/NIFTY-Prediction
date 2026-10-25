@@ -113,15 +113,10 @@ def weekly_nominals(start: date, end: date) -> list[date]:
     d = first
     while d <= end:
         weekday = 1 if d >= TUESDAY_REGIME else 3  # Tuesday from Sep-2025; Thursday before
-        delta = (weekday - d.weekday()) % 7
-        nominal = d + timedelta(days=delta)
-        if nominal > end:
-            break
-        dates.append(nominal)
-        d = nominal + timedelta(days=1)
-        while d.weekday() != weekday:
-            d += timedelta(days=1)
-    return sorted(set(dates))
+        if d.weekday() == weekday:
+            dates.append(d)
+        d += timedelta(days=1)
+    return dates
 
 
 def parse_bhavcopy_contract_expiries(blob: bytes, trade_date: date) -> set[date]:
@@ -139,7 +134,7 @@ def parse_bhavcopy_contract_expiries(blob: bytes, trade_date: date) -> set[date]
     symbol_col = next((canonical[k] for k in ("symbol", "tckrsymb", "underlying") if k in canonical), None)
     instrument_col = next((canonical[k] for k in ("instrument", "fininstrmtp", "instrumenttype") if k in canonical), None)
     expiry_col = next((canonical[k] for k in ("expiry", "expirydate", "expirydt", "xprydt", "expiry_dt") if k in canonical), None)
-    option_type_col = next((canonical[k] for k in ("optiontype", "optiontyp", "optn", "optn_tp", "opntp", "option_type") if k in canonical), None)
+    option_type_col = next((canonical[k] for k in ("optiontype", "optiontyp", "optn", "optn_tp", "optntp", "option_type") if k in canonical), None)
     if symbol_col is None or expiry_col is None:
         raise ValueError("Unrecognized NSE F&O bhavcopy schema: " + ",".join(map(str, frame.columns)))
     symbols = frame[symbol_col].astype(str).str.upper().str.strip().eq("NIFTY")
