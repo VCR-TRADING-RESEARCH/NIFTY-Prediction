@@ -48,3 +48,11 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Calendar gate: EXPLORATORY_ONLY — Weekly expiry dates were generated from weekday regimes and inferred from available bars; official historical expiry calendar and holiday shifts are not independently reconciled.
 - Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
 - Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.
+
+
+## 2026-10-25 — Phase 2 experimental track started
+- Status: IN PROGRESS; bounded experiment branch created from the Phase 1 evidence branch.
+- User explicitly requested bypassing the earlier validation phases and proceeding with QuantEvolve, PySR, TradingAgents/testing agents, and the custom indicator.
+- Added a bounded evolutionary feature-rule search, a PySR symbolic-return experiment, upstream repository smoke-test/provenance, deterministic role-based risk review, and Python mirror of the Pine indicator.
+- Added scheduled/manual GitHub Actions workflow, tests, and phase-specific plan. Outcomes will be recorded per track; dependency and runtime failures are non-blocking and must be logged.
+- Scientific caveat: this is a user-directed bypass, not a passing validation gate. The historical expiry calendar and independent price discrepancies remain unresolved; no strategy is approved for trading.
