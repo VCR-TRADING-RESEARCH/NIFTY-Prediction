@@ -1,6 +1,6 @@
 {
-  "run_id": "40180474671",
-  "generated_utc": "2026-10-25T09:25:31.177555+00:00",
+  "run_id": "40180819590",
+  "generated_utc": "2026-10-25T09:30:22.561406+00:00",
   "source_quality": {
     "source_files_read": 19,
     "raw_rows_before_deduplication": 884673,
@@ -14,6 +14,15 @@
     "timezone": "Asia/Kolkata",
     "timestamp_assumption": "Naive source timestamps are interpreted as IST; offset-aware values converted to IST.",
     "source_archive": "technovusin/nifty50-historical-data",
+    "official_daily_close_validation": {
+      "official_sessions_matched": 1903,
+      "minute_sessions_total": 2356,
+      "in_scope_sessions_expected": 1903,
+      "in_scope_sessions_missing_official_close": 0,
+      "archive_close_median_abs_difference_points": 8.25,
+      "archive_close_mismatches_over_1_point": 1719,
+      "target_close_source": "NSE official daily close"
+    },
     "daily_sessions": 2356,
     "sessions_with_less_than_250_bars": 2,
     "sessions_with_unchanged_close_run_over_10": 63,
@@ -27,17 +36,14 @@
       "DOWN": 175
     },
     "calendar_status_counts": {
-      "weekday_heuristic_nominal": 362,
-      "shift_or_data_gap_inferred": 34,
-      "uncertain_low_coverage": 2
+      "shift_or_data_gap_inferred": 398
     },
     "confirmatory_eligible_rows": 0,
     "calendar_warning": "The weekly schedule is inferred from known weekday regimes. Holiday shifts are not independently linked to official contract archives; all results remain exploratory until this is resolved.",
     "excluded_cycle_candidates": 3,
     "exclusion_reason_counts": {
-      "low_session_coverage": 1,
-      "anchor_session_gap_too_large": 1,
-      "missing_expiry_close_bar": 1
+      "missing_1000_anchor_bar": 2,
+      "anchor_session_gap_too_large": 1
     }
   },
   "independent_daily_close_crosscheck": {
@@ -45,11 +51,11 @@
     "available": true,
     "source": "Yahoo Finance ^NSEI via yfinance",
     "matched_rows": 2352,
-    "mismatch_rows": 368,
+    "mismatch_rows": 0,
     "expiry_dates_compared": 402,
     "tolerance_index_points": 1.0,
-    "median_abs_difference": 7.200390624999272,
-    "p95_abs_difference": 30.52210937500112,
+    "median_abs_difference": 0.0003906250003637979,
+    "p95_abs_difference": 7.922304687500027,
     "note": "Daily close cross-check is an independent public-data diagnostic, not official expiry-calendar proof."
   },
   "independent_recent_minute_crosscheck": {
