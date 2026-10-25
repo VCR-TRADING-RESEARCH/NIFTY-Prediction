@@ -42,6 +42,19 @@ The research target is on the spot index. Any executable strategy must separatel
 - [Automated test suite](tests/)
 - [Research workflow](.github/workflows/nifty-research.yml)
 
+
+## ExtraTrees as-of-date prediction page
+
+- **Prediction page source:** [docs/index.html](docs/index.html)
+- **Prediction data / history:** [docs/data/predictions.json](docs/data/predictions.json)
+- **Inference script:** [scripts/generate_prediction.py](scripts/generate_prediction.py)
+- **Page specification and safety gates:** [docs/PREDICTION_PAGE.md](docs/PREDICTION_PAGE.md)
+- **Automated/manual workflow:** [.github/workflows/prediction-page.yml](.github/workflows/prediction-page.yml)
+- **Implementation step log:** [logs/RESEARCH_LOG.md](logs/RESEARCH_LOG.md)
+- **Error log:** [logs/ERROR_LOG.md](logs/ERROR_LOG.md)
+
+The frontend is implemented on branch `phase-prediction-page`. A verified numeric prediction is **not yet available**: the inspected default branch did not contain the compatible trained model artifact, processed feature rows, or verified expiry calendar required by the inference pipeline. The page explicitly displays this state instead of inventing a forecast. After merge, enable GitHub Pages with **GitHub Actions** as the build/deployment source and run the workflow manually or let its weekday schedule refresh the published record. The workflow will require the model and data artifacts to be added by the research pipeline.
+
 ## Research approach
 
 1. Preserve exact target semantics and historical expiry-calendar transitions.
