@@ -7,6 +7,7 @@
   const inputError = $("input-error");
   const resultSection = $("result-section");
   let apiBaseUrl = "";
+  let apiReady = false;
   const originalButtonLabel = predictButton.innerHTML;
 
   function showInputError(message) {
@@ -125,8 +126,8 @@
       const configResponse = await fetch("./assets/live-api-config.json?ts=" + Date.now(), {cache:"no-store"});
       if (!configResponse.ok) throw new Error("Could not load the live-service configuration.");
       const config = await configResponse.json();
-      apiBaseUrl = typeof config.api_base_url === "string" ? config.api_base_url.replace(/\\/$/, "") : "";
-      if (!apiBaseUrl || !/^https:\\/\\//i.test(apiBaseUrl)) {
+      apiBaseUrl = typeof config.api_base_url === "string" ? config.api_base_url.replace(/\/$/, "") : "";
+      if (!apiBaseUrl || !/^https:\/\//i.test(apiBaseUrl)) {
         predictButton.disabled = true;
         setPageStatus("Secure service not deployed", "status-blocked");
         showInputError("One-click prediction is not active yet because the secure Python service has not been deployed. This page will not ask you to submit a GitHub issue or expose credentials.");
@@ -135,11 +136,13 @@
         const healthResponse = await fetch(apiBaseUrl + "/health", {cache:"no-store"});
         const health = await responseJson(healthResponse);
         if (health.status !== "ready") throw new Error("The secure service is online but Dhan credentials are not fully configured.");
+        apiReady = true;
         predictButton.disabled = false;
         setPageStatus("Live prediction ready", "status-ready");
         $("generated-at").textContent = "Predict calls the secure Python service directly. Dhan credentials stay server-side; the model is refit for each request.";
       }
     } catch (error) {
+      apiReady = false;
       predictButton.disabled = true;
       setPageStatus("Secure service unavailable", "status-blocked");
       showInputError(error && error.message ? error.message : "The secure prediction service could not be reached.");
@@ -169,7 +172,7 @@
     } finally {
       predictButton.disabled = false;
       predictButton.innerHTML = originalButtonLabel;
-      predictButton.disabled = !apiBaseUrl;
+      predictButton.disabled = !apiReady;
     }
   });
   initialize();
