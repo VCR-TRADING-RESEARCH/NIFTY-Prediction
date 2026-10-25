@@ -26,7 +26,7 @@ permissions:
 
 concurrency:
   group: nifty-phase2-experiments
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   experiments:
