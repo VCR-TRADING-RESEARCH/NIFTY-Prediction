@@ -3,6 +3,8 @@
 Version: 1.0. All changes should be logged and versioned.
 
 ## 1. Data engineering and calendar
+Weekly NIFTY 50 options began trading on 11 February 2019; NSE's first weekly expiry was 14 February 2019 (official circular FAOP39894: https://nsearchives.nseindia.com/content/circulars/FAOP39894.pdf). All target cycles begin no earlier than that first expiry. Minute prices from 2017–2018 may provide lagged features only.
+
 Load minute OHLC from the source folders. Keep source timestamp semantics as candle-start IST. Consolidate identical duplicates; conflicting duplicates are logged and resolved by a deterministic source-priority rule. Validate each bar's OHLC consistency and exclude malformed rows.
 
 Generate candidate weekly expiry dates using historical weekday regimes only as a discovery fallback (Thursday before the September 2025 transition, Tuesday afterwards, shifted back only with official holiday evidence). A confirmed actual contract calendar outranks a weekday heuristic. Label every expiry as official, verified_shift, inferred or uncertain; confirmatory analysis uses official/verified_shift only. If no official calendar is available, publish a clearly marked exploratory analysis and do not claim a validated final result.
