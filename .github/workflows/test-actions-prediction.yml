@@ -1,0 +1,52 @@
+name: Validate Actions prediction integration
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "docs/assets/predictor.js"
+      - "docs/index.html"
+      - "scripts/run_live_prediction.py"
+      - ".github/workflows/on-demand-prediction.yml"
+      - ".github/workflows/test-actions-prediction.yml"
+      - "live_api/**"
+      - "scripts/research_core.py"
+      - "tests/**"
+      - "requirements.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pyyaml
+      - name: Test research and Dhan inference validation
+        run: python -m pytest -q tests/test_live_api.py tests/test_research_core.py
+      - name: Compile the Actions runner
+        run: python -m py_compile scripts/run_live_prediction.py live_api/app.py
+      - name: Check prediction page JavaScript syntax
+        run: node --check docs/assets/predictor.js
+      - name: Parse workflow YAML files
+        run: |
+          python - <<'PY'
+          import yaml
+          for path in (".github/workflows/on-demand-prediction.yml", ".github/workflows/test-actions-prediction.yml"):
+              with open(path, encoding="utf-8") as handle:
+                  yaml.safe_load(handle)
+              print("YAML parsed:", path)
+          PY

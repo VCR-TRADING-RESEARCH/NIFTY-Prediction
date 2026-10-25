@@ -94,59 +94,41 @@
     $("expiry-note").hidden = notes.length === 0;
     resultSection.hidden = false;
   }
-  async function runPrediction(asOfDate) {
-    const response = await fetch(apiBaseUrl + "/predict", {
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({as_of_date:asOfDate})
-    });
-    const queued = await responseJson(response);
-    if (!queued.job_id) throw new Error("The live service did not return a prediction job ID.");
-    setPageStatus("Refreshing Dhan data and fitting ExtraTrees", "status-loading");
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  async function runPrediction(asOfDate, clickStartedAt) {
+    const link = $("prediction-request-link");
+    const issueTitle = "[NIFTY PREDICT] " + asOfDate;
+    const issueBody = "Please run a fresh Dhan-backed ExtraTrees prediction for the 10:00 IST anchor date " + asOfDate + ".\n\nSubmitted from the GitHub Pages prediction screen.";
+    link.href = "https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/issues/new?title=" +
+      encodeURIComponent(issueTitle) + "&body=" + encodeURIComponent(issueBody) + "&labels=prediction-request";
+    link.hidden = false;
+    link.textContent = "Open GitHub request for " + asOfDate + " (submit it to start Python)";
+    showInputError("Click the GitHub request link, then click 'Submit new issue'. Keep this page open; it will poll for the fresh result.");
     for (let attempt = 0; attempt < 360; attempt += 1) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const poll = await fetch(apiBaseUrl + "/jobs/" + encodeURIComponent(queued.job_id), {cache:"no-store"});
-      const job = await responseJson(poll);
-      if (job.status === "succeeded" && job.result) {
-        renderPrediction(job.result);
-        setPageStatus("Live prediction complete", "status-ready");
-        return;
-      }
-      if (job.status === "failed") throw new Error(job.error || "Dhan inference failed. Check the date and retry.");
-      setPageStatus(job.status === "queued" ? "Live prediction queued" : "Fetching history and training model", "status-loading");
+      await delay(5000);
+      const url = "./assets/predictions/" + encodeURIComponent(asOfDate) + ".json?ts=" + Date.now();
+      let response;
+      try { response = await fetch(url, {cache:"no-store"}); } catch (_) { continue; }
+      if (!response.ok) continue;
+      const record = await response.json();
+      const generatedAt = Date.parse(record.generated_at_utc || "");
+      if (record.as_of_date !== asOfDate || !Number.isFinite(generatedAt) || generatedAt < clickStartedAt) continue;
+      if (record.status !== "succeeded") throw new Error(record.error || "The requested prediction was blocked.");
+      renderPrediction(record);
+      setPageStatus("Live prediction complete", "status-ready");
+      return;
     }
-    throw new Error("The live request is taking too long. Check the API deployment status before retrying.");
+    throw new Error("No fresh result appeared within 30 minutes. Submit the GitHub issue and confirm your account is a repository owner/member. Check the Actions link below.");
   }
   async function initialize() {
-    predictButton.disabled = true;
-    try {
-      const configResponse = await fetch("./assets/live-api-config.json?ts=" + Date.now(), {cache:"no-store"});
-      const config = await responseJson(configResponse);
-      apiBaseUrl = String(config.api_base_url || "").replace(/\/+$/, "");
-      if (!apiBaseUrl) {
-        setPageStatus("Live API not deployed", "status-blocked");
-        showInputError("The secure Dhan inference service has not published its endpoint yet. Check the 'Deploy Live Dhan ExtraTrees API' workflow.");
-        $("generated-at").textContent = "Waiting for secure backend deployment; Dhan credentials are not stored in this page.";
-        return;
-      }
-      const health = await responseJson(await fetch(apiBaseUrl + "/health", {cache:"no-store"}));
-      if (health.status !== "ready") {
-        setPageStatus("Dhan API needs setup", "status-blocked");
-        showInputError("The service is reachable but Dhan credentials are not configured. Check backend deployment secrets.");
-        $("generated-at").textContent = "Live API endpoint: " + apiBaseUrl;
-        return;
-      }
-      setPageStatus("Live Dhan API ready", "status-ready");
-      $("generated-at").textContent = "Ready: Predict refreshes Dhan authentication, obtains the selected cutoff's minute data, and refits ExtraTrees on the server.";
-      predictButton.disabled = false;
-    } catch (error) {
-      setPageStatus("Live API unavailable", "status-blocked");
-      showInputError(error && error.message ? error.message : "Could not connect to the secure live API.");
-      $("generated-at").textContent = "The page cannot reach its secure Dhan inference service.";
-    }
+    predictButton.disabled = false;
+    setPageStatus("GitHub Actions prediction ready", "status-ready");
+    $("generated-at").textContent = "Predict prepares a secured GitHub request. Open the link and submit it; Python then runs in GitHub Actions.";
   }
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     clearInputError();
+    $("prediction-request-link").hidden = true;
     resultSection.hidden = true;
     const asOfDate = parseInputDate(dateInput.value);
     if (!asOfDate) {
@@ -154,18 +136,14 @@
       dateInput.focus();
       return;
     }
-    if (!apiBaseUrl) {
-      showInputError("The secure live Dhan API is not configured yet. Check the deployment workflow.");
-      return;
-    }
     predictButton.disabled = true;
-    predictButton.textContent = "Running…";
-    setPageStatus("Starting live prediction", "status-loading");
+    predictButton.textContent = "Waiting…";
+    setPageStatus("Waiting for GitHub Actions", "status-loading");
     try {
-      await runPrediction(asOfDate);
+      await runPrediction(asOfDate, Date.now());
     } catch (error) {
-      setPageStatus("Prediction failed", "status-blocked");
-      showInputError(error && error.message ? error.message : "Live prediction failed. Please retry.");
+      setPageStatus("Prediction not confirmed", "status-blocked");
+      showInputError(error && error.message ? error.message : "Could not retrieve the new prediction.");
     } finally {
       predictButton.disabled = false;
       predictButton.innerHTML = originalButtonLabel;

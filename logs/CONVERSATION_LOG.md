@@ -29,3 +29,10 @@
 - User approved proceeding with a secure alternative backend while keeping GitHub Pages as the front end.
 - Decision: do not place Dhan PIN/TOTP in the browser or use a publicly callable GitHub Actions trigger. Current Hugging Face provisioning is blocked by HTTP 402; no other host deployment credential is available in the repository workflow configuration.
 - Next actionable prerequisite: eligible existing Docker Space ID or a credential for a host such as Render/Cloudflare. Then deploy, test live Dhan auth/history, and verify browser result rendering.
+
+
+## 2026-10-25 — GitHub Actions execution approved
+- User approved proceeding with a design where the Pages Predict action runs Python in GitHub Actions.
+- Implemented a prefilled, authenticated GitHub issue request as the secure trigger; GitHub Actions executes the existing Dhan-backed ExtraTrees pipeline, and Pages polls for a newly generated date-specific JSON result. The workflow has owner/member authorization checks and a manual dispatch input.
+- Explicit limitation: because static Pages has no private credentials, the user must submit the prefilled request in GitHub after clicking the request link. No browser token or Dhan secret is exposed.
+- The workflow and frontend are not yet live-verified. Keep status transparent until CI, permissions, Pages publication and Dhan inference succeed.

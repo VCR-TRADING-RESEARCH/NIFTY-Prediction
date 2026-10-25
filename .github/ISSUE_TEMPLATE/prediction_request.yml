@@ -1,0 +1,18 @@
+name: NIFTY prediction request
+description: Request a fresh Dhan-backed ExtraTrees prediction through GitHub Actions.
+title: "[NIFTY PREDICT] YYYY-MM-DD"
+labels:
+  - prediction-request
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submitting this issue asks GitHub Actions to refresh Dhan authentication, retrieve or reuse the required NIFTY 50 history, refit ExtraTrees, and publish the result to the prediction page. Only repository owners and members are authorized to run the job.
+  - type: input
+    id: as_of_date
+    attributes:
+      label: As-of date (YYYY-MM-DD)
+      description: Must be the intended 10:00 IST anchor date. The workflow reads the date from the issue title.
+      placeholder: "2026-10-25"
+    validations:
+      required: true
