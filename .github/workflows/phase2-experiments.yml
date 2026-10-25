@@ -13,6 +13,11 @@ on:
       - "docs/PHASE_2_EXPERIMENTS.md"
   workflow_dispatch:
     inputs:
+      refresh_features:
+        description: Rebuild target/feature dataset from raw minute data instead of using the committed research snapshot
+        required: false
+        type: boolean
+        default: false
       run_pysr:
         description: Attempt PySR symbolic regression (Julia runtime may take several minutes)
         required: false
@@ -68,7 +73,14 @@ jobs:
           } > research/results/upstream_revisions.md
       - name: Fetch cached/public NIFTY 50 minute data
         run: python scripts/fetch_data.py
-      - name: Run existing deterministic target and feature pipeline
+      - name: Rebuild target and feature pipeline on request
+        if: ${{ inputs.refresh_features == true }}
+        run: python scripts/run_research.py
+      - name: Use committed target and feature snapshot
+        if: ${{ inputs.refresh_features != true && hashFiles('data/processed/weekly_labels_features.csv') != '' }}
+        run: echo "Using committed, reproducible weekly feature snapshot; set refresh_features=true for a full rebuild."
+      - name: Build target and feature snapshot if absent
+        if: ${{ hashFiles('data/processed/weekly_labels_features.csv') == '' }}
         run: python scripts/run_research.py
       - name: Install PySR
         continue-on-error: true
