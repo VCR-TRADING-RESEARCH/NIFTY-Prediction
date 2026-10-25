@@ -16,6 +16,21 @@ For each actual weekly expiry date \(E_t\), let \(A_t\) be the first valid NIFTY
 
 The research target is on the spot index. Any executable strategy must separately define the instrument, order timing, position sizing, and cash-flow accounting (e.g., NIFTY futures or options) and apply date-effective Paytm Money brokerage, exchange charges, statutory levies, GST, stamp duty, bid-ask spread and slippage. Directional accuracy alone does not establish tradability.
 
+## ExtraTrees prediction website
+
+**Phase 4 status:** Interface, forecast exporter, automated workflow integration, and Pages deployment workflow are added on \`research/phase-4-prediction-pages\`. Automated forecast generation and deployed Pages URL still require successful workflow checks and merging through the phase branches.
+
+- [Open the prediction page source](docs/index.html)
+- [Phase 4 plan and acceptance gates](docs/PHASE_4_PREDICTION_PAGES.md)
+- [ExtraTrees forecast records consumed by the page](docs/data/extra_trees_forecasts.json)
+- [Forecast exporter](scripts/build_pages_forecasts.py)
+- [Pages deployment workflow](.github/workflows/deploy-pages.yml)
+- [Expected deployed website URL](https://vcr-trading-research.github.io/NIFTY-Prediction/) — available after the changes reach the default branch and Pages deployment succeeds.
+
+The page uses a date input and **Predict** button. Historical selection is restricted to the fixed chronological holdout beginning with expiry 2025-04-09. The current forward forecast is generated in Python by the research workflow and refreshed in the static JSON. The browser does not contain credentials or train a substitute model.
+
+**Safety gate:** the price-source audit is still blocked and the 10:00 anchor remains provisional. The page's UP/DOWN output is an experimental spot-direction forecast, not an options strategy recommendation or a validated estimate of profit.
+
 ## Research status
 
 <!-- AUTO_STATUS_START -->
