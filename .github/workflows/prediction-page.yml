@@ -1,0 +1,69 @@
+name: ExtraTrees prediction page
+on:
+  workflow_dispatch:
+    inputs:
+      as_of_date:
+        description: "As-of date (YYYY-MM-DD); blank uses current IST date"
+        required: false
+        type: string
+  schedule:
+    - cron: "30 4 * * 1-5"
+  push:
+    branches: [main]
+    paths:
+      - "docs/index.html"
+      - "docs/PREDICTION_PAGE.md"
+      - "scripts/generate_prediction.py"
+      - ".github/workflows/prediction-page.yml"
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: prediction-page
+  cancel-in-progress: false
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - name: Install inference dependencies
+        run: python -m pip install pandas scikit-learn joblib
+      - name: Generate as-of prediction
+        env:
+          AS_OF_DATE: ${{ inputs.as_of_date }}
+          MODEL_VERSION: ${{ vars.EXTRATREES_MODEL_VERSION }}
+        run: python scripts/generate_prediction.py
+      - name: Commit prediction record
+        if: always()
+        run: |
+          if git diff --quiet -- docs/data/predictions.json; then
+            echo "No prediction record change"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/data/predictions.json
+            git commit -m "Update as-of ExtraTrees prediction record"
+            git push
+          fi
+      - name: Upload Pages artifact
+        if: success()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+  deploy:
+    if: success()
+    needs: predict
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
