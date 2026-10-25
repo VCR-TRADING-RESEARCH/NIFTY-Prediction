@@ -157,3 +157,6 @@ Last repository status update: 2026-10-25.
 
 
 **Validation update (2026-10-25):** PR [#14](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/14) was merged to prevent stale result publication and add selected-date workflow navigation. The historical inference run [40204498793](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40204498793) succeeded on rerun and published [the 2024-06-07 result](docs/assets/predictions/2024-06-07.json): direction UP, raw ExtraTrees UP score 0.5475, target expiry 2024-06-13, anchor 22,978.3, 132 training rows through 2024-06-06. This remains exploratory: anchor reconciliation and executable option costs/slippage are not validated.
+
+
+**Pages navigation correction (2026-10-25):** The date form now loads the already-published date-specific JSON in place and does not redirect to GitHub Actions on submit. If that date has no published successful result, the page reports it as unavailable and the user can open Actions manually. Script cache-busting was added to reduce stale browser JavaScript. See the latest research/error logs for this correction.
