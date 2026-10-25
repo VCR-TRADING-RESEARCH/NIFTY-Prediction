@@ -395,3 +395,13 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 ## Dhan data cross-check — run 40195673642
 - Status: FAILED or unavailable. The public archive will remain the core input; independent Dhan cross-check did not pass.
 - Failure responses and credentials were not added to the log. Inspect only sanitized Actions step diagnostics.
+
+
+## Dhan authentication attempt — run 40195799992
+- Status: FAILED or incomplete. The public archive route will still be attempted.
+- Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.
+
+
+## Dhan data cross-check — run 40195799992
+- Status: FAILED or unavailable. The public archive will remain the core input; independent Dhan cross-check did not pass.
+- Failure responses and credentials were not added to the log. Inspect only sanitized Actions step diagnostics.
