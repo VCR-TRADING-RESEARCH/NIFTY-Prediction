@@ -179,8 +179,80 @@ def daily_aggregates(minutes: pd.DataFrame) -> pd.DataFrame:
     return result.sort_values("session_date").reset_index(drop=True)
 
 
-def build_expiry_candidates(daily: pd.DataFrame) -> pd.DataFrame:
-    """Build a discovery calendar, explicitly marked heuristic until official dates are supplied."""
+def apply_official_daily_closes(daily: pd.DataFrame, official_path: Path) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Use official NSE closes where available and report all archive-close differences."""
+    path = Path(official_path)
+    if not path.is_file():
+        raise FileNotFoundError("Official NSE daily-close file is required: " + str(path))
+    official = pd.read_csv(path)
+    required = {"session_date", "official_close"}
+    if not required.issubset(official.columns):
+        raise ValueError("Official close file missing required columns: " + str(sorted(required - set(official.columns))))
+    official["session_date"] = pd.to_datetime(official["session_date"], errors="coerce").dt.normalize()
+    official["official_close"] = pd.to_numeric(official["official_close"], errors="coerce")
+    official = official.dropna(subset=["session_date", "official_close"])
+    if official["session_date"].duplicated().any():
+        raise ValueError("Official close file contains duplicate dates")
+    result = daily.copy()
+    result["session_date"] = pd.to_datetime(result["session_date"], errors="coerce").dt.normalize()
+    result["session_close_archive"] = pd.to_numeric(result["session_close"], errors="coerce")
+    result = result.merge(official[["session_date", "official_close"]], on="session_date", how="left", validate="one_to_one")
+    scope = result["session_date"].ge(pd.Timestamp("2019-02-01")) & result["session_date"].le(official["session_date"].max())
+    missing = result.loc[scope & result["official_close"].isna(), "session_date"]
+    if len(missing):
+        raise ValueError(f"Official close missing for {len(missing)} in-scope sessions; examples: {missing.head(8).dt.strftime('%Y-%m-%d').tolist()}")
+    overlap = result["official_close"].notna()
+    if int(overlap.sum()) < 100:
+        raise ValueError("Official daily close overlap unexpectedly small")
+    result.loc[overlap, "session_close"] = result.loc[overlap, "official_close"]
+    result["session_return"] = result["session_close"].pct_change()
+    result["range_pct"] = (result["session_high"] - result["session_low"]) / result["session_close"].shift(1)
+    archive_diff = (result.loc[overlap, "session_close_archive"] - result.loc[overlap, "official_close"]).abs()
+    return result, {
+        "official_sessions_matched": int(overlap.sum()),
+        "minute_sessions_total": int(len(result)),
+        "in_scope_sessions_expected": int(scope.sum()),
+        "in_scope_sessions_missing_official_close": int(len(missing)),
+        "archive_close_median_abs_difference_points": float(archive_diff.median()),
+        "archive_close_mismatches_over_1_point": int((archive_diff > 1.0).sum()),
+        "target_close_source": "NSE official daily close",
+    }
+
+
+def build_expiry_candidates(daily: pd.DataFrame, verification_path: Path | None = None) -> pd.DataFrame:
+    """Use the official verification table when supplied; otherwise use non-confirmatory heuristics."""
+    if verification_path is not None and Path(verification_path).is_file():
+        verified = pd.read_csv(verification_path)
+        required = {"candidate_date", "verified_expiry_trade_date", "contract_expiry_present", "status"}
+        if not required.issubset(verified.columns):
+            raise ValueError("Expiry verification file missing columns: " + str(sorted(required - set(verified.columns))))
+        status_ok = verified["status"].astype(str).str.startswith("verified_")
+        contract_ok = verified["contract_expiry_present"].astype(str).str.casefold().isin({"true", "1"})
+        actual = pd.to_datetime(verified["verified_expiry_trade_date"], errors="coerce")
+        if not status_ok.all() or not contract_ok.all() or actual.isna().any():
+            raise ValueError("Official expiry verification incomplete; refusing heuristic fallback")
+        if actual.dt.normalize().duplicated().any():
+            raise ValueError("Multiple nominal dates map to the same actual expiry")
+        session_set = set(pd.to_datetime(daily["session_date"]).dt.normalize())
+        rows = []
+        for (_, source), resolved in zip(verified.iterrows(), actual):
+            resolved = pd.Timestamp(resolved).normalize()
+            nominal = pd.Timestamp(source["candidate_date"]).normalize()
+            matching = daily.loc[pd.to_datetime(daily["session_date"]).dt.normalize().eq(resolved), "bars"]
+            rows.append({
+                "nominal_expiry": nominal,
+                "resolved_expiry": resolved,
+                "calendar_status": "official_verified_shift" if nominal != resolved else "official_verified",
+                "candidate_bars": int(matching.iloc[0]) if len(matching) else None,
+                "calendar_verified": True,
+                "official_contract_verified": True,
+                "calendar_shift_days": int((nominal - resolved).days),
+                "resolved_session_present": resolved in session_set,
+            })
+        out = pd.DataFrame(rows).sort_values(["resolved_expiry", "nominal_expiry"]).reset_index(drop=True)
+        out["nominal_expiry"] = pd.to_datetime(out["nominal_expiry"])
+        out["resolved_expiry"] = pd.to_datetime(out["resolved_expiry"])
+        return out
     sessions = daily["session_date"].sort_values().drop_duplicates().reset_index(drop=True)
     if sessions.empty:
         return pd.DataFrame(columns=["nominal_expiry", "resolved_expiry", "calendar_status"])
@@ -297,8 +369,8 @@ def _calculate_features(
     return values
 
 
-def construct_weekly_table(minutes: pd.DataFrame, daily: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]:
-    calendar = build_expiry_candidates(daily)
+def construct_weekly_table(minutes: pd.DataFrame, daily: pd.DataFrame, verification_path: Path | None = None) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]:
+    calendar = build_expiry_candidates(daily, verification_path)
     if calendar.empty or len(calendar) < 2:
         raise ValueError("Insufficient candidate expiry dates to construct weekly cycles.")
     grouped = {pd.Timestamp(d): g for d, g in minutes.groupby(minutes["timestamp"].dt.normalize(), sort=True)}
@@ -350,7 +422,15 @@ def construct_weekly_table(minutes: pd.DataFrame, daily: pd.DataFrame) -> tuple[
             exclusions.append({"nominal_expiry": nominal_expiry, "reason": "low_session_coverage"})
             continue
         anchor_price = float(arow["open"])
-        closing_price = float(crow["close"])
+        has_official_close = "official_close" in daily_expiry.columns and pd.notna(daily_expiry["official_close"].iloc[0])
+        if has_official_close:
+            closing_price = float(daily_expiry["official_close"].iloc[0])
+            closing_timestamp = expiry.tz_localize(IST) + pd.Timedelta(hours=15, minutes=30)
+            closing_source = "NSE_official_daily_close"
+        else:
+            closing_price = float(crow["close"])
+            closing_timestamp = pd.Timestamp(crow["timestamp"])
+            closing_source = "minute_archive_fallback_exploratory"
         if not np.isfinite(anchor_price) or anchor_price <= 0 or not np.isfinite(closing_price) or closing_price <= 0:
             exclusions.append({"nominal_expiry": nominal_expiry, "reason": "invalid_anchor_or_close_price"})
             continue
@@ -371,14 +451,15 @@ def construct_weekly_table(minutes: pd.DataFrame, daily: pd.DataFrame) -> tuple[
             "anchor_date": anchor_date,
             "anchor_timestamp": pd.Timestamp(arow["timestamp"]),
             "anchor_price": anchor_price,
-            "expiry_close_timestamp": pd.Timestamp(crow["timestamp"]),
+            "expiry_close_timestamp": closing_timestamp,
             "expiry_close": closing_price,
+            "expiry_close_source": closing_source,
             "return_pct": ret,
             "label": label,
             "previous_calendar_status": p_status,
             "calendar_status": calendar_status,
-            "source_quality_status": "validated_ohlc_not_independently_verified",
-            "confirmatory_eligible": False,
+            "source_quality_status": "official_EOD_close_with_provisional_minute_anchor" if closing_source == "NSE_official_daily_close" else "unverified_minute_close_and_anchor",
+            "confirmatory_eligible": bool(previous_event.get("calendar_verified", False) and current_event.get("calendar_verified", False) and closing_source == "NSE_official_daily_close"),
             "anchor_bar_delay_minutes": int((pd.Timestamp(arow["timestamp"]) - anchor_date.tz_localize(IST) - pd.Timedelta(hours=10)).total_seconds() // 60),
             "anchor_session_bars": int(daily_anchor["bars"].iloc[0]),
             "expiry_session_bars": int(daily_expiry["bars"].iloc[0]),
