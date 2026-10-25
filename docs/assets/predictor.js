@@ -32,7 +32,7 @@
   }
 
   function parseInputDate(value) {
-    const match = /^\\s*(\\d{1,2})[\\/.-](\\d{1,2})[\\/.-](\\d{4})\\s*$/.exec(value || "");
+    const match = /^\s*(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})\s*$/.exec(value || "");
     if (!match) return null;
     const day = Number(match[1]), month = Number(match[2]), year = Number(match[3]);
     const date = new Date(Date.UTC(year, month - 1, day));
