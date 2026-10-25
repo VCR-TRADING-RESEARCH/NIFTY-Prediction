@@ -30,12 +30,14 @@ def need_env(name: str) -> str:
 
 
 def main() -> int:
+    stage = "validating deployment configuration"
     try:
         hf_token = need_env("HF_TOKEN")
         dhan_client = need_env("DHAN_CLIENT_ID")
         dhan_pin = need_env("DHAN_PIN")
         dhan_totp = need_env("DHAN_TOTP_SECRET")
         api = HfApi(token=hf_token)
+        stage = "checking Hugging Face token identity and permissions"
 
         explicit_id = os.getenv("HF_SPACE_ID", "").strip()
         if explicit_id:
@@ -49,6 +51,7 @@ def main() -> int:
                 raise RuntimeError("Hugging Face identity did not return an account namespace.")
             repo_id = owner + "/" + SPACE_SLUG
 
+        stage = "creating or opening the Hugging Face Docker Space"
         with tempfile.TemporaryDirectory(prefix="nifty-live-api-") as tmp:
             stage = Path(tmp)
             shutil.copy2(ROOT / "live_api" / "app.py", stage / "app.py")
@@ -70,6 +73,7 @@ def main() -> int:
                 private=False,
                 exist_ok=True,
             )
+            stage = "uploading backend source and research data to the Space"
             api.upload_folder(
                 folder_path=str(stage),
                 repo_id=repo_id,
@@ -78,6 +82,7 @@ def main() -> int:
             )
 
         # Secrets are installed only as runtime settings, after source upload.
+        stage = "installing Dhan credentials as Space runtime secrets"
         api.add_space_secret(repo_id=repo_id, key="DHAN_CLIENT_ID", value=dhan_client)
         api.add_space_secret(repo_id=repo_id, key="DHAN_PIN", value=dhan_pin)
         api.add_space_secret(repo_id=repo_id, key="DHAN_TOTP_SECRET", value=dhan_totp)
@@ -118,10 +123,18 @@ def main() -> int:
             print("LIVE_API_HEALTH: Space created and endpoint published; startup is still warming or health check timed out.")
         return 0
     except Exception as exc:
-        # Provider exceptions may contain URLs or request metadata. Only class and
-        # a generic next step are printed; never echo environment values.
-        print("LIVE_API_DEPLOY_ERROR:", type(exc).__name__, file=sys.stderr)
-        print("Check HF_TOKEN write access and the required GitHub Actions secret names.", file=sys.stderr)
+        # Report only failed stage/status, never response body or secret values.
+        status = getattr(getattr(exc, "response", None), "status_code", None)
+        print("LIVE_API_DEPLOY_ERROR_STAGE:", stage, file=sys.stderr)
+        print("LIVE_API_DEPLOY_ERROR_TYPE:", type(exc).__name__, file=sys.stderr)
+        if status is not None:
+            print("LIVE_API_DEPLOY_HTTP_STATUS:", int(status), file=sys.stderr)
+        if status in (401, 403):
+            print("ACTION_NEEDED: HF_TOKEN is unauthenticated or lacks permission to create/update Spaces or change Space secrets.", file=sys.stderr)
+        elif status == 404:
+            print("ACTION_NEEDED: Confirm the Hugging Face account/Space namespace and whether the repository exists.", file=sys.stderr)
+        else:
+            print("Check the failed deployment stage and GitHub Actions secret/variable names; secret values are withheld.", file=sys.stderr)
         return 2
 
 
