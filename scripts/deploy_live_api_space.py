@@ -62,7 +62,7 @@ def main() -> int:
                 "data/reconciliation/nifty50_official_daily.csv",
                 "data/reconciliation/expiry_verification.csv",
             ):
-                destination = stage / relative
+                destination = stage_dir / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(ROOT / relative, destination)
 
@@ -74,8 +74,9 @@ def main() -> int:
                 exist_ok=True,
             )
             stage = "uploading backend source and research data to the Space"
+            stage = "uploading backend source and research data to the Space"
             api.upload_folder(
-                folder_path=str(stage),
+                folder_path=str(stage_dir),
                 repo_id=repo_id,
                 repo_type="space",
                 commit_message="Deploy Dhan-backed NIFTY ExtraTrees inference API",
@@ -131,6 +132,8 @@ def main() -> int:
             print("LIVE_API_DEPLOY_HTTP_STATUS:", int(status), file=sys.stderr)
         if status in (401, 403):
             print("ACTION_NEEDED: HF_TOKEN is unauthenticated or lacks permission to create/update Spaces or change Space secrets.", file=sys.stderr)
+        elif status == 402:
+            print("ACTION_NEEDED: Hugging Face rejected Docker Space provisioning with HTTP 402. Current Hub documentation says Docker/Gradio CPU-basic Spaces require Pro for individual users or Team/Enterprise for organizations; an existing writable Space with eligible compute or an appropriately enabled Hugging Face plan is needed.", file=sys.stderr)
         elif status == 404:
             print("ACTION_NEEDED: Confirm the Hugging Face account/Space namespace and whether the repository exists.", file=sys.stderr)
         else:
