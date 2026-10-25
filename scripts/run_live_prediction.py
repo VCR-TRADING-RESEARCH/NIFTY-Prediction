@@ -37,5 +37,5 @@ def main() -> int:
     print("PREDICTION_DATE:", safe_date)
     print("PREDICTION_OUTPUT:", output_path.relative_to(ROOT).as_posix())
     if result.get("status") != "succeeded": print("PREDICTION_ERROR:", result.get("error", "No safe diagnostic available."))
-    return 0
+    return 0 if result.get("status") == "succeeded" else 1
 if __name__ == "__main__": raise SystemExit(main())
