@@ -159,3 +159,14 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Phase 3 run 40175978915: 1,913 official daily rows, 1,901 sessions; 1,717 close mismatches >1 point; median 8.25, P95 32.45, max 200.7. Official open/high/low mismatches were 587/197/185.
 - Expiry check: 340/402 confirmed including two shifted dates, 22 not verified, 40 source-validation errors. The new parser prioritizes TradDt ahead of BizDt and retains longer sanitized diagnostics.
 - Phase 1 stays BLOCKED; model metrics exploratory only.
+
+
+## Automated run 40177007671 — 2026-10-25T08:36:04.616087+00:00
+- Status: pipeline completed; empirical findings remain exploratory until calendar and instrument-cost gates pass.
+- Source files read: 19; valid minute bars: 882839.
+- Weekly labels: 398; binary rows: 398; feature-complete rows: 398.
+- Development rows / held-out rows: 318 / 80.
+- Development-selected model: logistic.
+- Calendar gate: EXPLORATORY_ONLY — Weekly expiry dates were generated from weekday regimes and inferred from available bars; official historical expiry calendar and holiday shifts are not independently reconciled.
+- Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
+- Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.

@@ -185,3 +185,13 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Action: Added automated comparison of a second public 1-minute NIFTY 50 archive with official NSE daily OHLC and current candidate archive.
 - Source: https://github.com/technovusin/nifty50-historical-data; its README documents residual missing bars, frozen-price periods, and special-session exceptions.
 - Validation: automated run pending. A third-party source is diagnostic only. No strategy promotion is authorized by cross-source agreement alone.
+
+
+## Dhan authentication attempt — run 40177007671
+- Status: FAILED or incomplete. The public archive route will still be attempted.
+- Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.
+
+
+## Dhan data cross-check — run 40177007671
+- Status: FAILED or unavailable. The public archive will remain the core input; independent Dhan cross-check did not pass.
+- Failure responses and credentials were not added to the log. Inspect only sanitized Actions step diagnostics.
