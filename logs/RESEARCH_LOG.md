@@ -85,3 +85,9 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - AstraQuant: repository cloned and revision recorded; no signal model or order execution evaluated.
 - Repair: PySR installation is now attempted on push; committed features are reused unless a manual run sets refresh_features=true.
 - Decision: no strategy promoted; all results remain exploratory because source/calendar gates and contract-level costed P&L are unresolved.
+
+
+## Phase 2 automated run — 2026-10-25T07:11:07.022954+00:00
+- Status: experimental tracks executed; individual outcomes are in research/results/experimental/experimental_results.json.
+- Upstream projects cloned with exact revisions in research/results/upstream_revisions.md.
+- Data/calendar quality gate remains bypassed at user request; all scores are exploratory and no strategy is certified.
