@@ -1,0 +1,174 @@
+name: Phase 3 Official Source Reconciliation
+
+on:
+  push:
+    branches:
+      - "research/phase-3-official-source-reconciliation"
+    paths:
+      - ".github/workflows/phase3-source-reconciliation.yml"
+      - "scripts/reconcile_official_sources.py"
+      - "scripts/reconcile_archive_closes.py"
+      - "scripts/compare_alternative_minute_source.py"
+      - "scripts/compare_sandeep_minute_source.py"
+      - "tests/test_official_reconciliation.py"
+      - "tests/test_archive_close_reconciliation.py"
+      - "docs/PHASE_3_SOURCE_RECONCILIATION.md"
+  schedule:
+    - cron: "30 3 1 * *"
+  workflow_dispatch:
+    inputs:
+      force_refresh:
+        description: Redownload official source snapshots
+        required: false
+        type: boolean
+        default: false
+      max_expiries:
+        description: Diagnostic limit (0 checks all candidate expiries)
+        required: false
+        type: number
+        default: 0
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nifty-research-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PYTHONUNBUFFERED: "1"
+      TZ: Asia/Kolkata
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install research dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
+      - name: Restore official-source cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/cache/official
+            data/cache/alternative-minute
+          key: nifty-official-cache-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            nifty-official-cache-${{ runner.os }}-
+
+      - name: Run unit tests
+        run: python -m pytest -q tests
+
+      - name: Reconcile official daily closes and expiry contracts
+        id: reconcile
+        continue-on-error: true
+        env:
+          FORCE_REFRESH: ${{ inputs.force_refresh }}
+          MAX_EXPIRIES: ${{ inputs.max_expiries }}
+        run: |
+          ARGS=""
+          if [ "$FORCE_REFRESH" = "true" ]; then ARGS="$ARGS --force"; fi
+          if [ -n "$MAX_EXPIRIES" ] && [ "$MAX_EXPIRIES" != "0" ]; then ARGS="$ARGS --max-expiries $MAX_EXPIRIES"; fi
+          python scripts/reconcile_official_sources.py $ARGS
+
+      - name: Recompute close gate from preserved original minute closes
+        id: archive_close_audit
+        if: always()
+        continue-on-error: true
+        run: python scripts/reconcile_archive_closes.py
+
+      - name: Check primary source mirror against official OHLC (not independent)
+        id: mirror_source
+        if: always()
+        continue-on-error: true
+        run: python scripts/compare_alternative_minute_source.py
+
+      - name: Compare separate published NIFTY minute dataset against official OHLC
+        id: secondary_source
+        if: always()
+        continue-on-error: true
+        env:
+          FORCE_REFRESH: ${{ inputs.force_refresh }}
+        run: python scripts/compare_sandeep_minute_source.py
+
+      - name: Log acceptance status
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("data/reconciliation/source_reconciliation_report.json")
+          if p.exists():
+              r=json.loads(p.read_text())
+              print("SOURCE_RECONCILIATION_STATUS:", r.get("status"))
+              print(json.dumps(r.get("counts", {}), indent=2))
+          q=Path("data/reconciliation/alternative_minute_source_report.json")
+          if q.exists():
+              print("MIRROR_SOURCE_REPORT:", q.read_text()[:6000])
+          z=Path("data/reconciliation/sandeep_minute_source_report.json")
+          if z.exists():
+              print("SEPARATE_DATASET_SOURCE_REPORT:", z.read_text()[:6000])
+          else:
+              print("SOURCE_RECONCILIATION_STATUS: NO_REPORT")
+          PY
+
+      - name: Upload reconciliation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase3-reconciliation-${{ github.run_id }}
+          path: |
+            data/reconciliation/**
+            data/cache/official/nifty50_official_*.csv
+            data/reconciliation/alternative_minute_*
+          if-no-files-found: ignore
+          retention-days: 90
+
+      - name: Commit compact reports and logs
+        if: always()
+        run: |
+          mkdir -p logs
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime, timezone
+          p=Path("data/reconciliation/source_reconciliation_report.json")
+          if p.exists():
+              r=json.loads(p.read_text())
+              line=f"\n\n## Phase 3 official-source reconciliation — {datetime.now(timezone.utc).isoformat()}\n- Status: {r.get('status','NO_REPORT')}\n- Counts: {json.dumps(r.get('counts',{}), sort_keys=True)}\n- Errors: {'; '.join(r.get('errors',[])) or 'none'}\n- Detailed outputs: data/reconciliation/\n"
+              with Path("logs/RESEARCH_LOG.md").open("a") as f: f.write(line)
+              if r.get("status") != "PASS":
+                  with Path("logs/ERROR_LOG.md").open("a") as f: f.write(line)
+              readme=Path("README.md")
+              text=readme.read_text()
+              start="<!-- PHASE3_STATUS_START -->"
+              end="<!-- PHASE3_STATUS_END -->"
+              block=f"{start}\n**Phase 3 source gate:** {r.get('status','NO_REPORT')} — checked {r.get('counts',{}).get('candidate_expiries_checked',0)} candidate expiry dates; official close mismatches >1 point: {r.get('counts',{}).get('minute_vs_official_mismatches_over_1_point','unknown')}.\nSee [source reconciliation report](data/reconciliation/source_reconciliation_report.json) and [Phase 3 plan](docs/PHASE_3_SOURCE_RECONCILIATION.md).\n{end}"
+              if start in text and end in text:
+                  before=text.split(start)[0]; after=text.split(end,1)[1]
+                  text=before+block+after
+              else:
+                  text += "\n\n"+block+"\n"
+              readme.write_text(text)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md logs/RESEARCH_LOG.md logs/ERROR_LOG.md data/reconciliation
+          if git diff --cached --quiet; then echo "No compact reconciliation changes."; else
+            git commit -m "Record official source reconciliation status [skip ci]"
+            git pull --rebase --autostash origin "${{ github.ref_name }}"
+            git push origin "HEAD:${{ github.ref_name }}"
+          fi

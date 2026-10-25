@@ -1,6 +1,0 @@
-{
-  "schema_version": 1,
-  "generated_at_utc": null,
-  "message": "No verified prediction has been published. The repository must first contain a compatible trained ExtraTrees model, as-of-dated feature rows, and a verified NIFTY expiry calendar.",
-  "predictions": []
-}
