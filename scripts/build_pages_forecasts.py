@@ -267,7 +267,11 @@ def build_forecast_payload(
     calendar: pd.DataFrame,
 ) -> dict[str, Any]:
     historical = build_walk_forward_forecasts(cycles)
-    latest, latest_error = build_latest_forecast(cycles, minutes, daily, calendar)
+    try:
+        latest, latest_error = build_latest_forecast(cycles, minutes, daily, calendar)
+    except Exception as exc:  # keep historical results visible if the live row cannot be built
+        latest = None
+        latest_error = type(exc).__name__ + ": " + str(exc)[:240]
     source_gate = _source_gate(daily)
     latest_generated_utc = datetime.now(timezone.utc).isoformat()
     return {
