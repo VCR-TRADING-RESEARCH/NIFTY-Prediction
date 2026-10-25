@@ -163,3 +163,6 @@ Last repository status update: 2026-10-25.
 
 
 **All-date session validation correction (2026-10-25):** The live inference gate now determines the first trading session after each verified weekly expiry from the official NSE daily-session reference, not from the dates that happen to be present in Dhan minute bars. Minute bars are still independently required for the 10:00 anchor and training/expiry features; missing market data will fail that explicit data gate instead of producing a false calendar rejection. Regression tests cover the 2026-05-05 → 2026-05-06 session transition.
+
+
+**Selected-date data refresh (2026-10-25):** The workflow now refreshes the cached 90-day Dhan chunk containing the requested cutoff date before inference, while retaining cache-first behavior for all other historical chunks. This addresses stale/incomplete cache risk for the selected date. It does not fabricate a missing bar: if Dhan still returns no valid 10:00–10:03 bar, the date remains unavailable and logs should be inspected for provider/session coverage.
