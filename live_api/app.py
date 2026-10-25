@@ -97,7 +97,7 @@ def refresh_dhan_token() -> tuple[str, str]:
         )
     try:
         otp = pyotp.TOTP(totp_secret).now()
-        response = requests.get(
+        response = requests.post(
             AUTH_URL,
             params={"dhanClientId": client_id, "pin": pin, "totp": otp},
             timeout=25,
