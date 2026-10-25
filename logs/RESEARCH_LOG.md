@@ -11,7 +11,20 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Paytm Money F&O FAQ says ₹10 per unique executed order; cost schedule must be date-aware. NSE current STT page lists rates effective 2026-04-01, so present-day rates cannot be copied into older backtests.
 - Dhan authentication documentation says access tokens expire after 24 hours and supports secure API-based token generation when TOTP is configured. Token implementation is deferred until the Actions environment can test it; never emit token fields in logs.
 - Code/data validation: automated workflow has not yet executed. No market-data computation or empirical backtest result is claimed. Pending workflow/test run.
-- Phase gate: Phase 0 = IN PROGRESS; Phase 1 = NOT STARTED.
+- Phase gate at bootstrap: Phase 0 = IN PROGRESS; Phase 1 = NOT STARTED.
+
+## 2026-10-25 — Run R0002 / first automated empirical pass
+- Status: pipeline completed successfully; Phase 1 acceptance gate BLOCKED; Phase 2/3 metrics are exploratory only; Phase 4/5 acceptance blocked.
+- GitHub Actions run: https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40167611476
+- Unit tests passed. One feature-builder field-reference defect was caught by the first run, corrected, and covered by a follow-up test before the successful run.
+- Source: 19 CSV files, 882,839 valid in-session bars, 2,356 sessions. Basic OHLC/timestamp checks passed but are not enough to certify data correctness.
+- Target construction: 398 candidate labels (223 UP, 175 DOWN); 34 calendar/data-gap shifts inferred; 2 low-coverage rows flagged; 0 confirmatory-eligible rows.
+- Independent Yahoo daily-close check: 2,352 overlapping dates; 368 of 402 candidate expiry dates differ by more than 1 index point. Overall median absolute difference ~7.20 points; 95th percentile ~30.52 points. Repeated-close run >10 bars on 63 sessions; maximum 239 bars.
+- Dhan token/data cross-check unavailable. No Dhan intraday overlap was compared.
+- Exploratory final holdout: 80 rows from 2025-04-09 onward; ExtraTrees accuracy 0.575 / balanced accuracy 0.559; development-selected logistic accuracy 0.550 / balanced accuracy 0.547. Not a validated edge.
+- Conclusion: BLOCKED / NO USABLE STRATEGY VALIDATED. Do not trade. First reconcile the official expiry calendar and all source discrepancies; then rerun.
+- Manuscript populated with results, tables, caveats and future steps at research/manuscript.md.
+- Phase status: Phase 0 = scaffold/workflow/tests implemented; Phase 1 = BLOCKED on independent source and official calendar validation; Phase 2/3 = exploratory baseline/model pass only; Phase 4 = BLOCKED (no validated labels/instrument P&L); Phase 5 = manuscript complete as a blocked/inconclusive report, independent audit pending.
 - Next step: add data fetch, label/feature/prediction pipeline, unit tests and manual/scheduled GitHub Actions workflow; run and inspect logs.
 
 
