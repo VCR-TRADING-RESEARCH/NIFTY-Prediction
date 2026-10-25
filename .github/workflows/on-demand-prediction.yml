@@ -2,7 +2,7 @@ name: On-demand NIFTY ExtraTrees prediction
 
 on:
   issues:
-    types: [opened]
+    types: [opened, reopened]
   workflow_dispatch:
     inputs:
       as_of_date:
@@ -25,7 +25,8 @@ jobs:
       github.ref == 'refs/heads/main' &&
       (github.event_name == 'workflow_dispatch' ||
        ((github.event.issue.author_association == 'OWNER' ||
-         github.event.issue.author_association == 'MEMBER') &&
+         github.event.issue.author_association == 'MEMBER' ||
+         github.event.issue.author_association == 'COLLABORATOR') &&
         startsWith(github.event.issue.title, '[NIFTY PREDICT] ')))
     runs-on: ubuntu-latest
     timeout-minutes: 35
