@@ -11,7 +11,8 @@ on:
   push:
     branches: [main]
     paths:
-      - "docs/**"
+      - "docs/index.html"
+      - "docs/PREDICTION_PAGE.md"
       - "scripts/generate_prediction.py"
       - ".github/workflows/prediction-page.yml"
 permissions:
