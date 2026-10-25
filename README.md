@@ -80,30 +80,23 @@ The research target is on the spot index. Any executable strategy must separatel
 
 ## ExtraTrees as-of-date prediction page
 
-- **Prediction page source:** [docs/index.html](docs/index.html)
-- **Prediction data / history:** [docs/data/predictions.json](docs/data/predictions.json)
-- **Inference script:** [scripts/generate_prediction.py](scripts/generate_prediction.py)
-- **Page specification and safety gates:** [docs/PREDICTION_PAGE.md](docs/PREDICTION_PAGE.md)
-- **Automated/manual workflow:** [.github/workflows/prediction-page.yml](.github/workflows/prediction-page.yml)
-- **Implementation step log:** [logs/RESEARCH_LOG.md](logs/RESEARCH_LOG.md)
-- **Error log:** [logs/ERROR_LOG.md](logs/ERROR_LOG.md)
-
-The frontend is implemented on branch `phase-prediction-page`. A verified numeric prediction is **not yet available**: the inspected default branch did not contain the compatible trained model artifact, processed feature rows, or verified expiry calendar required by the inference pipeline. The page explicitly displays this state instead of inventing a forecast. After merge, enable GitHub Pages with **GitHub Actions** as the build/deployment source and run the workflow manually or let its weekday schedule refresh the published record. The workflow will require the model and data artifacts to be added by the research pipeline.
-
-## ExtraTrees as-of-date prediction page
-
 - **Prediction page:** [Open the GitHub Pages source](docs/index.html) (deployment status is tracked in [Actions](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions)).
 - **Forecast records and selectable history:** [docs/data/extra_trees_forecasts.json](docs/data/extra_trees_forecasts.json).
 - **Leakage-aware forecast exporter:** [scripts/build_pages_forecasts.py](scripts/build_pages_forecasts.py).
 - **Model/feature pipeline:** [scripts/research_core.py](scripts/research_core.py), [scripts/run_research.py](scripts/run_research.py).
-- **Page specification:** [docs/PHASE_6_PREDICTION_PAGES.md](docs/PHASE_6_PREDICTION_PAGES.md).
+- **Previous page specification:** [docs/PHASE_6_PREDICTION_PAGES.md](docs/PHASE_6_PREDICTION_PAGES.md).
+- **Live Dhan API plan:** [docs/PHASE_7_LIVE_DHAN_INFERENCE.md](docs/PHASE_7_LIVE_DHAN_INFERENCE.md).
+- **Backend service:** [live_api/app.py](live_api/app.py).
+- **Automated backend deployment:** [.github/workflows/deploy-live-api.yml](.github/workflows/deploy-live-api.yml).
+- **Deployment script:** [scripts/deploy_live_api_space.py](scripts/deploy_live_api_space.py).
+- **Page API endpoint config (URL only):** [docs/assets/live-api-config.json](docs/assets/live-api-config.json).
 - **Research manuscript:** [research/manuscript.md](research/manuscript.md).
 - **Deployment workflow:** [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml).
 - **Research workflow:** [.github/workflows/nifty-research.yml](.github/workflows/nifty-research.yml).
 
 **Current forecast record (last generated 2026-10-25 UTC):** as-of 2026-10-21 10:00 IST; target expiry 2026-10-27; model direction DOWN; model score for UP 0.3848. This is a previously generated exploratory forecast, not a new forecast for 2026-10-25. The data-quality gate remains **BLOCKED** because the 10:00 anchor is not independently validated. The page must show this warning and must not present the score as a probability of profit. No options strategy is certified.
 
-The research workflow regenerates historical walk-forward records and the latest eligible forecast; the static browser page only displays those records and never loads credentials or trains a model client-side.
+**Live behavior (Phase 7):** Clicking Predict calls a secure backend, refreshes the Dhan token, retrieves or reuses DhanHQ one-minute NIFTY 50 bars through the selected date, reconstructs features through `scripts/research_core.py`, and fits ExtraTrees on labels settled strictly before that anchor. It returns the result to the page as an on-demand job. No Dhan credentials are stored in browser code. See [Phase 7 live inference plan](docs/PHASE_7_LIVE_DHAN_INFERENCE.md).
 
 ## Research approach
 
