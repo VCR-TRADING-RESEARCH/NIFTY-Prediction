@@ -67,3 +67,10 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 ## Dhan data cross-check — run 40169213949
 - Status: FAILED or unavailable. The public archive will remain the core input; independent Dhan cross-check did not pass.
 - Failure responses and credentials were not added to the log. Inspect only sanitized Actions step diagnostics.
+
+
+## 2026-10-25T07:03:57.848235+00:00 — PySR experimental track
+- Severity: Medium; this track is non-blocking and results remain exploratory.
+- Symptom: ModuleNotFoundError: No module named 'pysr'
+- Response: record failure, retain other tracks, do not promote a model.
+- Secrets: no environment values or request bodies recorded.

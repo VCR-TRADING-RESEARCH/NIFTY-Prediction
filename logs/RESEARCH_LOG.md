@@ -56,3 +56,20 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Added a bounded evolutionary feature-rule search, a PySR symbolic-return experiment, upstream repository smoke-test/provenance, deterministic role-based risk review, and Python mirror of the Pine indicator.
 - Added scheduled/manual GitHub Actions workflow, tests, and phase-specific plan. Outcomes will be recorded per track; dependency and runtime failures are non-blocking and must be logged.
 - Scientific caveat: this is a user-directed bypass, not a passing validation gate. The historical expiry calendar and independent price discrepancies remain unresolved; no strategy is approved for trading.
+
+
+## Automated run 40171160326 — 2026-10-25T07:03:48.638685+00:00
+- Status: pipeline completed; empirical findings remain exploratory until calendar and instrument-cost gates pass.
+- Source files read: 19; valid minute bars: 882839.
+- Weekly labels: 398; binary rows: 398; feature-complete rows: 398.
+- Development rows / held-out rows: 318 / 80.
+- Development-selected model: logistic.
+- Calendar gate: EXPLORATORY_ONLY — Weekly expiry dates were generated from weekday regimes and inferred from available bars; official historical expiry calendar and holiday shifts are not independently reconciled.
+- Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
+- Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.
+
+
+## Phase 2 automated run — 2026-10-25T07:03:58.307284+00:00
+- Status: experimental tracks executed; individual outcomes are in research/results/experimental/experimental_results.json.
+- Upstream projects cloned with exact revisions in research/results/upstream_revisions.md.
+- Data/calendar quality gate remains bypassed at user request; all scores are exploratory and no strategy is certified.
