@@ -42,3 +42,9 @@
 - PR #8 implemented the Actions inference path and merged after CI passed; PR #10 broadened the authorized issue-trigger gate and added retry support, also after CI passed.
 - A controlled request issue #9 was opened and reopened to test the real event path. At the latest inspection, no completion comment or result JSON was visible, so the live Dhan workflow is not yet verified end-to-end.
 - Visible decisions and test status are logged; no hidden chain-of-thought is recorded.
+
+
+## 2026-10-25 — Diagnosed first actual Dhan request
+- The first non-skipped workflow reached inference but wrote a failure record: HTTP 405 during Dhan token generation. Official docs show the endpoint requires POST, while the code used GET.
+- Corrected method, added a mocked regression test, and changed runner exit status so failures fail the inference step. Triggered a retry by editing request issue #11. Run [40201653154](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201653154) was in progress at latest check.
+- A separate Actions cache write-scope warning was observed and is not considered solved. No successful forecast claimed yet.
