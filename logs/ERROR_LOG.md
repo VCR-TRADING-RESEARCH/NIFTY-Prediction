@@ -385,3 +385,13 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Counts: {"candidate_expiries_checked": 402, "contract_unverified_expiries": 0, "contract_verified_expiries": 402, "daily_source_rows_compared": 1903, "daily_source_rows_expected": 1903, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 0, "minute_vs_official_abs_difference_max_points": 200.70000000000073, "minute_vs_official_abs_difference_median_points": 8.25, "minute_vs_official_abs_difference_p95_points": 32.43499999999729, "minute_vs_official_close_abs_difference_max_points": 200.70000000000073, "minute_vs_official_close_abs_difference_median_points": 8.25, "minute_vs_official_close_abs_difference_p95_points": 32.43499999999729, "minute_vs_official_close_mismatches_over_1_point": 1719, "minute_vs_official_close_rows_compared": 1903, "minute_vs_official_high_abs_difference_max_points": 229.85000000000036, "minute_vs_official_high_abs_difference_median_points": 0.049999999999272404, "minute_vs_official_high_abs_difference_p95_points": 2.1950000000007934, "minute_vs_official_high_mismatches_over_1_point": 197, "minute_vs_official_high_rows_compared": 1903, "minute_vs_official_low_abs_difference_max_points": 79.09000000000015, "minute_vs_official_low_abs_difference_median_points": 0.049999999999272404, "minute_vs_official_low_abs_difference_p95_points": 1.600000000002001, "minute_vs_official_low_mismatches_over_1_point": 185, "minute_vs_official_low_rows_compared": 1903, "minute_vs_official_mismatches_over_1_point": 1719, "minute_vs_official_open_abs_difference_max_points": 105.84999999999854, "minute_vs_official_open_abs_difference_median_points": 0.0, "minute_vs_official_open_abs_difference_p95_points": 8.889999999997949, "minute_vs_official_open_mismatches_over_1_point": 589, "minute_vs_official_open_rows_compared": 1903, "minute_vs_official_within_1_point": 184, "official_daily_rows": 1913}
 - Errors: Minute-archive daily closes differ from official NSE closes by more than one index point.
 - Detailed outputs: data/reconciliation/
+
+
+## Dhan authentication attempt — run 40195673642
+- Status: FAILED or incomplete. The public archive route will still be attempted.
+- Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.
+
+
+## Dhan data cross-check — run 40195673642
+- Status: FAILED or unavailable. The public archive will remain the core input; independent Dhan cross-check did not pass.
+- Failure responses and credentials were not added to the log. Inspect only sanitized Actions step diagnostics.

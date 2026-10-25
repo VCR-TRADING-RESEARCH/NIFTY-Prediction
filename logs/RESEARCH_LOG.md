@@ -319,3 +319,14 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Updated `.github/workflows/nifty-research.yml` to generate prediction files after the main research pipeline and publish them as workflow artifacts. Output paths: `docs/prediction/latest_prediction.json` and `docs/prediction/prediction_history.csv`.
 - Important limitation: future expiry date is an explicitly provisional Tuesday estimate unless confirmed by an official future expiry calendar. The page must not be interpreted as validated live advice while the archive-close and 10:00-anchor gates remain blocked.
 - Verification status: GitHub file writes succeeded; end-to-end workflow run and generated prediction artifact have not yet been verified.
+
+
+## Automated run 40195673642 — 2026-10-25T13:03:47.048356+00:00
+- Status: pipeline completed; empirical findings remain exploratory until calendar and instrument-cost gates pass.
+- Source files read: 19; valid minute bars: 882839.
+- Weekly labels: 398; binary rows: 398; feature-complete rows: 398.
+- Development rows / held-out rows: 318 / 80.
+- Development-selected model: extra_trees.
+- Calendar gate: OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL — The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.
+- Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
+- Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.
