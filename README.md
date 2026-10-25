@@ -12,11 +12,17 @@ For each actual weekly expiry date \(E_t\), let \(A_t\) be the first valid NIFTY
 - Binary label: \`1\` if \(r_t > 0\); \`0\` if \(r_t < 0\).
 - Exact ties are retained as a separate \`flat\` label for data-quality reporting and excluded from binary model fitting unless a pre-registered tolerance is selected.
 - All features must be available by the forecast timestamp. No expiry-day close, post-forecast data, or revised/future information may leak into features.
-- Expiry dates must come from an exchange calendar/contract archive; the weekday changed from Thursday to Tuesday in September 2025, with holiday shifts. Do not infer every historical expiry from a fixed weekday.
+- Weekly NIFTY 50 options started in February 2019; 2017–2018 minute bars may be used only for feature lookback, not weekly-option expiry labels. The first weekly expiry was 14 February 2019. Expiry weekday changed from Thursday to Tuesday in September 2025, with holiday shifts. A complete historical contract calendar is required for confirmatory inference.
 
 The research target is on the spot index. Any executable strategy must separately define the instrument, order timing, position sizing, and cash-flow accounting (e.g., NIFTY futures or options) and apply date-effective Paytm Money brokerage, exchange charges, statutory levies, GST, stamp duty, bid-ask spread and slippage. Directional accuracy alone does not establish tradability.
 
 ## Research status
+
+<!-- AUTO_STATUS_START -->
+## Latest automated research status
+
+Not yet run on this branch. No strategy has been validated.
+<!-- AUTO_STATUS_END -->
 
 | Phase | Status | Acceptance gate |
 |---|---|---|
@@ -73,6 +79,7 @@ The research target is on the spot index. Any executable strategy must separatel
 ## Primary external references
 
 - NSE NIFTY 50 derivatives expiry specifications: https://www.nseindia.com/static/products-services/equity-derivatives-nifty50
+- NSE circular introducing weekly NIFTY 50 options and first expiry (14 February 2019): https://nsearchives.nseindia.com/content/circulars/FAOP39894.pdf
 - NSE contract specifications: https://www.nseindia.com/static/products-services/equity-derivatives-contract-specifications
 - NSE historical index/VIX reports: https://www.nseindia.com/all-reports
 - Open NIFTY minute-data candidate (validate independently before use): https://github.com/technovusin/nifty50-historical-data
