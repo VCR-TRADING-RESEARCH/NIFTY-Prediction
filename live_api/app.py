@@ -217,6 +217,8 @@ def _dhan_chunk(
         body = response.json()
     except ValueError:
         raise PublicPredictionError("Dhan returned an unreadable historical-data response.") from None
+    if str(body.get("status", "")).casefold() == "failure":
+        raise PublicPredictionError(f"Dhan rejected the intraday data request for {start} to {end}. Check data API permissions.")
     if isinstance(body.get("data"), dict):
         body = body["data"]
     opens = body.get("open", [])
@@ -460,9 +462,12 @@ def _run_job(job_id: str, as_of: date) -> None:
 
 
 def _client_key(request: Request) -> str:
-    # Hugging Face's reverse proxy supplies the source IP through this header.
-    # IPs are only held in memory for rate limiting and are never returned.
-    return request.headers.get("x-forwarded-for", "unknown").split(",")[0].strip()[:80] or "unknown"
+    # Prefer proxy headers normally overwritten by the edge. Avoid trusting a
+    # caller-supplied leftmost X-Forwarded-For value for quota enforcement.
+    value = request.headers.get("cf-connecting-ip") or request.headers.get("x-real-ip")
+    if not value and request.client is not None:
+        value = request.client.host
+    return (value or "unknown").strip()[:80] or "unknown"
 
 
 @app.get("/health")
