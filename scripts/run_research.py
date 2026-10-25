@@ -165,7 +165,10 @@ def main() -> int:
             "dhan_minute_mismatches": dhan_check.get("mismatched_closes_over_1_point"),
         }
         summary["target_definition"] = "NSE official daily close on verified weekly expiry date relative to the first minute-archive bar open at or after 10:00 and no later than 10:03 on the first trading session after the previous verified expiry."
-        summary["calendar_status"] = "EXPLORATORY_ONLY"
+        summary["calendar_status"] = "OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL"
+        summary["confirmatory_status"] = quality_report["confirmatory_status"]
+        summary["reason_not_confirmatory"] = "The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested."
+        summary["important_warning"] = "All results remain exploratory until the anchor and realistic trading costs are validated."
         write_json(RESULTS / "summary.json", summary)
         created_plots = save_figures(cycles, RESULTS)
         summary["plots_created"] = created_plots
