@@ -9,6 +9,8 @@ on:
       - "scripts/deploy_live_api_space.py"
       - "scripts/research_core.py"
       - "tests/test_live_api.py"
+      - "docs/assets/predictor.js"
+      - "docs/assets/live-api-config.json"
       - "requirements.txt"
       - ".github/workflows/test-live-api.yml"
   pull_request:
@@ -42,3 +44,7 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Test live API validation logic
         run: python -m pytest -q tests/test_live_api.py tests/test_research_core.py
+      - name: Check browser JavaScript syntax
+        run: node --check docs/assets/predictor.js
+      - name: Validate public endpoint configuration JSON
+        run: python -m json.tool docs/assets/live-api-config.json > /dev/null
