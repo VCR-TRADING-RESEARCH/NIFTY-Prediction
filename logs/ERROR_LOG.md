@@ -35,10 +35,10 @@
 - **Additional correction:** An earlier manual-date-input edit left literal newline escape characters in a JavaScript statement. The live browser script has since been replaced with a complete parser/polling implementation to remove that syntax error.
 - **Remaining gates:** CI test run; HF_TOKEN write/Space deployment; Dhan authentication and intraday-data verification; browser smoke test. If deployment credentials or permissions are missing, the service stays disabled rather than exposing secrets.
 
-## E0008 — 2026-10-25 — Live inference backend deployment provider rejected a request
+## E0008 — 2026-10-25 — Live inference backend blocked by Hugging Face compute-plan gate
 - **Severity:** High — deployment acceptance gate.
-- **Run:** [40198909189](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40198909189).
-- **Symptom:** Live API logic tests passed (12 passed), but the Hugging Face Docker Space deployment step failed with `HfHubHTTPError`; endpoint config was not published by that run.
-- **Initial diagnostic limitation:** The first version of the deployment script intentionally emitted only exception class and a generic note, so the exact provider status/stage was not available from the run log.
-- **Correction:** Added sanitized stage + HTTP-status diagnostics in `scripts/deploy_live_api_space.py`. The follow-up deployment run is pending/running; it will not echo tokens or response bodies.
-- **Next gate:** Identify whether the failure is token identity/write permission, Space creation/upload, or runtime-secret installation. If the configured `HF_TOKEN` is read-only or cannot manage Spaces/secrets, deployment requires a writable Hugging Face token or an explicitly configured existing writable Space ID.
+- **Runs:** [40198909189](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40198909189), [40199001881](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40199001881).
+- **Symptom:** Live API logic tests passed (12 passed), but Hugging Face Docker Space provisioning failed with HTTP 402. The endpoint config was not published.
+- **Root cause:** Hugging Face's current Space management documentation states that Docker/Gradio Spaces on CPU-basic require a Pro subscription for individual accounts or Team/Enterprise for organizations; without an eligible plan, creating or moving a Docker Space can return HTTP 402. See https://huggingface.co/docs/huggingface_hub/guides/manage-spaces.
+- **Correction:** Added sanitized stage/HTTP diagnostics and fixed stage tracking in `scripts/deploy_live_api_space.py`. No credentials or response bodies are logged.
+- **Blocker / intervention needed:** The existing HF token can access the Hub sufficiently to reach the provisioning operation, but the current account/plan cannot provision this Docker backend. To continue, enable the applicable Hugging Face plan/compute entitlement or set the repo variable `HF_SPACE_ID` to an already writable, eligible Docker Space that can be updated by this token. Until then, the public page safely keeps live inference disabled and does not fall back to saved CSV/JSON records.
