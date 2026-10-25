@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 
 from scripts.research_core import (
-    _parse_timestamp_column, load_minute_files, daily_aggregates, construct_weekly_table,
+    _parse_timestamp_column, load_minute_files, daily_aggregates, construct_weekly_table, apply_official_daily_closes,
 )
 
 
@@ -112,3 +112,24 @@ def test_daily_aggregates_counts_equal_close_run_without_off_by_one():
     })
     daily = daily_aggregates(frame)
     assert int(daily.iloc[0]["max_unchanged_close_run"]) == 3
+
+
+def test_official_close_override_uses_nse_close(tmp_path):
+    daily = pd.DataFrame({
+        "session_date": pd.to_datetime(["2019-02-14", "2019-02-15"]),
+        "session_open": [100.0, 101.0],
+        "session_high": [105.0, 106.0],
+        "session_low": [99.0, 100.0],
+        "session_close": [103.0, 104.0],
+        "bars": [375, 375],
+    })
+    official = pd.DataFrame({
+        "session_date": ["2019-02-14", "2019-02-15"],
+        "official_close": [103.5, 104.5],
+    })
+    path = tmp_path / "official.csv"
+    official.to_csv(path, index=False)
+    result, report = apply_official_daily_closes(daily, path)
+    assert result["session_close"].tolist() == [103.5, 104.5]
+    assert result["session_close_archive"].tolist() == [103.0, 104.0]
+    assert report["official_sessions_matched"] == 2
