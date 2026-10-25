@@ -146,7 +146,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No status/result changes to commit."
           else
-            git commit -m "Update NIFTY research status and compact artifacts [skip ci]"
+            git commit -m "Update NIFTY research status and compact artifacts"
             git pull --rebase --autostash origin "${{ github.ref_name }}"
             git push origin "HEAD:${{ github.ref_name }}"
           fi
