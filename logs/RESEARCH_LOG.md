@@ -91,3 +91,17 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Status: experimental tracks executed; individual outcomes are in research/results/experimental/experimental_results.json.
 - Upstream projects cloned with exact revisions in research/results/upstream_revisions.md.
 - Data/calendar quality gate remains bypassed at user request; all scores are exploratory and no strategy is certified.
+
+
+## 2026-10-25 — Phase 2 bounded execution complete
+- Status: COMPUTE COMPLETE / RESEARCH ACCEPTANCE BLOCKED.
+- Workflow: [40171572720](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40171572720), success; core and experimental unit tests passed; results and artifacts persisted.
+- Sample: 398 candidate cycles, 318 development / 80 holdout; calendar quality remains heuristic/unverified.
+- Logistic baseline: accuracy 56.25%, balanced accuracy 56.29%, MCC 0.125, Brier 0.2506.
+- QuantEvolve-inspired local bounded search: accuracy 53.75%, balanced accuracy 53.58%, MCC 0.072, Brier 0.2944; underperformed logistic.
+- PySR: completed 25 iterations / 8 populations / max expression size 12; holdout return RMSE 0.014925, R² -0.00124. No out-of-sample improvement over constant mean.
+- Custom indicator: 38.78% directional accuracy on 49 signalled rows; 61.25% coverage.
+- TradingAgents: no actual LLM debate/forecast; deterministic risk review only. AstraQuant: cloned/revision recorded, no NIFTY signal evaluation.
+- Decision: no model promoted; no usable trading strategy validated. Do not iterate on the same holdout.
+- Remaining blocking gates: official expiry-calendar reconciliation, 368/402 candidate expiry-close mismatches >1 point, unavailable Dhan cross-check, no instrument-level fills or dated Paytm Money brokerage/taxes/spread/slippage/net P&L.
+- Full summary: research/phase2_report.md. Machine-readable outcomes: research/results/experimental/experimental_results.json.
