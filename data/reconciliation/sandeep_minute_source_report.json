@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-10-25T08:58:00.941594+00:00",
+  "generated_utc": "2026-10-25T09:34:56.627220+00:00",
   "source": "sandeepkapri/Nifty50-Minute-Data",
   "source_url": "https://raw.githubusercontent.com/sandeepkapri/Nifty50-Minute-Data/main/nifty50_candlestick_data.csv",
   "source_repository_differs_from_primary_source_repository": true,
@@ -14,11 +14,11 @@
   "alternative_close_median_abs_difference_points": 7.549999999999272,
   "alternative_close_p95_abs_difference_points": 27.199999999999818,
   "alternative_close_max_abs_difference_points": 161.54999999999927,
-  "primary_close_mismatches_over_1_point": 1176,
-  "primary_close_median_abs_difference_points": 7.649999999997817,
-  "primary_close_p95_abs_difference_points": 26.98500000000022,
-  "secondary_vs_primary_close_median_abs_difference_points": 0.1000000000003638,
-  "secondary_vs_primary_close_exact_matches": 574,
+  "primary_close_mismatches_over_1_point": 0,
+  "primary_close_median_abs_difference_points": 0.0,
+  "primary_close_p95_abs_difference_points": 0.0,
+  "secondary_vs_primary_close_median_abs_difference_points": 7.549999999999272,
+  "secondary_vs_primary_close_exact_matches": 3,
   "secondary_vs_primary_close_comparison_rows": 1267,
   "source_limitations": [
     "Different published GitHub repository, but the actual market-data provider is not established by the README.",
@@ -34,7 +34,7 @@
     "underlying_provider_lineage_independently_verified": false,
     "bytes": 51305261,
     "sha256": "9b347479bb242e8cea8f85011a4d53e8938c1bfea1697fa25d8ef25d8888784d",
-    "downloaded_this_run": true,
+    "downloaded_this_run": false,
     "cache_path": "data/cache/alternative-minute/sandeep_nifty50_candlestick_data.csv"
   },
   "alternative_source_quality": {
