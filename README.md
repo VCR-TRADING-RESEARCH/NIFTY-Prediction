@@ -18,10 +18,10 @@ The research target is on the spot index. Any executable strategy must separatel
 
 ## ExtraTrees prediction website
 
-**Phase 4 status:** Interface, forecast exporter, automated workflow integration, and Pages deployment workflow are added on \`research/phase-4-prediction-pages\`. Automated forecast generation and deployed Pages URL still require successful workflow checks and merging through the phase branches.
+**Phase 6 status:** Interface, forecast exporter, automated workflow integration, and Pages deployment workflow are added on \`research/phase-6-prediction-pages\`. Automated forecast generation and deployed Pages URL still require successful workflow checks and merging through the phase branches.
 
 - [Open the prediction page source](docs/index.html)
-- [Phase 4 plan and acceptance gates](docs/PHASE_4_PREDICTION_PAGES.md)
+- [Phase 4 plan and acceptance gates](docs/PHASE_6_PREDICTION_PAGES.md)
 - [ExtraTrees forecast records consumed by the page](docs/data/extra_trees_forecasts.json)
 - [Forecast exporter](scripts/build_pages_forecasts.py)
 - [Pages deployment workflow](.github/workflows/deploy-pages.yml)
