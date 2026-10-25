@@ -188,6 +188,7 @@ def compare(alternative: pd.DataFrame, official: pd.DataFrame, primary: pd.DataF
                 row[f"primary_{field}_mismatches_over_1pt"] = int((primary_diff > 1.0).sum())
                 row[f"primary_{field}_median_abs_difference"] = float(primary_diff.median())
                 row[f"primary_{field}_p95_abs_difference"] = float(primary_diff.quantile(0.95))
+        yearly.append(row)
 
     merged["secondary_vs_primary_close_abs_difference"] = (
         merged["alternative_close"] - merged["session_close"]
