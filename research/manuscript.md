@@ -1,49 +1,87 @@
-# NIFTY Weekly Expiry Direction Prediction: A Leakage-Safe, Cost-Aware Research Protocol
+# NIFTY Weekly Expiry Direction Prediction: Initial Empirical Study
 
-**Status:** Protocol and repository scaffold; final empirical results pending automated data and test run.
+**Run:** 40167611476  
+**Status:** Initial pipeline completed; confirmatory research is BLOCKED. No usable trading strategy is validated.
 
 ## Abstract
-This study aims to predict the sign of the NIFTY 50 spot-index return from 10:00 IST on the next trading day after a prior weekly options expiry to the close of the subsequent weekly expiry. The primary contribution is an auditable label/calendar specification and a bounded walk-forward research design that compares simple rules and machine-learning candidates without look-ahead, while reporting uncertainty and distinguishing directional accuracy from executable net returns. No empirical performance claim is made in this protocol manuscript; result tables will be populated only from reproducible workflow artifacts.
 
-## 1. Introduction
-Weekly expiry outcomes are influenced by accumulated market trend, overnight repricing, volatility, event risk and the changing expiry calendar. High flexibility in technical-indicator and model search can overfit a small number of weekly observations. Therefore this research fixes the target, uses a historical expiry calendar, establishes simple baselines, and reserves a time-ordered holdout.
+This study tests whether NIFTY 50 spot direction from the 10:00 IST anchor on the first trading session after a prior weekly options expiry to the next weekly expiry close can be predicted from lagged returns, volatility/range features, gaps, simple rules and machine-learning models. The pipeline processed 882,839 in-session minute bars across 2,356 sessions and created 398 candidate labels. In an 80-row chronological holdout, ExtraTrees achieved 57.5% accuracy and 55.9% balanced accuracy; logistic regression achieved 55.0% accuracy and 54.7% balanced accuracy. These are exploratory only: 368 of 402 expiry-date daily closes differ from Yahoo's independent daily close by more than one point; 63 sessions have repeated-close runs longer than 10 minutes, with a maximum run of 239; and the weekly expiry calendar remains a weekday heuristic. Dhan data did not provide a usable intraday cross-check. No contract-level execution prices or date-specific Paytm Money costs were evaluated. The conclusion is that no usable strategy has been established.
 
-## 2. Research questions and hypotheses
-See docs/RESEARCH_PLAN.md. The central null is that no tested candidate has a meaningful out-of-sample improvement over the best simple baseline. An additional and stricter null is that predictive advantage does not translate into a net-positive executable strategy after verified costs.
+## 1. Introduction and research questions
 
-## 3. Data
-Primary candidate: NIFTY 50 1-minute spot OHLC from a public GitHub data archive, subject to source validation. Official NSE index prices, expiry dates, holiday shifts and India VIX are preferred validation sources. Options, futures, global benchmark, breadth, FII/DII and timestamped news are secondary and may be included only if quality and point-in-time availability pass. Source completeness, licences and known quirks are reported in docs/DATA_SOURCES.md.
+The sole target is the sign of the NIFTY 50 spot return between the 10:00 IST anchor on the first session after the previous weekly expiry and the close of the next weekly expiry. NSE introduced weekly NIFTY 50 options in February 2019, with first expiry on 14 February 2019. Earlier bars are lookback history only. The pre-registered research questions, hypotheses, and gates are in ../docs/RESEARCH_PLAN.md.
 
-## 4. Methods
-The label is UP when the final expiry close is greater than the 10:00 IST anchor open after the preceding expiry, DOWN when lower, and FLAT when equal. Features include lagged returns, realised volatility, ranges, overnight gap, pre-10:00 morning return, prior-cycle return and calendar regime. All features and model fitting are causal. Evaluation uses expanding walk-forward predictions and a locked contiguous holdout; baseline performance, probability quality, confidence intervals, regime splits, multiple-testing discipline and a deterministic audit are mandatory. Any trade simulation requires contract-level prices, time-sensitive charges and slippage.
+## 2. Data and labels
 
-## 5. Results
-**Pending.** This section must be replaced or extended by saved workflow outputs. No backtest has yet been run by this repository scaffold. Do not invent sample sizes, accuracy, p-values, profitability or a winning strategy.
+The workflow fetched 19 CSV files from the technovusin/nifty50-historical-data public archive. Basic parsing and OHLC validation produced:
 
-Planned tables:
-- Table 1: target/feature coverage and exclusions by year/expiry regime.
-- Table 2: prevalence and simple baseline metrics.
-- Table 3: walk-forward and final-holdout metrics with confidence intervals.
-- Table 4: paired baseline comparison, calibration and abstention.
-- Table 5: robustness by volatility regime, calendar regime and costs.
-- Table 6: cost components and net strategy performance when executable inputs exist.
+| Quality item | Result |
+|---|---:|
+| Raw rows | 884,673 |
+| Valid in-session minute bars | 882,839 |
+| Daily sessions | 2,356 |
+| Coverage | 2017-04-03 to 2026-10-23 |
+| Duplicate timestamp rows | 0 |
+| Invalid OHLC rows removed | 0 |
+| Sessions with fewer than 250 bars | 2 |
+| Sessions with repeated-close run longer than 10 bars | 63 |
+| Maximum repeated-close run | 239 bars |
+| Independent daily-close matches | 2,352 |
+| Expiry-date closes differing from Yahoo by >1 point | 368 / 402 |
 
-Planned figures: yearly label prevalence, weekly return distribution, model-versus-baseline balanced accuracy and Brier score, calibration plot, regime performance and after-cost equity/drawdown curves only if actual instrument results exist.
+The candidate calendar generated 402 expiry events and 398 labelled cycles: 223 UP and 175 DOWN. Thirty-four cycles involve an inferred calendar/data-gap shift; two were flagged for uncertain low coverage. Zero rows are confirmatory-eligible because the official historical expiry calendar has not been reconciled.
 
-## 6. Inferences and discussion
-To be written from saved results. Predictive significance, probability calibration, regime stability and tradability are separate claims. Any performance not exceeding the best baseline on unseen data must be described as no demonstrated edge. Failure to obtain a complete expiry calendar or verified instrument-cost data will be reported as a limitation, not evidence for profitability.
+The target is return = expiry close / anchor open - 1. Anchor is the first bar open at or after 10:00 IST, allowing a maximum three-minute delay. Expiry close is the last available close from 15:25–15:29 IST. UP means return > 0; DOWN means return < 0; exact ties are FLAT and excluded from binary fitting.
 
-## 7. Strengths and limitations
-Strengths include explicit event/time semantics, causal features, chronological validation, comparison to simple baselines, an experiment registry, data-quality logs and costs separated from direction classification. Limitations include a relatively small weekly sample, regime changes, source/licensing dependence on third-party minute data, possible gaps in FII/DII/options features, ambiguity around execution timing, and data-mining risk when many indicators are tried.
+## 3. Methods
 
-## 8. Conclusion
-No usable strategy is certified at protocol-writing time. The final conclusion will be based on pre-registered acceptance gates and will state validated evidence, a negative finding, or a clear data/access blocker.
+Features were lagged 1/5/10/20-session returns, realised volatility and ranges over 5/10/20 sessions, overnight gap, pre-anchor movement, anchor jump, prior-cycle outcome, prior range position, session gap, month encodings and an expiry-regime flag. Models were expanding-majority, prior-cycle direction, prior-cycle return sign, 5-session momentum sign, regularised logistic regression and constrained ExtraTrees. Development comprised 318 rows and the chronological holdout 80 rows, beginning 2025-04-09. Minimum training history was 104 rows. Logistic regression was selected using development balanced accuracy, with Brier score as tie-breaker. The final holdout was not used for model selection.
 
-## 9. Future work
-After the primary gate, consider (1) verified options-implied volatility/skew and expiry gamma exposure, (2) point-in-time global overnight and event-risk features, (3) regime-conditional calibration and abstention, (4) bounded symbolic strategy discovery, and (5) a real-instrument, contract-aware simulator. Do not proceed to deployment solely because classification accuracy appears high.
+## 4. Results
+
+| Candidate | Accuracy | Balanced accuracy | MCC | Brier score |
+|---|---:|---:|---:|---:|
+| ExtraTrees | 0.575 | 0.559 | 0.131 | 0.249 |
+| Logistic regression | 0.550 | 0.547 | 0.095 | 0.256 |
+| Expanding majority | 0.463 | 0.500 | 0.000 | 0.261 |
+| Prior-cycle direction | 0.450 | 0.447 | -0.106 | Not defined |
+| Prior-cycle return sign | 0.450 | 0.447 | -0.106 | Not defined |
+| 5-session momentum sign | 0.363 | 0.352 | -0.304 | Not defined |
+
+UP prevalence in the holdout was 46.25%. Logistic regression accuracy was 55.0% (95% Wilson interval approximately 44.1%–65.4%); ExtraTrees accuracy was 57.5% (approximately 46.6%–67.7%). Intervals are broad and overlap. ExtraTrees was strongest on this holdout but was not the development-selected model. Since source and calendar validation failed, all these metrics are descriptive, not confirmatory evidence of predictive edge.
+
+## 5. Independent data validation and discussion
+
+The independent daily close comparison found 368 of 402 expiry-date values differed from Yahoo by more than one index point. Across all matched days, median absolute difference was approximately 7.20 points and the 95th percentile approximately 30.52 points. This may reflect source defects, close-definition alignment, or both; discrepancies must be inspected date by date. Sixty-three sessions have repeated-close runs over ten bars and the maximum is 239 bars. Dhan bars were not available for comparison.
+
+This is a material data-validation failure. A model cannot repair inaccurate prices or incorrect expiry dates; performance rankings can change when labels are corrected. The provisional ExtraTrees score is a hypothesis to retest only after data repair, not a winning signal. No Quantevolve, PySR, TradingAgents, options-IV/OI, FII/DII, global-market model, or contract P&L simulator was run; the experiment registry records these as deferred until the target-data gate passes.
+
+## 6. Strengths and limitations
+
+Strengths: explicit target semantics and timezone; chronological expanding predictions; simple baselines; probability metrics and Wilson intervals; regression tests for timestamps, duplicate handling, anchor-open selection, return sign and frozen-price runs; logs and automated workflow.
+
+Limitations: inferred expiry calendar; material daily-close mismatch; repeated-close anomalies; Dhan cross-check unavailable; no complete official expiry list; no joined historical options/futures prices, India VIX, FII/DII, global-market or point-in-time news features; small regime-dependent sample; no dated brokerage, exchange fees, STT, GST, stamp duty, spread, slippage, lot-size or fill simulation; Pine prototype has not been validated in TradingView.
+
+## 7. Conclusion
+
+**BLOCKED — NO USABLE STRATEGY VALIDATED.** The pipeline completed, but its source data and expiry calendar failed acceptance gates. The apparent 57.5% ExtraTrees holdout accuracy is not evidence of a tradable edge. Do not trade this result. The next required step is to reconcile all expiry dates with official contract history and resolve the 368 daily-close mismatches, then rebuild labels and repeat the analysis. Only after this gate passes should further model discovery proceed. Any future strategy must also pass an untouched holdout, robustness analysis, and contract-level net P&L after verified Paytm Money costs and realistic spread/slippage.
+
+## 8. Future work
+
+1. Obtain official NSE/NSE Indices historical daily closes and a canonical expiry/holiday calendar.
+2. Audit each mismatched date and repeated-close run; repair Dhan authentication and compare recent minute bars.
+3. Rebuild labels and exclude unresolved expiries.
+4. After data validation passes, test India VIX, global overnight returns, breadth, timestamped FII/DII reports and historical option-implied IV/skew/OI when point-in-time coverage exists.
+5. Run bounded Quantevolve/PySR searches and TradingAgents-assisted hypothesis generation only after a clean label gate, with multiple-testing controls.
+6. Build a contract-aware simulator using date-specific Paytm Money charges, exchange fees, statutory levies, spread, slippage and conservative fill assumptions.
+7. Keep an untouched final period and conduct an independent formula/calendar audit before any deployment decision.
 
 ## Appendices
-- A. Data dictionary and source lineage: docs/DATA_SOURCES.md.
-- B. Mathematical and leakage audit checklist: research/METHODOLOGY.md.
-- C. Experiment/error/status/conversation logs: logs/.
-- D. Software and external-source review: docs/LITERATURE_REVIEW.md.
+
+- Research plan: ../docs/RESEARCH_PLAN.md
+- Data source register: ../docs/DATA_SOURCES.md
+- Methodology: METHODOLOGY.md
+- Data-quality report: ../data/processed/data_quality_report.json
+- Holdout metrics and predictions: results/holdout_metrics.csv and results/holdout_predictions.csv
+- Experiment registry: results/experiment_registry.json
+- Logs: ../logs/RESEARCH_LOG.md, ../logs/ERROR_LOG.md and ../logs/CONVERSATION_LOG.md
