@@ -271,6 +271,14 @@ def fetch_dhan_bars(as_of: date, token: str, client_id: str, security_id: str) -
         cursor = end + timedelta(days=1)
     if not frames:
         raise PublicPredictionError("Dhan returned no NIFTY 50 minute bars through the selected date.")
+    # Retry the requested session as a one-day request. Large historical chunks can
+    # be truncated or omit individual sessions; a narrow request distinguishes that
+    # from a true provider gap. This is one small request per prediction.
+    target_day = _dhan_chunk(
+        security_id, token, client_id, as_of, as_of, refresh_recent=True
+    )
+    if not target_day.empty:
+        frames.append(target_day)
     minutes = pd.concat(frames, ignore_index=True)
     minutes["timestamp"] = pd.to_datetime(minutes["timestamp"], errors="coerce")
     if getattr(minutes["timestamp"].dt, "tz", None) is None:
@@ -362,8 +370,24 @@ def _do_prediction(as_of: date) -> dict[str, Any]:
     anchor_day = _day_minutes(minutes, as_of_ts)
     anchor_bar = _first_anchor(anchor_day)
     if anchor_bar is None:
+        if anchor_day.empty:
+            detail = "No valid minute bars were returned for the selected session, even after a one-day Dhan retry."
+        else:
+            times = pd.to_datetime(anchor_day["timestamp"], errors="coerce").dropna()
+            first_time = times.min().strftime("%H:%M:%S") if not times.empty else "unknown"
+            last_time = times.max().strftime("%H:%M:%S") if not times.empty else "unknown"
+            anchor_window = anchor_day.loc[
+                (anchor_day["timestamp"].dt.time >= datetime.strptime("09:57", "%H:%M").time())
+                & (anchor_day["timestamp"].dt.time <= datetime.strptime("10:06", "%H:%M").time())
+            ]
+            detail = (
+                f"{len(anchor_day)} valid bars were returned for the selected session "
+                f"({first_time}–{last_time} IST); {len(anchor_window)} bars were between 09:57 and 10:06 IST. "
+                "No bar met the predefined anchor rule."
+            )
         raise PublicPredictionError(
-            "Dhan has no valid 10:00–10:03 IST NIFTY 50 minute bar for the selected date."
+            "Required 10:00–10:03 IST NIFTY 50 anchor could not be established after a targeted one-day retry. "
+            + detail
         )
     target_events = verified.loc[verified["resolved_expiry"] > previous_expiry].sort_values("resolved_expiry")
     if target_events.empty:
