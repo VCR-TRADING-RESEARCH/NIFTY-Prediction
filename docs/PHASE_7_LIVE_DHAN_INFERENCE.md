@@ -56,3 +56,10 @@ The deployment workflow uses `HF_TOKEN` plus `DHAN_CLIENT_ID`, `DHAN_PIN`, and `
 | F. Usable trading strategy | Separate option/futures execution backtest with date-correct Paytm Money costs, spreads and slippage | Not yet attempted by this live inference phase; research gate remains blocked |
 
 No phase is accepted just because the Space was created or an UP/DOWN score was returned. Failed deployment and inference attempts must be logged.
+
+
+## Alternative-host fallback and stop rule
+
+The primary HF Docker Space deployment currently returns HTTP 402. Do not retry the same creation path repeatedly. If a writable existing Space ID is supplied via HF_SPACE_ID, use it only after verifying it is the expected Docker Space. Otherwise use a separately configured server host (for example Render or Cloudflare) only when its deployment credential and required service configuration are available as repository secrets/variables. The Google API key is not sufficient deployment authorization by itself.
+
+**Security:** Never embed Dhan PIN/TOTP, Dhan access token, HF token, or host deployment tokens in GitHub Pages JavaScript, query parameters, committed files, or public logs. Do not add an unauthenticated public endpoint that can trigger GitHub Actions. Until a backend is actually deployed and the Dhan end-to-end test passes, keep live prediction disabled and report the blocker.
