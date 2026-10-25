@@ -6,14 +6,14 @@ on:
       - main
       - "research/**"
     paths:
-      - ".github/workflows/nifty-research.yml"
-      - "scripts/**"
-      - "tests/**"
-      - "docs/**"
+      - "scripts/fetch_data.py"
+      - "scripts/research_core.py"
+      - "scripts/run_research.py"
+      - "scripts/update_status.py"
+      - "scripts/refresh_dhan_token.py"
+      - "scripts/fetch_dhan_recent.py"
+      - "tests/test_research_core.py"
       - "requirements.txt"
-      - "tradingview/**"
-      - "research/METHODOLOGY.md"
-      - "research/manuscript.md"
   schedule:
     # Wednesday at 10:15 IST, after the current Tuesday-expiry regime's 10:00 anchor.
     - cron: "45 4 * * 3"

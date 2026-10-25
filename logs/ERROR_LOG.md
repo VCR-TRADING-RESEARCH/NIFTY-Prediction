@@ -248,3 +248,20 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Status: BLOCKED. One or more workflow steps failed; inspect the Actions run for the exact failing step.
 - The workflow is configured to continue with public data when the optional Dhan branch fails.
 - No secrets, access tokens, PINs or TOTP values should be copied from runner diagnostics into repository logs.
+
+
+## E0017 — 2026-10-25 — Secondary-source test date was outside the source coverage window
+- Severity: Medium / test correctness.
+- Symptom: aggregate_sandeep_frame test used 2 January 2025 although the configured secondary dataset comparison window ends 27 March 2024; the aggregator correctly returned no rows.
+- Root cause: the test fixture did not respect the declared source date coverage.
+- Fix: changed the synthetic fixture to 2 January 2023; the expected session remains the same relative to the source's supported interval.
+- Validation: rerun CI tests and the secondary-source comparison; do not infer market-data metrics from the failed test.
+
+
+## E0018 — 2026-10-25 — Broad main-workflow path filter caused unnecessary concurrent workflows
+- Severity: Medium / automation reliability.
+- Symptom: Phase 3 parser and source-audit edits also triggered the full core research workflow because the path filter included all scripts, all tests, all docs, and the manuscript. Both workflows share a serialized group and their pending runs could interrupt the desired source validation.
+- Root cause: the core research workflow was triggered by files unrelated to the core label/model pipeline.
+- Fix: restrict main-workflow push paths to the data fetch, core analysis, status update, Dhan helper scripts, core test file and requirements. Phase 3 parser/test/doc changes now trigger only the Phase 3 workflow.
+- Validation: inspect Actions after this commit; the Phase 3 reconciliation should execute at the latest branch tip without a newly triggered full model run.
+- Residual risk: scheduled or manually dispatched core workflow can still share the research log/README, so serialization remains enabled.

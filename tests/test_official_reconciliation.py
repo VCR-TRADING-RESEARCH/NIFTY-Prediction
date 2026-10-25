@@ -154,7 +154,7 @@ def test_sandeep_minute_aggregate_parses_day_first_date_and_filters_session():
     from scripts.compare_sandeep_minute_source import aggregate_sandeep_frame
 
     frame = pd.DataFrame({
-        "Date": ["02-01-25", "02-01-25", "02-01-25", "02-01-25"],
+        "Date": ["02-01-23", "02-01-23", "02-01-23", "02-01-23"],
         "Time": ["15:29:00", "09:15:00", "18:00:00", "15:28:00"],
         "Open": [100.0, 99.0, 999.0, 100.0],
         "High": [101.0, 100.0, 999.0, 102.0],
@@ -164,7 +164,7 @@ def test_sandeep_minute_aggregate_parses_day_first_date_and_filters_session():
     daily, quality = aggregate_sandeep_frame(frame)
     assert len(daily) == 1
     row = daily.iloc[0]
-    assert row["session_date"] == date(2025, 1, 2)
+    assert row["session_date"] == date(2023, 1, 2)
     assert row["alternative_open"] == 99.0
     assert row["alternative_high"] == 102.0
     assert row["alternative_low"] == 98.0

@@ -58,3 +58,9 @@ Append user-visible project messages/assistant responses and references to proje
 - Expiry check: 340 confirmed (including 2 shifted), 22 not verified, 40 source errors. Inspection showed explicit ISO dates were parsed day-first, swapping month/day; a format-aware parser and tests are being added.
 - Important correction: the “alternative” technovusin dataset was the same repository as the primary source. All 1,901 overlap closes were identical, so it is a mirror consistency test, not independent evidence.
 - Added a separate-published dataset comparator for sandeepkapri/Nifty50-Minute-Data covering dates through 2024-03-27. Underlying provider lineage is not independently verified; it is diagnostic only.
+
+
+## 2026-10-25 — Test correction checkpoint
+- The first follow-up workflow exposed two fixture/serialization bugs: regex strings remained double-escaped after an initial patch, and the separate-source test used a date after the advertised coverage end. Both were corrected.
+- Main research workflow push filters were narrowed so Phase 3-specific code and tests do not start the full baseline/model pipeline on each source-audit change.
+- The ISO parser fix and Sandeep source metrics still require a fresh successful Phase 3 run.
