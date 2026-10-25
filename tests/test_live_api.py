@@ -104,3 +104,4 @@ def test_selected_date_chunk_is_refreshed_even_when_historical(monkeypatch):
     out = live_app.fetch_dhan_bars(date(2026, 8, 5), "token", "client", "security")
     assert not out.empty
     assert any(start <= date(2026, 8, 5) <= end and refresh for start, end, refresh in calls)
+    assert any(start == date(2026, 8, 5) and end == date(2026, 8, 5) and refresh for start, end, refresh in calls)

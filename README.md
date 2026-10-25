@@ -169,3 +169,6 @@ Last repository status update: 2026-10-25.
 
 
 **Selected-date cache refresh status (2026-10-25):** PR [#16](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/16) is merged and CI passed. The selected-date rerun has not yet occurred after merge; `2026-08-05.json` currently contains a safe failed status, not a fresh prediction. A separate legacy Docker Space/API deployment workflow failed at its external deployment step and is not part of the selected free GitHub Actions + Pages architecture. Do not treat that unrelated failure as a Pages deployment failure.
+
+
+**Target-session retry and diagnostics (2026-10-25):** Inference now makes one targeted, one-day Dhan request for the selected session in addition to the normal chunked history request. This can recover bars omitted from a large response and helps distinguish session-level data gaps from broad-request truncation. If the required anchor is still unavailable, the failure explains whether the whole session had no valid bars or reports the returned session's timestamp range and nearby-bar count. The anchor is never silently substituted.
