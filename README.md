@@ -181,3 +181,12 @@ Last repository status update: 2026-10-25.
 
 
 **Target-session retry and diagnostics (2026-10-25):** Inference now makes one targeted, one-day Dhan request for the selected session in addition to the normal chunked history request. This can recover bars omitted from a large response and helps distinguish session-level data gaps from broad-request truncation. If the required anchor is still unavailable, the failure explains whether the whole session had no valid bars or reports the returned session's timestamp range and nearby-bar count. The anchor is never silently substituted.
+
+<!-- METHOD_DISCOVERY_STATUS_START -->
+## Phase 9 — New weekly-expiry direction methods
+- **Readiness status:** BLOCKED — source/anchor quality gate.
+- **Research plan:** [Phase 9 method plan](docs/PHASE_9_NEW_DIRECTION_METHODS.md); [Version 1.1 addendum](docs/RESEARCH_PLAN_V1_1_METHODS_ADDENDUM.md).
+- **Automated report:** [method-discovery readiness JSON](research/results/method_discovery_readiness.json).
+- **Current blocker:** Repository data-quality report marks confirmatory target construction BLOCKED.
+- **Interpretation:** the readiness audit trains no new model; existing ExtraTrees metrics remain exploratory and no trading strategy is validated.
+<!-- METHOD_DISCOVERY_STATUS_END -->
