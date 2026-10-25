@@ -1,0 +1,8 @@
+{
+  "status": "failed",
+  "as_of_date": "2024-09-20",
+  "request_issue_number": 11,
+  "request_started_at_utc": "2026-10-25T14:11:11Z",
+  "generated_at_utc": "2026-10-25T14:14:56.374132+00:00",
+  "error": "Dhan token refresh failed (HTTP 405). Check the configured credentials and Dhan authentication."
+}
