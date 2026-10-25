@@ -100,6 +100,21 @@ def main():
     except Exception as e:
         report["tracks"]["pysr"]={"status":"failed_or_unavailable","error":type(e).__name__+": "+str(e)[:500]}; record_error("PySR",e)
 
+    # Python mirror of the fixed-weight TradingView indicator; no threshold tuning on holdout.
+    try:
+        trend=np.clip(pd.to_numeric(df.get("ret_5",pd.Series(np.nan,index=df.index)),errors="coerce")/0.015,-1,1)
+        morning=np.clip(pd.to_numeric(df.get("pre_anchor_return",pd.Series(np.nan,index=df.index)),errors="coerce")/0.004,-1,1)
+        gap=np.clip(pd.to_numeric(df.get("overnight_gap",pd.Series(np.nan,index=df.index)),errors="coerce")/0.006,-1,1)
+        pressure=0.50*trend+0.35*morning+0.15*gap
+        ph=pressure.iloc[cut:].fillna(0).to_numpy()
+        yh=yte.to_numpy()
+        signal=np.where(ph>0.22,1,np.where(ph< -0.22,0,-1))
+        active=signal!=-1
+        indicator_result={"status":"completed_python_mirror","fixed_weights":{"prior_5_session_return":0.50,"pre_anchor_return":0.35,"overnight_gap":0.15},"threshold":0.22,"holdout_rows":int(len(yh)),"signals":int(active.sum()),"coverage":float(active.mean()),"directional_accuracy_on_signaled_rows":float(accuracy_score(yh[active],signal[active])) if active.any() else None,"balanced_accuracy_on_signaled_rows":float(balanced_accuracy_score(yh[active],signal[active])) if active.any() and len(np.unique(yh[active]))>1 else None,"warning":"Python mirror is not Pine compiler verification; no trading P&L or costs evaluated"}
+        report["tracks"]["custom_indicator"]=indicator_result
+    except Exception as e:
+        report["tracks"]["custom_indicator"]={"status":"failed","error":type(e).__name__+": "+str(e)[:400]}; record_error("Custom indicator Python mirror",e)
+
     # TradingAgents upstream smoke-test and reproducible multi-role review; no live LLM calls or orders.
     try:
         vend=ROOT/"vendor/TradingAgents"
