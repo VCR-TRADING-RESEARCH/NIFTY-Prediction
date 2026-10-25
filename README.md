@@ -36,25 +36,26 @@ The page uses a date input and **Predict** button. Historical selection is restr
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
 
-Last status refresh: 2026-10-25 09:48 UTC
+Last status refresh: 2026-10-25 12:48 UTC
 
-- Model run: [40181159630](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40181159630)
-- Source audit run: [40181901081](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40181901081)
+- Run ID: 40194404945
 - Target labels: 398
 - Binary rows with sufficient features: 398
 - Development / final holdout rows: 318 / 80
 - Model selected on development data: extra_trees
-- Holdout metrics: accuracy 61.25%; balanced accuracy 60.18%; MCC 0.213; Brier 0.246; log loss 0.686; ROC AUC 0.574
-- Calendar status: **402/402 official expiry records verified; official EOD closes used for labels**
-- Source gate: **BLOCKED** — preserved archive close mismatches official NSE close by >1 point on 1,719/1,903 sessions
-- 10:00 anchor: **PROVISIONAL** — minute-archive-derived, not independently validated
+- Calendar status: **OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL**
 - Independently validated usable trading strategy: **NO**
 
-The current pipeline labels the weekday-derived expiry calendar as exploratory; performance metrics are not a verified trading edge. The spot index is not a directly executable instrument, and contract-level quotes, dated costs, spread/slippage and fills are not yet joined.
+The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.
+
+The target uses official NSE expiry dates and daily closes. The 10:00 anchor is still minute-archive-derived and independently unvalidated. No executable futures/options P&L with broker charges, spreads, slippage and fills has been validated.
 
 - Source CSV files: 19
 - Valid minute bars after checks: 882839
-- Yahoo daily-close check: available; compared rows: 2352; expiry-date mismatches over tolerance: 0
+- Official NSE daily closes matched: 1903
+- Minute-archive closes differing from official close by >1 point: 1719
+- Median absolute minute-vs-official close difference: 8.25 points
+- Yahoo daily-close cross-check: available; compared rows: 2352; mismatches over tolerance: 0
 
 ### Final holdout metrics (exploratory)
 - extra_trees: accuracy 0.613, balanced accuracy 0.602, n=80

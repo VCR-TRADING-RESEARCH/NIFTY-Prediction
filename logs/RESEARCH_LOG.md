@@ -321,3 +321,14 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Added .github/workflows/deploy-pages.yml; it deploys the docs/ static site only from main, with manual workflow dispatch support. Deployment has not yet been verified from the default branch.
 - Acceptance gates: forecast-generation action must succeed; tests must pass; the latest forecast date and target expiry must be current; the website deployment must be verified. The source gate remains BLOCKED because the latest audit recorded 1,719 / 1,903 archive close discrepancies >1 point and the 10:00 anchor remains independently unvalidated.
 - Interpretation: the model output is a NIFTY spot direction classification, not an options trade or P&L prediction. The page displays the 61.25% historical holdout metric only with its 80-observation sample size and uncertainty caveat.
+
+
+## Automated run 40194404945 — 2026-10-25T12:48:21.329591+00:00
+- Status: pipeline completed; empirical findings remain exploratory until calendar and instrument-cost gates pass.
+- Source files read: 19; valid minute bars: 882839.
+- Weekly labels: 398; binary rows: 398; feature-complete rows: 398.
+- Development rows / held-out rows: 318 / 80.
+- Development-selected model: extra_trees.
+- Calendar gate: OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL — The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.
+- Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
+- Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.

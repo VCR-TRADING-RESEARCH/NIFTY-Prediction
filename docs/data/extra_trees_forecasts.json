@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-25T00:00:00Z",
+  "generated_at_utc": "2026-10-25T12:48:21.327640+00:00",
   "timezone": "Asia/Kolkata",
   "model": {
     "name": "ExtraTreesClassifier",
@@ -44,7 +44,7 @@
       0.7117543487
     ],
     "status": "EXPLORATORY_ONLY",
-    "note": "61.25% is from the 80-row chronological holdout; it is not a probability of profit and does not validate an options strategy."
+    "note": "The reported 61.25% is from the historical 80-row holdout. It is not a probability of profit and does not validate an options strategy."
   },
   "data_quality": {
     "status": "BLOCKED",
@@ -52,9 +52,9 @@
     "sessions_compared": 1903,
     "close_mismatches_over_1_point": 1719,
     "median_absolute_difference_points": 8.25,
-    "p95_absolute_difference_points": 32.435,
-    "max_absolute_difference_points": 200.7,
-    "detail": "Seed data contains historical holdout predictions only. Independent audit found material archive-versus-official close discrepancies; the 10:00 anchor remains unverified."
+    "p95_absolute_difference_points": 32.43499999999729,
+    "max_absolute_difference_points": 200.70000000000073,
+    "detail": "The 10:00 anchor is still sourced from the public minute archive and is not independently validated."
   },
   "historical_predictions": [
     {
@@ -64,7 +64,7 @@
       "direction": "UP",
       "p_up": 0.5474697494331549,
       "training_rows": 318,
-      "trained_through_expiry_date": null,
+      "trained_through_expiry_date": "2025-04-03",
       "prediction_kind": "LOCKED_CHRONOLOGICAL_HOLDOUT",
       "source_gate": "BLOCKED"
     },
@@ -194,7 +194,7 @@
       "as_of_time_ist": "10:00-or-first-valid-bar-by-10:03",
       "target_expiry_date": "2025-07-03",
       "direction": "DOWN",
-      "p_up": 0.4892706622394918,
+      "p_up": 0.4892706622394919,
       "training_rows": 330,
       "trained_through_expiry_date": "2025-06-26",
       "prediction_kind": "LOCKED_CHRONOLOGICAL_HOLDOUT",
@@ -260,7 +260,7 @@
       "as_of_time_ist": "10:00-or-first-valid-bar-by-10:03",
       "target_expiry_date": "2025-08-14",
       "direction": "DOWN",
-      "p_up": 0.49786263852264007,
+      "p_up": 0.49786263852264,
       "training_rows": 336,
       "trained_through_expiry_date": "2025-08-07",
       "prediction_kind": "LOCKED_CHRONOLOGICAL_HOLDOUT",
@@ -656,7 +656,7 @@
       "as_of_time_ist": "10:00-or-first-valid-bar-by-10:03",
       "target_expiry_date": "2026-04-28",
       "direction": "DOWN",
-      "p_up": 0.33299994596577454,
+      "p_up": 0.3329999459657745,
       "training_rows": 372,
       "trained_through_expiry_date": "2026-04-21",
       "prediction_kind": "LOCKED_CHRONOLOGICAL_HOLDOUT",
@@ -733,7 +733,7 @@
       "as_of_time_ist": "10:00-or-first-valid-bar-by-10:03",
       "target_expiry_date": "2026-06-16",
       "direction": "DOWN",
-      "p_up": 0.43028471255425954,
+      "p_up": 0.4302847125542595,
       "training_rows": 379,
       "trained_through_expiry_date": "2026-06-09",
       "prediction_kind": "LOCKED_CHRONOLOGICAL_HOLDOUT",
@@ -799,7 +799,7 @@
       "as_of_time_ist": "10:00-or-first-valid-bar-by-10:03",
       "target_expiry_date": "2026-07-28",
       "direction": "DOWN",
-      "p_up": 0.3730443108544845,
+      "p_up": 0.3730443108544844,
       "training_rows": 385,
       "trained_through_expiry_date": "2026-07-21",
       "prediction_kind": "LOCKED_CHRONOLOGICAL_HOLDOUT",
@@ -854,7 +854,7 @@
       "as_of_time_ist": "10:00-or-first-valid-bar-by-10:03",
       "target_expiry_date": "2026-09-01",
       "direction": "DOWN",
-      "p_up": 0.4048884220017084,
+      "p_up": 0.40488842200170827,
       "training_rows": 390,
       "trained_through_expiry_date": "2026-08-25",
       "prediction_kind": "LOCKED_CHRONOLOGICAL_HOLDOUT",
@@ -931,19 +931,33 @@
       "as_of_time_ist": "10:00-or-first-valid-bar-by-10:03",
       "target_expiry_date": "2026-10-19",
       "direction": "DOWN",
-      "p_up": 0.3968149111066437,
+      "p_up": 0.39681491110664363,
       "training_rows": 397,
       "trained_through_expiry_date": "2026-10-13",
       "prediction_kind": "LOCKED_CHRONOLOGICAL_HOLDOUT",
       "source_gate": "BLOCKED"
     }
   ],
-  "latest_forecast": null,
-  "latest_forecast_error": "A current forward forecast has not yet been generated in this seed file. The research workflow is configured to build it from the most recent data and eligible 10:00 anchor.",
+  "latest_forecast": {
+    "as_of_date": "2026-10-21",
+    "as_of_time_ist": "10:00",
+    "target_expiry_date": "2026-10-27",
+    "target_nominal_date": "2026-10-27",
+    "target_calendar_status": "PROVISIONAL_NEXT_WEEKLY_DATE",
+    "direction": "DOWN",
+    "p_up": 0.3847810616356473,
+    "training_rows": 398,
+    "trained_through_expiry_date": "2026-10-19",
+    "prediction_kind": "LATEST_FORWARD_FORECAST",
+    "source_gate": "BLOCKED",
+    "anchor_price": 23022.8,
+    "anchor_source": "public minute archive; independently unverified"
+  },
+  "latest_forecast_error": null,
   "warnings": [
     "Source gate remains blocked until archive closes reconcile with official NSE closes.",
     "The 10:00 anchor is from a public minute archive and remains independently unverified.",
-    "Expiry date for a live forecast must be confirmed against official contract history.",
-    "This is NIFTY spot direction classification, not an executable options trade or P&L forecast."
+    "Expiry date for the live forecast is a candidate until confirmed against official contract history.",
+    "This is a NIFTY spot direction classification, not an executable options trade or a P&L forecast."
   ]
 }
