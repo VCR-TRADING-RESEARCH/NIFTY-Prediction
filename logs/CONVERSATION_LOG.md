@@ -23,3 +23,9 @@
 - Deployment workflow reached Hugging Face Space creation, then received HTTP 402. Current Hugging Face docs state Docker/Gradio CPU-basic Spaces require an individual Pro subscription or Team/Enterprise for organizations. Static GitHub Pages cannot securely hold the Dhan PIN/TOTP secret or execute Python, so direct browser-only fallback is not safe.
 - A follow-up deployment-script diagnostic bug (temporary directory variable shadowing the stage label) was corrected and logged as E0009; the next run reconfirmed HTTP 402 at the Space-creation stage.
 - User intervention is now required to provide eligible Hugging Face compute or point `HF_SPACE_ID` at an existing writable, eligible Docker Space. No secrets are copied into the page or repository logs.
+
+
+## 2026-10-25 — Alternative backend approved
+- User approved proceeding with a secure alternative backend while keeping GitHub Pages as the front end.
+- Decision: do not place Dhan PIN/TOTP in the browser or use a publicly callable GitHub Actions trigger. Current Hugging Face provisioning is blocked by HTTP 402; no other host deployment credential is available in the repository workflow configuration.
+- Next actionable prerequisite: eligible existing Docker Space ID or a credential for a host such as Render/Cloudflare. Then deploy, test live Dhan auth/history, and verify browser result rendering.
