@@ -164,7 +164,7 @@ def main() -> int:
             "dhan_minute_match_count": dhan_check.get("matched_timestamps"),
             "dhan_minute_mismatches": dhan_check.get("mismatched_closes_over_1_point"),
         }
-        summary["target_definition"] = "Expiry-day last valid 15:25-15:29 bar close relative to 10:00-10:03 first-bar open on first session after preceding weekly expiry."
+        summary["target_definition"] = "NSE official daily close on verified weekly expiry date relative to the first minute-archive bar open at or after 10:00 and no later than 10:03 on the first trading session after the previous verified expiry."
         summary["calendar_status"] = "EXPLORATORY_ONLY"
         write_json(RESULTS / "summary.json", summary)
         created_plots = save_figures(cycles, RESULTS)
