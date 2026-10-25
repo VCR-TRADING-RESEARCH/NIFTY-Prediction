@@ -147,8 +147,8 @@ def main() -> int:
             "target_construction": construction_report,
             "independent_daily_close_crosscheck": yahoo_check,
             "independent_recent_minute_crosscheck": dhan_check,
-            "confirmatory_status": "BLOCKED: candidate expiry dates are not yet reconciled against a complete official historical weekly-contract expiry calendar.",
-            "data_scope_warning": "The public minute archive is a candidate source with known missing/frozen/partial sessions. Spot bar checks and Yahoo comparisons are diagnostics, not proof of official exchange data lineage.",
+            "confirmatory_status": "BLOCKED: expiry dates and EOD closes use NSE records, but the 10:00 anchor remains minute-archive-derived and is not independently validated.",
+            "data_scope_warning": "Expiry outcomes and lagged closes use NSE official daily values. The 10:00 anchor still uses a public minute archive with unverified provider lineage; no instrument-level costs or fills are validated.",
         }
         write_json(PROCESSED / "data_quality_report.json", quality_report)
         summary = evaluate_research(cycles, RESULTS)
