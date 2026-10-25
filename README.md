@@ -2,7 +2,7 @@
 
 **Purpose:** Predict whether the NIFTY 50 spot index at the close of a weekly options expiry is higher or lower than its value at **10:00 IST on the next trading day after the preceding weekly expiry**. This project researches a binary directional forecast, not a generic return-maximization system.
 
-> **Research status (2026-10-25):** Repository bootstrap in progress. No live or historical out-of-sample strategy is certified yet. A strategy is accepted only after leakage checks, walk-forward evaluation, robustness tests, and date-aware costs/slippage are passed. A workflow run or model score is not proof of profitability.
+> **Research status (2026-10-25):** Research and deployment remain in progress; no strategy is certified for live trading. No live or historical out-of-sample strategy is certified yet. A strategy is accepted only after leakage checks, walk-forward evaluation, robustness tests, and date-aware costs/slippage are passed. A workflow run or model score is not proof of profitability.
 
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
@@ -152,8 +152,8 @@ Last repository status update: 2026-10-25.
 - Dhan credentials remain in GitHub Actions secrets. The workflow publishes a date-specific JSON record and `latest.json` for GitHub Pages.
 - The Pages button only loads published records; it no longer creates a GitHub Issue or calls an external API. GitHub Pages cannot securely launch a private Actions run directly without an authenticated trigger.
 - A missing/failed latest result is shown as unavailable rather than silently substituting a stale forecast.
-- The scheduled workflow must be merged to `main` before cron scheduling becomes active. Until the first successful run, the feature is pending deployment verification.
+- The workflow is merged to `main`; date-specific inference and publication have been verified for historical cutoff `2024-06-07` (Actions run [40204498793](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40204498793)).
 - Trading readiness remains **BLOCKED** pending independent 10:00 anchor reconciliation, leakage-safe walk-forward evaluation, and executable option-level P&L including Paytm Money brokerage/fees, bid-ask spreads and slippage.
 
 
-**Validation update:** PR [#13](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/13) was merged to `main` after the branch regression and workflow-validation checks passed. GitHub Pages deployment run [40203599397](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40203599397) was still running at the last check. The first Dhan-backed scheduled/manual inference has not yet been verified; the next scheduled weekday run is expected at 10:30 IST.
+**Validation update (2026-10-25):** PR [#14](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/14) was merged to prevent stale result publication and add selected-date workflow navigation. The historical inference run [40204498793](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40204498793) succeeded on rerun and published [the 2024-06-07 result](docs/assets/predictions/2024-06-07.json): direction UP, raw ExtraTrees UP score 0.5475, target expiry 2024-06-13, anchor 22,978.3, 132 training rows through 2024-06-06. This remains exploratory: anchor reconciliation and executable option costs/slippage are not validated.
