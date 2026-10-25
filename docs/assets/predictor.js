@@ -31,6 +31,20 @@
     }).format(dt);
   }
 
+  function parseInputDate(value) {
+    const match = /^\\s*(\\d{1,2})[\\/.-](\\d{1,2})[\\/.-](\\d{4})\\s*$/.exec(value || "");
+    if (!match) return null;
+    const day = Number(match[1]), month = Number(match[2]), year = Number(match[3]);
+    const date = new Date(Date.UTC(year, month - 1, day));
+    if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null;
+    return year + "-" + String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+  }
+
+  function displayDateInput(isoDate) {
+    const parts = isoDate.split("-");
+    return parts.length === 3 ? parts[2] + "/" + parts[1] + "/" + parts[0] : isoDate;
+  }
+
   function formatPercent(value) {
     if (typeof value !== "number" || !Number.isFinite(value)) return "—";
     return (value * 100).toFixed(1) + "%";
@@ -88,7 +102,7 @@
 
   function handlePrediction(date) {
     clearInputError();
-    const record = choosePrediction(date);
+    const normalizedDate = parseInputDate(date);\n    if (!normalizedDate) {\n      showInputError("Enter a valid date as DD/MM/YYYY, for example 21/10/2026.");\n      resultSection.hidden = true;\n      return;\n    }\n    const record = choosePrediction(normalizedDate);
     if (!record) {
       const sorted = availablePredictions.map((item) => item.as_of_date).sort();
       const nearestBefore = sorted.filter((value) => value < date).pop();
