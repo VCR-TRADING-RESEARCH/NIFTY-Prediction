@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Generate leakage-safe historical as-of forecasts and the latest provisional expiry forecast."""
+"""Generate leakage-safe historical as-of forecasts and the latest provisional expiry forecast.
+
+This output is exploratory until the registered price-source and anchor gates pass.
+"""
 from __future__ import annotations
 
 import json
