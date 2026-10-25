@@ -262,7 +262,10 @@ def fetch_dhan_bars(as_of: date, token: str, client_id: str, security_id: str) -
         end = min(cursor + timedelta(days=89), as_of)
         # Chunk cache keys are deterministic for repeated requests; refreshing the
         # token is unconditional even if eligible historical chunks are cached.
-        frame = _dhan_chunk(security_id, token, client_id, cursor, end, refresh_recent=False)
+        # Refresh the selected cutoff date chunk: a stale cached chunk may omit that session or its anchor bar.
+        # Keep all other chunks cache-first to avoid repeated bulk downloads.
+        selected_chunk = cursor <= as_of <= end
+        frame = _dhan_chunk(security_id, token, client_id, cursor, end, refresh_recent=selected_chunk)
         if not frame.empty:
             frames.append(frame)
         cursor = end + timedelta(days=1)
