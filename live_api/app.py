@@ -40,7 +40,7 @@ INTRADAY_URL = "https://api.dhan.co/v2/charts/intraday"
 MASTER_URL = "https://images.dhan.co/api-data/api-scrip-master.csv"
 OFFICIAL_CLOSES = ROOT / "data" / "reconciliation" / "nifty50_official_daily.csv"
 EXPIRY_CALENDAR = ROOT / "data" / "reconciliation" / "expiry_verification.csv"
-CACHE_DIR = Path(os.getenv("DHAN_CACHE_DIR", "/tmp/nifty-dhan-cache"))
+CACHE_DIR = Path(os.getenv("DHAN_CACHE_DIR", "/data/nifty-dhan-cache"))
 ALLOWED_ORIGIN = os.getenv("ALLOWED_ORIGIN", "https://vcr-trading-research.github.io")
 MIN_TRAINING_ROWS = 104
 MAX_REQUESTS_PER_HOUR = 6
@@ -363,7 +363,7 @@ def _do_prediction(as_of: date) -> dict[str, Any]:
     previous_cycle = previous_cycle_rows.sort_values("expiry_normalized").iloc[-1]
     train = _binary_train_table(cycles)
     train = train.loc[
-        train["expiry_date"].lt(as_of_ts)
+        train["expiry_date"].le(previous_expiry)
         & train["expiry_date"].lt(as_of_ts)
     ].copy()
     if len(train) < MIN_TRAINING_ROWS:
@@ -483,6 +483,8 @@ def create_prediction(request_body: PredictRequest, request: Request) -> dict[st
         as_of = parse_as_of_date(request_body.as_of_date)
     except PublicPredictionError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from None
+    if request.headers.get("origin", "") != ALLOWED_ORIGIN:
+        raise HTTPException(status_code=403, detail="This prediction endpoint only accepts requests from the NIFTY Prediction page.")
     client = _client_key(request)
     now = time.time()
     with jobs_lock:
