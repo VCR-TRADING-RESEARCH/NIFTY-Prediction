@@ -2,7 +2,7 @@
 
 **Purpose:** Predict whether the NIFTY 50 spot index at the close of a weekly options expiry is higher or lower than its value at **10:00 IST on the next trading day after the preceding weekly expiry**. This project researches a binary directional forecast, not a generic return-maximization system.
 
-> **Research status (2026-10-25):** Repository bootstrap in progress. No live or historical out-of-sample strategy is certified yet. A strategy is accepted only after leakage checks, walk-forward evaluation, robustness tests, and date-aware costs/slippage are passed. A workflow run or model score is not proof of profitability.
+> **Research status (2026-10-25):** First automated empirical run completed, but Phase 1 is BLOCKED: 368/402 expiry-date closes mismatch an independent daily-close source by >1 point and the historical expiry calendar remains heuristic. Provisional holdout model scores are exploratory only. No usable trading strategy is validated. Do not trade this result.
 
 ## Definition of the target
 
