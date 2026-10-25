@@ -119,3 +119,10 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Expiry results: 338/402 confirmed, 26 not verified, 38 source-validation errors. Unit tests passed. Source errors were truncated to exception type, making root-cause analysis insufficient.
 - Corrective step: warm each worker's NSE session against the official derivatives reports page, retain detailed sanitized validation reasons, check nearby previous sessions for expiry holiday shifts, and compare official daily open/high/low separately from close. This is diagnostic; the one-point close gate is not relaxed.
 - Main research pass 40175103450 completed successfully and committed artifacts. Metrics remain exploratory only: ExtraTrees 0.575 accuracy / 0.559 balanced; logistic 0.550 / 0.547 on an 80-row holdout. No costed executable strategy exists.
+
+
+## Phase 3 official-source reconciliation — 2026-10-25T08:15:03.103281+00:00
+- Status: BLOCKED
+- Counts: {"candidate_expiries_checked": 402, "contract_unverified_expiries": 26, "contract_verified_expiries": 338, "daily_source_rows_compared": 1901, "daily_source_rows_expected": 1901, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 38, "minute_vs_official_abs_difference_max_points": 200.7, "minute_vs_official_abs_difference_median_points": 8.25, "minute_vs_official_abs_difference_p95_points": 32.45, "minute_vs_official_mismatches_over_1_point": 1717, "minute_vs_official_within_1_point": 184, "official_daily_rows": 1913}
+- Errors: 338/402 candidate dates were confirmed; 26 were not verified and 38 produced source-validation errors. Detailed failure diagnostics were not preserved by this run.; 1,717 of 1,901 daily minute-source closes differ from official NSE NIFTY 50 closes by more than the pre-registered 1-point tolerance.
+- Detailed outputs: data/reconciliation/
