@@ -139,3 +139,41 @@ These comparisons are preliminary diagnostic evidence only. The official-source 
 NSE derivatives bhavcopy reconciliation verified all 402 candidate weekly-expiry records with no source errors. The primary public minute archive's daily close differs from official NSE daily close by more than one index point in 1,717 of 1,901 sessions (median absolute difference 8.25 points; 95th percentile 32.45; maximum 200.7). A separately published minute dataset overlaps for 1,271 sessions through 27 March 2024 and has 1,182 close mismatches over one point; its underlying provider lineage is not independently verified.
 
 Target construction now uses the official NSE daily close on the verified expiry trade date. Lagged daily closes also use official NSE values where available, while the archive close is retained for audit. The 10:00 anchor still uses the first eligible minute-bar open from the primary public archive and is not independently validated. Results remain exploratory until the anchor source and instrument-level execution costs are validated.
+
+
+## 9. Corrected official-source audit and final interpretation (25 October 2026)
+
+### Research question and methods
+The final bounded audit tested whether original minute-archive daily closes match official NSE NIFTY 50 daily closes within the pre-specified one-point tolerance, and whether candidate expiry dates have official derivatives evidence. To avoid circular validation, the audit compared preserved `session_close_archive` values from the original minute bars directly with official `official_close`, not a cross-check table whose close values had already been replaced by official closes.
+
+### Results
+| Audit measure | Result |
+|---|---:|
+| Candidate expiry dates checked | 402 |
+| Candidate expiry dates officially verified | 402 / 402 |
+| Unverified expiry dates / source errors | 0 / 0 |
+| Official daily records retrieved | 1,913 |
+| Preserved archive sessions compared | 1,903 |
+| Close differences above one point | 1,719 / 1,903 (90.3%) |
+| Median absolute close difference | 8.25 points |
+| 95th percentile absolute close difference | 32.435 points |
+| Maximum absolute close difference | 200.7 points |
+
+The corrected audit invalidates an earlier apparent PASS that reported zero close mismatches. That result was circular because the comparison table used official-close-overridden values. The separate audit's non-zero discrepancy result is authoritative. The cause of the differences is not fully identified; source integrity, session aggregation, timestamp alignment or other processing issues remain possible.
+
+### Updated model result (exploratory only)
+The official-close/verified-expiry pipeline (run 40181159630) produced 398 labelled cycles, with 318 development observations and 80 chronological holdout observations. ExtraTrees was selected on development data. Holdout accuracy was 61.25%, balanced accuracy 60.18%, MCC 0.213, Brier score 0.246, log loss 0.686 and ROC AUC 0.574. The approximate 95% Wilson interval for accuracy is 50.3%–71.2%. This is not confirmatory evidence: the 10:00 anchor still comes from the unvalidated minute archive, and the preserved archive daily closes fail independent comparison. These metrics must not be interpreted as a proven predictive edge.
+
+### Statistical interpretation
+The holdout has only 80 observations and a wide uncertainty interval. Accuracy modestly exceeds 50%, while ROC AUC is 0.574 and probability scores are weak. Evidence is insufficient to distinguish a stable economic edge from sampling variability, regime effects or residual label/source errors. Recorded evolutionary and symbolic-regression experiments did not improve on the simpler baseline. Further searching now would compound multiple-testing risk without fixing the data defect.
+
+### Strengths and limitations
+Strengths include chronological holdout evaluation, explicit target semantics, official expiry-date verification, preservation of original archive closes, a fixed one-point mismatch tolerance, automated tests, and correction logs that invalidate the false PASS rather than conceal it.
+
+Limitations include 1,719/1,903 close discrepancies above tolerance; an unvalidated 10:00 anchor; no verified contract-level fills; no historical bid-ask spread/slippage series; no date-effective Paytm Money brokerage, exchange fees, statutory levies or GST accounting; no net-of-cost futures/options backtest; a small holdout; and incomplete point-in-time coverage for options IV/OI, FII/DII, global-market, news and regime features. A spot-index classification score is not an executable trading return.
+
+### Conclusion and stopping decision
+**Final bounded result: BLOCKED — NO USABLE TRADING STRATEGY VALIDATED.** The official expiry calendar is verified for all 402 candidate dates, but the price-source gate fails and the anchor remains provisional. Do not trade these model outputs. Pause at the pre-defined data-quality gate rather than run further model searches on potentially incorrect labels. No profitability or cost-adjusted expectancy claim is made.
+
+### Future direction
+If resumed, the next justified step is a bounded source-diagnosis phase: inspect date-level/year-level mismatch patterns; test session aggregation, timezone and close selection; independently validate 10:00 minute prices using a reliable free source first and Dhan if access can be repaired; preserve immutable raw-source values; rebuild labels and re-register the holdout. Only after source and anchor gates pass should contract-level simulation include historical futures/options prices, date-effective Paytm Money charges, bid-ask spread, slippage, lot sizing and conservative fills.
