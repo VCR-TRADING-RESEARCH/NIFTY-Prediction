@@ -140,3 +140,17 @@ The research target is on the spot index. Any executable strategy must separatel
 - Probability of Backtest Overfitting: https://doi.org/10.21314/jcf.2016.322
 
 Last repository status update: 2026-10-25.
+
+
+## Free GitHub Actions + Pages prediction flow
+
+**Current implementation branch:** [`phase/github-actions-pages-free`](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/github-actions-pages-free)  
+**Plan:** [Free Actions + Pages phase plan](docs/PHASE_GITHUB_ACTIONS_PAGES_FREE.md)  
+**Workflow:** [Free scheduled prediction](.github/workflows/free-pages-prediction.yml)
+
+- The scheduled workflow runs on weekdays at 10:30 IST and can also be started manually from GitHub Actions.
+- Dhan credentials remain in GitHub Actions secrets. The workflow publishes a date-specific JSON record and `latest.json` for GitHub Pages.
+- The Pages button only loads published records; it no longer creates a GitHub Issue or calls an external API. GitHub Pages cannot securely launch a private Actions run directly without an authenticated trigger.
+- A missing/failed latest result is shown as unavailable rather than silently substituting a stale forecast.
+- The scheduled workflow must be merged to `main` before cron scheduling becomes active. Until the first successful run, the feature is pending deployment verification.
+- Trading readiness remains **BLOCKED** pending independent 10:00 anchor reconciliation, leakage-safe walk-forward evaluation, and executable option-level P&L including Paytm Money brokerage/fees, bid-ask spreads and slippage.

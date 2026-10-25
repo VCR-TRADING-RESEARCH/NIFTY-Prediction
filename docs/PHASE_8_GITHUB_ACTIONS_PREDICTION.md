@@ -1,41 +1,22 @@
-# Phase 8 — GitHub Actions on-demand prediction
+# Phase 8 — GitHub Actions + Pages prediction (free hosting)
 
-**Branch:** `phase/github-actions-on-demand-prediction`  
-**Goal:** Run the existing Dhan-backed ExtraTrees inference inside GitHub Actions and publish a date-specific result to GitHub Pages without a separate paid API host.
+**Current implementation:** [Phase — Free GitHub Actions + Pages](PHASE_GITHUB_ACTIONS_PAGES_FREE.md)  
+**Workflow:** [`.github/workflows/free-pages-prediction.yml`](../.github/workflows/free-pages-prediction.yml)
 
-## Intended click flow
+The old issue-submission workflow is retained for audit/history, but it is no longer the intended Pages interaction. The new free flow is:
 
-1. On the Pages predictor, select the 10:00 IST anchor date and click **Predict**.
-2. The page displays a prefilled GitHub request link. Open it and submit the issue; GitHub authentication is the authorization boundary.
-3. The `on-demand-prediction.yml` workflow accepts the allowlisted repository account `vishnuvcr` with a strict `[NIFTY PREDICT] YYYY-MM-DD` title. It also supports a manual `workflow_dispatch` input from `main`.
-4. The runner refreshes Dhan authentication from `DHAN_CLIENT_ID`, `DHAN_PIN`, and `DHAN_TOTP_SECRET` GitHub Secrets, fetches/reuses Dhan minute chunks, and calls the existing `live_api.app._do_prediction` pipeline.
-5. The workflow publishes a sanitized JSON record at `docs/assets/predictions/YYYY-MM-DD.json`; the still-open Pages tab polls for a newly generated result and displays it.
-6. Failed data/model validation is represented as a failure. A prior record is never accepted as a fresh prediction because the page checks its generation timestamp.
+1. GitHub Actions runs on weekdays at 10:30 IST and also supports a manual run from the Actions tab.
+2. Dhan credentials remain in Actions secrets; the existing Python ExtraTrees pipeline runs on the hosted runner.
+3. The workflow publishes `docs/assets/predictions/YYYY-MM-DD.json` and `docs/assets/predictions/latest.json`.
+4. GitHub Pages reads the published JSON. The user does not need to open or submit a GitHub Issue.
+5. If the latest run fails, the published status is shown as unavailable; an older prediction is not silently passed off as fresh.
 
-## Security and platform constraints
+## Platform limitation
 
-- GitHub Pages cannot run Python or securely hold a GitHub/Dhan token. The page therefore never receives Dhan credentials or a GitHub API token.
-- The page cannot silently invoke the authenticated Actions API from browser JavaScript. The user must authenticate to GitHub and submit the prefilled request issue. This extra submit step is intentional; do not embed a PAT in the page.
-- The issue-triggered secret-bearing job is restricted by an explicit allowlist for the repository account `vishnuvcr`; the issue title is parsed as data and never executed as shell code.
-- Workflow runs are restricted to `main`; the manual workflow dispatch is also supported.
-- Dhan token refresh occurs on every inference request. A cache-save warning was seen on the first run (`token has no writable scopes`); the workflow now declares `actions: write`, but persistent cache writes remain unverified until a subsequent run.
-- The workflow writes only the public prediction summary and sanitized errors to the Pages assets directory. Raw bars, tokens, PIN, TOTP and provider response bodies are not published.
+GitHub Pages is static. It cannot securely launch a private Actions run directly from a browser button without an authenticated trigger. In this no-extra-hosting design, the page's button loads a published result; scheduled/manual Actions does the Python computation.
 
-## Acceptance checklist
+## Status
 
-| Gate | Evidence | Status |
-|---|---|---|
-| Python runner | Reuses tested inference function; sanitized JSON output | Implemented; live run succeeded |
-| Secure trigger | Authenticated GitHub issue submission and account allowlist | Implemented; live issue event succeeded |
-| Manual workflow | `workflow_dispatch` accepts ISO date on `main` | Implemented; YAML validated in CI |
-| Data cache | Actions cache restore/save around Dhan minute chunks | Partially implemented; persistent write unverified |
-| Pages result | Date-specific JSON is polled and freshness-checked; `?as_of_date=YYYY-MM-DD` deep link displays saved result | Published JSON verified; browser display still needs user confirmation |
-| Live Dhan request | Valid token, sufficient bars, model fit and published result | PASSED for 2024-09-20; result UP, raw UP score 0.5131, 147 training labels, 268,510 minute bars |
-| Trading readiness | Independent anchor validation and instrument-level cost/slippage backtest | BLOCKED |
+Implementation is prepared on `phase/github-actions-pages-free`. CI, merge, a first scheduled/manual Dhan run, publication and a live Pages browser check remain pending. Existing historical inference for 2024-09-20 succeeded, but that result is not current and not trading-cleared.
 
-## Known limitations / next steps
-
-- A workflow run and a JSON result do not prove the forecast is profitable. The 10:00 anchor remains independently unvalidated, and Paytm Money charges, spread, slippage, fills and options P&L are not yet validated.
-- Public issue submissions by non-members do not receive Dhan secrets or run the job. If the signed-in account is not a repository owner/member, the request will not execute.
-- GitHub Pages deployment may take a short time to publish a new JSON file after the workflow pushes it.
-- Confirm the Pages deep link displays the saved result in a browser and verify that the new `actions: write` permission enables persistent cache writes on a future run. Live Dhan inference and result publication have been verified for the 2024-09-20 historical cutoff.
+Trading acceptance remains BLOCKED until independent anchor reconciliation, leakage-safe walk-forward tests and executable option-level P&L include Paytm Money fees, bid-ask spreads, slippage and realistic fills.

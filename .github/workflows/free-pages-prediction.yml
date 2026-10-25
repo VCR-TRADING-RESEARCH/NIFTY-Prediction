@@ -1,0 +1,135 @@
+name: Free scheduled NIFTY ExtraTrees prediction
+
+on:
+  schedule:
+    # 10:30 IST on weekdays, after the 10:00 anchor bars are available.
+    - cron: "0 5 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      as_of_date:
+        description: "Optional 10:00 IST anchor date (YYYY-MM-DD); blank means today in IST"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: nifty-free-pages-prediction
+  cancel-in-progress: false
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      TZ: Asia/Kolkata
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Resolve prediction date
+        id: request
+        env:
+          INPUT_DATE: ${{ inputs.as_of_date }}
+        run: |
+          python - <<'PY'
+          import os, re
+          from datetime import date, datetime
+          value = os.environ.get("INPUT_DATE", "").strip()
+          if not value:
+              value = datetime.now().astimezone().date().isoformat()
+          if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+              raise SystemExit("Date must use YYYY-MM-DD.")
+          date.fromisoformat(value)
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write("as_of_date=" + value + "\n")
+          print("Prediction cutoff:", value)
+          PY
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Restore cached Dhan minute data
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/nifty-dhan-cache
+          key: nifty-dhan-minute-v2-${{ runner.os }}-${{ steps.request.outputs.as_of_date }}-${{ github.run_id }}
+          restore-keys: |
+            nifty-dhan-minute-v2-${{ runner.os }}-
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Run fresh Dhan-backed ExtraTrees inference
+        id: inference
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+          DHAN_CACHE_DIR: ${{ runner.temp }}/nifty-dhan-cache
+          NIFTY_AS_OF_DATE: ${{ steps.request.outputs.as_of_date }}
+          NIFTY_REQUEST_STARTED_AT: ${{ github.run_started_at }}
+        run: python scripts/run_live_prediction.py
+
+      - name: Save refreshed Dhan minute-data cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/nifty-dhan-cache
+          key: nifty-dhan-minute-v2-${{ runner.os }}-${{ steps.request.outputs.as_of_date }}-${{ github.run_id }}
+
+      - name: Publish date-specific and latest status to Pages
+        if: always() && steps.request.outcome == 'success'
+        env:
+          REQUEST_DATE: ${{ steps.request.outputs.as_of_date }}
+          INFERENCE_OUTCOME: ${{ steps.inference.outcome }}
+        run: |
+          set -e
+          mkdir -p docs/assets/predictions
+          OUTPUT="docs/assets/predictions/$REQUEST_DATE.json"
+          if [ ! -f "$OUTPUT" ]; then
+            python - "$OUTPUT" "$REQUEST_DATE" "$INFERENCE_OUTCOME" <<'PY'
+          import json, sys
+          from datetime import datetime, timezone
+          path, as_of_date, outcome = sys.argv[1:]
+          record = {
+              "status": "failed",
+              "as_of_date": as_of_date,
+              "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+              "error": "Prediction workflow did not produce a result. Check the linked Actions run.",
+              "workflow_outcome": outcome
+          }
+          with open(path, "w", encoding="utf-8") as f:
+              json.dump(record, f, indent=2)
+              f.write("\n")
+          PY
+          fi
+          cp "$OUTPUT" docs/assets/predictions/latest.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$OUTPUT" docs/assets/predictions/latest.json
+          git diff --cached --quiet || git commit -m "Publish scheduled ExtraTrees prediction for $REQUEST_DATE"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
+
+      - name: Record failed run in error log
+        if: failure()
+        run: |
+          printf '\n\n## Scheduled prediction failure — run %s\n- Date: %s\n- Status: FAILED; inspect the linked Actions run for the failing step.\n- No secrets or provider response bodies are copied into logs.\n' "$GITHUB_RUN_ID" "${{ steps.request.outputs.as_of_date }}" >> logs/ERROR_LOG.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add logs/ERROR_LOG.md
+          git diff --cached --quiet || git commit -m "Log scheduled prediction failure"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main

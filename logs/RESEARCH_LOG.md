@@ -88,3 +88,13 @@
 - Temporal checks: training labels stop at 2024-09-19 (before the 2024-09-20 anchor); all 20 model features were available; official close sessions matched 717; verified expiry calendar status is official.
 - Gate remains BLOCKED: the Dhan-derived 10:00 anchor has not been independently reconciled, score is not calibrated, and no executable options P&L including Paytm Money charges/spreads/slippage has been validated. Do not treat as a trading recommendation.
 - Cache: an earlier run logged a cache-save writable-scope warning. Workflow permissions were amended to include `actions: write` in commit `04f55a01c7ce65b086aa73d82b6bad955b065e05`; persistence must be confirmed on a later run.
+
+
+## 2026-10-25 — Free GitHub Actions + Pages design selected
+
+- User approved removing Render and using GitHub Actions with Pages.
+- Added branch `phase/github-actions-pages-free` with a scheduled weekday 10:30 IST inference workflow, manual dispatch, date-specific/latest JSON publication and UI-only result loading.
+- Pages does not hold credentials and no longer asks the user to submit a GitHub Issue in this proposed flow.
+- Known platform constraint documented: browser click loads the published result; a fresh private Actions run cannot be securely initiated directly from static Pages without authentication.
+- **Phase status:** implementation prepared; validation/merge and live scheduled inference pending.
+- **Research status:** not trading-ready; independent anchor reconciliation and executable cost/slippage validation remain open.
