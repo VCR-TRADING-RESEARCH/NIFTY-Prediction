@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: nifty-prediction-live-api
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./live_api/Dockerfile.render
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: ALLOWED_ORIGIN
+        value: https://vcr-trading-research.github.io
+      - key: DHAN_CLIENT_ID
+        sync: false
+      - key: DHAN_PIN
+        sync: false
+      - key: DHAN_TOTP_SECRET
+        sync: false
+      - key: DHAN_CACHE_DIR
+        value: /tmp/nifty-dhan-cache
