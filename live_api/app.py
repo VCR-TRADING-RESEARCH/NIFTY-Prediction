@@ -334,12 +334,23 @@ def _do_prediction(as_of: date) -> dict[str, Any]:
         raise PublicPredictionError("No verified prior expiry is available for this as-of date.")
     prior_event = prior_events.iloc[-1]
     previous_expiry = pd.Timestamp(prior_event["resolved_expiry"]).normalize()
-    sessions_after = pd.to_datetime(daily["session_date"], errors="coerce").dt.normalize()
-    next_session_dates = sessions_after.loc[sessions_after > previous_expiry].drop_duplicates().sort_values()
-    if next_session_dates.empty or pd.Timestamp(next_session_dates.iloc[0]).normalize() != as_of_ts:
+    # Validate against official NSE sessions, not Dhan minute-bar coverage.
+    # A missing minute-data session must fail at the separate anchor-data gate,
+    # not be misreported as an invalid exchange-calendar date.
+    try:
+        official_sessions = pd.read_csv(OFFICIAL_CLOSES, usecols=["session_date"])
+        official_session_dates = pd.to_datetime(official_sessions["session_date"], errors="coerce")
+        official_session_dates = official_session_dates.dropna().dt.normalize().drop_duplicates().sort_values()
+    except Exception:
+        raise PublicPredictionError("Could not read the official NSE session calendar. Refusing to infer the next session from minute-data gaps.") from None
+    next_session_dates = official_session_dates.loc[official_session_dates > previous_expiry]
+    if next_session_dates.empty:
+        raise PublicPredictionError("The official NSE session calendar has no session after the preceding verified expiry.")
+    expected_next_session = pd.Timestamp(next_session_dates.iloc[0]).normalize()
+    if expected_next_session != as_of_ts:
         raise PublicPredictionError(
             "This date is not the first NSE trading session after the previous verified NIFTY weekly expiry. "
-            f"The preceding verified expiry is {previous_expiry.date()}; select its next trading session."
+            f"The preceding verified expiry is {previous_expiry.date()}; the official NSE calendar next session is {expected_next_session.date()}."
         )
 
     anchor_day = _day_minutes(minutes, as_of_ts)
