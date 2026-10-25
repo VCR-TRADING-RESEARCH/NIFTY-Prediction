@@ -1,5 +1,5 @@
 {
-  "run_utc": "2026-10-25T09:37:32.325843+00:00",
+  "run_utc": "2026-10-25T12:45:38.461927+00:00",
   "observations_total_labels": 398,
   "binary_rows": 398,
   "feature_complete_binary_rows": 398,
@@ -14,7 +14,7 @@
   "usable_trading_strategy_validated": false,
   "trading_strategy_blocker": "No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.",
   "important_warning": "All results remain exploratory until the anchor and realistic trading costs are validated.",
-  "run_id": "40181159630",
+  "run_id": "40194204797",
   "source_quality": {
     "source_files_read": 19,
     "valid_in_session_rows": 882839,
@@ -31,5 +31,13 @@
   "plots_created": [
     "annual_up_prevalence.png",
     "cycle_return_distribution.png"
-  ]
+  ],
+  "pages_forecast": {
+    "output_path": "docs/data/extra_trees_forecasts.json",
+    "historical_prediction_records": 80,
+    "latest_forecast_generated": true,
+    "latest_forecast_error": null,
+    "data_quality_status": "BLOCKED",
+    "generated_at_utc": "2026-10-25T12:46:14.531903+00:00"
+  }
 }

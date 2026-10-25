@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-10-25T09:35:59.100638+00:00",
+  "generated_utc": "2026-10-25T12:42:30.631181+00:00",
   "source_repository": "https://github.com/technovusin/nifty50-historical-data",
   "source_license_note": "Upstream repository publishes MIT license; underlying market-data redistribution rights are not independently established.",
   "files": [
@@ -9,8 +9,8 @@
       "local_path": "data/raw/nifty50/NIFTY50_1min_2017.csv",
       "bytes": 4286972,
       "sha256": "9dca1f48ea1726958241160992c40ac1f61aedfa463b4cba5d9167d4ed38a6b6",
-      "downloaded_this_run": false,
-      "retrieved_utc": "2026-10-25T09:35:56.824580+00:00",
+      "downloaded_this_run": true,
+      "retrieved_utc": "2026-10-25T12:42:22.402062+00:00",
       "year": 2017
     },
     {
@@ -19,8 +19,8 @@
       "local_path": "data/raw/nifty50/NIFTY50_1min_2018.csv",
       "bytes": 5787146,
       "sha256": "898cfbcd09422dbc3afb76c44685348e8229019151766eccfc33bcb5d38f92e2",
-      "downloaded_this_run": false,
-      "retrieved_utc": "2026-10-25T09:35:56.828275+00:00",
+      "downloaded_this_run": true,
+      "retrieved_utc": "2026-10-25T12:42:23.134242+00:00",
       "year": 2018
     },
     {
@@ -29,8 +29,8 @@
       "local_path": "data/raw/nifty50/NIFTY50_1min_2019.csv",
       "bytes": 5764536,
       "sha256": "796b90771e130151e8cdb6251d0e7895a9f65d30cac4799f950638d981e1ef6d",
-      "downloaded_this_run": false,
-      "retrieved_utc": "2026-10-25T09:35:56.831868+00:00",
+      "downloaded_this_run": true,
+      "retrieved_utc": "2026-10-25T12:42:23.978837+00:00",
       "year": 2019
     },
     {
@@ -39,8 +39,8 @@
       "local_path": "data/raw/nifty50/NIFTY50_1min_2020.csv",
       "bytes": 5886692,
       "sha256": "1b8832532e1a885d4afa5060f5041bdaffa27ea5c5f88cb7ea711ca886f94bde",
-      "downloaded_this_run": false,
-      "retrieved_utc": "2026-10-25T09:35:56.834842+00:00",
+      "downloaded_this_run": true,
+      "retrieved_utc": "2026-10-25T12:42:24.772591+00:00",
       "year": 2020
     },
     {
@@ -49,8 +49,8 @@
       "local_path": "data/raw/nifty50/NIFTY50_1min_2021.csv",
       "bytes": 5884809,
       "sha256": "87d45975071dc20b1ea6b298a4aa28386e3af9aa13980f18d5af5fae1938b156",
-      "downloaded_this_run": false,
-      "retrieved_utc": "2026-10-25T09:35:56.837869+00:00",
+      "downloaded_this_run": true,
+      "retrieved_utc": "2026-10-25T12:42:25.493718+00:00",
       "year": 2021
     },
     {
@@ -59,8 +59,8 @@
       "local_path": "data/raw/nifty50/NIFTY50_1min_2022.csv",
       "bytes": 6019857,
       "sha256": "930acb495657287f8873ddb37a9c8517ea9baa56aeb86a7d4712cee658045ee3",
-      "downloaded_this_run": false,
-      "retrieved_utc": "2026-10-25T09:35:56.841776+00:00",
+      "downloaded_this_run": true,
+      "retrieved_utc": "2026-10-25T12:42:26.207682+00:00",
       "year": 2022
     },
     {
@@ -69,8 +69,8 @@
       "local_path": "data/raw/nifty50/NIFTY50_1min_2023.csv",
       "bytes": 5975228,
       "sha256": "cc261ba326b3c61c5e54c58d4d6732263985d7f24e343111e916ca7625a0dde4",
-      "downloaded_this_run": false,
-      "retrieved_utc": "2026-10-25T09:35:56.844931+00:00",
+      "downloaded_this_run": true,
+      "retrieved_utc": "2026-10-25T12:42:26.941987+00:00",
       "year": 2023
     },
     {
@@ -79,8 +79,8 @@
       "local_path": "data/raw/nifty50/NIFTY50_1min_2024.csv",
       "bytes": 6014477,
       "sha256": "f0a82b04aeb8722c8fae0431daf8507feb70e4c7783c75010f9dfbbbee00951b",
-      "downloaded_this_run": false,
-      "retrieved_utc": "2026-10-25T09:35:56.848053+00:00",
+      "downloaded_this_run": true,
+      "retrieved_utc": "2026-10-25T12:42:27.716131+00:00",
       "year": 2024
     },
     {
@@ -89,8 +89,8 @@
       "local_path": "data/raw/nifty50/NIFTY50_1min_2025.csv",
       "bytes": 6049092,
       "sha256": "632eccf5137216d46ef5ad26ec975e56b0a8ceb4adfa804083d380cc3fe60b3d",
-      "downloaded_this_run": false,
-      "retrieved_utc": "2026-10-25T09:35:56.851115+00:00",
+      "downloaded_this_run": true,
+      "retrieved_utc": "2026-10-25T12:42:28.537803+00:00",
       "year": 2025
     },
     {
@@ -100,7 +100,7 @@
       "bytes": 542973,
       "sha256": "c9cf474e8542e60358872580498c10e549883cec497bc7d8f9651533ee7b889d",
       "downloaded_this_run": true,
-      "retrieved_utc": "2026-10-25T09:35:57.276521+00:00",
+      "retrieved_utc": "2026-10-25T12:42:28.746141+00:00",
       "year": 2026
     },
     {
@@ -110,7 +110,7 @@
       "bytes": 569548,
       "sha256": "cd4a0ce01b316aacee1cbdbe2fd2aa70c8ab1a159b624353715f912854f726e7",
       "downloaded_this_run": true,
-      "retrieved_utc": "2026-10-25T09:35:57.559423+00:00",
+      "retrieved_utc": "2026-10-25T12:42:28.981977+00:00",
       "year": 2026
     },
     {
@@ -120,7 +120,7 @@
       "bytes": 517008,
       "sha256": "397a249f02116aad77a8e1ec76048434522d05a69cec4e8e2870b1cf99695815",
       "downloaded_this_run": true,
-      "retrieved_utc": "2026-10-25T09:35:57.768875+00:00",
+      "retrieved_utc": "2026-10-25T12:42:29.189747+00:00",
       "year": 2026
     },
     {
@@ -130,7 +130,7 @@
       "bytes": 543674,
       "sha256": "38d61de4383494720f8200a1ddbc03a4e586dbce7fe9a6abb694f86df2349a6c",
       "downloaded_this_run": true,
-      "retrieved_utc": "2026-10-25T09:35:57.925675+00:00",
+      "retrieved_utc": "2026-10-25T12:42:29.386431+00:00",
       "year": 2026
     },
     {
@@ -140,7 +140,7 @@
       "bytes": 515564,
       "sha256": "401687147b485b7b74c39cc63537ff226f093569f72772c23452869ab03fbfd0",
       "downloaded_this_run": true,
-      "retrieved_utc": "2026-10-25T09:35:58.095458+00:00",
+      "retrieved_utc": "2026-10-25T12:42:29.587614+00:00",
       "year": 2026
     },
     {
@@ -150,7 +150,7 @@
       "bytes": 569497,
       "sha256": "54d6899167a713eafff168cb0b5ce5e85b0e4e2afdfdf82b139c0a38279c1ded",
       "downloaded_this_run": true,
-      "retrieved_utc": "2026-10-25T09:35:58.358010+00:00",
+      "retrieved_utc": "2026-10-25T12:42:29.817530+00:00",
       "year": 2026
     },
     {
@@ -160,7 +160,7 @@
       "bytes": 623542,
       "sha256": "8aa29ad194a62075d00de80ffeb19c366b4f54f3aa7775c12cae1e12471a8217",
       "downloaded_this_run": true,
-      "retrieved_utc": "2026-10-25T09:35:58.545352+00:00",
+      "retrieved_utc": "2026-10-25T12:42:30.026025+00:00",
       "year": 2026
     },
     {
@@ -170,7 +170,7 @@
       "bytes": 568266,
       "sha256": "156c91df4181ec6bd2430f35472131277d62c4d10fbc0a82aca78ebb872d3ac2",
       "downloaded_this_run": true,
-      "retrieved_utc": "2026-10-25T09:35:58.755364+00:00",
+      "retrieved_utc": "2026-10-25T12:42:30.239740+00:00",
       "year": 2026
     },
     {
@@ -180,7 +180,7 @@
       "bytes": 567714,
       "sha256": "489c95b84e7f9fb7e90c80cd09e9410949c8f0eb5e48508c4fe7ccd0d15bd93a",
       "downloaded_this_run": true,
-      "retrieved_utc": "2026-10-25T09:35:58.906209+00:00",
+      "retrieved_utc": "2026-10-25T12:42:30.442368+00:00",
       "year": 2026
     },
     {
@@ -190,7 +190,7 @@
       "bytes": 403935,
       "sha256": "6b71ea89d62d5b10cb7bfc447e10f63e6ae2e24bb29763e41de1916473f56f16",
       "downloaded_this_run": true,
-      "retrieved_utc": "2026-10-25T09:35:59.100613+00:00",
+      "retrieved_utc": "2026-10-25T12:42:30.631143+00:00",
       "year": 2026
     }
   ]
