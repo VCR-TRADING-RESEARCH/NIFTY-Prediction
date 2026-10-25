@@ -184,7 +184,7 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
         official = fetch_official_daily(start, end, force=force)
         official.to_csv(OUT / "nifty50_official_daily.csv", index=False)
         candidate = pd.read_csv(ROOT / "data" / "processed" / "candidate_expiry_calendar.csv")
-        candidate["resolved_expiry"] = pd.to_datetime(candidate["resolved_expiry"], errors="coerce").dt.date
+        candidate["nominal_expiry"] = pd.to_datetime(candidate["nominal_expiry"], errors="coerce").dt.date
         source_cross = pd.read_csv(ROOT / "research" / "results" / "yahoo_daily_crosscheck.csv")
         source_cross["session_date"] = pd.to_datetime(source_cross["session_date"], errors="coerce").dt.date
         official_map = official.set_index("session_date")["official_close"].to_dict()
@@ -192,7 +192,7 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
         source_cross["official_abs_difference"] = (source_cross["session_close"] - source_cross["official_close"]).abs()
         source_cross["official_over_1pt"] = source_cross["official_abs_difference"] > 1.0
         source_cross.to_csv(OUT / "minute_vs_official_daily.csv", index=False)
-        candidate_dates = sorted(set(x for x in candidate["resolved_expiry"].dropna() if start <= x <= end))
+        candidate_dates = sorted(set(x for x in candidate["nominal_expiry"].dropna() if start <= x <= end))
         if max_expiries:
             candidate_dates = candidate_dates[:max_expiries]
         sessions = sorted(official_map)
