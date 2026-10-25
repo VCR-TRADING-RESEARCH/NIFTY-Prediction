@@ -19,7 +19,7 @@ LOGS = ROOT / "logs"
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from research_core import (  # noqa: E402
-    load_minute_files, daily_aggregates, construct_weekly_table,
+    load_minute_files, daily_aggregates, apply_official_daily_closes, construct_weekly_table,
     evaluate_research, try_yahoo_daily_validation, save_figures,
 )
 
@@ -119,13 +119,19 @@ def main() -> int:
             raise FileNotFoundError("No raw CSV files exist under " + str(RAW))
         minutes, quality = load_minute_files(files)
         daily = daily_aggregates(minutes)
+        official_close_path = ROOT / "data" / "reconciliation" / "nifty50_official_daily.csv"
+        expiry_verification_path = ROOT / "data" / "reconciliation" / "expiry_verification.csv"
+        daily, official_close_quality = apply_official_daily_closes(daily, official_close_path)
+        quality["official_daily_close_validation"] = official_close_quality
+        if not expiry_verification_path.is_file():
+            raise FileNotFoundError("Official NSE expiry verification table is required.")
         quality["daily_sessions"] = int(len(daily))
         quality["sessions_with_less_than_250_bars"] = int((daily["bars"] < 250).sum())
         quality["sessions_with_unchanged_close_run_over_10"] = int((daily["max_unchanged_close_run"] > 10).sum())
         quality["maximum_unchanged_close_run"] = int(daily["max_unchanged_close_run"].max()) if len(daily) else None
         daily.to_csv(PROCESSED / "daily_aggregates.csv", index=False)
 
-        cycles, calendar, construction_report = construct_weekly_table(minutes, daily)
+        cycles, calendar, construction_report = construct_weekly_table(minutes, daily, expiry_verification_path)
         # Keep a minimal expiry schedule plus explicit flags for audit.
         calendar.to_csv(PROCESSED / "candidate_expiry_calendar.csv", index=False)
         cycles.to_csv(PROCESSED / "weekly_labels_features.csv", index=False)
