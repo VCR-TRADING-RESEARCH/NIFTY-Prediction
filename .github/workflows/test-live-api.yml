@@ -13,6 +13,7 @@ on:
       - "docs/assets/live-api-config.json"
       - "requirements.txt"
       - ".github/workflows/test-live-api.yml"
+      - ".github/workflows/free-pages-prediction.yml"
   pull_request:
     branches:
       - main
