@@ -80,7 +80,7 @@ The research target is on the spot index. Any executable strategy must separatel
 
 ## ExtraTrees as-of-date prediction page
 
-**Current implementation status:** The new GitHub Actions route runs Python inside GitHub Actions and keeps Dhan credentials in GitHub Secrets. From Pages, Predict prepares a GitHub issue link; submit that request while signed in as a repository owner/member. The page then polls the date-specific result JSON. Manual dispatch is also available in Actions. End-to-end Dhan execution is not yet verified; do not treat a prediction as trading-ready.
+**Current implementation status:** The GitHub Actions Python route has completed its first fresh Dhan-backed ExtraTrees inference. Test record for 2024-09-20: **UP**, raw UP score 51.3%, target expiry 2024-09-26, 147 eligible training labels through 2024-09-19, 268,510 minute bars, 20/20 features. [View the result JSON](docs/assets/predictions/2024-09-20.json) and [successful Actions run](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201653154). This is a historical result and **not trading-ready**: independent 10:00 anchor validation and executable costs/slippage are still blocked. From Pages, Predict currently prepares a GitHub issue link that must be submitted; the page then polls the date-specific result. Manual dispatch is also available in Actions.
 
 - **Prediction page:** [Open the GitHub Pages source](docs/index.html) (deployment status is tracked in [Actions](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions)).
 - **Forecast records and selectable history:** [docs/data/extra_trees_forecasts.json](docs/data/extra_trees_forecasts.json).
