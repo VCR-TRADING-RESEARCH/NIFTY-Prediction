@@ -83,3 +83,24 @@ def test_next_session_helper_rejects_missing_official_calendar(tmp_path):
     pd.DataFrame({"session_date": ["not-a-date"], "official_close": [1.0]}).to_csv(official, index=False)
     with pytest.raises(PublicPredictionError, match="no session after"):
         _first_official_session_after(pd.Timestamp("2026-05-05"), official)
+
+
+def test_selected_date_chunk_is_refreshed_even_when_historical(monkeypatch):
+    import pandas as pd
+    import live_api.app as live_app
+    from datetime import date
+
+    calls = []
+    def fake_chunk(security_id, token, client_id, start, end, refresh_recent):
+        calls.append((start, end, refresh_recent))
+        return pd.DataFrame({
+            "timestamp": pd.to_datetime(["2026-08-05 10:00:00+05:30"]),
+            "open": [25000.0], "high": [25001.0], "low": [24999.0],
+            "close": [25000.5], "source_file": ["test"],
+        })
+
+    monkeypatch.setattr(live_app, "_dhan_chunk", fake_chunk)
+    monkeypatch.setattr(live_app.pd.Timestamp, "now", lambda *args, **kwargs: pd.Timestamp("2026-10-25", tz="Asia/Kolkata"))
+    out = live_app.fetch_dhan_bars(date(2026, 8, 5), "token", "client", "security")
+    assert not out.empty
+    assert any(start <= date(2026, 8, 5) <= end and refresh for start, end, refresh in calls)
