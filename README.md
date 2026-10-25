@@ -21,9 +21,9 @@ The research target is on the spot index. Any executable strategy must separatel
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
 
-Last status refresh: 2026-10-25 06:35 UTC
+Last status refresh: 2026-10-25 07:28 UTC
 
-- Run ID: 40169213949
+- Run ID: 40172557963
 - Target labels: 398
 - Binary rows with sufficient features: 398
 - Development / final holdout rows: 318 / 80

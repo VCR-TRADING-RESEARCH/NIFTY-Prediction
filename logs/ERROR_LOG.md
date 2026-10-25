@@ -74,3 +74,13 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Counts: {}
 - Errors: HTTPError: 401 Client Error: Unauthorized for url: https://www.niftyindices.com/Backpage.aspx/getHistoricaldatatabletoString
 - Detailed outputs: data/reconciliation/
+
+
+## Dhan authentication attempt — run 40172557963
+- Status: FAILED or incomplete. The public archive route will still be attempted.
+- Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.
+
+
+## Dhan data cross-check — run 40172557963
+- Status: FAILED or unavailable. The public archive will remain the core input; independent Dhan cross-check did not pass.
+- Failure responses and credentials were not added to the log. Inspect only sanitized Actions step diagnostics.
