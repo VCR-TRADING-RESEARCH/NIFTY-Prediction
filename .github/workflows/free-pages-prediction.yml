@@ -44,11 +44,11 @@ jobs:
           value = os.environ.get("INPUT_DATE", "").strip()
           if not value:
               value = datetime.now().astimezone().date().isoformat()
-          if not re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", value):
+          if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
               raise SystemExit("Date must use YYYY-MM-DD.")
           date.fromisoformat(value)
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
-              f.write("as_of_date=" + value + "\\n")
+              f.write("as_of_date=" + value + "\n")
           print("Prediction cutoff:", value)
           PY
 
@@ -112,7 +112,7 @@ jobs:
           }
           with open(path, "w", encoding="utf-8") as f:
               json.dump(record, f, indent=2)
-              f.write("\\n")
+              f.write("\n")
           PY
           fi
           cp "$OUTPUT" docs/assets/predictions/latest.json
@@ -126,7 +126,7 @@ jobs:
       - name: Record failed run in error log
         if: failure()
         run: |
-          printf '\\n\\n## Scheduled prediction failure — run %s\\n- Date: %s\\n- Status: FAILED; inspect the linked Actions run for the failing step.\\n- No secrets or provider response bodies are copied into logs.\\n' "$GITHUB_RUN_ID" "${{ steps.request.outputs.as_of_date }}" >> logs/ERROR_LOG.md
+          printf '\n\n## Scheduled prediction failure — run %s\n- Date: %s\n- Status: FAILED; inspect the linked Actions run for the failing step.\n- No secrets or provider response bodies are copied into logs.\n' "$GITHUB_RUN_ID" "${{ steps.request.outputs.as_of_date }}" >> logs/ERROR_LOG.md
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add logs/ERROR_LOG.md
