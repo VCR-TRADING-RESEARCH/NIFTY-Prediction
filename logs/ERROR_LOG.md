@@ -66,3 +66,10 @@
 - Correction: added a GitHub Actions inference runner and default-branch workflow triggered by authenticated prediction-request issues. The workflow restricts secret-bearing execution to repository OWNER/MEMBER issue authors, validates the date title, keeps Dhan secrets in Actions, caches historical chunks, and publishes sanitized result JSON to Pages. Added a manual workflow_dispatch path.
 - Security decision: Pages cannot securely invoke authenticated GitHub Actions REST APIs without a browser-exposed token. The UI therefore provides a prefilled issue link for the user to submit; no PAT, Dhan token, PIN, or TOTP is embedded in JavaScript.
 - Current status: implementation is not yet verified by a live Dhan request. If issue permissions or Actions write permissions prevent publishing, record the failure and do not expose credentials or fall back to an old forecast.
+
+
+## E0012 — 2026-10-25 — Issue-triggered runtime smoke test not yet observable
+- **Severity:** Medium — end-to-end acceptance pending.
+- **Evidence:** CI passed in runs 40200568709 and 40200737861. A controlled request issue [#9](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/issues/9) was opened and reopened after merging the workflow, but no completion comment or date-specific result file was visible at the time of inspection.
+- **Correction:** Expanded the authorized author-association allowlist to include COLLABORATOR and enabled reopened issue events. This is merged in commit faa2b1291abfee6f6b4a92bd4a902fc204dd5776.
+- **Remaining diagnosis:** Determine whether the issue event was skipped by authorization, blocked by repository Actions settings/permissions, or is still running. Do not place credentials in Pages or infer a forecast from a missing output.
