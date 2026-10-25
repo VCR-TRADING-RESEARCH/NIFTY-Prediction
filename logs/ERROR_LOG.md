@@ -168,3 +168,12 @@
 - Date: 2026-08-05
 - Status: FAILED; inspect the linked Actions run for the failing step.
 - No secrets or provider response bodies are copied into logs.
+
+
+## E0015 — 2026-10-25 — Selected date missing anchor bar
+- **Run:** [40214389317](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40214389317)
+- **Date:** 2026-08-05
+- **Observed error:** Dhan returned no valid 10:00–10:03 IST NIFTY 50 minute bar.
+- **Potential cause:** The selected date falls inside an old cached 90-day chunk; current cache logic trusted completed chunks indefinitely. This is a testable hypothesis, not yet confirmed as root cause.
+- **Fix staged:** Always refresh only the 90-day chunk containing the requested date; keep all other historical chunks cache-first. This limits data transfer and lets provider corrections repair incomplete selected-date data. If the bar remains absent, treat as true provider/data gap and do not infer an anchor.
+- **Status:** PR/CI pending.
