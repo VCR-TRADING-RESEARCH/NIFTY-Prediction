@@ -21,11 +21,29 @@ The research target is on the spot index. Any executable strategy must separatel
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
 
-Last status refresh: 2026-10-25 06:01 UTC
+Last status refresh: 2026-10-25 06:05 UTC
 
-**Status: BLOCKED / NOT YET RUN.** No complete summary.json artifact exists for this branch yet.
+- Run ID: 40167611476
+- Target labels: 398
+- Binary rows with sufficient features: 398
+- Development / final holdout rows: 318 / 80
+- Model selected on development data: logistic
+- Calendar status: **EXPLORATORY_ONLY**
+- Independently validated usable trading strategy: **NO**
 
-A successful workflow must validate the source data and expiry alignment before any strategy can be considered.
+The current pipeline labels the weekday-derived expiry calendar as exploratory; performance metrics are not a verified trading edge. The spot index is not a directly executable instrument, and contract-level quotes, dated costs, spread/slippage and fills are not yet joined.
+
+- Source CSV files: 19
+- Valid minute bars after checks: 882839
+- Yahoo daily-close check: available; compared rows: 2352; expiry-date mismatches over tolerance: 368
+
+### Final holdout metrics (exploratory)
+- extra_trees: accuracy 0.575, balanced accuracy 0.559, n=80
+- logistic: accuracy 0.550, balanced accuracy 0.547, n=80
+- majority: accuracy 0.463, balanced accuracy 0.500, n=80
+- prior_cycle: accuracy 0.450, balanced accuracy 0.447, n=80
+- prior_cycle_return: accuracy 0.450, balanced accuracy 0.447, n=80
+- momentum_5d: accuracy 0.362, balanced accuracy 0.352, n=80
 
 See the research log, error log, pre-registered plan, data-quality report, and manuscript for details.
 <!-- AUTO_STATUS_END -->

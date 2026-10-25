@@ -29,3 +29,13 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Status: BLOCKED. One or more workflow steps failed; inspect the Actions run for the exact failing step.
 - The workflow is configured to continue with public data when the optional Dhan branch fails.
 - No secrets, access tokens, PINs or TOTP values should be copied from runner diagnostics into repository logs.
+
+
+## Dhan authentication attempt — run 40167611476
+- Status: FAILED or incomplete. The public archive route will still be attempted.
+- Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.
+
+
+## Dhan data cross-check — run 40167611476
+- Status: FAILED or unavailable. The public archive will remain the core input; independent Dhan cross-check did not pass.
+- Failure responses and credentials were not added to the log. Inspect only sanitized Actions step diagnostics.
