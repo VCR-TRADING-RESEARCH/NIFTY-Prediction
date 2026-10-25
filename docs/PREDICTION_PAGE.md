@@ -1,0 +1,36 @@
+# ExtraTrees expiry prediction page
+
+## User-facing goal
+Publish a page where a user selects an as-of date and sees the ExtraTrees Classifier forecast for the next NIFTY expiry, with provenance and an honest unavailable state when the model/data are missing.
+
+## Implementation contract
+- Static GitHub Pages frontend at `docs/index.html`; no secret or credential reaches the browser.
+- Published dataset: `docs/data/predictions.json`. It contains generated forecasts/history and status metadata.
+- Forecasts are generated only by a trusted Python job with repository data/model artifacts. The browser must not pretend it can infer from a CSV or display fabricated predictions.
+- Model inputs must be timestamped and available no later than the selected as-of timestamp. Features with later timestamps are rejected.
+- Expiry dates must be sourced from a verified exchange calendar file, not inferred from a fixed weekday.
+- If a compatible trained model, feature row, or expiry calendar is missing, show “Prediction unavailable” and the exact missing prerequisite.
+- Confidence means model class probability only if the model exposes `predict_proba`; it is not a probability of profit and must not be called certainty.
+- No trade recommendation or profitability claim without a separate instrument-level backtest with Paytm Money fees, statutory charges, spread and slippage.
+
+## Inputs expected by inference pipeline
+- `artifacts/extratrees_model.joblib`: trained scikit-learn model.
+- `data/processed/prediction_features.csv`: one row per as-of date, with `as_of_date` and the exact trained feature columns.
+- `data/reference/nifty_expiry_calendar.csv`: verified `expiry_date` rows.
+- Model feature names are taken from `feature_names_in_` when available. No guessed feature mapping is permitted.
+
+## Page behavior
+- Date selector is populated from published prediction records.
+- Shows as-of date, next verified expiry, class/direction, probability if available, model/version timestamp, and status.
+- Shows an explicit empty state if no verified predictions are published.
+- History is selectable and is not silently replaced by the latest date.
+- Page is a reporting interface, not a live brokerage or execution system.
+
+## Acceptance checks
+1. Page loads with an empty/missing JSON file and clearly says no verified forecast is published.
+2. Date selection shows only records for that date.
+3. The prediction job refuses missing model/data/calendar and logs a non-secret diagnostic.
+4. Features later than the as-of timestamp are rejected.
+5. Expiry is the first calendar expiry strictly after the as-of date.
+6. Prediction JSON includes model and data provenance.
+7. GitHub Pages deployment is manual and automatic after merge to main.
