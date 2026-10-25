@@ -36,3 +36,9 @@
 - Implemented a prefilled, authenticated GitHub issue request as the secure trigger; GitHub Actions executes the existing Dhan-backed ExtraTrees pipeline, and Pages polls for a newly generated date-specific JSON result. The workflow has owner/member authorization checks and a manual dispatch input.
 - Explicit limitation: because static Pages has no private credentials, the user must submit the prefilled request in GitHub after clicking the request link. No browser token or Dhan secret is exposed.
 - The workflow and frontend are not yet live-verified. Keep status transparent until CI, permissions, Pages publication and Dhan inference succeed.
+
+
+## 2026-10-25 — GitHub Actions workflow validation and smoke test
+- PR #8 implemented the Actions inference path and merged after CI passed; PR #10 broadened the authorized issue-trigger gate and added retry support, also after CI passed.
+- A controlled request issue #9 was opened and reopened to test the real event path. At the latest inspection, no completion comment or result JSON was visible, so the live Dhan workflow is not yet verified end-to-end.
+- Visible decisions and test status are logged; no hidden chain-of-thought is recorded.
