@@ -2,7 +2,7 @@
 
 **Purpose:** Predict whether the NIFTY 50 spot index at the close of a weekly options expiry is higher or lower than its value at **10:00 IST on the next trading day after the preceding weekly expiry**. This project researches a binary directional forecast, not a generic return-maximization system.
 
-> **Research status (2026-10-25):** Phase 3's official-source run completed but failed the data gate: **1,717/1,901** minute-derived daily closes differ from official NSE closes by more than one point; the initial contract parser confirmed 338/402 nominal expiry dates and returned 38 source-validation errors. Source routing/parser corrections and workflow serialization are now being tested. Model metrics remain exploratory, and **no usable trading strategy is validated**.
+> **Research status (2026-10-25):** Phase 3 is **BLOCKED**. Official expiry records verify 402/402 candidate dates, but the preserved minute archive's daily close differs from official NSE close by more than one point on **1,719/1,903 sessions** (median absolute difference 8.25 points; P95 32.435; max 200.7). A prior apparent PASS was a circular comparison and is invalidated. Model metrics remain exploratory; **no usable trading strategy is validated**.
 
 ## Definition of the target
 
@@ -21,14 +21,18 @@ The research target is on the spot index. Any executable strategy must separatel
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
 
-Last status refresh: 2026-10-25 09:37 UTC
+Last status refresh: 2026-10-25 09:48 UTC
 
-- Run ID: 40181159630
+- Model run: [40181159630](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40181159630)
+- Source audit run: [40181901081](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40181901081)
 - Target labels: 398
 - Binary rows with sufficient features: 398
 - Development / final holdout rows: 318 / 80
 - Model selected on development data: extra_trees
-- Calendar status: **OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL**
+- Holdout metrics: accuracy 61.25%; balanced accuracy 60.18%; MCC 0.213; Brier 0.246; log loss 0.686; ROC AUC 0.574
+- Calendar status: **402/402 official expiry records verified; official EOD closes used for labels**
+- Source gate: **BLOCKED** — preserved archive close mismatches official NSE close by >1 point on 1,719/1,903 sessions
+- 10:00 anchor: **PROVISIONAL** — minute-archive-derived, not independently validated
 - Independently validated usable trading strategy: **NO**
 
 The current pipeline labels the weekday-derived expiry calendar as exploratory; performance metrics are not a verified trading edge. The spot index is not a directly executable instrument, and contract-level quotes, dated costs, spread/slippage and fills are not yet joined.
@@ -51,19 +55,21 @@ See the research log, error log, pre-registered plan, data-quality report, and m
 | Phase | Status | Acceptance gate |
 |---|---|---|
 | 0. Repository bootstrap and governance | Implemented; workflow and unit tests pass | Files, logs, workflow and test scaffolding present |
-| 1. Data and label validation | **BLOCKED** | 1,717/1,901 official-close discrepancies >1 point; 43/402 nominal expiry dates not confirmed in first reconciliation; Dhan cross-check unavailable |
-| 2. Baselines and leakage-safe features | Exploratory pass only | Provisional labels/features and baseline outputs generated; cannot accept while Phase 1 fails |
-| 3. Model and indicator discovery | Exploratory pass only | 80-row holdout evaluated; no model certified; Quantevolve/PySR/TradingAgents deferred |
+| 1. Data and label validation | **BLOCKED** | 402/402 expiry records verified, but 1,719/1,903 archive close mismatches >1 point; 10:00 anchor provisional |
+| 2. Baselines and leakage-safe features | Exploratory only | 398 labels; 318 development / 80 chronological holdout |
+| 3. Model and indicator discovery | Exploratory only | Holdout accuracy 61.25%; no model certified; evolutionary/PySR/agent results did not beat baseline |
 | 4. Robustness, uncertainty and costs | **BLOCKED** | Validated source and contract-level cost/P&L data unavailable |
-| 5. Manuscript and independent audit | Manuscript drafted; independent audit pending | Exploratory results and blockers documented; no unsupported profitability claim |
+| 5. Manuscript and independent audit | Draft updated; final audit blocked | False PASS corrected; findings and residual limitations documented |
 
 ### Latest Phase 3 source gate
 
-- Official daily source: 1,913 rows collected; 1,901/1,901 comparison rows had an official close.
-- Daily close mismatches above one point: **1,717 / 1,901** (median absolute difference 8.25 points; P95 32.45; maximum 200.7).
-- Latest contract check (40177007732): **340 / 402** candidate dates confirmed (including 2 shifted expiries), **22 not verified**, and **40 source-validation errors**. ISO date parsing is being corrected and revalidated; see E0014. Parser/source-routing correction and workflow commit serialization are in progress.
-- See [machine-readable report](data/reconciliation/source_reconciliation_report.json), [expiry summary by year](data/reconciliation/expiry_verification_summary_by_year.csv), [close comparison summary by year](data/reconciliation/daily_close_mismatch_summary_by_year.csv), and [Phase 3 plan](docs/PHASE_3_SOURCE_RECONCILIATION.md).
-- Full row-level result: [workflow artifact 40174191441](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40174191441).
+- Official daily source: 1,913 rows collected; 1,903 sessions compared with preserved archive daily closes.
+- Official expiry evidence: **402/402 candidate dates verified**, including shifted expiry dates; zero unverified and zero source errors.
+- Independent preserved-archive close audit: **1,719/1,903** differences exceed one index point; median absolute difference 8.25 points; P95 32.435; maximum 200.7.
+- **False PASS invalidated:** a prior comparison used a Yahoo cross-check file generated after official closes had already overwritten original archive values. That was circular and is not independent validation.
+- 10:00 anchor remains provisional; model scores are exploratory. No strategy or costed P&L accepted.
+- See [machine-readable report](data/reconciliation/source_reconciliation_report.json), [expiry verification](data/reconciliation/expiry_verification.csv), [close comparison](data/reconciliation/minute_vs_official_daily.csv), [yearly mismatch summary](data/reconciliation/daily_close_mismatch_summary_by_year.csv), and [Phase 3 plan](docs/PHASE_3_SOURCE_RECONCILIATION.md).
+- Latest audit: [workflow run 40181901081](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40181901081); model run: [40181159630](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40181159630); [Phase 3 PR #3](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/3).
 
 ## Repository map
 
