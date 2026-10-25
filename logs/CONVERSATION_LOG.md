@@ -48,3 +48,10 @@
 - The first non-skipped workflow reached inference but wrote a failure record: HTTP 405 during Dhan token generation. Official docs show the endpoint requires POST, while the code used GET.
 - Corrected method, added a mocked regression test, and changed runner exit status so failures fail the inference step. Triggered a retry by editing request issue #11. Run [40201653154](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201653154) was in progress at latest check.
 - A separate Actions cache write-scope warning was observed and is not considered solved. No successful forecast claimed yet.
+
+
+## 2026-10-25 — First fresh live prediction completed
+- Fixed the Dhan token-refresh HTTP method (GET to POST) based on official DhanHQ docs, added a mocked regression test, and made inference failures return a non-zero process exit.
+- Retry run [40201653154](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201653154) succeeded and wrote the live result for 2024-09-20: UP, raw UP score 51.3%, target expiry 2024-09-26, 147 training labels, 268,510 minute bars, training through 2024-09-19.
+- This confirms the Dhan-backed Python/Actions/Pages publication path can produce a fresh result. The source-quality gate remains BLOCKED because the 10:00 anchor is not independently reconciled and costs/options P&L are not validated. It is historical, not a current signal.
+- The Pages UI opens a prefilled GitHub issue link and requires submitting it; this remains a usability limitation. The result should appear in the original Pages tab that is polling, after the workflow publishes.
