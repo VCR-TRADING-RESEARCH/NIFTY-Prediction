@@ -211,6 +211,28 @@ def main() -> int:
             calendar=calendar,
             output_path=pages_forecast_path,
         )
+        # Validate the generated artifact and enforce temporal separation before publication.
+        with pages_forecast_path.open("r", encoding="utf-8") as handle:
+            page_payload = json.load(handle)
+        if page_payload.get("schema_version") != 1 or not isinstance(page_payload.get("historical_predictions"), list):
+            raise ValueError("Pages forecast payload schema validation failed.")
+        for prediction in page_payload["historical_predictions"]:
+            if prediction.get("direction") not in {"UP", "DOWN"}:
+                raise ValueError("Pages forecast contains an invalid historical direction.")
+            p_up = float(prediction.get("p_up"))
+            if not 0.0 <= p_up <= 1.0:
+                raise ValueError("Pages forecast contains an invalid UP score.")
+            trained_through = prediction.get("trained_through_expiry_date")
+            if trained_through and trained_through >= prediction["as_of_date"]:
+                raise ValueError("Leakage gate failed: training labels reach or pass the prediction anchor.")
+        latest_prediction = page_payload.get("latest_forecast")
+        if latest_prediction:
+            if latest_prediction.get("target_expiry_date", "") <= latest_prediction.get("as_of_date", ""):
+                raise ValueError("Latest forecast target expiry is not later than its anchor.")
+            if latest_prediction.get("trained_through_expiry_date", "") >= latest_prediction.get("as_of_date", ""):
+                raise ValueError("Leakage gate failed: live training labels reach or pass the prediction anchor.")
+        pages_forecast_report["payload_schema_valid"] = True
+        pages_forecast_report["temporal_leakage_checks"] = "PASS"
         write_json(PROCESSED / "pages_forecast_build_report.json", pages_forecast_report)
         summary["pages_forecast"] = pages_forecast_report
         write_json(RESULTS / "summary.json", summary)
