@@ -25,8 +25,8 @@ def compare_archive_to_official(archive: pd.DataFrame, official: pd.DataFrame) -
         raise ValueError("Archive daily aggregate is missing preserved source fields: " + str(sorted(required_archive - set(archive.columns))))
     if not required_official.issubset(official.columns):
         raise ValueError("Official daily file is missing fields: " + str(sorted(required_official - set(official.columns))))
-    a = archive.copy()
-    o = official.copy()
+    a = archive[list(required_archive)].copy()
+    o = official[list(required_official)].copy()
     a["session_date"] = pd.to_datetime(a["session_date"], errors="coerce").dt.date
     o["session_date"] = pd.to_datetime(o["session_date"], errors="coerce").dt.date
     if a["session_date"].duplicated().any() or o["session_date"].duplicated().any():
