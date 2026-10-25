@@ -1,7 +1,7 @@
 # Phase 2 — QuantEvolve, PySR, TradingAgents and custom indicator
 
 **Branch:** `research/phase-2-quant-pysr-agents`  
-**Status:** IN PROGRESS; all outputs are exploratory.  
+**Status:** BOUNDED EXECUTION COMPLETE; acceptance blocked; all outputs are exploratory.  
 **Requested scope:** Proceed with these four tracks while bypassing the earlier data-validation phases by user direction. The bypass is not a scientific pass and must not be represented as such.
 
 ## Tracks and bounded budgets
@@ -27,3 +27,16 @@
 ## Acceptance outcomes
 
 The phase ends after one bounded run and one automatic repair/retry for deterministic code defects. It does not loop indefinitely. Results must distinguish completed, unavailable, failed, and not run. A candidate is not a usable strategy merely because its holdout score exceeds a baseline on this unverified dataset.
+
+
+## Final execution status — 2026-10-25
+
+- Successful run: [40171572720](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40171572720).
+- PySR installation and symbolic regression completed; core and experimental tests passed.
+- Logistic holdout: 56.25% accuracy / 56.29% balanced accuracy.
+- Local QuantEvolve-inspired search: 53.75% / 53.58%; worse than logistic.
+- PySR holdout: RMSE 0.014925; R² -0.00124.
+- Custom indicator: 38.78% directional accuracy on 49 signalled rows.
+- TradingAgents live debate and AstraQuant signal evaluation were not run.
+- Final decision: no model promoted. Phase 2 is complete as a bounded experiment, not as a validated trading strategy. No further repeated search against this same holdout is permitted by this plan.
+- Read [final report](../research/phase2_report.md), [machine-readable results](../research/results/experimental/experimental_results.json), and [error log](../logs/ERROR_LOG.md).
