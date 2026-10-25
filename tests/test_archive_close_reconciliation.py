@@ -11,6 +11,8 @@ def test_archive_close_audit_uses_preserved_archive_close_not_overridden_close()
         "session_low": [99.0, 100.0],
         "session_close_archive": [103.0, 104.0],
         "session_close": [103.5, 104.5],
+        "official_close": [103.5, 104.5],
+        "session_close": [103.5, 104.5],
     })
     official = pd.DataFrame({
         "session_date": ["2024-01-02", "2024-01-03"],
