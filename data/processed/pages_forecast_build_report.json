@@ -1,0 +1,10 @@
+{
+  "output_path": "docs/data/extra_trees_forecasts.json",
+  "historical_prediction_records": 80,
+  "latest_forecast_generated": true,
+  "latest_forecast_error": null,
+  "data_quality_status": "BLOCKED",
+  "generated_at_utc": "2026-10-25T12:48:21.327640+00:00",
+  "payload_schema_valid": true,
+  "temporal_leakage_checks": "PASS"
+}

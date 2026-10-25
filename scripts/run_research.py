@@ -22,6 +22,7 @@ from research_core import (  # noqa: E402
     load_minute_files, daily_aggregates, apply_official_daily_closes, construct_weekly_table,
     evaluate_research, try_yahoo_daily_validation, save_figures,
 )
+from build_pages_forecasts import write_forecast_payload  # noqa: E402
 
 
 def write_json(path: Path, payload: dict) -> None:
@@ -199,7 +200,45 @@ def main() -> int:
             "why_not_run": "Core target/calendar data-quality validation is a prerequisite; additional model searches would magnify data-mining risk before the label and instrument execution data are verified.",
         }
         write_json(RESULTS / "experiment_registry.json", registry)
+
+        # Publish exact scikit-learn ExtraTrees walk-forward predictions and the
+        # next eligible forward forecast for the static GitHub Pages interface.
+        pages_forecast_path = ROOT / "docs" / "data" / "extra_trees_forecasts.json"
+        pages_forecast_report = write_forecast_payload(
+            cycles=cycles,
+            minutes=minutes,
+            daily=daily,
+            calendar=calendar,
+            output_path=pages_forecast_path,
+        )
+        # Validate the generated artifact and enforce temporal separation before publication.
+        with pages_forecast_path.open("r", encoding="utf-8") as handle:
+            page_payload = json.load(handle)
+        if page_payload.get("schema_version") != 1 or not isinstance(page_payload.get("historical_predictions"), list):
+            raise ValueError("Pages forecast payload schema validation failed.")
+        for prediction in page_payload["historical_predictions"]:
+            if prediction.get("direction") not in {"UP", "DOWN"}:
+                raise ValueError("Pages forecast contains an invalid historical direction.")
+            p_up = float(prediction.get("p_up"))
+            if not 0.0 <= p_up <= 1.0:
+                raise ValueError("Pages forecast contains an invalid UP score.")
+            trained_through = prediction.get("trained_through_expiry_date")
+            if trained_through and trained_through >= prediction["as_of_date"]:
+                raise ValueError("Leakage gate failed: training labels reach or pass the prediction anchor.")
+        latest_prediction = page_payload.get("latest_forecast")
+        if latest_prediction:
+            if latest_prediction.get("target_expiry_date", "") <= latest_prediction.get("as_of_date", ""):
+                raise ValueError("Latest forecast target expiry is not later than its anchor.")
+            if latest_prediction.get("trained_through_expiry_date", "") >= latest_prediction.get("as_of_date", ""):
+                raise ValueError("Leakage gate failed: live training labels reach or pass the prediction anchor.")
+        pages_forecast_report["payload_schema_valid"] = True
+        pages_forecast_report["temporal_leakage_checks"] = "PASS"
+        write_json(PROCESSED / "pages_forecast_build_report.json", pages_forecast_report)
+        summary["pages_forecast"] = pages_forecast_report
+        write_json(RESULTS / "summary.json", summary)
+
         append_success(summary, quality)
+        print("Pages forecast:", pages_forecast_report.get("latest_forecast_generated"), pages_forecast_report.get("latest_forecast_error"))
         print("RESEARCH_RUN_OK:", run_id)
         print("Rows:", summary.get("feature_complete_binary_rows"), "held-out:", summary.get("heldout_rows"))
         print("Selected:", summary.get("development_selected_model"))

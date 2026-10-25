@@ -16,30 +16,46 @@ For each actual weekly expiry date \(E_t\), let \(A_t\) be the first valid NIFTY
 
 The research target is on the spot index. Any executable strategy must separately define the instrument, order timing, position sizing, and cash-flow accounting (e.g., NIFTY futures or options) and apply date-effective Paytm Money brokerage, exchange charges, statutory levies, GST, stamp duty, bid-ask spread and slippage. Directional accuracy alone does not establish tradability.
 
+## ExtraTrees prediction website
+
+**Phase 6 status:** Interface, forecast exporter, automated workflow integration, and Pages deployment workflow are added on \`research/phase-6-prediction-pages\`. Automated forecast generation and deployed Pages URL still require successful workflow checks and merging through the phase branches.
+
+- [Open the prediction page source](docs/index.html)
+- [Phase 4 plan and acceptance gates](docs/PHASE_6_PREDICTION_PAGES.md)
+- [ExtraTrees forecast records consumed by the page](docs/data/extra_trees_forecasts.json)
+- [Forecast exporter](scripts/build_pages_forecasts.py)
+- [Pages deployment workflow](.github/workflows/deploy-pages.yml)
+- [Expected deployed website URL](https://vcr-trading-research.github.io/NIFTY-Prediction/) — available after the changes reach the default branch and Pages deployment succeeds.
+
+The page uses a date input and **Predict** button. Historical selection is restricted to the fixed chronological holdout beginning with expiry 2025-04-09. The current forward forecast is generated in Python by the research workflow and refreshed in the static JSON. The browser does not contain credentials or train a substitute model.
+
+**Safety gate:** the price-source audit is still blocked and the 10:00 anchor remains provisional. The page's UP/DOWN output is an experimental spot-direction forecast, not an options strategy recommendation or a validated estimate of profit.
+
 ## Research status
 
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
 
-Last status refresh: 2026-10-25 09:48 UTC
+Last status refresh: 2026-10-25 12:48 UTC
 
-- Model run: [40181159630](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40181159630)
-- Source audit run: [40181901081](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40181901081)
+- Run ID: 40194404945
 - Target labels: 398
 - Binary rows with sufficient features: 398
 - Development / final holdout rows: 318 / 80
 - Model selected on development data: extra_trees
-- Holdout metrics: accuracy 61.25%; balanced accuracy 60.18%; MCC 0.213; Brier 0.246; log loss 0.686; ROC AUC 0.574
-- Calendar status: **402/402 official expiry records verified; official EOD closes used for labels**
-- Source gate: **BLOCKED** — preserved archive close mismatches official NSE close by >1 point on 1,719/1,903 sessions
-- 10:00 anchor: **PROVISIONAL** — minute-archive-derived, not independently validated
+- Calendar status: **OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL**
 - Independently validated usable trading strategy: **NO**
 
-The current pipeline labels the weekday-derived expiry calendar as exploratory; performance metrics are not a verified trading edge. The spot index is not a directly executable instrument, and contract-level quotes, dated costs, spread/slippage and fills are not yet joined.
+The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.
+
+The target uses official NSE expiry dates and daily closes. The 10:00 anchor is still minute-archive-derived and independently unvalidated. No executable futures/options P&L with broker charges, spreads, slippage and fills has been validated.
 
 - Source CSV files: 19
 - Valid minute bars after checks: 882839
-- Yahoo daily-close check: available; compared rows: 2352; expiry-date mismatches over tolerance: 0
+- Official NSE daily closes matched: 1903
+- Minute-archive closes differing from official close by >1 point: 1719
+- Median absolute minute-vs-official close difference: 8.25 points
+- Yahoo daily-close cross-check: available; compared rows: 2352; mismatches over tolerance: 0
 
 ### Final holdout metrics (exploratory)
 - extra_trees: accuracy 0.613, balanced accuracy 0.602, n=80

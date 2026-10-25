@@ -309,3 +309,26 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Counts: {"candidate_expiries_checked": 402, "contract_unverified_expiries": 0, "contract_verified_expiries": 402, "daily_source_rows_compared": 1903, "daily_source_rows_expected": 1903, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 0, "minute_vs_official_abs_difference_max_points": 200.70000000000073, "minute_vs_official_abs_difference_median_points": 8.25, "minute_vs_official_abs_difference_p95_points": 32.43499999999729, "minute_vs_official_close_abs_difference_max_points": 200.70000000000073, "minute_vs_official_close_abs_difference_median_points": 8.25, "minute_vs_official_close_abs_difference_p95_points": 32.43499999999729, "minute_vs_official_close_mismatches_over_1_point": 1719, "minute_vs_official_close_rows_compared": 1903, "minute_vs_official_high_abs_difference_max_points": 229.85000000000036, "minute_vs_official_high_abs_difference_median_points": 0.049999999999272404, "minute_vs_official_high_abs_difference_p95_points": 2.1950000000007934, "minute_vs_official_high_mismatches_over_1_point": 197, "minute_vs_official_high_rows_compared": 1903, "minute_vs_official_low_abs_difference_max_points": 79.09000000000015, "minute_vs_official_low_abs_difference_median_points": 0.049999999999272404, "minute_vs_official_low_abs_difference_p95_points": 1.600000000002001, "minute_vs_official_low_mismatches_over_1_point": 185, "minute_vs_official_low_rows_compared": 1903, "minute_vs_official_mismatches_over_1_point": 1719, "minute_vs_official_open_abs_difference_max_points": 105.84999999999854, "minute_vs_official_open_abs_difference_median_points": 0.0, "minute_vs_official_open_abs_difference_p95_points": 8.889999999997949, "minute_vs_official_open_mismatches_over_1_point": 589, "minute_vs_official_open_rows_compared": 1903, "minute_vs_official_within_1_point": 184, "official_daily_rows": 1913}
 - Errors: Minute-archive daily closes differ from official NSE closes by more than one index point.
 - Detailed outputs: data/reconciliation/
+
+
+## Phase 6 — ExtraTrees prediction page implementation (25 October 2026)
+
+- Status: interface and forecast exporter committed on research/phase-6-prediction-pages; automated end-to-end execution and deployment verification pending.
+- Added docs/index.html, docs/assets/predictor.js, and docs/assets/predictor.css. The interface accepts an eligible anchor date and has a Predict button. It displays direction, target expiry, model UP score, training count, and label cutoff.
+- Added scripts/build_pages_forecasts.py. It imports the research pipeline's exact ExtraTrees model builder and feature list. For each locked holdout prediction, it trains only on earlier expiry labels. A candidate live forecast is constructed from the first valid 10:00–10:03 IST minute-bar open after the latest verified expiry; it is withheld if the anchor is absent, the calendar has gone stale, or the training history is insufficient.
+- Locked the historical display boundary at target expiry 2025-04-09 to avoid moving the historical holdout when more weekly cycles are appended.
+- Added temporal leakage tests in tests/test_pages_forecasts.py, wired JSON generation into scripts/run_research.py, and configured the research workflow to commit docs/data/extra_trees_forecasts.json.
+- Added .github/workflows/deploy-pages.yml; it deploys the docs/ static site only from main, with manual workflow dispatch support. Deployment has not yet been verified from the default branch.
+- Acceptance gates: forecast-generation action must succeed; tests must pass; the latest forecast date and target expiry must be current; the website deployment must be verified. The source gate remains BLOCKED because the latest audit recorded 1,719 / 1,903 archive close discrepancies >1 point and the 10:00 anchor remains independently unvalidated.
+- Interpretation: the model output is a NIFTY spot direction classification, not an options trade or P&L prediction. The page displays the 61.25% historical holdout metric only with its 80-observation sample size and uncertainty caveat.
+
+
+## Automated run 40194404945 — 2026-10-25T12:48:21.329591+00:00
+- Status: pipeline completed; empirical findings remain exploratory until calendar and instrument-cost gates pass.
+- Source files read: 19; valid minute bars: 882839.
+- Weekly labels: 398; binary rows: 398; feature-complete rows: 398.
+- Development rows / held-out rows: 318 / 80.
+- Development-selected model: extra_trees.
+- Calendar gate: OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL — The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.
+- Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
+- Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.
