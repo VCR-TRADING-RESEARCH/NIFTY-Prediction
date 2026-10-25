@@ -53,7 +53,7 @@ See the research log, error log, pre-registered plan, data-quality report, and m
 | 0. Repository bootstrap and governance | Implemented; workflow and unit tests pass | Files, logs, workflow and test scaffolding present |
 | 1. Data and label validation | **BLOCKED** | 368/402 expiry-date close mismatches >1 point; official expiry calendar not reconciled; Dhan cross-check unavailable |
 | 2. Baselines and leakage-safe features | Exploratory pass only | Provisional labels/features and baseline outputs generated; cannot accept while Phase 1 fails |
-| 3. Model and indicator discovery | Exploratory pass only | 80-row holdout evaluated; no model certified; Quantevolve/PySR/TradingAgents deferred |
+| 3. Model and indicator discovery | **Bounded experiments complete; no promotion** | Logistic baseline, local evolutionary search, PySR and indicator evaluated on one exploratory 80-row holdout; no model certified |
 | 4. Robustness, uncertainty and costs | **BLOCKED** | Validated source and contract-level cost/P&L data unavailable |
 | 5. Manuscript and independent audit | Manuscript drafted; independent audit pending | Exploratory results and blockers documented; no unsupported profitability claim |
 
@@ -115,7 +115,7 @@ Last repository status update: 2026-10-25.
 
 ## Phase 2: QuantEvolve, PySR, TradingAgents and custom indicator
 
-**Status: IN PROGRESS / exploratory only.** The bounded experiment branch runs separately from the original data-validation work.
+**Status: COMPUTE COMPLETE / acceptance blocked.** Phase 2 run 40171572720 completed successfully, including PySR and unit tests. Research results remain exploratory because Phase 1 data/calendar gates failed.
 
 - [Phase 2 experiment plan](docs/PHASE_2_EXPERIMENTS.md)
 - [Automated experiment workflow](.github/workflows/phase2-experiments.yml)
@@ -127,11 +127,14 @@ Last repository status update: 2026-10-25.
 This branch deliberately bypasses the earlier validation gates at the user's request. Consequently all model scores and discovered expressions remain exploratory; no usable trading strategy is validated.
 
 
-## Phase 2 first-run results
+## Phase 2 bounded final results
 
 - [Phase 2 experimental report](research/phase2_report.md)
 - [Machine-readable track results](research/results/experimental/experimental_results.json)
 - [Upstream revisions](research/results/upstream_revisions.md)
 - [Latest Phase 2 workflow](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions)
 
-First bounded run: logistic baseline 56.3% accuracy / 56.3% balanced accuracy; QuantEvolve-inspired search 53.8% / 53.6%; custom indicator 38.8% directional accuracy on signalled rows (49 of 80). PySR was skipped due to a workflow condition and is being retried after a fix. TradingAgents was smoke-tested, not run as a live multi-agent predictor. **No usable strategy validated.** All results remain exploratory because expiry labels and source prices are unverified.
+Latest bounded run [40171572720](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40171572720) succeeded and ran PySR. Logistic baseline: 56.25% accuracy / 56.29% balanced accuracy; QuantEvolve-inspired search: 53.75% / 53.58%; PySR: held-out return RMSE 0.014925 and R² −0.00124 (no improvement over constant-mean return prediction); custom indicator: 38.78% directional accuracy on 49 signalled rows (61.25% coverage). Core and experimental tests passed. TradingAgents was not run as a live multi-agent predictor; AstraQuant was not evaluated as a signal model. **No usable strategy validated.** All results remain exploratory because expiry labels and source prices are unverified, and no instrument-level costed P&L exists.
+
+
+Phase 2 completion details: [final report](research/phase2_report.md), [machine-readable results](research/results/experimental/experimental_results.json), [research log](logs/RESEARCH_LOG.md), [error log](logs/ERROR_LOG.md). Workflow/test success means the experiment ran; it does **not** mean the data-quality or strategy acceptance gates passed.
