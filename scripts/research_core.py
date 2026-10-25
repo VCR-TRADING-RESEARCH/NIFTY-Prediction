@@ -438,11 +438,18 @@ def construct_weekly_table(minutes: pd.DataFrame, daily: pd.DataFrame, verificat
         label = "UP" if ret > 0 else ("DOWN" if ret < 0 else "FLAT")
         p_status = str(previous_event["calendar_status"])
         c_status = str(current_event["calendar_status"])
-        calendar_status = "weekday_heuristic_nominal"
-        if p_status != "weekday_heuristic_nominal" or c_status != "weekday_heuristic_nominal":
-            calendar_status = "shift_or_data_gap_inferred"
-        if p_status == "uncertain_low_coverage" or c_status == "uncertain_low_coverage":
-            calendar_status = "uncertain_low_coverage"
+        previous_verified = bool(previous_event.get("calendar_verified", False))
+        current_verified = bool(current_event.get("calendar_verified", False))
+        if previous_verified and current_verified:
+            calendar_status = "official_verified_with_shift" if (
+                p_status == "official_verified_shift" or c_status == "official_verified_shift"
+            ) else "official_verified"
+        else:
+            calendar_status = "weekday_heuristic_nominal"
+            if p_status != "weekday_heuristic_nominal" or c_status != "weekday_heuristic_nominal":
+                calendar_status = "shift_or_data_gap_inferred"
+            if p_status == "uncertain_low_coverage" or c_status == "uncertain_low_coverage":
+                calendar_status = "uncertain_low_coverage"
         cycle_rows.append({
             "previous_nominal_expiry": pd.Timestamp(nominal_prev),
             "nominal_expiry": pd.Timestamp(nominal_expiry),
@@ -492,7 +499,7 @@ def construct_weekly_table(minutes: pd.DataFrame, daily: pd.DataFrame, verificat
         "label_counts": {str(k): int(v) for k, v in cycles["label"].value_counts(dropna=False).items()},
         "calendar_status_counts": {str(k): int(v) for k, v in cycles["calendar_status"].value_counts(dropna=False).items()},
         "confirmatory_eligible_rows": int(cycles["confirmatory_eligible"].sum()),
-        "calendar_warning": "The weekly schedule is inferred from known weekday regimes. Holiday shifts are not independently linked to official contract archives; all results remain exploratory until this is resolved.",
+        "calendar_warning": "Official NSE expiry verification is available; however, the 10:00 anchor remains minute-archive-derived and is not independently validated." if bool(calendar["calendar_verified"].all()) else "The weekly schedule is inferred from weekday regimes; official expiry verification is not available for all candidates.",
         "excluded_cycle_candidates": int(len(exclusions)),
         "exclusion_reason_counts": {},
     }
