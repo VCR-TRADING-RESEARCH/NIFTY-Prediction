@@ -83,3 +83,13 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Fix: removed the push-sensitive condition; install step now runs and checks import explicitly while allowing other tracks to complete if unavailable.
 - Validation: rerun queued as Actions run 40171512727; final PySR status is pending.
 - Residual risk: PySR depends on Julia runtime availability and can fail for environmental reasons. Do not interpret failure as evidence for or against predictive utility.
+
+
+## E0007 — 2026-10-25 — PySR workflow condition corrected and run completed
+- Severity: Medium; optional symbolic-regression track was initially omitted.
+- Symptom: initial Phase 2 result recorded `ModuleNotFoundError: No module named 'pysr'`.
+- Root cause: install step was skipped on push due to an event-sensitive condition.
+- Fix: workflow now attempts PySR installation on push and verifies the import; committed feature snapshot avoids unrelated raw-data rebuilds by default.
+- Validation: Actions run [40171572720](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40171572720) completed successfully; PySR completed, core/experimental tests passed, artifacts were uploaded.
+- Result: held-out return RMSE 0.014925; R² -0.00124. Negative R² indicates no improvement over a constant-mean return predictor on this holdout.
+- Residual risk: labels/calendar remain unverified, close-source mismatch gate remains failed, and no executable costed P&L was tested. Phase 2 completion is computational, not strategy acceptance.
