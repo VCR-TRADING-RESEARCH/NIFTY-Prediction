@@ -22,6 +22,7 @@ from research_core import (  # noqa: E402
     load_minute_files, daily_aggregates, apply_official_daily_closes, construct_weekly_table,
     evaluate_research, try_yahoo_daily_validation, save_figures,
 )
+from build_pages_forecasts import write_forecast_payload  # noqa: E402
 
 
 def write_json(path: Path, payload: dict) -> None:
@@ -199,6 +200,19 @@ def main() -> int:
             "why_not_run": "Core target/calendar data-quality validation is a prerequisite; additional model searches would magnify data-mining risk before the label and instrument execution data are verified.",
         }
         write_json(RESULTS / "experiment_registry.json", registry)
+
+        # Publish exact scikit-learn ExtraTrees walk-forward predictions and the
+        # next eligible forward forecast for the static GitHub Pages interface.
+        pages_forecast_path = ROOT / "docs" / "data" / "extra_trees_forecasts.json"
+        pages_forecast_report = write_forecast_payload(
+            cycles=cycles,
+            minutes=minutes,
+            daily=daily,
+            calendar=calendar,
+            output_path=pages_forecast_path,
+        )
+        write_json(PROCESSED / "pages_forecast_build_report.json", pages_forecast_report)
+
         append_success(summary, quality)
         print("RESEARCH_RUN_OK:", run_id)
         print("Rows:", summary.get("feature_complete_binary_rows"), "held-out:", summary.get("heldout_rows"))
