@@ -273,8 +273,9 @@ def _calculate_features(
     anchor_price = float(anchor_row["anchor_price"])
     values["overnight_gap"] = anchor_price / prev_close - 1 if np.isfinite(prev_close) and prev_close > 0 else np.nan
     today_minutes = _day_minutes(minutes, anchor_date)
-    time_of_anchor = anchor_row["timestamp"].time()
-    past_bars = today_minutes.loc[today_minutes["timestamp"].lt(anchor_row["timestamp"])].sort_values("timestamp")
+    anchor_timestamp = pd.Timestamp(anchor_row["anchor_timestamp"])
+    time_of_anchor = anchor_timestamp.time()
+    past_bars = today_minutes.loc[today_minutes["timestamp"].lt(anchor_timestamp)].sort_values("timestamp")
     prior_bar = past_bars.iloc[-1] if len(past_bars) else None
     first_bar = today_minutes.sort_values("timestamp").iloc[0] if len(today_minutes) else None
     values["pre_anchor_return"] = anchor_price / float(first_bar["open"]) - 1 if first_bar is not None and float(first_bar["open"]) > 0 else np.nan
