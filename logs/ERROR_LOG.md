@@ -272,3 +272,12 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Counts: {"candidate_expiries_checked": 402, "contract_unverified_expiries": 22, "contract_verified_expiries": 340, "daily_source_rows_compared": 1901, "daily_source_rows_expected": 1901, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 40, "minute_vs_official_abs_difference_max_points": 200.70000000000073, "minute_vs_official_abs_difference_median_points": 8.25, "minute_vs_official_abs_difference_p95_points": 32.44999999999709, "minute_vs_official_high_mismatches_over_1_point": 197, "minute_vs_official_low_mismatches_over_1_point": 185, "minute_vs_official_mismatches_over_1_point": 1717, "minute_vs_official_open_mismatches_over_1_point": 587, "minute_vs_official_within_1_point": 184, "official_daily_rows": 1913}
 - Errors: 340 of 402 candidate dates were confirmed (including two shifted expiries), 22 were not verified, and 40 had source-validation errors. Artifact examples reveal ISO dates were incorrectly parsed with a day-first fallback; fix added for revalidation.; 1,717 of 1,901 daily minute-source closes differ from official NSE close by more than the pre-registered 1-point tolerance.
 - Detailed outputs: data/reconciliation/
+
+
+## E0019 — 2026-10-25 — Mixed legacy date formats require format-specific parsing
+- Severity: High / expiry verification gate.
+- Symptom: after the ISO regex correction, 18/19 tests passed; the remaining date parser test returned NaT for legacy numeric date 04-12-2024 when mixed in the same vector with 11-Jul-2024.
+- Root cause: pandas inferred one generic format for a mixed legacy-format vector; the string DD-MM-YYYY did not parse under the inferred month-name format.
+- Fix attempted: parse common numeric day-first, abbreviated-month day-first, compact and ISO formats with explicit formats; use a scalar day-first fallback only for uncommon legacy strings.
+- Validation required: fresh unit tests and full source reconciliation. No new source status is inferred before CI confirms.
+- Residual risk: unknown source-specific date strings may still fall to scalar parsing; validation errors remain explicit.

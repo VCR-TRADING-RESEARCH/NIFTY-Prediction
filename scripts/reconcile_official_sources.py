@@ -320,7 +320,7 @@ def _extract_bhavcopy_csv(blob: bytes) -> bytes:
 
 
 def _parse_date_values(values: pd.Series) -> pd.Series:
-    """Parse compact, ISO year-first, ISO timestamp and legacy day-first date values safely."""
+    """Parse compact, ISO year-first, ISO timestamp, and legacy day-first dates safely."""
     text = values.astype(str).str.strip()
     parsed = pd.Series(pd.NaT, index=values.index, dtype="datetime64[ns]")
 
@@ -328,18 +328,41 @@ def _parse_date_values(values: pd.Series) -> pd.Series:
     iso_day_mask = text.str.fullmatch(r"\d{4}-\d{2}-\d{2}")
     iso_datetime_mask = text.str.match(r"^\d{4}-\d{2}-\d{2}[T ]")
     year_first_mask = iso_day_mask | iso_datetime_mask
-    legacy_mask = ~(compact_mask | year_first_mask)
+    parsed_legacy_mask = pd.Series(False, index=values.index)
 
     if compact_mask.any():
         parsed.loc[compact_mask] = pd.to_datetime(text.loc[compact_mask], format="%Y%m%d", errors="coerce")
     if iso_day_mask.any():
         parsed.loc[iso_day_mask] = pd.to_datetime(text.loc[iso_day_mask], format="%Y-%m-%d", errors="coerce")
     if iso_datetime_mask.any():
-        parsed.loc[iso_datetime_mask] = pd.to_datetime(text.loc[iso_datetime_mask], errors="coerce", yearfirst=True)
-    if legacy_mask.any():
-        parsed.loc[legacy_mask] = pd.to_datetime(text.loc[legacy_mask], errors="coerce", dayfirst=True)
-    return parsed
+        # Parsing the first 10 characters preserves the literal calendar date even when
+        # a source appends a time or timezone offset.
+        parsed.loc[iso_datetime_mask] = pd.to_datetime(
+            text.loc[iso_datetime_mask].str.slice(0, 10), format="%Y-%m-%d", errors="coerce"
+        )
 
+    legacy_mask = ~(compact_mask | year_first_mask)
+    legacy_formats = [
+        (text.str.fullmatch(r"\d{1,2}-\d{1,2}-\d{4}"), "%d-%m-%Y"),
+        (text.str.fullmatch(r"\d{1,2}/\d{1,2}/\d{4}"), "%d/%m/%Y"),
+        (text.str.fullmatch(r"\d{1,2}-\d{1,2}-\d{2}"), "%d-%m-%y"),
+        (text.str.fullmatch(r"\d{1,2}/\d{1,2}/\d{2}"), "%d/%m/%y"),
+        (text.str.fullmatch(r"\d{1,2}-[A-Za-z]{3}-\d{4}"), "%d-%b-%Y"),
+        (text.str.fullmatch(r"\d{1,2}-[A-Za-z]{3}-\d{2}"), "%d-%b-%y"),
+        (text.str.fullmatch(r"\d{1,2} [A-Za-z]{3} \d{4}"), "%d %b %Y"),
+    ]
+    for mask, fmt in legacy_formats:
+        use = legacy_mask & mask & ~parsed_legacy_mask
+        if use.any():
+            parsed.loc[use] = pd.to_datetime(text.loc[use], format=fmt, errors="coerce")
+            parsed_legacy_mask |= use
+
+    # Use dateutil only for uncommon legacy strings. Avoid mixed-format inference on
+    # the full column: Pandas may infer a month-name format and turn DD-MM-YYYY into NaT.
+    fallback_mask = legacy_mask & ~parsed_legacy_mask
+    for index in text.index[fallback_mask]:
+        parsed.loc[index] = pd.to_datetime(text.loc[index], errors="coerce", dayfirst=True)
+    return parsed
 
 def _validate_bhavcopy_blob(blob: bytes, trade_date: date) -> None:
     """Reject an HTML/error response, unexpected schema, or archive for another date."""
