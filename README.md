@@ -166,3 +166,6 @@ Last repository status update: 2026-10-25.
 
 
 **Selected-date data refresh (2026-10-25):** The workflow now refreshes the cached 90-day Dhan chunk containing the requested cutoff date before inference, while retaining cache-first behavior for all other historical chunks. This addresses stale/incomplete cache risk for the selected date. It does not fabricate a missing bar: if Dhan still returns no valid 10:00–10:03 bar, the date remains unavailable and logs should be inspected for provider/session coverage.
+
+
+**Selected-date cache refresh status (2026-10-25):** PR [#16](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/16) is merged and CI passed. The selected-date rerun has not yet occurred after merge; `2026-08-05.json` currently contains a safe failed status, not a fresh prediction. A separate legacy Docker Space/API deployment workflow failed at its external deployment step and is not part of the selected free GitHub Actions + Pages architecture. Do not treat that unrelated failure as a Pages deployment failure.
