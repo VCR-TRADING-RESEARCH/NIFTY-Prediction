@@ -3,40 +3,54 @@ name: On-demand NIFTY ExtraTrees prediction
 on:
   issues:
     types: [opened]
+  workflow_dispatch:
+    inputs:
+      as_of_date:
+        description: "10:00 IST anchor date (YYYY-MM-DD)"
+        required: true
+        type: string
 
 permissions:
   contents: write
   issues: write
 
 concurrency:
-  group: nifty-prediction-${{ github.event.issue.title }}
+  group: nifty-prediction-${{ github.event.issue.number || inputs.as_of_date || github.run_id }}
   cancel-in-progress: false
 
 jobs:
   predict:
     # Only repository owners/members can start a job that receives Dhan secrets.
     if: >-
-      (github.event.issue.author_association == 'OWNER' ||
-       github.event.issue.author_association == 'MEMBER') &&
-      startsWith(github.event.issue.title, '[NIFTY PREDICT] ')
+      github.event_name == 'workflow_dispatch' ||
+      ((github.event.issue.author_association == 'OWNER' ||
+        github.event.issue.author_association == 'MEMBER') &&
+       startsWith(github.event.issue.title, '[NIFTY PREDICT] '))
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
       - name: Validate request title
         id: request
         env:
+          EVENT_NAME: ${{ github.event_name }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
+          INPUT_DATE: ${{ inputs.as_of_date }}
         run: |
           python - <<'PY'
           import os, re
           from datetime import date
-          title = os.environ["ISSUE_TITLE"]
-          match = re.fullmatch(r"\[NIFTY PREDICT\] (\d{4}-\d{2}-\d{2})", title)
-          if not match:
-              raise SystemExit("Invalid title. Expected [NIFTY PREDICT] YYYY-MM-DD.")
-          date.fromisoformat(match.group(1))
+          if os.environ["EVENT_NAME"] == "workflow_dispatch":
+              value = os.environ["INPUT_DATE"].strip()
+              if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+                  raise SystemExit("Date must use YYYY-MM-DD.")
+          else:
+              match = re.fullmatch(r"\[NIFTY PREDICT\] (\d{4}-\d{2}-\d{2})", os.environ["ISSUE_TITLE"])
+              if not match:
+                  raise SystemExit("Invalid title. Expected [NIFTY PREDICT] YYYY-MM-DD.")
+              value = match.group(1)
+          date.fromisoformat(value)
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
-              f.write("as_of_date=" + match.group(1) + "\n")
+              f.write("as_of_date=" + value + "\n")
           PY
 
       - uses: actions/checkout@v4
@@ -103,7 +117,7 @@ jobs:
           git push origin HEAD:main
 
       - name: Report completion on request
-        if: always()
+        if: always() && github.event_name == 'issues'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
