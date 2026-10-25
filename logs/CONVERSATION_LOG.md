@@ -64,3 +64,10 @@ Append user-visible project messages/assistant responses and references to proje
 - The first follow-up workflow exposed two fixture/serialization bugs: regex strings remained double-escaped after an initial patch, and the separate-source test used a date after the advertised coverage end. Both were corrected.
 - Main research workflow push filters were narrowed so Phase 3-specific code and tests do not start the full baseline/model pipeline on each source-audit change.
 - The ISO parser fix and Sandeep source metrics still require a fresh successful Phase 3 run.
+
+
+## 2026-10-25 — ExtraTrees prediction-page request
+- User clarified the intended deliverable: a repository page showing an ExtraTrees prediction with an as-of date for the upcoming weekly expiry, not merely a historical CSV.
+- Added `scripts/predict_asof.py`, `docs/prediction/index.html`, and workflow integration to generate and commit `latest_prediction.json` plus historical walk-forward `prediction_history.csv`.
+- The page labels the source gate BLOCKED and the future expiry estimate PROVISIONAL; it does not claim a validated trading signal.
+- Status at log time: files committed to `research/phase-3-official-source-reconciliation`; an end-to-end Actions run and generated JSON/CSV still need verification. Do not claim the page is live/deployed until verified.
