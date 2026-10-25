@@ -15,6 +15,7 @@ Research date: 2026-10-25. This is an initial source review, not a claim that al
 10. **TradingView Pine Script.** Official docs: https://www.tradingview.com/pine-script-docs/ ; public scripts: https://www.tradingview.com/scripts/. Relevance: inspect established open-source indicator ideas and implement Pine prototypes. Community scripts have varied licences and quality; record authorship/licence and do not copy code without checking terms.
 
 ## Public and official data sources to search
+- **NSE circular FAOP39894 (7 January 2019), Introduction of Weekly Options contracts on NIFTY 50 Index:** https://nsearchives.nseindia.com/content/circulars/FAOP39894.pdf. It specifies weekly options availability from 11 February 2019 and lists the first weekly expiry as 14 February 2019. Use 2017–2018 bars for feature lookback only, never as weekly-expiry target rows.
 - NSE NIFTY 50 derivative expiry specification: https://www.nseindia.com/static/products-services/equity-derivatives-nifty50. The current weekly expiry is Tuesday and expiry moves to the preceding trading day when Tuesday is a holiday.
 - NSE contract specifications: https://www.nseindia.com/static/products-services/equity-derivatives-contract-specifications.
 - NSE all reports / historical indices / India VIX: https://www.nseindia.com/all-reports.
