@@ -55,3 +55,9 @@
 - Retry run [40201653154](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201653154) succeeded and wrote the live result for 2024-09-20: UP, raw UP score 51.3%, target expiry 2024-09-26, 147 training labels, 268,510 minute bars, training through 2024-09-19.
 - This confirms the Dhan-backed Python/Actions/Pages publication path can produce a fresh result. The source-quality gate remains BLOCKED because the 10:00 anchor is not independently reconciled and costs/options P&L are not validated. It is historical, not a current signal.
 - The Pages UI opens a prefilled GitHub issue link and requires submitting it; this remains a usability limitation. The result should appear in the original Pages tab that is polling, after the workflow publishes.
+
+
+## 2026-10-25 — Result deep link added
+- Added `?as_of_date=YYYY-MM-DD` support to the Pages predictor so a completed date-specific JSON result can be opened directly without generating another request. The Actions completion comment now links back to that exact result page.
+- Pages deployment for the deep-link JavaScript passed in run [40201836007](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201836007). A later documentation deployment was still running at latest inspection.
+- Direct historical result link: https://vcr-trading-research.github.io/NIFTY-Prediction/?as_of_date=2024-09-20. External browser verification of the rendered page was unavailable; the JSON record and deployment run are verified.
