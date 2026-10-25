@@ -98,7 +98,8 @@ jobs:
           set -e
           mkdir -p docs/assets/predictions
           OUTPUT="docs/assets/predictions/$REQUEST_DATE.json"
-          if [ ! -f "$OUTPUT" ]; then
+          if [ "$INFERENCE_OUTCOME" != "success" ]; then
+            # Replace any prior same-date success with an explicit failure record.
             python - "$OUTPUT" "$REQUEST_DATE" "$INFERENCE_OUTCOME" <<'PY'
           import json, sys
           from datetime import datetime, timezone
@@ -107,13 +108,16 @@ jobs:
               "status": "failed",
               "as_of_date": as_of_date,
               "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-              "error": "Prediction workflow did not produce a result. Check the linked Actions run.",
+              "error": "This workflow attempt failed before producing a fresh prediction. Check the linked Actions run; an older result was not reused.",
               "workflow_outcome": outcome
           }
           with open(path, "w", encoding="utf-8") as f:
               json.dump(record, f, indent=2)
-              f.write("\n")
+              f.write("\\n")
           PY
+          elif [ ! -f "$OUTPUT" ]; then
+            echo "Inference succeeded but the expected output file is missing." >&2
+            exit 1
           fi
           cp "$OUTPUT" docs/assets/predictions/latest.json
           git config user.name "github-actions[bot]"
