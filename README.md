@@ -111,3 +111,23 @@ See the research log, error log, pre-registered plan, data-quality report, and m
 - Probability of Backtest Overfitting: https://doi.org/10.21314/jcf.2016.322
 
 Last repository status update: 2026-10-25.
+
+
+## Phase 3: Official source reconciliation
+
+**Status: AUTOMATED VALIDATION PENDING.** This phase attempts to replace the unverified candidate close source with official NIFTY 50 historical index data and confirm weekly expiries against NSE F&O contract bhavcopy. It does not promote any model.
+
+- [Phase 3 plan and acceptance gates](docs/PHASE_3_SOURCE_RECONCILIATION.md)
+- [Phase 3 automated workflow](.github/workflows/phase3-source-reconciliation.yml)
+- [Reconciliation runner](scripts/reconcile_official_sources.py)
+- [Parser and calendar tests](tests/test_official_reconciliation.py)
+- [Official NIFTY Indices historical OHLC](https://www.niftyindices.com/reports/historical-data)
+- [NSE F&O archives](https://www.nseindia.com/all-reports-derivatives)
+- [NSE NIFTY 50 derivatives specifications](https://www.nseindia.com/static/products-services/equity-derivatives-nifty50)
+
+<!-- PHASE3_STATUS_START -->
+**Phase 3 source gate:** PENDING — workflow will update this section after the automated check.
+See [source reconciliation report](data/reconciliation/source_reconciliation_report.json) and [Phase 3 plan](docs/PHASE_3_SOURCE_RECONCILIATION.md).
+<!-- PHASE3_STATUS_END -->
+
+The workflow is bounded, caches downloaded official source snapshots, and records errors instead of silently marking missing dates as valid. A PASS requires every candidate expiry to be confirmed in official contract data and all overlapping minute-archive daily closes to match official closes within one point. Until then, model results remain exploratory.
