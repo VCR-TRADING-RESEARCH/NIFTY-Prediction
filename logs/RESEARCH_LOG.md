@@ -311,9 +311,9 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Detailed outputs: data/reconciliation/
 
 
-## Phase 4 — ExtraTrees prediction page implementation (25 October 2026)
+## Phase 6 — ExtraTrees prediction page implementation (25 October 2026)
 
-- Status: interface and forecast exporter committed on research/phase-4-prediction-pages; automated end-to-end execution and deployment verification pending.
+- Status: interface and forecast exporter committed on research/phase-6-prediction-pages; automated end-to-end execution and deployment verification pending.
 - Added docs/index.html, docs/assets/predictor.js, and docs/assets/predictor.css. The interface accepts an eligible anchor date and has a Predict button. It displays direction, target expiry, model UP score, training count, and label cutoff.
 - Added scripts/build_pages_forecasts.py. It imports the research pipeline's exact ExtraTrees model builder and feature list. For each locked holdout prediction, it trains only on earlier expiry labels. A candidate live forecast is constructed from the first valid 10:00–10:03 IST minute-bar open after the latest verified expiry; it is withheld if the anchor is absent, the calendar has gone stale, or the training history is insufficient.
 - Locked the historical display boundary at target expiry 2025-04-09 to avoid moving the historical holdout when more weekly cycles are appended.
