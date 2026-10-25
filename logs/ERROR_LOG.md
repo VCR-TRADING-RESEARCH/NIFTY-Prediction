@@ -110,3 +110,9 @@
 - **Pages deployment:** Run [40203599397](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40203599397) was in progress at the last status check.
 - **Remaining acceptance gate:** No fresh scheduled/manual Dhan inference or live browser result has been verified yet. The next scheduled weekday run is expected at 10:30 IST. If it fails, inspect the workflow and published failure JSON; do not use an old forecast as fresh.
 - **Research gate:** Trading remains blocked pending independent anchor reconciliation and executable option-level costs/slippage.
+
+
+## Scheduled prediction failure — run 40204327333
+- Date: 2026-10-02
+- Status: FAILED; inspect the linked Actions run for the failing step.
+- No secrets or provider response bodies are copied into logs.
