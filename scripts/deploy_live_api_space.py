@@ -53,11 +53,11 @@ def main() -> int:
 
         stage = "creating or opening the Hugging Face Docker Space"
         with tempfile.TemporaryDirectory(prefix="nifty-live-api-") as tmp:
-            stage = Path(tmp)
-            shutil.copy2(ROOT / "live_api" / "app.py", stage / "app.py")
-            shutil.copy2(ROOT / "live_api" / "Dockerfile", stage / "Dockerfile")
-            shutil.copy2(ROOT / "live_api" / "requirements.txt", stage / "requirements.txt")
-            shutil.copy2(ROOT / "scripts" / "research_core.py", stage / "research_core.py")
+            stage_dir = Path(tmp)
+            shutil.copy2(ROOT / "live_api" / "app.py", stage_dir / "app.py")
+            shutil.copy2(ROOT / "live_api" / "Dockerfile", stage_dir / "Dockerfile")
+            shutil.copy2(ROOT / "live_api" / "requirements.txt", stage_dir / "requirements.txt")
+            shutil.copy2(ROOT / "scripts" / "research_core.py", stage_dir / "research_core.py")
             for relative in (
                 "data/reconciliation/nifty50_official_daily.csv",
                 "data/reconciliation/expiry_verification.csv",
@@ -66,6 +66,7 @@ def main() -> int:
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(ROOT / relative, destination)
 
+            stage = "creating or opening the Hugging Face Docker Space"
             api.create_repo(
                 repo_id=repo_id,
                 repo_type="space",
@@ -73,7 +74,6 @@ def main() -> int:
                 private=False,
                 exist_ok=True,
             )
-            stage = "uploading backend source and research data to the Space"
             stage = "uploading backend source and research data to the Space"
             api.upload_folder(
                 folder_path=str(stage_dir),
