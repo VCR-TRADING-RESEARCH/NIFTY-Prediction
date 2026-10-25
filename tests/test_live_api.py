@@ -1,7 +1,7 @@
 from datetime import date
 import pytest
 
-from live_api.app import PublicPredictionError, parse_as_of_date, find_nifty50_security
+from live_api.app import PublicPredictionError, parse_as_of_date, find_nifty50_security, _first_official_session_after
 
 
 @pytest.mark.parametrize(
@@ -60,3 +60,26 @@ def test_refresh_dhan_token_uses_post(monkeypatch):
     assert client_id == "test-client"
     assert captured["url"] == live_app.AUTH_URL
     assert set(captured["params"]) == {"dhanClientId", "pin", "totp"}
+
+
+def test_next_session_uses_official_calendar_not_minute_coverage(tmp_path):
+    # May 5, 2026 is a verified expiry; May 6 is the next official session.
+    # Dhan minute coverage is deliberately irrelevant to this calendar helper.
+    import pandas as pd
+
+    official = tmp_path / "official.csv"
+    pd.DataFrame({
+        "session_date": ["2026-05-05", "2026-05-06", "2026-05-07"],
+        "official_close": [24000.0, 24100.0, 24200.0],
+    }).to_csv(official, index=False)
+
+    assert _first_official_session_after(pd.Timestamp("2026-05-05"), official) == pd.Timestamp("2026-05-06")
+
+
+def test_next_session_helper_rejects_missing_official_calendar(tmp_path):
+    import pandas as pd
+
+    official = tmp_path / "official.csv"
+    pd.DataFrame({"session_date": ["not-a-date"], "official_close": [1.0]}).to_csv(official, index=False)
+    with pytest.raises(PublicPredictionError, match="no session after"):
+        _first_official_session_after(pd.Timestamp("2026-05-05"), official)
