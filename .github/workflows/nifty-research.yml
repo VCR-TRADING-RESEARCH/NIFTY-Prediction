@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - "research/**"
+      - "research/phase-1-data-validation"
     paths:
       - ".github/workflows/nifty-research.yml"
       - "scripts/**"

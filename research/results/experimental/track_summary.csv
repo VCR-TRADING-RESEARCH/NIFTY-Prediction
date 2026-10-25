@@ -1,0 +1,6 @@
+track,status,holdout_balanced_accuracy,holdout_mcc
+baseline_logistic,completed,0.5628535512256443,0.12535305264097504
+quantevolve,completed_local_bounded_evolution,0.5358265241986172,0.07154072186885414
+pysr,completed,,
+custom_indicator,completed_python_mirror,,
+tradingagents,upstream_smoke_test_only,,

@@ -1,0 +1,125 @@
+name: Phase 2 Experimental Tracks
+
+on:
+  push:
+    branches: ["research/phase-2-quant-pysr-agents"]
+    paths:
+      - ".github/workflows/phase2-experiments.yml"
+      - "scripts/run_experimental_tracks.py"
+      - "scripts/research_core.py"
+      - "scripts/run_research.py"
+      - "tests/**"
+      - "tradingview/**"
+      - "docs/PHASE_2_EXPERIMENTS.md"
+  workflow_dispatch:
+    inputs:
+      refresh_features:
+        description: Rebuild target/feature dataset from raw minute data instead of using the committed research snapshot
+        required: false
+        type: boolean
+        default: false
+      run_pysr:
+        description: Attempt PySR symbolic regression (Julia runtime may take several minutes)
+        required: false
+        type: boolean
+        default: true
+  schedule:
+    - cron: "30 5 * * 3"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nifty-phase2-experiments
+  cancel-in-progress: true
+
+jobs:
+  experiments:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      PYTHONUNBUFFERED: "1"
+      TZ: Asia/Kolkata
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/phase-2-quant-pysr-agents
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install core research dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+      - name: Restore cached market data
+        uses: actions/cache@v4
+        with:
+          path: data/raw/nifty50
+          key: nifty-raw-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            nifty-raw-${{ runner.os }}-
+      - name: Clone requested research frameworks
+        run: |
+          mkdir -p vendor
+          git clone --depth 1 https://github.com/tarsyang/quantevolve.git vendor/quantevolve
+          git clone --depth 1 https://github.com/TauricResearch/TradingAgents.git vendor/TradingAgents
+          git clone --depth 1 https://github.com/0xethanq/astra-quant-agent.git vendor/astra-quant-agent
+          {
+            echo "## Upstream source revisions"
+            for d in vendor/quantevolve vendor/TradingAgents vendor/astra-quant-agent; do
+              echo "- $d: $(git -C "$d" rev-parse HEAD)"
+            done
+          } > research/results/upstream_revisions.md
+      - name: Fetch cached/public NIFTY 50 minute data when rebuilding or snapshot is absent
+        if: ${{ inputs.refresh_features == true || hashFiles('data/processed/weekly_labels_features.csv') == '' }}
+        run: python scripts/fetch_data.py
+      - name: Rebuild target and feature pipeline on request
+        if: ${{ inputs.refresh_features == true }}
+        run: python scripts/run_research.py
+      - name: Use committed target and feature snapshot
+        if: ${{ inputs.refresh_features != true && hashFiles('data/processed/weekly_labels_features.csv') != '' }}
+        run: echo "Using committed, reproducible weekly feature snapshot; set refresh_features=true for a full rebuild."
+      - name: Build target and feature snapshot if absent
+        if: ${{ hashFiles('data/processed/weekly_labels_features.csv') == '' }}
+        run: python scripts/run_research.py
+      - name: Install PySR
+        continue-on-error: true
+        run: |
+          python -m pip install pysr
+          python -c "import pysr; print('PySR import OK', pysr.__version__)"
+      - name: Run core and experimental unit tests
+        run: python -m pytest -q tests
+      - name: Run bounded experimental tracks
+        run: python scripts/run_experimental_tracks.py
+      - name: Update README status
+        if: always()
+        continue-on-error: true
+        run: python scripts/update_status.py
+      - name: Persist run record and generated results
+        if: always()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from datetime import datetime, timezone
+          p=Path("logs/RESEARCH_LOG.md")
+          p.parent.mkdir(parents=True, exist_ok=True)
+          p.write_text(p.read_text(encoding="utf-8") + "\n\n## Phase 2 automated run — " + datetime.now(timezone.utc).isoformat() + "\n- Status: experimental tracks executed; individual outcomes are in research/results/experimental/experimental_results.json.\n- Upstream projects cloned with exact revisions in research/results/upstream_revisions.md.\n- Data/calendar quality gate remains bypassed at user request; all scores are exploratory and no strategy is certified.\n", encoding="utf-8")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md logs/RESEARCH_LOG.md logs/ERROR_LOG.md research/results/experimental research/results/upstream_revisions.md
+          git diff --cached --quiet || git commit -m "Record phase 2 experimental track results [skip ci]"
+          git push origin research/phase-2-quant-pysr-agents
+      - name: Upload experiment artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase2-experimental-results-${{ github.run_id }}
+          path: |
+            research/results/experimental/
+            research/results/upstream_revisions.md
+            logs/RESEARCH_LOG.md
+            logs/ERROR_LOG.md
+          if-no-files-found: warn
+          retention-days: 90

@@ -85,3 +85,31 @@ Limitations: inferred expiry calendar; material daily-close mismatch; repeated-c
 - Holdout metrics and predictions: results/holdout_metrics.csv and results/holdout_predictions.csv
 - Experiment registry: results/experiment_registry.json
 - Logs: ../logs/RESEARCH_LOG.md, ../logs/ERROR_LOG.md and ../logs/CONVERSATION_LOG.md
+
+
+---
+
+# Supplementary Study: Bounded Evolution, Symbolic Regression and Custom Indicator
+
+**Supplement status:** Phase 2 completed computationally on 2026-10-25. This supplement updates the original manuscript's earlier statement that these tracks were deferred. It does not alter the original data-quality acceptance decision.
+
+## Supplementary methods
+
+Using the committed candidate weekly-cycle feature snapshot (398 rows; 318 development and 80 chronological holdout), we ran a bounded local evolutionary feature-rule search (35 generations, population 80, four chronological development folds), PySR symbolic regression (25 iterations, 8 populations, maximum expression size 12), and a fixed-weight custom indicator mirrored in Python. A deterministic role-based review considered quantitative validity, data provenance and execution costs. No live LLM debate, broker integration or orders were run. Exact results and upstream SHAs are preserved in the Phase 2 machine-readable artifacts.
+
+## Supplementary results
+
+| Track | Holdout result | Interpretation |
+|---|---|---|
+| Logistic reference | Accuracy 56.25%; balanced accuracy 56.29%; MCC 0.125; Brier 0.2506 | Weak exploratory reference |
+| QuantEvolve-inspired local evolution | Accuracy 53.75%; balanced accuracy 53.58%; MCC 0.072; Brier 0.2944 | Worse than logistic |
+| PySR | Return RMSE 0.014925; R² −0.00124 | Does not improve over constant-mean return prediction on holdout |
+| Custom indicator | 38.78% directional accuracy on 49 signalled rows; 61.25% coverage | Rejected in current form |
+| TradingAgents | No forecast score | No actual agent debate/forecast executed |
+| AstraQuant | No forecast score | No NIFTY signal evaluation performed |
+
+The complete equation table is in [Phase 2 results](results/experimental/experimental_results.json), and the detailed discussion is in [Phase 2 report](phase2_report.md).
+
+## Supplementary conclusion
+
+The evolutionary search underperformed the logistic reference. PySR's negative held-out R² and the custom indicator's poor directional accuracy do not support promotion. The experiment workflow and unit tests completed successfully, but this is a computational completion only. The original critical blockers remain: heuristic expiry dates, 368 of 402 candidate expiry closes differing from the independent daily-close source by more than one point, unavailable Dhan cross-check, and no contract-level net P&L including date-effective Paytm Money charges, spread and slippage. Therefore, **no usable or validated trading strategy is established**.

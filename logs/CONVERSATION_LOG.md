@@ -36,3 +36,13 @@ Purpose: preserve available visible project statements and decisions for audit. 
 
 ## Conversation log maintenance
 Append user-visible project messages/assistant responses and references to project decisions as available. Never record secrets, private account identifiers, raw tokens, PINs, TOTP seeds or hidden private reasoning. When older turns are inaccessible, document the limitation rather than reconstructing missing dialogue.
+
+
+## 2026-10-25 — Phase 2 continuation
+- User-visible instruction: “Ok proceed”.
+- Assistant-visible action summary: checked the Phase 2 GitHub Actions run; confirmed run 40171572720 completed successfully. PySR installation and symbolic regression completed, core and experimental unit tests passed, and artifacts were persisted.
+- User-visible instruction: “Proceed”.
+- Assistant-visible action summary: extracted final metrics, updated the Phase 2 report, README, manuscript supplement, experiment plan status, research log and error log; updated PR #2 description. No hidden private reasoning or secrets were recorded.
+- Result summary: logistic baseline 56.25% accuracy / 56.29% balanced accuracy; local QuantEvolve-inspired search 53.75% / 53.58%; PySR held-out return RMSE 0.014925 and R² -0.00124; custom indicator 38.78% directional accuracy on signalled rows. No model promoted.
+- Decision: bounded Phase 2 execution complete; research acceptance blocked by heuristic expiry calendar, 368/402 independent-close mismatches, missing independent Dhan cross-check, and absence of instrument-level costed P&L.
+- References: [successful Actions run](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40171572720), [Phase 2 report](../research/phase2_report.md), [PR #2](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/2).

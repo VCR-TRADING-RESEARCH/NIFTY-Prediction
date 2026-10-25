@@ -48,3 +48,60 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Calendar gate: EXPLORATORY_ONLY — Weekly expiry dates were generated from weekday regimes and inferred from available bars; official historical expiry calendar and holiday shifts are not independently reconciled.
 - Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
 - Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.
+
+
+## 2026-10-25 — Phase 2 experimental track started
+- Status: IN PROGRESS; bounded experiment branch created from the Phase 1 evidence branch.
+- User explicitly requested bypassing the earlier validation phases and proceeding with QuantEvolve, PySR, TradingAgents/testing agents, and the custom indicator.
+- Added a bounded evolutionary feature-rule search, a PySR symbolic-return experiment, upstream repository smoke-test/provenance, deterministic role-based risk review, and Python mirror of the Pine indicator.
+- Added scheduled/manual GitHub Actions workflow, tests, and phase-specific plan. Outcomes will be recorded per track; dependency and runtime failures are non-blocking and must be logged.
+- Scientific caveat: this is a user-directed bypass, not a passing validation gate. The historical expiry calendar and independent price discrepancies remain unresolved; no strategy is approved for trading.
+
+
+## Automated run 40171160326 — 2026-10-25T07:03:48.638685+00:00
+- Status: pipeline completed; empirical findings remain exploratory until calendar and instrument-cost gates pass.
+- Source files read: 19; valid minute bars: 882839.
+- Weekly labels: 398; binary rows: 398; feature-complete rows: 398.
+- Development rows / held-out rows: 318 / 80.
+- Development-selected model: logistic.
+- Calendar gate: EXPLORATORY_ONLY — Weekly expiry dates were generated from weekday regimes and inferred from available bars; official historical expiry calendar and holiday shifts are not independently reconciled.
+- Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
+- Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.
+
+
+## Phase 2 automated run — 2026-10-25T07:03:58.307284+00:00
+- Status: experimental tracks executed; individual outcomes are in research/results/experimental/experimental_results.json.
+- Upstream projects cloned with exact revisions in research/results/upstream_revisions.md.
+- Data/calendar quality gate remains bypassed at user request; all scores are exploratory and no strategy is certified.
+
+
+## 2026-10-25 — Phase 2 first bounded results
+- Status: PARTIAL; first experimental run completed successfully, but PySR did not execute because the install step was skipped by a workflow condition.
+- Sample: 398 candidate weekly cycles; 318 development / 80 held-out rows.
+- Logistic baseline: 56.25% accuracy, 56.29% balanced accuracy, MCC 0.125, Brier 0.251.
+- QuantEvolve-inspired bounded evolutionary search: 53.75% accuracy, 53.58% balanced accuracy, MCC 0.072, Brier 0.294; worse than baseline.
+- Custom indicator Python mirror: 38.78% directional accuracy on 49 signalled held-out rows, coverage 61.25%.
+- TradingAgents: repository cloned; no live multi-agent forecast was run. Deterministic risk-review roles were recorded only.
+- AstraQuant: repository cloned and revision recorded; no signal model or order execution evaluated.
+- Repair: PySR installation is now attempted on push; committed features are reused unless a manual run sets refresh_features=true.
+- Decision: no strategy promoted; all results remain exploratory because source/calendar gates and contract-level costed P&L are unresolved.
+
+
+## Phase 2 automated run — 2026-10-25T07:11:07.022954+00:00
+- Status: experimental tracks executed; individual outcomes are in research/results/experimental/experimental_results.json.
+- Upstream projects cloned with exact revisions in research/results/upstream_revisions.md.
+- Data/calendar quality gate remains bypassed at user request; all scores are exploratory and no strategy is certified.
+
+
+## 2026-10-25 — Phase 2 bounded execution complete
+- Status: COMPUTE COMPLETE / RESEARCH ACCEPTANCE BLOCKED.
+- Workflow: [40171572720](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40171572720), success; core and experimental unit tests passed; results and artifacts persisted.
+- Sample: 398 candidate cycles, 318 development / 80 holdout; calendar quality remains heuristic/unverified.
+- Logistic baseline: accuracy 56.25%, balanced accuracy 56.29%, MCC 0.125, Brier 0.2506.
+- QuantEvolve-inspired local bounded search: accuracy 53.75%, balanced accuracy 53.58%, MCC 0.072, Brier 0.2944; underperformed logistic.
+- PySR: completed 25 iterations / 8 populations / max expression size 12; holdout return RMSE 0.014925, R² -0.00124. No out-of-sample improvement over constant mean.
+- Custom indicator: 38.78% directional accuracy on 49 signalled rows; 61.25% coverage.
+- TradingAgents: no actual LLM debate/forecast; deterministic risk review only. AstraQuant: cloned/revision recorded, no NIFTY signal evaluation.
+- Decision: no model promoted; no usable trading strategy validated. Do not iterate on the same holdout.
+- Remaining blocking gates: official expiry-calendar reconciliation, 368/402 candidate expiry-close mismatches >1 point, unavailable Dhan cross-check, no instrument-level fills or dated Paytm Money brokerage/taxes/spread/slippage/net P&L.
+- Full summary: research/phase2_report.md. Machine-readable outcomes: research/results/experimental/experimental_results.json.

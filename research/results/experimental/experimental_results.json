@@ -1,0 +1,440 @@
+{
+  "generated_utc": "2026-10-25T07:10:39.744160+00:00",
+  "status": "EXPLORATORY_ONLY",
+  "target": "sign of expiry close / next-session 10:00 anchor - 1",
+  "tracks": {
+    "baseline_logistic": {
+      "status": "completed",
+      "holdout": {
+        "n": 80,
+        "accuracy": 0.5625,
+        "balanced_accuracy": 0.5628535512256443,
+        "mcc": 0.12535305264097504,
+        "brier": 0.2505877284415079
+      }
+    },
+    "quantevolve": {
+      "status": "completed_local_bounded_evolution",
+      "upstream_repository": "https://github.com/tarsyang/quantevolve",
+      "upstream_execution": "cloned/smoke-tested separately; upstream Binance/Gemini strategy loop is not run on NIFTY labels",
+      "generations": 35,
+      "population": 80,
+      "selection": "4-fold chronological development balanced accuracy minus 0.015 * sparsity fraction",
+      "history": [
+        {
+          "generation": 0,
+          "best_development_fitness": 0.5647974944413611,
+          "nonzero_weights": 7
+        },
+        {
+          "generation": 1,
+          "best_development_fitness": 0.5756093234012749,
+          "nonzero_weights": 11
+        },
+        {
+          "generation": 2,
+          "best_development_fitness": 0.5974786748100999,
+          "nonzero_weights": 12
+        },
+        {
+          "generation": 3,
+          "best_development_fitness": 0.6114004063516081,
+          "nonzero_weights": 13
+        },
+        {
+          "generation": 4,
+          "best_development_fitness": 0.6114004063516081,
+          "nonzero_weights": 13
+        },
+        {
+          "generation": 5,
+          "best_development_fitness": 0.6139950895648844,
+          "nonzero_weights": 9
+        },
+        {
+          "generation": 6,
+          "best_development_fitness": 0.6205770963863636,
+          "nonzero_weights": 13
+        },
+        {
+          "generation": 7,
+          "best_development_fitness": 0.6215797773722305,
+          "nonzero_weights": 14
+        },
+        {
+          "generation": 8,
+          "best_development_fitness": 0.6215797773722305,
+          "nonzero_weights": 14
+        },
+        {
+          "generation": 9,
+          "best_development_fitness": 0.6331658939936422,
+          "nonzero_weights": 14
+        },
+        {
+          "generation": 10,
+          "best_development_fitness": 0.6373199343976826,
+          "nonzero_weights": 13
+        },
+        {
+          "generation": 11,
+          "best_development_fitness": 0.638226509182702,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 12,
+          "best_development_fitness": 0.638226509182702,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 13,
+          "best_development_fitness": 0.638226509182702,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 14,
+          "best_development_fitness": 0.6404972317065769,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 15,
+          "best_development_fitness": 0.6404972317065769,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 16,
+          "best_development_fitness": 0.6404972317065769,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 17,
+          "best_development_fitness": 0.6404972317065769,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 18,
+          "best_development_fitness": 0.6415159828669125,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 19,
+          "best_development_fitness": 0.6415159828669125,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 20,
+          "best_development_fitness": 0.6415159828669125,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 21,
+          "best_development_fitness": 0.6415159828669125,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 22,
+          "best_development_fitness": 0.6415159828669125,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 23,
+          "best_development_fitness": 0.6415159828669125,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 24,
+          "best_development_fitness": 0.6415159828669125,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 25,
+          "best_development_fitness": 0.6434042084507628,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 26,
+          "best_development_fitness": 0.6440860266325811,
+          "nonzero_weights": 14
+        },
+        {
+          "generation": 27,
+          "best_development_fitness": 0.6440860266325811,
+          "nonzero_weights": 14
+        },
+        {
+          "generation": 28,
+          "best_development_fitness": 0.6440860266325811,
+          "nonzero_weights": 14
+        },
+        {
+          "generation": 29,
+          "best_development_fitness": 0.6440860266325811,
+          "nonzero_weights": 14
+        },
+        {
+          "generation": 30,
+          "best_development_fitness": 0.6440860266325811,
+          "nonzero_weights": 14
+        },
+        {
+          "generation": 31,
+          "best_development_fitness": 0.6440860266325811,
+          "nonzero_weights": 14
+        },
+        {
+          "generation": 32,
+          "best_development_fitness": 0.6480994301993337,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 33,
+          "best_development_fitness": 0.6480994301993337,
+          "nonzero_weights": 15
+        },
+        {
+          "generation": 34,
+          "best_development_fitness": 0.6480994301993337,
+          "nonzero_weights": 15
+        }
+      ],
+      "nonzero_features": [
+        {
+          "feature": "ret_1",
+          "weight": -0.8126970180929506
+        },
+        {
+          "feature": "ret_5",
+          "weight": 0.07383922369627469
+        },
+        {
+          "feature": "ret_10",
+          "weight": -0.9281066137909061
+        },
+        {
+          "feature": "ret_20",
+          "weight": 0.38717444727225836
+        },
+        {
+          "feature": "rv_5",
+          "weight": -0.1376623722731911
+        },
+        {
+          "feature": "rv_20",
+          "weight": 0.4353560360232159
+        },
+        {
+          "feature": "range_5",
+          "weight": -0.12495826957370515
+        },
+        {
+          "feature": "range_10",
+          "weight": 0.3657473841962581
+        },
+        {
+          "feature": "range_20",
+          "weight": -0.20537313211131702
+        },
+        {
+          "feature": "overnight_gap",
+          "weight": 2.0536668858336746
+        },
+        {
+          "feature": "prior_cycle_return",
+          "weight": -0.11659304441788365
+        },
+        {
+          "feature": "prior_close_range_position",
+          "weight": 0.668313242472647
+        },
+        {
+          "feature": "session_gap_days",
+          "weight": 0.2703748740566874
+        },
+        {
+          "feature": "month_cos",
+          "weight": -0.20796469892196706
+        }
+      ],
+      "holdout": {
+        "n": 80,
+        "accuracy": 0.5375,
+        "balanced_accuracy": 0.5358265241986172,
+        "mcc": 0.07154072186885414,
+        "brier": 0.29438432763191064
+      },
+      "warning": "small, noisy, unverified labels; one holdout, no strategy/P&L certification"
+    },
+    "pysr": {
+      "status": "completed",
+      "niterations": 25,
+      "populations": 8,
+      "maxsize": 12,
+      "holdout_return_rmse": 0.014924955135439124,
+      "holdout_return_r2": -0.001235811620600602,
+      "equations": [
+        {
+          "complexity": 1,
+          "loss": 0.00049162685,
+          "equation": "0.0028297743",
+          "score": 0.0,
+          "sympy_format": "0.00282977430000000",
+          "lambda_format": "PySRFunction(X=>0.00282977430000000)"
+        },
+        {
+          "complexity": 2,
+          "loss": 0.0004867691,
+          "equation": "abs(x11)",
+          "score": 0.009930110437023583,
+          "sympy_format": "Abs(x11)",
+          "lambda_format": "PySRFunction(X=>Abs(x11))"
+        },
+        {
+          "complexity": 3,
+          "loss": 0.00048548522,
+          "equation": "x6 * 0.32354492",
+          "score": 0.0026410389130786137,
+          "sympy_format": "x6*0.32354492",
+          "lambda_format": "PySRFunction(X=>x6*0.32354492)"
+        },
+        {
+          "complexity": 4,
+          "loss": 0.00047042005,
+          "equation": "x6 - abs(x10)",
+          "score": 0.031522825450166554,
+          "sympy_format": "x6 - Abs(x10)",
+          "lambda_format": "PySRFunction(X=>x6 - Abs(x10))"
+        },
+        {
+          "complexity": 6,
+          "loss": 0.0004633994,
+          "equation": "(x6 - abs(x10)) / 1.2671258",
+          "score": 0.007518350877841064,
+          "sympy_format": "(x6 - Abs(x10))/1.2671258",
+          "lambda_format": "PySRFunction(X=>(x6 - Abs(x10))/1.2671258)"
+        },
+        {
+          "complexity": 7,
+          "loss": 0.00045400765,
+          "equation": "(x3 * -0.00042437878) * (x3 / x0)",
+          "score": 0.020475269100058927,
+          "sympy_format": "x3*(-0.00042437878)*x3/x0",
+          "lambda_format": "PySRFunction(X=>x3*(-0.00042437878)*x3/x0)"
+        },
+        {
+          "complexity": 9,
+          "loss": 0.00045254143,
+          "equation": "x16 * (((x3 * -0.00042437878) / x0) * x3)",
+          "score": 0.0016173655798985959,
+          "sympy_format": "x16*x3*(-0.00042437878)*x3/x0",
+          "lambda_format": "PySRFunction(X=>x16*x3*(-0.00042437878)*x3/x0)"
+        },
+        {
+          "complexity": 10,
+          "loss": 0.00045140702,
+          "equation": "x3 * abs(x3 * (x0 + (-0.00042437878 / x0)))",
+          "score": 0.002509901080150589,
+          "sympy_format": "x3*Abs(x3*(x0 - 0.00042437878/x0))",
+          "lambda_format": "PySRFunction(X=>x3*Abs(x3*(x0 - 0.00042437878/x0)))"
+        },
+        {
+          "complexity": 11,
+          "loss": 0.00043207323,
+          "equation": "(x3 * x3) * ((x3 * x3) * (x3 / x0))",
+          "score": 0.04377432811255779,
+          "sympy_format": "x3*x3*x3*x3*x3/x0",
+          "lambda_format": "PySRFunction(X=>x3*x3*x3*x3*x3/x0)"
+        }
+      ],
+      "variable_map": {
+        "x0": "ret_1",
+        "x1": "ret_5",
+        "x2": "ret_10",
+        "x3": "ret_20",
+        "x4": "rv_5",
+        "x5": "rv_10",
+        "x6": "rv_20",
+        "x7": "range_5",
+        "x8": "range_10",
+        "x9": "range_20",
+        "x10": "overnight_gap",
+        "x11": "pre_anchor_return",
+        "x12": "anchor_jump",
+        "x13": "prior_cycle_return",
+        "x14": "prior_cycle_up",
+        "x15": "prior_close_range_position",
+        "x16": "session_gap_days",
+        "x17": "post_expiry_change",
+        "x18": "month_sin",
+        "x19": "month_cos"
+      },
+      "warning": "continuous-return symbolic regression on heuristic labels; expression discovery is highly overfit-prone"
+    },
+    "custom_indicator": {
+      "status": "completed_python_mirror",
+      "fixed_weights": {
+        "prior_5_session_return": 0.5,
+        "pre_anchor_return": 0.35,
+        "overnight_gap": 0.15
+      },
+      "threshold": 0.22,
+      "holdout_rows": 80,
+      "signals": 49,
+      "coverage": 0.6125,
+      "directional_accuracy_on_signaled_rows": 0.3877551020408163,
+      "balanced_accuracy_on_signaled_rows": 0.38545150501672243,
+      "warning": "Python mirror is not Pine compiler verification; no trading P&L or costs evaluated"
+    },
+    "tradingagents": {
+      "status": "upstream_smoke_test_only",
+      "upstream_repository": "https://github.com/TauricResearch/TradingAgents",
+      "repository_cloned": true,
+      "python_package_importable": false,
+      "live_agent_debate": "not run: requires provider configuration and would add non-determinism; no LLM credentials are sent by this script",
+      "roles": [
+        {
+          "role": "Quant reviewer",
+          "task": "Compare holdout metrics to majority and logistic baselines; reject accuracy-only claims."
+        },
+        {
+          "role": "Data reviewer",
+          "task": "Flag heuristic expiry calendar and independent-close mismatches as blocking."
+        },
+        {
+          "role": "Execution/risk reviewer",
+          "task": "Reject profitability claims absent instrument fills, fees, spread, slippage and dated Paytm Money costs."
+        }
+      ],
+      "review_conclusion": "No model promotion; data and execution gates remain unresolved"
+    }
+  },
+  "promotion": "NONE; calendar and independent price-source gates remain skipped/blocked",
+  "sample": {
+    "rows": 398,
+    "development_rows": 318,
+    "holdout_rows": 80,
+    "features": [
+      "ret_1",
+      "ret_5",
+      "ret_10",
+      "ret_20",
+      "rv_5",
+      "rv_10",
+      "rv_20",
+      "range_5",
+      "range_10",
+      "range_20",
+      "overnight_gap",
+      "pre_anchor_return",
+      "anchor_jump",
+      "prior_cycle_return",
+      "prior_cycle_up",
+      "prior_close_range_position",
+      "session_gap_days",
+      "post_expiry_change",
+      "month_sin",
+      "month_cos"
+    ],
+    "up_fraction": 0.5603015075376885,
+    "calendar_quality": "HEURISTIC / NOT VERIFIED"
+  }
+}
