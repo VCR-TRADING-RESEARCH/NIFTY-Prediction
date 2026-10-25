@@ -66,3 +66,9 @@
 - Files: [Phase 8 plan](../docs/PHASE_8_GITHUB_ACTIONS_PREDICTION.md), [workflow](../.github/workflows/on-demand-prediction.yml), [runner](../scripts/run_live_prediction.py).
 - Status: implementation committed on phase/github-actions-on-demand-prediction; automated CI, merge, Actions permissions, Pages publication and live Dhan end-to-end request remain to be verified. No live prediction is claimed yet.
 - Research gate: independent 10:00 anchor validation and options/futures P&L including Paytm Money charges, spread and slippage remain BLOCKED.
+
+
+## 2026-10-25 — Phase 8 CI and trigger smoke test
+- PR #8 merged as commit db3edc113037ff16f7d21d28a69bcc0e975bae7e. CI run [40200568709](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40200568709) passed: research/Dhan validation tests, Python compile, JavaScript syntax and workflow YAML parsing.
+- PR #10 merged as commit faa2b1291abfee6f6b4a92bd4a902fc204dd5776. CI run [40200737861](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40200737861) passed the same checks. Authorization now accepts OWNER, MEMBER and COLLABORATOR associations, and request issues can be reopened for retry.
+- Created request issue [#9](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/issues/9) for as-of date 2026-10-21 and reopened it to test the issue-triggered path. At this log update, no completion comment or published JSON was visible through the available GitHub issue/file reads; live Dhan inference remains UNVERIFIED. Do not report a numeric forecast until the output is present and validated.
