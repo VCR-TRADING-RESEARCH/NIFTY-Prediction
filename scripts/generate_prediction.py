@@ -70,5 +70,5 @@ def main():
     payload={"schema_version":1,"generated_at_utc":datetime.now(timezone.utc).isoformat(),"message":"Predictions are only published when compatible model/data/calendar checks pass; unavailable records are retained for audit.","predictions":rows}
     OUT.write_text(json.dumps(payload,indent=2)+"\n")
     print("PREDICTION_STATUS:",record["status"],"AS_OF_DATE:",requested,"EXPIRY:",record.get("expiry_date") or "unavailable")
-    return 0 if record["status"]=="ok" else 2
+    return 0  # publish the explicit unavailable record; never fabricate a prediction
 if __name__=="__main__": raise SystemExit(main())
