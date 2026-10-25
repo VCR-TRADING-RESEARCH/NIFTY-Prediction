@@ -22,7 +22,7 @@
 
 1. Fetch official NIFTY 50 daily OHLC in chunks no longer than 350 days. Cache immutable date-range CSVs to avoid repeated downloads.
 2. Compare every overlapping date with the minute archive's last valid session close. Write the row-level differences and a machine-readable source report.
-3. For each nominal candidate expiry, use the official index session list to identify the last trading session on or before the nominal date.
+3. For each nominal candidate expiry, check the latest official session and, only if no expiry is present, inspect nearby prior trading sessions within four calendar days to verify holiday-shifted dates, including special-session days.
 4. Fetch the NSE F&O bhavcopy for that session; parse both legacy and UDiFF schemas and confirm that a NIFTY OPTIDX call/put contract expires on the session date.
 5. Record every source failure, missing date, schema mismatch, or unconfirmed expiry. Do not silently convert a failure into a verified calendar row.
 6. Run unit tests on parsing and weekday-regime logic before any data/model work.
@@ -52,4 +52,4 @@ The workflow runs on branch push, monthly schedule, and manual dispatch. It has 
 
 ## Current prior blockers
 
-The completed official-source pass (40174191441) compared 1,901 sessions: 1,717 daily closes differ from official NSE close by more than one point (median absolute difference 8.25; P95 32.45; maximum 200.7 index points). The initial contract parser reported 359/402 candidate dates confirmed and 43 unconfirmed. The downloader was found to try the UDiFF URL first even for pre-8-Jul-2024 dates, and to use an alternate host as the primary UDiFF URL. The next run prioritizes the format matching each historical period and validates archive trade dates. The 43 rows remain unresolved until revalidation.
+The completed official-source pass (40174191441) compared 1,901 sessions: 1,717 daily closes differ from official NSE close by more than one point (median absolute difference 8.25; P95 32.45; maximum 200.7 index points). The latest run (40174991974) reported 338/402 confirmed, 26 not verified and 38 source-validation errors. The error strings previously retained only the exception type, so the downloader is being amended to preserve a sanitized validation reason and warm an NSE session before archive requests. The downloader was found to try the UDiFF URL first even for pre-8-Jul-2024 dates, and to use an alternate host as the primary UDiFF URL. The next run prioritizes the format matching each historical period and validates archive trade dates. The 43 rows remain unresolved until revalidation.

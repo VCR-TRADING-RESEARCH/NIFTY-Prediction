@@ -125,3 +125,18 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 ## Dhan data cross-check — run 40175103450
 - Status: FAILED or unavailable. The public archive will remain the core input; independent Dhan cross-check did not pass.
 - Failure responses and credentials were not added to the log. Inspect only sanitized Actions step diagnostics.
+
+
+## E0008 — 2026-10-25 — NSE UDiFF validation failures were not diagnostic enough
+- Severity: High / historical expiry calendar remains unverified.
+- Symptom: Phase 3 run 40174991974 confirmed 338/402 candidate expiry dates, left 26 not verified, and returned 38 source-validation errors. The stored error text exposed only the exception type (ValueError), not the reason.
+- Potential causes include un-warmed archive sessions / HTML interstitials, trade-date mismatches or schema variants. Exact cause is not yet proven and will be captured in the next run.
+- Fix attempted: warm the NSE derivatives reports page per worker session; include sanitized exception details with bounded length; inspect nearby prior sessions only where no expiry was found on the candidate day; generate yearly summaries automatically.
+- Validation required: next Actions run must show detailed failure causes and refreshed yearly outputs. Do not accept the expiry calendar yet.
+
+## E0009 — 2026-10-25 — Official-close mismatch requires OHLC diagnosis
+- Severity: Critical / source-quality blocker.
+- Symptom: 1,717/1,901 minute-source session closes differed from official NSE NIFTY 50 close by >1 point; median difference 8.25, P95 32.45 and maximum 200.7 points.
+- Root cause not isolated. The candidate archive documents frozen/missing/partial sessions, but many large close differences do not have long unchanged-close runs, so freezing alone cannot explain the full pattern.
+- Fix attempted: retain official daily open/high/low where endpoint fields exist, compare minute-source O/H/L and close separately, and preserve the one-point close tolerance until evidence clarifies the discrepancy.
+- Residual risk: no model advancement or trading strategy approval until the source/close-definition discrepancy is explained or a trusted alternative intraday source is validated.

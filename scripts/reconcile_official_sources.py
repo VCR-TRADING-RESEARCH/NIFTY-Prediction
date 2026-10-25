@@ -50,12 +50,21 @@ def parse_niftyindices_response(payload: dict[str, Any]) -> pd.DataFrame:
     if date_col is None or close_col is None:
         raise ValueError("Unexpected NiftyIndices columns: " + ",".join(map(str, frame.columns)))
     frame["session_date"] = pd.to_datetime(frame[date_col], errors="coerce", dayfirst=True).dt.date
-    for col in ("OPEN", "HIGH", "LOW", close_col):
-        if col in frame:
-            frame[col] = pd.to_numeric(frame[col].astype(str).str.replace(",", "", regex=False), errors="coerce")
+    field_aliases = {
+        "official_open": ("OPEN", "Open", "Opening Index Value", "EOD_OPEN_INDEX_VAL"),
+        "official_high": ("HIGH", "High", "High Index Value", "EOD_HIGH_INDEX_VAL"),
+        "official_low": ("LOW", "Low", "Low Index Value", "EOD_LOW_INDEX_VAL"),
+    }
+    keep = ["session_date"]
+    for output_col, aliases in field_aliases.items():
+        source_col = next((c for c in aliases if c in frame), None)
+        if source_col is not None:
+            frame[output_col] = pd.to_numeric(frame[source_col].astype(str).str.replace(",", "", regex=False), errors="coerce")
+            keep.append(output_col)
     frame["official_close"] = pd.to_numeric(frame[close_col].astype(str).str.replace(",", "", regex=False), errors="coerce")
+    keep.append("official_close")
     frame = frame.dropna(subset=["session_date", "official_close"])
-    frame = frame[["session_date", "official_close"]].drop_duplicates("session_date").sort_values("session_date")
+    frame = frame[keep].drop_duplicates("session_date").sort_values("session_date")
     if frame.empty:
         raise ValueError("No valid official NIFTY 50 OHLC rows after parsing")
     return frame.reset_index(drop=True)
@@ -113,10 +122,21 @@ def fetch_nse_daily_fallback(start: date, end: date, force: bool = False) -> pd.
             selected = frame[frame[name_col].astype(str).str.strip().str.casefold().eq("nifty 50")]
             if selected.empty:
                 raise ValueError("NIFTY 50 row absent from official daily index file")
-            close = pd.to_numeric(str(selected.iloc[0][close_col]).replace(",", ""), errors="coerce")
+            row = selected.iloc[0]
+            close = pd.to_numeric(str(row[close_col]).replace(",", ""), errors="coerce")
             if pd.isna(close) or float(close) <= 0:
                 raise ValueError("Invalid official NIFTY 50 close")
-            return {"session_date": day, "official_close": float(close), "status": "ok"}
+            answer = {"session_date": day, "official_close": float(close), "status": "ok"}
+            for output_col, aliases in {
+                "official_open": ("openindexvalue", "openingindexvalue", "open"),
+                "official_high": ("highindexvalue", "high"),
+                "official_low": ("lowindexvalue", "low"),
+            }.items():
+                source_col = next((cols[k] for k in aliases if k in cols), None)
+                if source_col is not None:
+                    value = pd.to_numeric(str(row[source_col]).replace(",", ""), errors="coerce")
+                    answer[output_col] = float(value) if pd.notna(value) else None
+            return answer
         except Exception as exc:
             return {"session_date": day, "official_close": None, "status": type(exc).__name__ + ": " + str(exc)[:180]}
 
@@ -135,7 +155,10 @@ def fetch_nse_daily_fallback(start: date, end: date, force: bool = False) -> pd.
     if len(failed):
         failure_path = OUT / "nse_daily_fetch_errors.csv"
         failed.to_csv(failure_path, index=False)
-    result = result.dropna(subset=["official_close"])[["session_date", "official_close"]]
+    for col in ("official_open", "official_high", "official_low"):
+        if col not in result.columns:
+            result[col] = pd.NA
+    result = result.dropna(subset=["official_close"])[["session_date", "official_open", "official_high", "official_low", "official_close"]]
     result = result.drop_duplicates("session_date").sort_values("session_date").reset_index(drop=True)
     if result.empty:
         raise RuntimeError("NSE daily archive fallback returned no usable NIFTY 50 closes")
@@ -181,12 +204,24 @@ def fetch_nse_history_api(start: date, end: date) -> pd.DataFrame:
         if date_col is None or close_col is None:
             raise ValueError("Unexpected NSE historicalOR schema: " + ",".join(map(str, frame.columns)))
         frame["session_date"] = pd.to_datetime(frame[date_col], errors="coerce", dayfirst=True).dt.date
+        field_aliases = {
+            "official_open": ("EOD_OPEN_INDEX_VAL", "OPEN", "Open", "Opening Index Value"),
+            "official_high": ("EOD_HIGH_INDEX_VAL", "HIGH", "High", "High Index Value"),
+            "official_low": ("EOD_LOW_INDEX_VAL", "LOW", "Low", "Low Index Value"),
+        }
+        keep = ["session_date"]
+        for output_col, aliases in field_aliases.items():
+            source_col = next((k for k in aliases if k in frame), None)
+            if source_col is not None:
+                frame[output_col] = pd.to_numeric(frame[source_col].astype(str).str.replace(",", "", regex=False), errors="coerce")
+                keep.append(output_col)
         frame["official_close"] = pd.to_numeric(frame[close_col].astype(str).str.replace(",", "", regex=False), errors="coerce")
+        keep.append("official_close")
         frame = frame.dropna(subset=["session_date", "official_close"])
         frame = frame[(frame["session_date"] >= chunk_start) & (frame["session_date"] <= chunk_end)]
         if frame.empty:
             raise RuntimeError(f"NSE historicalOR rows failed date/close validation for {chunk_start} to {chunk_end}")
-        frames.append(frame[["session_date", "official_close"]])
+        frames.append(frame[keep])
         chunk_start = chunk_end + timedelta(days=1)
         time.sleep(0.25)
     result = pd.concat(frames, ignore_index=True).drop_duplicates("session_date").sort_values("session_date").reset_index(drop=True)
@@ -211,11 +246,14 @@ def fetch_official_daily(start: date, end: date, force: bool = False) -> pd.Data
         while chunk_start <= end:
             chunk_end = min(end, chunk_start + timedelta(days=350))
             cache_file = CACHE / f"nifty50_official_{chunk_start:%Y%m%d}_{chunk_end:%Y%m%d}.csv"
+            use_cache = False
             if cache_file.exists() and not force:
-                frames.append(pd.read_csv(cache_file, parse_dates=["session_date"]).assign(
-                    session_date=lambda x: x["session_date"].dt.date
-                ))
-            else:
+                cached = pd.read_csv(cache_file, parse_dates=["session_date"])
+                required_ohlc = {"official_open", "official_high", "official_low"}
+                if required_ohlc.issubset(cached.columns):
+                    frames.append(cached.assign(session_date=lambda x: x["session_date"].dt.date))
+                    use_cache = True
+            if not use_cache:
                 info = {
                     "name": "NIFTY 50",
                     "startDate": chunk_start.strftime("%d-%b-%Y"),
@@ -245,6 +283,15 @@ def fetch_official_daily(start: date, end: date, force: bool = False) -> pd.Data
         except Exception as nse_exc:
             print(f"NSE_HISTORY_API_FAILED: {type(nse_exc).__name__}: {str(nse_exc)[:250]}", file=sys.stderr)
             return fetch_nse_daily_fallback(start, end, force=force)
+
+
+def candidate_verification_sessions(candidate_date: date, sessions: list[date], max_calendar_days: int = 4) -> list[date]:
+    """Return candidate date plus nearby prior sessions for holiday-shift verification."""
+    eligible = [
+        day for day in sessions
+        if day <= candidate_date and (candidate_date - day).days <= max_calendar_days
+    ]
+    return list(reversed(eligible))
 
 
 def weekly_nominals(start: date, end: date) -> list[date]:
@@ -381,7 +428,7 @@ def fetch_bhavcopy(trade_date: date, session: requests.Session) -> bytes:
             try:
                 _validate_bhavcopy_blob(response.content, trade_date)
             except Exception as exc:
-                failures.append(f"invalid:{url.rsplit('/', 1)[-1]}:{type(exc).__name__}")
+                failures.append(f"invalid:{url.rsplit('/', 1)[-1]}:{type(exc).__name__}:{str(exc)[:140]}")
                 continue
             return response.content
         except requests.RequestException as exc:
@@ -406,11 +453,40 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
         source_cross = pd.read_csv(ROOT / "research" / "results" / "yahoo_daily_crosscheck.csv")
         source_cross["session_date"] = pd.to_datetime(source_cross["session_date"], errors="coerce").dt.date
         source_cross = source_cross[(source_cross["session_date"] >= start) & (source_cross["session_date"] <= end)].copy()
-        official_map = official.set_index("session_date")["official_close"].to_dict()
+        official_index = official.set_index("session_date")
+        official_map = official_index["official_close"].to_dict()
         source_cross["official_close"] = source_cross["session_date"].map(official_map)
         source_cross["official_abs_difference"] = (source_cross["session_close"] - source_cross["official_close"]).abs()
         source_cross["official_over_1pt"] = source_cross["official_abs_difference"] > 1.0
+        for field in ("open", "high", "low"):
+            official_col = f"official_{field}"
+            minute_col = f"session_{field}"
+            if official_col in official_index.columns:
+                mapping = official_index[official_col].to_dict()
+                source_cross[official_col] = source_cross["session_date"].map(mapping)
+                source_cross[f"{field}_abs_difference"] = (source_cross[minute_col] - source_cross[official_col]).abs()
+                source_cross[f"{field}_over_1pt"] = source_cross[f"{field}_abs_difference"] > 1.0
         source_cross.to_csv(OUT / "minute_vs_official_daily.csv", index=False)
+        diagnostic_rows = source_cross.dropna(subset=["official_close"]).copy()
+        diagnostic_rows["year"] = pd.to_datetime(diagnostic_rows["session_date"]).dt.year
+        daily_summary_rows = []
+        for year, group in diagnostic_rows.groupby("year", sort=True):
+            row = {
+                "year": int(year),
+                "rows_compared": int(len(group)),
+                "mismatches_over_1_point": int(group["official_over_1pt"].sum()),
+                "median_abs_difference_points": float(group["official_abs_difference"].median()),
+                "p95_abs_difference_points": float(group["official_abs_difference"].quantile(0.95)),
+            }
+            for field in ("open", "high", "low"):
+                diff_col = f"{field}_abs_difference"
+                if diff_col in group:
+                    valid = group[diff_col].dropna()
+                    row[f"{field}_mismatches_over_1_point"] = int((valid > 1.0).sum())
+                    row[f"{field}_rows_compared"] = int(len(valid))
+                    row[f"{field}_median_abs_difference_points"] = float(valid.median()) if len(valid) else None
+            daily_summary_rows.append(row)
+        pd.DataFrame(daily_summary_rows).to_csv(OUT / "daily_close_mismatch_summary_by_year.csv", index=False)
         candidate_dates = sorted(set(x for x in candidate["nominal_expiry"].dropna() if start <= x <= end))
         if max_expiries:
             candidate_dates = candidate_dates[:max_expiries]
@@ -422,7 +498,16 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
             s = getattr(local, "session", None)
             if s is None:
                 s = requests.Session()
-                s.headers.update({"User-Agent": UA, "Accept": "*/*"})
+                s.headers.update({
+                    "User-Agent": UA,
+                    "Accept": "*/*",
+                    "Referer": "https://www.nseindia.com/all-reports-derivatives",
+                })
+                # NSE archives can return an HTML interstitial without a warmed session.
+                try:
+                    s.get("https://www.nseindia.com/all-reports-derivatives", timeout=(5, 8))
+                except requests.RequestException:
+                    pass
                 local.session = s
             return s
 
@@ -434,32 +519,50 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
 
         def verify_candidate(job: tuple[date, date]) -> dict[str, Any]:
             candidate_date, actual = job
-            try:
-                cache_file = CACHE / "fo" / f"fo_{actual:%Y%m%d}.zip"
-                if cache_file.exists() and not force:
-                    blob = cache_file.read_bytes()
-                else:
-                    blob = fetch_bhavcopy(actual, get_fo_session())
-                    cache_file.parent.mkdir(parents=True, exist_ok=True)
-                    cache_file.write_bytes(blob)
-                expiries = parse_bhavcopy_contract_expiries(blob, actual)
-                exists = actual in expiries
-                return {
-                    "candidate_date": candidate_date.isoformat(),
-                    "candidate_previous_session": actual.isoformat(),
-                    "contract_expiry_present": exists,
-                    "status": "verified_nifty_weekly_expiry" if exists else "not_verified_in_bhavcopy",
-                    "nifty_option_expiries_in_bhavcopy": sorted(x.isoformat() for x in expiries),
-                }
-            except Exception as exc:
+            checked_dates: list[str] = []
+            source_errors: list[str] = []
+            for verify_day in candidate_verification_sessions(candidate_date, sessions):
+                checked_dates.append(verify_day.isoformat())
+                try:
+                    cache_file = CACHE / "fo" / f"fo_{verify_day:%Y%m%d}.zip"
+                    if cache_file.exists() and not force:
+                        blob = cache_file.read_bytes()
+                    else:
+                        blob = fetch_bhavcopy(verify_day, get_fo_session())
+                        cache_file.parent.mkdir(parents=True, exist_ok=True)
+                        cache_file.write_bytes(blob)
+                    expiries = parse_bhavcopy_contract_expiries(blob, verify_day)
+                    if verify_day in expiries:
+                        shifted = verify_day != actual
+                        return {
+                            "candidate_date": candidate_date.isoformat(),
+                            "candidate_previous_session": actual.isoformat(),
+                            "verified_expiry_trade_date": verify_day.isoformat(),
+                            "calendar_shift_days": (candidate_date - verify_day).days,
+                            "contract_expiry_present": True,
+                            "status": "verified_shifted_nifty_weekly_expiry" if shifted else "verified_nifty_weekly_expiry",
+                            "checked_trade_dates": checked_dates,
+                            "nifty_option_expiries_in_bhavcopy": sorted(x.isoformat() for x in expiries),
+                        }
+                except Exception as exc:
+                    source_errors.append(f"{verify_day.isoformat()}: {type(exc).__name__}: {str(exc)[:140]}")
+            if source_errors:
                 return {
                     "candidate_date": candidate_date.isoformat(),
                     "candidate_previous_session": actual.isoformat(),
                     "status": "source_error",
-                    "error_type": type(exc).__name__,
-                    "error": str(exc)[:250],
+                    "error_type": "SourceValidationError",
+                    "error": " | ".join(source_errors)[:700],
+                    "checked_trade_dates": checked_dates,
                 }
-
+            return {
+                "candidate_date": candidate_date.isoformat(),
+                "candidate_previous_session": actual.isoformat(),
+                "contract_expiry_present": False,
+                "status": "not_verified_in_bhavcopy",
+                "checked_trade_dates": checked_dates,
+                "nifty_option_expiries_in_bhavcopy": [],
+            }
         verified: list[dict[str, Any]] = []
         # Four workers reduce a long sequential run while limiting pressure on NSE.
         # Work in bounded batches; if a whole batch has source failures, stop rather
@@ -475,9 +578,23 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
                     for candidate_date in candidate_dates[len(verified):]:
                         verified.append({"candidate_date": candidate_date.isoformat(), "status": "source_unavailable_after_repeated_errors"})
                     break
-        pd.DataFrame(verified).to_csv(OUT / "expiry_verification.csv", index=False)
+        expiry_frame = pd.DataFrame(verified)
+        expiry_frame.to_csv(OUT / "expiry_verification.csv", index=False)
+        expiry_frame["year"] = pd.to_datetime(expiry_frame["candidate_date"], errors="coerce").dt.year
+        is_verified = expiry_frame["status"].isin({"verified_nifty_weekly_expiry", "verified_shifted_nifty_weekly_expiry"})
+        expiry_frame["_verified"] = is_verified.astype(int)
+        expiry_frame["_source_error"] = expiry_frame["status"].eq("source_error").astype(int)
+        expiry_frame["_not_verified"] = (~is_verified & ~expiry_frame["status"].eq("source_error")).astype(int)
+        expiry_summary = expiry_frame.groupby("year", dropna=True).agg(
+            expiry_candidates=("candidate_date", "count"),
+            contract_verified=("_verified", "sum"),
+            not_verified=("_not_verified", "sum"),
+            source_errors=("_source_error", "sum"),
+        ).reset_index()
+        expiry_summary["year"] = expiry_summary["year"].astype(int)
+        expiry_summary.to_csv(OUT / "expiry_verification_summary_by_year.csv", index=False)
         n = len(verified)
-        good = sum(x.get("status") == "verified_nifty_weekly_expiry" for x in verified)
+        good = sum(x.get("status") in {"verified_nifty_weekly_expiry", "verified_shifted_nifty_weekly_expiry"} for x in verified)
         errs = sum(x.get("status") == "source_error" for x in verified)
         cross_rows = source_cross.dropna(subset=["official_close"])
         mismatch = int(cross_rows["official_over_1pt"].sum())
@@ -485,12 +602,24 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
             "official_daily_rows": len(official),
             "candidate_expiries_checked": n,
             "contract_verified_expiries": good,
+            "contract_unverified_expiries": n - good - errs,
             "expiry_source_errors": errs,
             "daily_source_rows_expected": len(source_cross),
             "daily_source_rows_compared": len(cross_rows),
             "daily_source_rows_missing_official_close": int(source_cross["official_close"].isna().sum()),
             "minute_vs_official_mismatches_over_1_point": mismatch,
+            "minute_vs_official_abs_difference_median_points": float(cross_rows["official_abs_difference"].median()) if len(cross_rows) else None,
+            "minute_vs_official_abs_difference_p95_points": float(cross_rows["official_abs_difference"].quantile(0.95)) if len(cross_rows) else None,
+            "minute_vs_official_abs_difference_max_points": float(cross_rows["official_abs_difference"].max()) if len(cross_rows) else None,
+            "minute_vs_official_within_1_point": int((~cross_rows["official_over_1pt"]).sum()),
         }
+        for field in ("open", "high", "low"):
+            diff_col = f"{field}_abs_difference"
+            if diff_col in source_cross:
+                valid = source_cross[diff_col].dropna()
+                report["counts"][f"minute_vs_official_{field}_rows_compared"] = int(len(valid))
+                report["counts"][f"minute_vs_official_{field}_mismatches_over_1_point"] = int((valid > 1.0).sum())
+                report["counts"][f"minute_vs_official_{field}_abs_difference_median_points"] = float(valid.median()) if len(valid) else None
         coverage_complete = len(cross_rows) == len(source_cross) and len(source_cross) > 0
         report["status"] = "PASS" if n > 0 and good == n and errs == 0 and mismatch == 0 and coverage_complete else "BLOCKED"
         if report["status"] == "BLOCKED":

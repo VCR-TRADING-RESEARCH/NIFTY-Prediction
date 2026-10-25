@@ -10,7 +10,7 @@ from datetime import date
 import pandas as pd
 import pytest
 
-from scripts.reconcile_official_sources import bhavcopy_urls, parse_bhavcopy_contract_expiries, parse_niftyindices_response, weekly_nominals
+from scripts.reconcile_official_sources import bhavcopy_urls, candidate_verification_sessions, parse_bhavcopy_contract_expiries, parse_niftyindices_response, weekly_nominals
 
 
 def test_parse_niftyindices_response_uses_official_close():
@@ -21,6 +21,7 @@ def test_parse_niftyindices_response_uses_official_close():
     frame = parse_niftyindices_response(payload)
     assert frame["session_date"].tolist() == [date(2025, 10, 23), date(2025, 10, 24)]
     assert frame["official_close"].tolist() == [26000.0, 26100.5]
+    assert frame["official_open"].tolist() == [25900.0, 26000.0]
 
 
 def test_parse_niftyindices_empty_data_is_not_silently_accepted():
@@ -100,3 +101,9 @@ def test_parse_bhavcopy_rejects_wrong_trade_date():
     )
     with pytest.raises(ValueError, match="trade-date mismatch"):
         parse_bhavcopy_contract_expiries(_zip_csv(csv), date(2024, 1, 4))
+
+
+
+def test_candidate_verification_checks_nearby_previous_sessions_for_holiday_shift():
+    sessions = [date(2021, 11, 1), date(2021, 11, 2), date(2021, 11, 3), date(2021, 11, 4)]
+    assert candidate_verification_sessions(date(2021, 11, 4), sessions) == [date(2021, 11, 4), date(2021, 11, 3)]

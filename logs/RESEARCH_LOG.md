@@ -111,3 +111,11 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Calendar gate: EXPLORATORY_ONLY — Weekly expiry dates were generated from weekday regimes and inferred from available bars; official historical expiry calendar and holiday shifts are not independently reconciled.
 - Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
 - Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.
+
+
+## Phase 3 second official-source pass — run 40174991974
+- Status: computation completed and automated commit succeeded; acceptance gate remains BLOCKED.
+- Official daily index rows: 1,913; compared daily sessions: 1,901; 1,717 >1-point differences (median 8.25; P95 32.45; maximum 200.7).
+- Expiry results: 338/402 confirmed, 26 not verified, 38 source-validation errors. Unit tests passed. Source errors were truncated to exception type, making root-cause analysis insufficient.
+- Corrective step: warm each worker's NSE session against the official derivatives reports page, retain detailed sanitized validation reasons, check nearby previous sessions for expiry holiday shifts, and compare official daily open/high/low separately from close. This is diagnostic; the one-point close gate is not relaxed.
+- Main research pass 40175103450 completed successfully and committed artifacts. Metrics remain exploratory only: ExtraTrees 0.575 accuracy / 0.559 balanced; logistic 0.550 / 0.547 on an 80-row holdout. No costed executable strategy exists.

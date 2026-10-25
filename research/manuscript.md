@@ -85,3 +85,28 @@ Limitations: inferred expiry calendar; material daily-close mismatch; repeated-c
 - Holdout metrics and predictions: results/holdout_metrics.csv and results/holdout_predictions.csv
 - Experiment registry: results/experiment_registry.json
 - Logs: ../logs/RESEARCH_LOG.md, ../logs/ERROR_LOG.md and ../logs/CONVERSATION_LOG.md
+
+
+## Phase 3 official-source reconciliation update (25 October 2026)
+
+### Methods and source-audit outcome
+The third phase attempted to reconcile the candidate minute archive against the official NSE NIFTY 50 daily index history and NSE derivative contract bhavcopies. The completed run returned 1,913 official daily records and matched 1,901 of 1,901 comparison sessions. The daily-close comparison exceeded the pre-registered one-index-point tolerance on 1,717 sessions; the median absolute difference was 8.25 points, the 95th percentile was 32.45 points, and the maximum was 200.7 points. The independent audit therefore remains blocked. These differences are not silently corrected and the tolerance has not been widened.
+
+| Phase 3 metric | Result | Interpretation |
+|---|---:|---|
+| Official daily close rows | 1,913 | Official series retrieved |
+| Sessions compared | 1,901 / 1,901 | No missing official close in the matched comparison |
+| Minute/session close differences >1 index point | 1,717 / 1,901 (90.3%) | Fails the registered close-agreement gate |
+| Median absolute close difference | 8.25 points | Material discrepancy |
+| 95th percentile absolute close difference | 32.45 points | Large upper-tail errors |
+| Maximum absolute close difference | 200.7 points | The candidate close series needs investigation |
+| Candidate weekly expiries checked | 402 | Calendar remains provisional |
+| Confirmations in run 40174991974 | 338 / 402 (84.1%) | 26 unverified and 38 source-validation errors |
+
+### Interpretation and limitations
+The current minute archive is not accepted as ground truth merely because basic OHLC/timestamp validation passes. Its publisher documents missing bars, frozen-price stretches and partial/special sessions. The largest observed close mismatch includes a day with a 239-bar unchanged-close run, but high close differences also occur on sessions without such a long run; freezing alone is insufficient to explain the pattern. Official closing-index methodology and underlying minute source quality therefore remain competing explanations that require direct open/high/low and alternative-source comparison.
+
+The expiry result is also inconclusive. The first strict-parser run used a source downloader whose diagnostics preserved only exception types, which is not adequate for a defensible audit. The next bounded pass warms the NSE archive session, captures sanitized validation reasons, checks the nearby prior session only when no expiry is found on the nominal day, and writes yearly status summaries. These corrections do not convert a source error into a confirmed expiry.
+
+### Decision
+Phase 1 remains **BLOCKED**. All previously reported model metrics remain exploratory; 398 heuristic labels and the 318/80 chronological split are not confirmatory evidence. No executable strategy is selected. The next stage compares official daily open/high/low to diagnose the mismatch and validates a second independent intraday archive for the 10:00 anchor, while preserving the existing close-tolerance gate. Only after the label/source gates pass should a specified futures/options instrument be backtested with date-effective Paytm Money costs, spread, slippage and conservative fills.

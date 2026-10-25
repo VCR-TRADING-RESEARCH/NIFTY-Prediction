@@ -2,7 +2,7 @@
 
 **Purpose:** Predict whether the NIFTY 50 spot index at the close of a weekly options expiry is higher or lower than its value at **10:00 IST on the next trading day after the preceding weekly expiry**. This project researches a binary directional forecast, not a generic return-maximization system.
 
-> **Research status (2026-10-25):** Phase 3's official-source run completed but failed the data gate: **1,717/1,901** minute-derived daily closes differ from official NSE closes by more than one point; the initial contract parser confirmed 359/402 nominal expiry dates. Source routing/parser corrections and workflow serialization are now being tested. Model metrics remain exploratory, and **no usable trading strategy is validated**.
+> **Research status (2026-10-25):** Phase 3's official-source run completed but failed the data gate: **1,717/1,901** minute-derived daily closes differ from official NSE closes by more than one point; the initial contract parser confirmed 338/402 nominal expiry dates and returned 38 source-validation errors. Source routing/parser corrections and workflow serialization are now being tested. Model metrics remain exploratory, and **no usable trading strategy is validated**.
 
 ## Definition of the target
 
@@ -61,7 +61,7 @@ See the research log, error log, pre-registered plan, data-quality report, and m
 
 - Official daily source: 1,913 rows collected; 1,901/1,901 comparison rows had an official close.
 - Daily close mismatches above one point: **1,717 / 1,901** (median absolute difference 8.25 points; P95 32.45; maximum 200.7).
-- Initial contract check: **359 / 402** candidate dates confirmed, **43 unresolved**. Parser/source-routing correction and workflow commit serialization are in progress.
+- Latest contract check (40174991974): **338 / 402** candidate dates confirmed, **26 not verified**, and **38 source-validation errors**. Parser/source-routing correction and workflow commit serialization are in progress.
 - See [machine-readable report](data/reconciliation/source_reconciliation_report.json), [expiry summary by year](data/reconciliation/expiry_verification_summary_by_year.csv), [close comparison summary by year](data/reconciliation/daily_close_mismatch_summary_by_year.csv), and [Phase 3 plan](docs/PHASE_3_SOURCE_RECONCILIATION.md).
 - Full row-level result: [workflow artifact 40174191441](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40174191441).
 

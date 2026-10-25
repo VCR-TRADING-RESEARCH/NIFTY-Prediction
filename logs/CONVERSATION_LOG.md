@@ -36,3 +36,11 @@ Purpose: preserve available visible project statements and decisions for audit. 
 
 ## Conversation log maintenance
 Append user-visible project messages/assistant responses and references to project decisions as available. Never record secrets, private account identifiers, raw tokens, PINs, TOTP seeds or hidden private reasoning. When older turns are inaccessible, document the limitation rather than reconstructing missing dialogue.
+
+
+## 2026-10-25 — Current continuation
+- User command: “Ok proceed” / “Proceed”.
+- Visible assistant update: continue Phase 3, inspect completed workflow outputs/failure logs, correct the next concrete issue, maintain research logs/status, and advance only if source gates pass.
+- Visible finding recorded: Phase 3 run 40174991974 completed but data remained blocked (338/402 expiry dates confirmed, 26 not verified, 38 source errors; 1,717/1,901 official-close differences >1 point). Main research run 40175103450 completed successfully, but its model metrics remain exploratory.
+- Corrections being made: detailed validation error visibility, per-session NSE warm-up, nearby-session expiry verification for shifted dates, official daily OHLC comparisons, branch-tip checkout for Phase 3, and automatic yearly summaries.
+- This file records visible decisions and reproducible research actions; it does not copy hidden reasoning.

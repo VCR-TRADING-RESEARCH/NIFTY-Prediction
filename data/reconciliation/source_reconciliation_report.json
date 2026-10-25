@@ -1,22 +1,30 @@
 {
   "generated_utc": "2026-10-25T08:01:57Z",
+  "artifact_run_id": 40174991974,
+  "artifact_url": "https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40174991974",
   "start_date": "2019-02-01",
   "end_date": "2026-10-25",
-  "official_price_source": "NSE Indices historical OHLC with NSE ind_close_all archive fallback",
-  "official_expiry_source": "NSE F&O daily bhavcopy, NIFTY OPTIDX CE/PE contracts",
+  "official_price_source_used": "NSE official historicalOR/indicesHistory JSON endpoint",
+  "official_expiry_source": "NSE F&O daily bhavcopy (legacy and UDiFF archives)",
   "status": "BLOCKED",
   "errors": [
-    "One or more candidate expiry dates were not confirmed in official F&O data, or minute archive daily closes differ from official NIFTY 50 closes by >1 point."
+    "338/402 candidate dates were confirmed; 26 were not verified and 38 produced source-validation errors. Detailed failure diagnostics were not preserved by this run.",
+    "1,717 of 1,901 daily minute-source closes differ from official NSE NIFTY 50 closes by more than the pre-registered 1-point tolerance."
   ],
   "counts": {
     "official_daily_rows": 1913,
     "candidate_expiries_checked": 402,
     "contract_verified_expiries": 338,
+    "contract_unverified_expiries": 26,
     "expiry_source_errors": 38,
     "daily_source_rows_expected": 1901,
     "daily_source_rows_compared": 1901,
     "daily_source_rows_missing_official_close": 0,
-    "minute_vs_official_mismatches_over_1_point": 1717
+    "minute_vs_official_mismatches_over_1_point": 1717,
+    "minute_vs_official_abs_difference_median_points": 8.25,
+    "minute_vs_official_abs_difference_p95_points": 32.45,
+    "minute_vs_official_abs_difference_max_points": 200.7,
+    "minute_vs_official_within_1_point": 184
   },
-  "official_price_source_used": "NSE official historicalOR/indicesHistory JSON endpoint"
+  "explanation": "Preserved result of completed run 40174991974. The next pass adds session warm-up, detailed sanitized validation diagnostics, nearby-session checking for shifted expiries, and official O/H/L comparisons. Acceptance remains blocked."
 }
