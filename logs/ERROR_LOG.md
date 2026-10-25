@@ -39,3 +39,21 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 ## Dhan data cross-check — run 40167611476
 - Status: FAILED or unavailable. The public archive will remain the core input; independent Dhan cross-check did not pass.
 - Failure responses and credentials were not added to the log. Inspect only sanitized Actions step diagnostics.
+
+
+## E0004 — 2026-10-25 — Independent close cross-check failed the source gate
+- Severity: Critical / Phase 1 acceptance blocked.
+- Symptom: 368 of 402 candidate expiry-date daily closes differed from the independent Yahoo Finance daily close by more than one index point; across 2,352 matched daily sessions, median absolute difference was about 7.20 points and 95th percentile about 30.52 points. The archive also had repeated-close runs longer than 10 bars on 63 sessions, maximum 239 bars.
+- Root cause: not yet isolated; potential causes include bad/frozen source bars, a different close definition, or timestamp/session alignment. Do not assume any single cause without row-level diagnosis.
+- Fix attempted: added an independent daily-close comparison and surfaced the result in the machine-readable quality report and README.
+- Validation: comparison completed; source quality gate failed visibly rather than silently accepting the data.
+- Required next action: create a date-level mismatch report, verify a sample and then all mismatches against official NSE/NSE Indices data or a trusted vendor; investigate repeated-close runs; only regenerate labels after this is resolved.
+- Residual risk: all metrics in run 40167611476 are exploratory and must not be used for trading.
+
+## E0005 — 2026-10-25 — Dhan cross-check did not produce data
+- Severity: High / independent intraday validation missing.
+- Symptom: no Dhan bars were available for comparison; authentication and fetch steps were logged as failed or unavailable without exposing secrets.
+- Root cause: not conclusively diagnosed from sanitized run outputs; the organization secrets may not be exposed to this branch/workflow or the token/API request may need correction.
+- Fix attempted: secure job-only token generation, a security-master lookup, optional Dhan intraday fetch, and graceful continuation on public data were implemented.
+- Required next action: inspect sanitized Actions step outcomes and confirm secret visibility/API schema. Never print token, PIN or TOTP values. Do not hard-code a security ID as a workaround.
+- Residual risk: no independent intraday validation exists for the current run.
