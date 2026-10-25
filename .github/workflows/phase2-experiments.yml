@@ -71,9 +71,10 @@ jobs:
       - name: Run existing deterministic target and feature pipeline
         run: python scripts/run_research.py
       - name: Install PySR
-        if: ${{ inputs.run_pysr != false }}
         continue-on-error: true
-        run: python -m pip install pysr
+        run: |
+          python -m pip install pysr
+          python -c "import pysr; print('PySR import OK', pysr.__version__)"
       - name: Run core and experimental unit tests
         run: python -m pytest -q tests
       - name: Run bounded experimental tracks
