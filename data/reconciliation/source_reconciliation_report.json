@@ -1,15 +1,12 @@
 {
-  "generated_utc": "2026-10-25T08:21:05Z",
-  "artifact_run_id": 40175978915,
-  "artifact_url": "https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40175978915",
+  "generated_utc": "2026-10-25T08:36:48Z",
   "start_date": "2019-02-01",
   "end_date": "2026-10-25",
-  "official_price_source_used": "NSE official historicalOR/indicesHistory JSON endpoint",
-  "official_expiry_source": "NSE F&O daily bhavcopy, legacy and UDiFF archives",
+  "official_price_source": "NSE Indices historical OHLC with NSE ind_close_all archive fallback",
+  "official_expiry_source": "NSE F&O daily bhavcopy, NIFTY OPTIDX CE/PE contracts",
   "status": "BLOCKED",
   "errors": [
-    "Expiry verification: 340 confirmed (including two shifted expiries), 22 unverified, 40 source-validation errors; current code prioritizes TradDt over BizDt for the next validation pass.",
-    "1,717 of 1,901 existing minute-source session closes differ from official NSE close by more than one index point."
+    "One or more candidate expiry dates were not confirmed in official F&O data, or minute archive daily closes differ from official NIFTY 50 closes by >1 point."
   ],
   "counts": {
     "official_daily_rows": 1913,
@@ -22,12 +19,18 @@
     "daily_source_rows_missing_official_close": 0,
     "minute_vs_official_mismatches_over_1_point": 1717,
     "minute_vs_official_abs_difference_median_points": 8.25,
-    "minute_vs_official_abs_difference_p95_points": 32.45,
-    "minute_vs_official_abs_difference_max_points": 200.7,
+    "minute_vs_official_abs_difference_p95_points": 32.44999999999709,
+    "minute_vs_official_abs_difference_max_points": 200.70000000000073,
     "minute_vs_official_within_1_point": 184,
+    "minute_vs_official_open_rows_compared": 1901,
     "minute_vs_official_open_mismatches_over_1_point": 587,
+    "minute_vs_official_open_abs_difference_median_points": 0.0,
+    "minute_vs_official_high_rows_compared": 1901,
     "minute_vs_official_high_mismatches_over_1_point": 197,
-    "minute_vs_official_low_mismatches_over_1_point": 185
+    "minute_vs_official_high_abs_difference_median_points": 0.049999999999272404,
+    "minute_vs_official_low_rows_compared": 1901,
+    "minute_vs_official_low_mismatches_over_1_point": 185,
+    "minute_vs_official_low_abs_difference_median_points": 0.049999999999272404
   },
-  "explanation": "Existing completed run. A fresh workflow will test the corrected UDiFF field priority and perform the independent minute-source cross-check. Gate remains blocked."
+  "official_price_source_used": "NSE official historicalOR/indicesHistory JSON endpoint"
 }
