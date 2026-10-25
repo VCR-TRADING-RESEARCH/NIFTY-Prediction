@@ -88,3 +88,10 @@
 - Temporal checks: training labels stop at 2024-09-19 (before the 2024-09-20 anchor); all 20 model features were available; official close sessions matched 717; verified expiry calendar status is official.
 - Gate remains BLOCKED: the Dhan-derived 10:00 anchor has not been independently reconciled, score is not calibrated, and no executable options P&L including Paytm Money charges/spreads/slippage has been validated. Do not treat as a trading recommendation.
 - Cache: an earlier run logged a cache-save writable-scope warning. Workflow permissions were amended to include `actions: write` in commit `04f55a01c7ce65b086aa73d82b6bad955b065e05`; persistence must be confirmed on a later run.
+
+
+## 2026-10-25 — One-click UX correction prepared
+- User again reported the issue-submission step. Reviewed current main files, the Phase 8 plan, prior error/research logs, the existing FastAPI API, and the screenshot symptom.
+- Root cause confirmed: the Pages JavaScript still constructs a GitHub Issue URL and polls static JSON. The saved-result deep link is separate and does not initiate inference.
+- Prepared a proper direct API flow on branch `phase/render-one-click-prediction`: UI requests `POST /predict`, polls `GET /jobs/{job_id}`, and renders the result. Added Render deployment manifest and a root-context Dockerfile; the public endpoint config intentionally remains blank until a service is actually deployed.
+- **Gate: BLOCKED** pending authorized Render account/service deployment and private Dhan runtime secrets. The app must not embed tokens or silently fall back to issue submission. No one-click live result is claimed yet.
