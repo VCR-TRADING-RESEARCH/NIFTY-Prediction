@@ -162,3 +162,9 @@
 - **Root cause:** `_do_prediction` built `next_session_dates` from `daily`, which is derived exclusively from available Dhan minute bars. A missing Dhan session could therefore be misreported as a calendar violation.
 - **Fix staged:** Introduced `_first_official_session_after` using the official NSE daily-session reference. Date validity is checked against official sessions; Dhan anchor/label coverage remains a separate required gate. Added regression tests for the 2026-05-05 → 2026-05-06 transition and empty calendar handling.
 - **Status:** PR/CI pending. Do not bypass missing-bar or leakage checks.
+
+
+## Scheduled prediction failure — run 40214389317
+- Date: 2026-08-05
+- Status: FAILED; inspect the linked Actions run for the failing step.
+- No secrets or provider response bodies are copied into logs.
