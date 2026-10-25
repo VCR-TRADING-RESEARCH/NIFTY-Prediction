@@ -1,0 +1,147 @@
+name: NIFTY Weekly Expiry Research
+
+on:
+  push:
+    branches:
+      - main
+      - "research/**"
+    paths:
+      - ".github/workflows/nifty-research.yml"
+      - "scripts/**"
+      - "tests/**"
+      - "docs/**"
+      - "requirements.txt"
+      - "tradingview/**"
+      - "research/METHODOLOGY.md"
+      - "research/manuscript.md"
+  schedule:
+    # Wednesday at 10:15 IST, after the current Tuesday-expiry regime's 10:00 anchor.
+    - cron: "45 4 * * 3"
+  workflow_dispatch:
+    inputs:
+      force_refresh:
+        description: Force redownload of all public archive CSV files
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nifty-weekly-expiry-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      PYTHONUNBUFFERED: "1"
+      TZ: Asia/Kolkata
+    steps:
+      - name: Checkout repository
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install research dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
+      - name: Restore public source-data cache
+        uses: actions/cache@v4
+        with:
+          path: data/raw/nifty50
+          key: nifty-raw-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            nifty-raw-${{ runner.os }}-
+
+      - name: Run unit tests before data/model work
+        run: python -m pytest -q tests
+
+      - name: Refresh optional Dhan token for this job only
+        id: dhan_auth
+        continue-on-error: true
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+        run: python scripts/refresh_dhan_token.py
+
+      - name: Note optional Dhan authentication failure
+        if: steps.dhan_auth.outcome == 'failure'
+        run: |
+          printf '\n\n## Dhan authentication attempt — run %s\n- Status: FAILED or incomplete. The public archive route will still be attempted.\n- Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.\n' "$GITHUB_RUN_ID" >> logs/ERROR_LOG.md
+
+      - name: Fetch optional recent Dhan cross-check bars
+        id: dhan_fetch
+        continue-on-error: true
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_CROSSCHECK_LOOKBACK_DAYS: "120"
+        run: python scripts/fetch_dhan_recent.py
+
+      - name: Note optional Dhan data failure
+        if: steps.dhan_fetch.outcome == 'failure'
+        run: |
+          printf '\n\n## Dhan data cross-check — run %s\n- Status: FAILED or unavailable. The public archive will remain the core input; independent Dhan cross-check did not pass.\n- Failure responses and credentials were not added to the log. Inspect only sanitized Actions step diagnostics.\n' "$GITHUB_RUN_ID" >> logs/ERROR_LOG.md
+
+      - name: Fetch public NIFTY 50 minute data
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          FORCE_REFRESH: ${{ inputs.force_refresh }}
+        run: |
+          if [ "$FORCE_REFRESH" = "true" ]; then
+            python scripts/fetch_data.py --force
+          else
+            python scripts/fetch_data.py
+          fi
+
+      - name: Run target construction, baselines and walk-forward analysis
+        id: research
+        run: python scripts/run_research.py
+
+      - name: Refresh README status block
+        if: always() && steps.checkout.outcome == 'success'
+        run: python scripts/update_status.py
+
+      - name: Upload compact research artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nifty-research-${{ github.run_id }}
+          path: |
+            data/processed/**
+            research/results/**
+            logs/ERROR_LOG.md
+            logs/RESEARCH_LOG.md
+          if-no-files-found: ignore
+          retention-days: 90
+
+      - name: Log top-level workflow failure
+        if: failure() && steps.checkout.outcome == 'success'
+        run: |
+          printf '\n\n## GitHub Actions failure — run %s\n- Status: BLOCKED. One or more workflow steps failed; inspect the Actions run for the exact failing step.\n- The workflow is configured to continue with public data when the optional Dhan branch fails.\n- No secrets, access tokens, PINs or TOTP values should be copied from runner diagnostics into repository logs.\n' "$GITHUB_RUN_ID" >> logs/ERROR_LOG.md
+
+      - name: Commit status and compact artifacts
+        if: always() && steps.checkout.outcome == 'success'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md logs/RESEARCH_LOG.md logs/ERROR_LOG.md
+          if [ -d data/processed ]; then git add -A data/processed; fi
+          if [ -d research/results ]; then git add -A research/results; fi
+          if git diff --cached --quiet; then
+            echo "No status/result changes to commit."
+          else
+            git commit -m "Update NIFTY research status and compact artifacts [skip ci]"
+            git push origin "HEAD:${{ github.ref_name }}"
+          fi
