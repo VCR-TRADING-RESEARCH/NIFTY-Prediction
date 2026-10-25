@@ -1,11 +1,13 @@
 {
-  "generated_utc": "2026-10-25T09:32:46Z",
+  "generated_utc": "2026-10-25T09:41:14Z",
   "start_date": "2019-02-01",
   "end_date": "2026-10-25",
   "official_price_source": "NSE Indices historical OHLC with NSE ind_close_all archive fallback",
   "official_expiry_source": "NSE F&O daily bhavcopy, NIFTY OPTIDX CE/PE contracts",
-  "status": "PASS",
-  "errors": [],
+  "status": "BLOCKED",
+  "errors": [
+    "Archive-vs-official close audit failed: KeyError: 'official_close'"
+  ],
   "counts": {
     "official_daily_rows": 1913,
     "candidate_expiries_checked": 402,
@@ -30,5 +32,6 @@
     "minute_vs_official_low_mismatches_over_1_point": 185,
     "minute_vs_official_low_abs_difference_median_points": 0.049999999999272404
   },
-  "official_price_source_used": "NSE official historicalOR/indicesHistory JSON endpoint"
+  "official_price_source_used": "NSE official historicalOR/indicesHistory JSON endpoint",
+  "candidate_close_source": "unavailable"
 }
