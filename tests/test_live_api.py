@@ -32,3 +32,31 @@ def test_nifty_security_id_requires_unique_match():
         "SEM_TRADING_SYMBOL": ["NIFTY 50", "OTHER"],
     })
     assert find_nifty50_security(master) == "13"
+
+
+def test_refresh_dhan_token_uses_post(monkeypatch):
+    import live_api.app as live_app
+
+    class Response:
+        ok = True
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return {"accessToken": "x" * 40}
+
+    captured = {}
+
+    def fake_post(url, *, params, timeout):
+        captured.update(url=url, params=params, timeout=timeout)
+        return Response()
+
+    monkeypatch.setenv("DHAN_CLIENT_ID", "test-client")
+    monkeypatch.setenv("DHAN_PIN", "123456")
+    monkeypatch.setenv("DHAN_TOTP_SECRET", "JBSWY3DPEHPK3PXP")
+    monkeypatch.setattr(live_app.requests, "post", fake_post)
+    token, client_id = live_app.refresh_dhan_token()
+    assert token == "x" * 40
+    assert client_id == "test-client"
+    assert captured["url"] == live_app.AUTH_URL
+    assert set(captured["params"]) == {"dhanClientId", "pin", "totp"}
