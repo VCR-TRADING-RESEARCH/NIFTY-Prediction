@@ -48,3 +48,12 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Calendar gate: EXPLORATORY_ONLY — Weekly expiry dates were generated from weekday regimes and inferred from available bars; official historical expiry calendar and holiday shifts are not independently reconciled.
 - Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
 - Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.
+
+
+## 2026-10-25 — Phase 3 official source reconciliation initiated
+- Status: IN PROGRESS; automated validation workflow is triggered by branch changes.
+- Plan: docs/PHASE_3_SOURCE_RECONCILIATION.md.
+- Implementation: scripts/reconcile_official_sources.py fetches official NIFTY 50 price-index history, compares minute-archive daily closes, and checks candidate weekly expiry dates against NSE F&O bhavcopy.
+- Tests: tests/test_official_reconciliation.py covers the official response parser, legacy and UDiFF bhavcopy schemas, and the Thursday-to-Tuesday weekly expiry regime.
+- Caching: official daily history and F&O bhavcopy files are cached under data/cache/official; compact row-level results are written to data/reconciliation.
+- Acceptance: remains blocked until the automated report verifies all expiry dates and the daily-close comparison meets the one-point tolerance. No model is promoted.
