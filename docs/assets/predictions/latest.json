@@ -1,8 +1,8 @@
 {
   "status": "failed",
-  "as_of_date": "2026-10-02",
+  "as_of_date": "2024-06-07",
   "request_issue_number": null,
   "request_started_at_utc": "",
-  "generated_at_utc": "2026-10-25T14:54:33.928982+00:00",
-  "error": "This date is not the first NSE trading session after the previous verified NIFTY weekly expiry. The preceding verified expiry is 2026-09-29; select its next trading session."
+  "generated_at_utc": "2026-10-25T14:56:20.790768+00:00",
+  "error": "This date is not the first NSE trading session after the previous verified NIFTY weekly expiry. The preceding verified expiry is 2024-06-06; select its next trading session."
 }
