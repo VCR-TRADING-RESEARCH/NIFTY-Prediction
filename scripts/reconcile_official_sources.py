@@ -298,7 +298,7 @@ def fetch_bhavcopy(trade_date: date, session: requests.Session) -> bytes:
     failures = []
     for url in (new, old):
         try:
-            response = session.get(url, headers=headers, timeout=(10, 30))
+            response = session.get(url, headers=headers, timeout=(5, 10))
             if response.status_code == 200 and len(response.content) > 100:
                 return response.content
             failures.append(f"{response.status_code}:{url.rsplit('/', 1)[-1]}")
@@ -337,7 +337,8 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
         session = requests.Session()
         session.headers.update({"User-Agent": UA, "Accept": "*/*"})
         verified: list[dict[str, Any]] = []
-        for candidate_date in candidate_dates:
+        consecutive_source_errors = 0
+        for index, candidate_date in enumerate(candidate_dates):
             # Find last official session on or before candidate date; official price sessions
             # encode holidays, but the contract must still appear in the NSE F&O bhavcopy.
             possible = [d for d in sessions if d <= candidate_date]
@@ -370,7 +371,14 @@ def run(start: date, end: date, force: bool = False, max_expiries: int = 0) -> d
                     "error_type": type(exc).__name__,
                     "error": str(exc)[:250],
                 })
-            time.sleep(0.35)
+                consecutive_source_errors += 1
+            else:
+                consecutive_source_errors = 0
+            if consecutive_source_errors >= 8:
+                for remaining in candidate_dates[index + 1:]:
+                    verified.append({"candidate_date": remaining.isoformat(), "status": "source_unavailable_after_repeated_errors"})
+                break
+            time.sleep(0.15)
         pd.DataFrame(verified).to_csv(OUT / "expiry_verification.csv", index=False)
         n = len(verified)
         good = sum(x.get("status") == "verified_nifty_weekly_expiry" for x in verified)
