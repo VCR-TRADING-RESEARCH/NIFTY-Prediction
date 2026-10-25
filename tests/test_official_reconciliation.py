@@ -10,7 +10,7 @@ from datetime import date
 import pandas as pd
 import pytest
 
-from scripts.reconcile_official_sources import bhavcopy_urls, candidate_verification_sessions, parse_bhavcopy_contract_expiries, parse_niftyindices_response, weekly_nominals
+from scripts.reconcile_official_sources import _parse_date_values, bhavcopy_urls, candidate_verification_sessions, parse_bhavcopy_contract_expiries, parse_niftyindices_response, weekly_nominals
 
 
 def test_parse_niftyindices_response_uses_official_close():
@@ -136,3 +136,38 @@ def test_official_bhavcopy_trade_date_prefers_traddt_over_bizdt():
         "2025-10-21,2025-10-22,IDO,NIFTY,2025-10-23,PE,25000\n"
     )
     assert parse_bhavcopy_contract_expiries(csv.encode(), date(2025, 10, 21)) == {date(2025, 10, 23)}
+
+
+def test_parse_date_values_preserves_iso_calendar_date_and_legacy_formats():
+    values = pd.Series(["2024-12-04", "2025-01-02", "20240711", "11-Jul-2024", "04-12-2024"])
+    parsed = _parse_date_values(values)
+    assert parsed.dt.date.tolist() == [
+        date(2024, 12, 4),
+        date(2025, 1, 2),
+        date(2024, 7, 11),
+        date(2024, 7, 11),
+        date(2024, 12, 4),
+    ]
+
+
+def test_sandeep_minute_aggregate_parses_day_first_date_and_filters_session():
+    from scripts.compare_sandeep_minute_source import aggregate_sandeep_frame
+
+    frame = pd.DataFrame({
+        "Date": ["02-01-25", "02-01-25", "02-01-25", "02-01-25"],
+        "Time": ["15:29:00", "09:15:00", "18:00:00", "15:28:00"],
+        "Open": [100.0, 99.0, 999.0, 100.0],
+        "High": [101.0, 100.0, 999.0, 102.0],
+        "Low": [99.5, 98.0, 999.0, 99.0],
+        "Close": [100.5, 99.5, 999.0, 101.0],
+    })
+    daily, quality = aggregate_sandeep_frame(frame)
+    assert len(daily) == 1
+    row = daily.iloc[0]
+    assert row["session_date"] == date(2025, 1, 2)
+    assert row["alternative_open"] == 99.0
+    assert row["alternative_high"] == 102.0
+    assert row["alternative_low"] == 98.0
+    assert row["alternative_close"] == 100.5
+    assert row["alternative_bars"] == 3
+    assert quality["daily_sessions"] == 1

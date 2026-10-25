@@ -1,0 +1,13 @@
+{
+  "generated_utc": "2026-10-25T08:39:37Z",
+  "assessment_status": "MIRROR_NOT_INDEPENDENT",
+  "primary_pipeline_source": "https://github.com/technovusin/nifty50-historical-data",
+  "comparison_source": "https://github.com/technovusin/nifty50-historical-data",
+  "sessions_present_in_both_comparison_rows": 1901,
+  "exact_daily_close_matches": 1901,
+  "exact_match_fraction": 1,
+  "median_absolute_difference_points": 0,
+  "max_absolute_difference_points": 0,
+  "interpretation": "The primary fetch script and the 'alternative' comparison read the same repository. This is not independent validation and must not be counted as cross-validation.",
+  "corrective_action": "A separate-published dataset comparator is added for sandeepkapri/Nifty50-Minute-Data; its underlying vendor lineage is not independently established."
+}

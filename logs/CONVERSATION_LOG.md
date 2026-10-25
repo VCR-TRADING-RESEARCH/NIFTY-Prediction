@@ -51,3 +51,10 @@ Append user-visible project messages/assistant responses and references to proje
 - Phase 3 run 40175978915: 1,913 official daily rows, 1,901 sessions compared; 1,717 close mismatches >1 point; median 8.25, P95 32.45, maximum 200.7. Official open/high/low mismatch counts were 587/197/185.
 - Expiry verification: 340 candidate dates confirmed (including two shifted), 22 unverified, 40 source-validation errors. Parser now prioritizes TradDt over BizDt.
 - Added independent 1-minute archive audit using technovusin/nifty50-historical-data, cached and compared with official NSE daily OHLC. Third-party data remains diagnostic only.
+
+
+## 2026-10-25 — Research resumed after Phase 3 run 40177007732
+- Run completed all automation steps. Official source data covered 1,901/1,901 candidate sessions; close mismatches >1 point were 1,717, median 8.25, P95 32.45, maximum 200.7.
+- Expiry check: 340 confirmed (including 2 shifted), 22 not verified, 40 source errors. Inspection showed explicit ISO dates were parsed day-first, swapping month/day; a format-aware parser and tests are being added.
+- Important correction: the “alternative” technovusin dataset was the same repository as the primary source. All 1,901 overlap closes were identical, so it is a mirror consistency test, not independent evidence.
+- Added a separate-published dataset comparator for sandeepkapri/Nifty50-Minute-Data covering dates through 2024-03-27. Underlying provider lineage is not independently verified; it is diagnostic only.

@@ -1,12 +1,15 @@
 {
   "generated_utc": "2026-10-25T08:36:48Z",
+  "artifact_run_id": 40177007732,
+  "artifact_url": "https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40177007732",
   "start_date": "2019-02-01",
   "end_date": "2026-10-25",
-  "official_price_source": "NSE Indices historical OHLC with NSE ind_close_all archive fallback",
-  "official_expiry_source": "NSE F&O daily bhavcopy, NIFTY OPTIDX CE/PE contracts",
+  "official_price_source_used": "NSE official historicalOR/indicesHistory JSON endpoint",
+  "official_expiry_source": "NSE F&O daily bhavcopy, legacy and UDiFF archives",
   "status": "BLOCKED",
   "errors": [
-    "One or more candidate expiry dates were not confirmed in official F&O data, or minute archive daily closes differ from official NIFTY 50 closes by >1 point."
+    "340 of 402 candidate dates were confirmed (including two shifted expiries), 22 were not verified, and 40 had source-validation errors. Artifact examples reveal ISO dates were incorrectly parsed with a day-first fallback; fix added for revalidation.",
+    "1,717 of 1,901 daily minute-source closes differ from official NSE close by more than the pre-registered 1-point tolerance."
   ],
   "counts": {
     "official_daily_rows": 1913,
@@ -22,15 +25,9 @@
     "minute_vs_official_abs_difference_p95_points": 32.44999999999709,
     "minute_vs_official_abs_difference_max_points": 200.70000000000073,
     "minute_vs_official_within_1_point": 184,
-    "minute_vs_official_open_rows_compared": 1901,
     "minute_vs_official_open_mismatches_over_1_point": 587,
-    "minute_vs_official_open_abs_difference_median_points": 0.0,
-    "minute_vs_official_high_rows_compared": 1901,
     "minute_vs_official_high_mismatches_over_1_point": 197,
-    "minute_vs_official_high_abs_difference_median_points": 0.049999999999272404,
-    "minute_vs_official_low_rows_compared": 1901,
-    "minute_vs_official_low_mismatches_over_1_point": 185,
-    "minute_vs_official_low_abs_difference_median_points": 0.049999999999272404
+    "minute_vs_official_low_mismatches_over_1_point": 185
   },
-  "official_price_source_used": "NSE official historicalOR/indicesHistory JSON endpoint"
+  "explanation": "This is the latest completed run, before the ISO parser correction. The next run will revalidate expiry dates and compare a separate published minute dataset whose upstream provider lineage is not independently verified. No model or strategy is promoted."
 }

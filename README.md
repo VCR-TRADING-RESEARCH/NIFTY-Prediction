@@ -61,7 +61,7 @@ See the research log, error log, pre-registered plan, data-quality report, and m
 
 - Official daily source: 1,913 rows collected; 1,901/1,901 comparison rows had an official close.
 - Daily close mismatches above one point: **1,717 / 1,901** (median absolute difference 8.25 points; P95 32.45; maximum 200.7).
-- Latest contract check (40174991974): **338 / 402** candidate dates confirmed, **26 not verified**, and **38 source-validation errors**. Parser/source-routing correction and workflow commit serialization are in progress.
+- Latest contract check (40177007732): **340 / 402** candidate dates confirmed (including 2 shifted expiries), **22 not verified**, and **40 source-validation errors**. ISO date parsing is being corrected and revalidated; see E0014. Parser/source-routing correction and workflow commit serialization are in progress.
 - See [machine-readable report](data/reconciliation/source_reconciliation_report.json), [expiry summary by year](data/reconciliation/expiry_verification_summary_by_year.csv), [close comparison summary by year](data/reconciliation/daily_close_mismatch_summary_by_year.csv), and [Phase 3 plan](docs/PHASE_3_SOURCE_RECONCILIATION.md).
 - Full row-level result: [workflow artifact 40174191441](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40174191441).
 
@@ -142,4 +142,4 @@ The workflow is bounded, caches downloaded official source snapshots, and record
 
 
 ### Independent minute-source audit
-The Phase 3 workflow now cross-checks an independent public NIFTY 50 1-minute dataset: https://github.com/technovusin/nifty50-historical-data. The publisher documents residual data-quality caveats, so this is diagnostic—not official ground truth. Row-level comparisons and yearly metrics are stored in data/reconciliation/.
+The previous Phase 3 “alternative” dataset was not independent: the main fetch script and cross-check both read technovusin/nifty50-historical-data. The completed comparison found 1,901/1,901 exact matching daily closes, so it is marked MIRROR_NOT_INDEPENDENT and is not counted as cross-validation. A separate published dataset from sandeepkapri/Nifty50-Minute-Data is now being checked for 2019-02 through 2024-03; its underlying vendor lineage is not proven and it cannot alone pass the official-source gate.

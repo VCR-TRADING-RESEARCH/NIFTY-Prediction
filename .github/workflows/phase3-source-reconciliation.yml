@@ -8,6 +8,7 @@ on:
       - ".github/workflows/phase3-source-reconciliation.yml"
       - "scripts/reconcile_official_sources.py"
       - "scripts/compare_alternative_minute_source.py"
+      - "scripts/compare_sandeep_minute_source.py"
       - "tests/test_official_reconciliation.py"
       - "docs/PHASE_3_SOURCE_RECONCILIATION.md"
   schedule:
@@ -81,11 +82,19 @@ jobs:
           if [ -n "$MAX_EXPIRIES" ] && [ "$MAX_EXPIRIES" != "0" ]; then ARGS="$ARGS --max-expiries $MAX_EXPIRIES"; fi
           python scripts/reconcile_official_sources.py $ARGS
 
-      - name: Compare independent public minute archive against official OHLC
-        id: alternative_source
+      - name: Check primary source mirror against official OHLC (not independent)
+        id: mirror_source
         if: always()
         continue-on-error: true
         run: python scripts/compare_alternative_minute_source.py
+
+      - name: Compare separate published NIFTY minute dataset against official OHLC
+        id: secondary_source
+        if: always()
+        continue-on-error: true
+        env:
+          FORCE_REFRESH: ${{ inputs.force_refresh }}
+        run: python scripts/compare_sandeep_minute_source.py
 
       - name: Log acceptance status
         if: always()
@@ -100,7 +109,10 @@ jobs:
               print(json.dumps(r.get("counts", {}), indent=2))
           q=Path("data/reconciliation/alternative_minute_source_report.json")
           if q.exists():
-              print("ALTERNATIVE_MINUTE_SOURCE_REPORT:", q.read_text()[:6000])
+              print("MIRROR_SOURCE_REPORT:", q.read_text()[:6000])
+          z=Path("data/reconciliation/sandeep_minute_source_report.json")
+          if z.exists():
+              print("SEPARATE_DATASET_SOURCE_REPORT:", z.read_text()[:6000])
           else:
               print("SOURCE_RECONCILIATION_STATUS: NO_REPORT")
           PY

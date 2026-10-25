@@ -202,3 +202,20 @@ Do not delete earlier entries. Add dated entries with severity, symptom, root ca
 - Counts: {"candidate_expiries_checked": 402, "contract_unverified_expiries": 22, "contract_verified_expiries": 340, "daily_source_rows_compared": 1901, "daily_source_rows_expected": 1901, "daily_source_rows_missing_official_close": 0, "expiry_source_errors": 40, "minute_vs_official_abs_difference_max_points": 200.70000000000073, "minute_vs_official_abs_difference_median_points": 8.25, "minute_vs_official_abs_difference_p95_points": 32.44999999999709, "minute_vs_official_high_abs_difference_median_points": 0.049999999999272404, "minute_vs_official_high_mismatches_over_1_point": 197, "minute_vs_official_high_rows_compared": 1901, "minute_vs_official_low_abs_difference_median_points": 0.049999999999272404, "minute_vs_official_low_mismatches_over_1_point": 185, "minute_vs_official_low_rows_compared": 1901, "minute_vs_official_mismatches_over_1_point": 1717, "minute_vs_official_open_abs_difference_median_points": 0.0, "minute_vs_official_open_mismatches_over_1_point": 587, "minute_vs_official_open_rows_compared": 1901, "minute_vs_official_within_1_point": 184, "official_daily_rows": 1913}
 - Errors: One or more candidate expiry dates were not confirmed in official F&O data, or minute archive daily closes differ from official NIFTY 50 closes by >1 point.
 - Detailed outputs: data/reconciliation/
+
+
+## E0014 — 2026-10-25 — ISO expiry-date strings were parsed with day-first fallback
+- Severity: High / expiry calendar completeness.
+- Symptom: the latest archive check produced 40 UDiFF source errors; examples expected 2024-12-04 but parsed the source date as 2024-04-12, and expected 2025-01-02 but parsed 2025-02-01.
+- Root cause: _parse_date_values applied a generic dayfirst=True parser after compact-date parsing; ISO year-first strings were therefore interpreted with the month and day reversed.
+- Fix attempted: use explicit format masks for compact YYYYMMDD and ISO YYYY-MM-DD; parse ISO timestamps year-first; apply day-first fallback only to legacy formats.
+- Validation: tests added for ISO, compact and legacy date variants. Await a full Phase 3 workflow to establish whether remaining errors clear.
+- Residual risk: the existing run result is still only 340/402 confirmed; do not mark the expiry calendar validated before the fresh run.
+
+## E0015 — 2026-10-25 — Cross-check mistakenly used the primary input repository
+- Severity: High / research-method independence.
+- Symptom: the “alternative” series showed a zero-point median difference to the primary series, which could falsely be read as independent corroboration.
+- Root cause: scripts/fetch_data.py fetches technovusin/nifty50-historical-data, and scripts/compare_alternative_minute_source.py fetched the same repo. The overlap had 1,901 exact daily-close matches out of 1,901.
+- Fix attempted: mark the existing result MIRROR_NOT_INDEPENDENT; stop describing it as independent evidence; add a comparator for sandeepkapri/Nifty50-Minute-Data with explicit partial-coverage and source-lineage caveats.
+- Validation required: inspect source coverage and all OHLC metrics from the new run. A separate GitHub repository does not prove independent market-data vendor lineage.
+- Residual risk: close mismatch from 2019 through 2026 remains unresolved, and the secondary source ends on 2024-03-27.

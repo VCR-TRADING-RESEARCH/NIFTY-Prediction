@@ -117,3 +117,12 @@ Phase 1 remains **BLOCKED**. All previously reported model metrics remain explor
 The source gate is still blocked. The current official-vs-primary report compared 1,901 sessions; 1,717 close differences exceeded one point, with median absolute difference 8.25, P95 32.45 and maximum 200.7. Official open/high/low mismatches above one point were 587, 197 and 185. The distribution warrants a separate timestamp/aggregation examination rather than changing the one-point tolerance.
 
 An independent public 1-minute NIFTY 50 dataset is now included as a diagnostic comparator. It publishes annual files for 2019-2025 and monthly files in 2026, states timestamps are IST, and describes known remaining missing/frozen/special-session bars. Each session is aggregated from bars timestamped 09:15-15:29 IST and compared to official daily OHLC and the current archive. This third-party archive is not official ground truth; the audit is intended to test whether the discrepancy is specific to the current candidate source. Results await the latest automated run.
+
+
+## Audit correction and additional source plan (25 October 2026)
+
+The previous Phase 3 “alternative” minute dataset is not independent. The main data-fetch script reads technovusin/nifty50-historical-data, and the purported cross-check reads the same repository. Across 1,901 overlapping daily closes, the values matched exactly; this documents consistency of a duplicate read, not independent source validation. No inference about reliability may be drawn from that match.
+
+Inspection of the Phase 3 expiry artifact also identified a date-parsing error. On UDiFF records with ISO strings, applying a generic day-first fallback interpreted dates such as 2024-12-04 as 2024-04-12. A parser that handles YYYYMMDD and ISO year-first dates before legacy day-first strings has been added with regression tests. The previous 340/402 expiry confirmation remains the latest valid result until the corrected full workflow finishes.
+
+A second published dataset from sandeepkapri/Nifty50-Minute-Data is being compared with official NSE daily OHLC for the overlapping period 2019-02-01 to 2024-03-27. It is hosted in a separate repository, but the underlying data provider is not established by its README; therefore agreement will be diagnostic evidence only, not proof of independent vendor lineage. It cannot validate dates after March 2024. Phase 1 remains blocked and all model results remain exploratory.

@@ -118,9 +118,12 @@ def compare_sources(alternative:pd.DataFrame,official:pd.DataFrame,primary:pd.Da
     pdiff=rows["primary_close_abs_difference"].dropna() if "primary_close_abs_difference" in rows else pd.Series(dtype=float)
     report={
         "generated_utc":pd.Timestamp.now(tz="UTC").isoformat(),
-        "source":"technovusin/nifty50-historical-data 1-minute CSV repository",
+        "source":"technovusin/nifty50-historical-data 1-minute CSV repository (same repository used by primary pipeline)",
         "source_url":"https://github.com/technovusin/nifty50-historical-data",
-        "source_is_official":False,"data_status":"DIAGNOSTIC_ONLY",
+        "primary_pipeline_source_url":"https://github.com/technovusin/nifty50-historical-data",
+        "source_is_official":False,"data_status":"MIRROR_NOT_INDEPENDENT",
+        "independence_assessment":"NOT_INDEPENDENT_MIRROR_OF_PRIMARY_SOURCE",
+        "independence_reason":"The primary fetch_data.py reads technovusin/nifty50-historical-data directly; this comparison re-downloads the same repository.",
         "alternative_rows":int(len(alternative)),"official_rows":int(len(official)),"sessions_compared":int(len(rows)),
         "official_session_coverage_fraction":round(len(rows)/max(1,len(official)),6),
         "alternative_close_mismatches_over_1_point":int((ad>1).sum()),
@@ -131,6 +134,8 @@ def compare_sources(alternative:pd.DataFrame,official:pd.DataFrame,primary:pd.Da
         "primary_close_median_abs_difference_points":float(pdiff.median()) if len(pdiff) else None,
         "primary_close_p95_abs_difference_points":float(pdiff.quantile(.95)) if len(pdiff) else None,
         "alternative_vs_primary_close_median_abs_difference_points":float(rows.alternative_vs_primary_close_abs_difference.median()) if len(rows) else None,
+        "alternative_vs_primary_close_compared_rows":int(rows["alternative_vs_primary_close_abs_difference"].notna().sum()),
+        "alternative_vs_primary_close_exact_matches":int((rows["alternative_vs_primary_close_abs_difference"].dropna()==0).sum()),
         "source_limitations":[
             "Third-party GitHub archive, not an NSE official source.",
             "Publisher documents residual missing bars, frozen-price stretches, and special-session exceptions.",

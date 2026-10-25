@@ -320,11 +320,25 @@ def _extract_bhavcopy_csv(blob: bytes) -> bytes:
 
 
 def _parse_date_values(values: pd.Series) -> pd.Series:
-    """Parse ISO, compact YYYYMMDD, and legacy DD-Mon-YYYY / DD-MM-YYYY dates."""
+    """Parse compact, ISO year-first, ISO timestamp and legacy day-first date values safely."""
     text = values.astype(str).str.strip()
-    compact = pd.to_datetime(text, format="%Y%m%d", errors="coerce")
-    generic = pd.to_datetime(text, errors="coerce", dayfirst=True)
-    return compact.fillna(generic)
+    parsed = pd.Series(pd.NaT, index=values.index, dtype="datetime64[ns]")
+
+    compact_mask = text.str.fullmatch(r"\\d{8}")
+    iso_day_mask = text.str.fullmatch(r"\\d{4}-\\d{2}-\\d{2}")
+    iso_datetime_mask = text.str.match(r"^\\d{4}-\\d{2}-\\d{2}[T ]")
+    year_first_mask = iso_day_mask | iso_datetime_mask
+    legacy_mask = ~(compact_mask | year_first_mask)
+
+    if compact_mask.any():
+        parsed.loc[compact_mask] = pd.to_datetime(text.loc[compact_mask], format="%Y%m%d", errors="coerce")
+    if iso_day_mask.any():
+        parsed.loc[iso_day_mask] = pd.to_datetime(text.loc[iso_day_mask], format="%Y-%m-%d", errors="coerce")
+    if iso_datetime_mask.any():
+        parsed.loc[iso_datetime_mask] = pd.to_datetime(text.loc[iso_datetime_mask], errors="coerce", yearfirst=True)
+    if legacy_mask.any():
+        parsed.loc[legacy_mask] = pd.to_datetime(text.loc[legacy_mask], errors="coerce", dayfirst=True)
+    return parsed
 
 
 def _validate_bhavcopy_blob(blob: bytes, trade_date: date) -> None:

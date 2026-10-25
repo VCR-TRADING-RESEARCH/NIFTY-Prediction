@@ -57,3 +57,11 @@ The completed official-source pass (40174191441) compared 1,901 sessions: 1,717 
 
 ## Independent minute archive
 Phase 3 now retrieves the public 1-minute NIFTY 50 dataset at https://github.com/technovusin/nifty50-historical-data (annual files 2019-2025, monthly files for 2026), caches it, aggregates 09:15-15:29 IST sessions, and compares OHLC against official NSE daily bars and the incumbent archive. The publisher identifies remaining missing bars, frozen stretches and special-session exceptions, so it cannot be treated as official ground truth. Outputs are alternative_minute_source_report.json, alternative_minute_vs_official_daily.csv, and alternative_minute_comparison_by_year.csv.
+
+
+## Corrected interpretation of minute-source checks
+The previous “alternative minute source” step used technovusin/nifty50-historical-data, which is also the input repository fetched by the main pipeline in scripts/fetch_data.py. The latest run compared 1,901 overlapping primary sessions and returned 1,901 exact same-source daily-close matches. This is a mirror consistency test, not independent validation. Its output is now labelled MIRROR_NOT_INDEPENDENT.
+
+A second published dataset from https://github.com/sandeepkapri/Nifty50-Minute-Data is being checked for 2019-02-01 through 2024-03-27. Its README lists Date/Time/OHLC columns and an MIT repository license, but does not establish the underlying provider's identity or independence. The script caches the 51 MB source in the Actions cache, aggregates ordinary 09:15-15:29 IST sessions, and compares OHLC against official NSE daily values and the current archive. This remains diagnostic, with partial historical coverage and unverified lineage.
+
+The latest expiry error sample revealed the parser regression: ISO-formatted dates such as 2024-12-04 were incorrectly reinterpreted as 2024-04-12 by a day-first parser fallback. The fix explicitly separates compact YYYYMMDD, ISO YYYY-MM-DD / ISO timestamps, and legacy day-first strings. Regression tests now cover all formats. A fresh historical reconciliation must confirm the impact; the old 340/402 result remains the valid state until a new run completes.
