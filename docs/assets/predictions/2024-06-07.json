@@ -23,7 +23,7 @@
     "features_total": 20,
     "target_calendar_status": "official_verified"
   },
-  "generated_at_utc": "2026-10-25T16:15:05.751736+00:00",
+  "generated_at_utc": "2026-10-25T16:23:18.322061+00:00",
   "note": "ExtraTrees was fit again for this request. This is a spot-direction classification, not a calibrated probability, options P&L or trading instruction.",
   "status": "succeeded",
   "request_issue_number": null,
