@@ -97,3 +97,18 @@ def test_target_return_sign_is_close_over_anchor_minus_one():
     assert abs(row["return_pct"] - expected) < 1e-12
     assert (row["label"] == "UP") == (expected > 0)
     assert (row["label"] == "DOWN") == (expected < 0)
+
+
+def test_daily_aggregates_counts_equal_close_run_without_off_by_one():
+    stamps = pd.date_range("2025-01-06 09:15:00", periods=3, freq="min", tz="Asia/Kolkata")
+    frame = pd.DataFrame({
+        "timestamp": stamps,
+        "open": [100.0, 100.0, 100.0],
+        "high": [101.0, 101.0, 101.0],
+        "low": [99.0, 99.0, 99.0],
+        "close": [100.0, 100.0, 100.0],
+        "session_date": [stamp.date() for stamp in stamps],
+        "source_file": ["synthetic"] * 3,
+    })
+    daily = daily_aggregates(frame)
+    assert int(daily.iloc[0]["max_unchanged_close_run"]) == 3
