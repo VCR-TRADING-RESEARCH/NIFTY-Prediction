@@ -73,3 +73,15 @@ Every major action, including failure and blockage, is recorded here. Update sta
 - Status: experimental tracks executed; individual outcomes are in research/results/experimental/experimental_results.json.
 - Upstream projects cloned with exact revisions in research/results/upstream_revisions.md.
 - Data/calendar quality gate remains bypassed at user request; all scores are exploratory and no strategy is certified.
+
+
+## 2026-10-25 — Phase 2 first bounded results
+- Status: PARTIAL; first experimental run completed successfully, but PySR did not execute because the install step was skipped by a workflow condition.
+- Sample: 398 candidate weekly cycles; 318 development / 80 held-out rows.
+- Logistic baseline: 56.25% accuracy, 56.29% balanced accuracy, MCC 0.125, Brier 0.251.
+- QuantEvolve-inspired bounded evolutionary search: 53.75% accuracy, 53.58% balanced accuracy, MCC 0.072, Brier 0.294; worse than baseline.
+- Custom indicator Python mirror: 38.78% directional accuracy on 49 signalled held-out rows, coverage 61.25%.
+- TradingAgents: repository cloned; no live multi-agent forecast was run. Deterministic risk-review roles were recorded only.
+- AstraQuant: repository cloned and revision recorded; no signal model or order execution evaluated.
+- Repair: PySR installation is now attempted on push; committed features are reused unless a manual run sets refresh_features=true.
+- Decision: no strategy promoted; all results remain exploratory because source/calendar gates and contract-level costed P&L are unresolved.
