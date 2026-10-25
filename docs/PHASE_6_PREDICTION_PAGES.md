@@ -2,11 +2,11 @@
 
 **Branch:** \`research/phase-6-prediction-pages\`  
 **Status:** IMPLEMENTATION ADDED; automated pipeline and deployment verification pending.  
-**Purpose:** Publish a GitHub Pages interface that displays the repository's scikit-learn ExtraTrees forecast for a user-selected eligible as-of/anchor date.
+**Purpose (original implementation):** Publish a GitHub Pages interface for displaying precomputed ExtraTrees forecast records. This phase is now superseded for live Predict requests by [Phase 7 — On-demand Dhan-backed inference](PHASE_7_LIVE_DHAN_INFERENCE.md).
 
 ## Scope
 
-The page asks for a date and has a **Predict** button. For a stored historical cutoff, it displays the locked chronological holdout prediction for that 10:00 IST anchor. For the latest anchor, it displays the forward forecast produced by the research workflow for the next scheduled expiry. It does not run Python or contain credentials in the browser; the repository's Python workflow fits the model and refreshes a compact JSON payload.
+The original Phase 6 page read a static JSON payload and did not run Python on button click. That behavior did not meet the user's intended requirement. Phase 7 now wires **Predict** to a secure backend that refreshes Dhan authentication, fetches/caches minute bars through the selected date, and refits the existing ExtraTrees pipeline. The static historical JSON remains a research artifact only; it is not the response to a live Predict request.
 
 ## Research and implementation questions
 
@@ -61,4 +61,4 @@ The page asks for a date and has a **Predict** button. For a stored historical c
 
 ## Completion rule
 
-Phase 6 is complete only after the research workflow writes a valid forecast JSON, tests pass, the current forward forecast uses an eligible 10:00 anchor and the Pages deployment is verified on the default branch. Even then, the app remains research-only until the source and instrument-cost gates are cleared.
+The static interface stage is complete but does not satisfy live on-demand inference. See [Phase 7 acceptance gates](PHASE_7_LIVE_DHAN_INFERENCE.md). Even after the backend is deployed, the app remains research-only until independent source/anchor and instrument-cost gates are cleared.
