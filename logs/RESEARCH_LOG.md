@@ -98,3 +98,12 @@
 - Known platform constraint documented: browser click loads the published result; a fresh private Actions run cannot be securely initiated directly from static Pages without authentication.
 - **Phase status:** implementation prepared; validation/merge and live scheduled inference pending.
 - **Research status:** not trading-ready; independent anchor reconciliation and executable cost/slippage validation remain open.
+
+
+## 2026-10-25 — Free Actions + Pages merged and CI checked
+
+- Merged PR #13 (commit `ca5ad434ed0a919495b4897b6e1034a82da257b2`).
+- Branch CI and workflow integration checks passed.
+- Pages deployment was still in progress at the latest check.
+- First fresh Dhan inference/publication/browser acceptance remains pending; the scheduled workflow runs weekdays at 10:30 IST and has a manual dispatch control.
+- No trading-readiness upgrade: anchor reconciliation and option-level transaction cost/slippage checks remain BLOCKED.
