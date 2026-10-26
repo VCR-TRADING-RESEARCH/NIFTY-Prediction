@@ -131,3 +131,45 @@ def test_row_source_gate_rejects_unverified_expiry_or_incomplete_session():
     assert list(checked["source_gate_pass"]) == [True, False, False, False]
     assert list(checked["confirmatory_eligible"]) == [True, False, False, False]
     assert summary["row_source_gate_pass"] == 1
+
+
+def test_phase10_report_uses_nested_quality_fields_and_holdout_dates():
+    from scripts.rebuild_dhan_verified_dataset import render_report
+
+    summary = {
+        "generated_utc": "2026-10-26T00:00:00+00:00",
+        "dataset_status": "SOURCE_GATE_PASS_FOR_DHAN_WINDOW",
+        "model_result_status": "NO_NEW_DIRECTIONAL_METHOD_VALIDATED",
+        "holdout_first_expiry_date": "2025-10-20",
+        "holdout_last_expiry_date": "2026-10-19",
+        "holdout_rows": 52,
+    }
+    quality = {
+        "official_daily_quality": {
+            "official_sessions": 1913,
+            "official_first_session": "2019-02-01",
+            "official_last_session": "2026-10-23",
+            "official_sessions_with_dhan_intraday": 1231,
+        },
+        "target_construction": {"weekly_cycles_labelled": 256},
+        "row_source_gate": {"cycles_built": 256, "row_source_gate_pass": 256},
+        "dhan_anchor_crosscheck": {},
+    }
+    columns = [
+        "candidate", "n", "accuracy", "balanced_accuracy", "mcc",
+        "brier", "log_loss", "roc_auc",
+    ]
+    empty_metrics = pd.DataFrame(columns=columns)
+    screen = {
+        "pass": False,
+        "reason": "pre-registered screen not passed",
+        "interpretation": "No new directional method validated.",
+    }
+    report = render_report(
+        summary, quality, empty_metrics, empty_metrics, {"status": "UNDERPOWERED"},
+        "extra_trees_base", "extra_trees_augmented", screen,
+    )
+    assert "Official NSE daily sessions: 1913 (2019-02-01 to 2026-10-23)." in report
+    assert "Official sessions with Dhan intraday bars: 1231." in report
+    assert "Weekly cycles built / row-source-gate passes: 256 / 256." in report
+    assert "Fresh holdout: 2025-10-20 to 2026-10-19 (52 rows)" in report
