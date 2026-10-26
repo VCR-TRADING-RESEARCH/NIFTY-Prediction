@@ -254,3 +254,11 @@
 - Trading strategy: NOT VALIDATED; no contract-level cost-adjusted futures/options P&L was run.
 - Plan: docs/PHASE_10_VERIFIED_DATASET.md and docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md.
 - Raw Dhan history remains cache-only; only compact metadata and derived results are committed.
+
+
+## Phase 10 automated run 40283691388 — 2026-10-26T07:08:14.253584+00:00
+- Workflow outcomes: tests=failure, Dhan history=skipped, rebuild/evaluation=skipped.
+- Final status: BLOCKED_WORKFLOW_FAILURE.
+- No fresh Phase 10 summary or failure report was produced; inspect the exact failed Actions step.
+- Plan: docs/PHASE_10_VERIFIED_DATASET.md and docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md.
+- Raw Dhan history remains cache-only; only compact metadata and derived results are committed.

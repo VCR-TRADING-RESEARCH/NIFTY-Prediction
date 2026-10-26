@@ -113,13 +113,10 @@ The research target is on the spot index. Any executable strategy must separatel
 <!-- PHASE9_ANCHOR_AUDIT_STATUS_END -->
 
 <!-- PHASE10_STATUS_START -->
-## Phase 10 — Dhan-backed dataset rebuild and method test
-- **Dataset gate:** SOURCE_GATE_PASS_FOR_DHAN_WINDOW; 256 source-gated weekly cycles from the Dhan history window.
-- **Model outcome:** NO_NEW_DIRECTIONAL_METHOD_VALIDATED; selected augmented challenger extra_trees_augmented vs baseline extra_trees_base.
-- **Holdout comparison:** balanced-accuracy difference -0.011; paired bootstrap status COMPLETED. No strategy is approved for trading.
-- [Phase 10 plan](docs/PHASE_10_VERIFIED_DATASET.md); [machine-readable summary](research/results/phase10/summary.json); [full report](research/results/phase10/phase10_report.md); [data quality](research/results/phase10/data_quality_report.json); [split manifest](research/results/phase10/phase10_split_manifest.json).
-- [Rebuilt weekly labels/features](data/processed/phase10_dhan_weekly_labels_features.csv); [development metrics](research/results/phase10/development_metrics.csv); [holdout metrics](research/results/phase10/holdout_metrics.csv); [comparison chart](research/results/phase10/phase10_method_comparison.png).
-- **Trading acceptance:** BLOCKED until contract-level fills and date-effective Paytm Money fees, bid/ask spreads and slippage are tested.
+## Phase 10 — Dhan-backed dataset rebuild
+- **Status:** BLOCKED_WORKFLOW_FAILURE; no successful rebuilt model report is available for this run.
+- Check [workflow](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions) and the [Phase 10 plan](docs/PHASE_10_VERIFIED_DATASET.md).
+- No stale result is reused and no trading strategy is validated.
 <!-- PHASE10_STATUS_END -->
 
 ## Research approach

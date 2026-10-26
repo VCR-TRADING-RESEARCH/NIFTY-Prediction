@@ -291,3 +291,12 @@
 - Data/model status is unaffected: 256 Dhan-backed weekly cycles, 204 development rows, 52 chronological holdout rows; base ExtraTrees balanced accuracy 0.5485 versus augmented ExtraTrees 0.5379. The augmented method fails the preregistered screen.
 - The following workflow rerun must validate the corrected report renderer, tests and repo commit. Use the published artifacts from the successful evaluation if a runner publication failure recurs; do not re-tune the holdout.
 - Security: no Dhan credentials, access tokens, PINs, TOTP values or raw provider response bodies are logged.
+
+
+## Phase 10 automated run 40283691388 — 2026-10-26T07:08:14.253584+00:00
+- Workflow outcomes: tests=failure, Dhan history=skipped, rebuild/evaluation=skipped.
+- Final status: BLOCKED_WORKFLOW_FAILURE.
+- No fresh Phase 10 summary or failure report was produced; inspect the exact failed Actions step.
+- Plan: docs/PHASE_10_VERIFIED_DATASET.md and docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md.
+- Raw Dhan history remains cache-only; only compact metadata and derived results are committed.
+- Review the failed test/data/rebuild step, preserve the error record, add a regression test and retry once.
