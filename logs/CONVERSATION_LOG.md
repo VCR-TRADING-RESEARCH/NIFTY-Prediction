@@ -61,3 +61,10 @@
 - Added `?as_of_date=YYYY-MM-DD` support to the Pages predictor so a completed date-specific JSON result can be opened directly without generating another request. The Actions completion comment now links back to that exact result page.
 - Pages deployment for the deep-link JavaScript passed in run [40201836007](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201836007). A later documentation deployment was still running at latest inspection.
 - Direct historical result link: https://vcr-trading-research.github.io/NIFTY-Prediction/?as_of_date=2024-09-20. External browser verification of the rendered page was unavailable; the JSON record and deployment run are verified.
+
+
+## 2026-10-26 — User authorised Phase 10 continuation
+- User message: “Proceed”.
+- Decision: run one bounded rebuild using authenticated Dhan intraday anchors plus official NSE daily OHLC and verified expiry dates, then perform one locked chronological walk-forward evaluation of fixed baseline and augmented candidates.
+- Target and feature clock remain unchanged. The official daily session calendar is used even where Dhan bars are absent, so provider coverage gaps cannot shift the target anchor.
+- No private chain-of-thought is recorded; this log captures the visible decision and auditable method.
