@@ -102,6 +102,16 @@ The research target is on the spot index. Any executable strategy must separatel
 
 **Live behavior (Phase 7):** Clicking Predict is wired to a secure backend that refreshes Dhan authentication, fetches or reuses DhanHQ one-minute NIFTY 50 bars through the selected date, rebuilds the research features and fits ExtraTrees on settled historical labels. Backend deployment is currently **BLOCKED by Hugging Face HTTP 402**: current Hugging Face docs say Docker Spaces on CPU-basic require an eligible Pro/Team/Enterprise plan. To enable live requests, either provide eligible Hugging Face compute or set HF_SPACE_ID to an existing writable Docker Space, or provide deployment credentials for an alternative host such as Render or Cloudflare. GOOGLE_API_KEY alone does not authorize deployment of a Google Cloud service. The page stays disabled until the secure endpoint is configured and passes `/health`; it never falls back to saved forecasts. See [Phase 7 plan](docs/PHASE_7_LIVE_DHAN_INFERENCE.md) and [deployment Actions](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions).
 
+<!-- PHASE9_ANCHOR_AUDIT_STATUS_START -->
+## Phase 9 — Historical anchor-source audit
+- **Corrected public-archive comparison:** 1,269/1,269 overlapping 10:00–10:03 anchor timestamps match after timezone normalization.
+- **Anchor-open differences:** median 0.05 points; P95 1.00 point; maximum 6.70 points; 62/1,269 sessions differ by over 1 point.
+- **Weekly direction sensitivity:** 0/265 overlapping weekly labels changed when the secondary archive's anchor was substituted while preserving the recorded expiry close.
+- **Interpretation:** diagnostic only. The secondary archive's underlying provider lineage is unverified; these results do not pass the independent-anchor gate.
+- **Dhan cross-check:** [automated five-year audit workflow](.github/workflows/phase9-dhan-anchor-source-audit.yml); [script](scripts/audit_dhan_anchor_source.py); report will be committed after the workflow completes.
+- **Logs and raw comparison:** [research log](logs/RESEARCH_LOG.md), [error log](logs/ERROR_LOG.md), [daily anchor comparison](data/reconciliation/anchor_source_comparison.csv), [weekly label sensitivity](data/reconciliation/weekly_anchor_label_sensitivity.csv), [summary report](data/reconciliation/anchor_source_comparison_report.json).
+<!-- PHASE9_ANCHOR_AUDIT_STATUS_END -->
+
 ## Research approach
 
 1. Preserve exact target semantics and historical expiry-calendar transitions.
