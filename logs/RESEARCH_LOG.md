@@ -262,3 +262,21 @@
 - No fresh Phase 10 summary or failure report was produced; inspect the exact failed Actions step.
 - Plan: docs/PHASE_10_VERIFIED_DATASET.md and docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md.
 - Raw Dhan history remains cache-only; only compact metadata and derived results are committed.
+
+
+## 2026-10-26 — Phase 11 registered: diverse model-family benchmark
+- **Status:** Implementation committed to research/phase-11-diverse-model-benchmark; automated test and benchmark run pending.
+- **Reason:** Phase 10 tested only a small fixed candidate set, with ExtraTrees as the development-selected baseline and a small ExtraTrees augmentation. This was not a comprehensive model-family study.
+- **Scope:** Fixed expanding-window comparison of expanding majority, prior-cycle direction, 5-session momentum, regularized logistic regression, ExtraTrees, Random Forest, Gradient Boosting, Histogram Gradient Boosting and RBF SVC.
+- **Leakage safeguards:** Source-gate-passing UP/DOWN rows only; feature whitelist excludes labels, future closes/returns and source metadata; preprocessing is fit within each chronological training fold.
+- **Inference boundary:** Phase 10 holdout has already been examined. Phase 11 results are exploratory, not fresh confirmatory evidence; no retuning or trading claim is permitted from the ranking.
+- **Artifacts:** scripts/benchmark_model_families.py, tests/test_phase11_model_benchmark.py, .github/workflows/phase11-model-benchmark.yml, and docs/PHASE_11_MODEL_FAMILY_BENCHMARK.md.
+
+
+## Phase 11 first benchmark completed — 2026-10-26
+- Workflow [40284704966](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40284704966) completed successfully, including full tests, fixed expanding-window benchmark, artifact persistence.
+- Dataset: 256 source-gated cycles. Evaluation: 152 identical chronological forecast dates from 2023-11-16 to 2026-10-19, after 104 prior labels.
+- First-run ranking by balanced accuracy: ExtraTrees 0.578 (Brier 0.245, ROC AUC 0.595); Random Forest 0.573 (Brier 0.247, ROC AUC 0.585); Histogram Gradient Boosting 0.554; Logistic 0.546; RBF SVC 0.532; Gradient Boosting 0.503; majority baseline 0.500.
+- Interpretation: exploratory only because the Phase 10 sample/holdout has already been inspected. Ranking does not establish statistical significance or tradability. No additional hyperparameter tuning will be performed.
+- Plan-compliance correction: the registered plan required dependence-aware uncertainty reporting; the first implementation omitted it. Added a paired four-week moving-block bootstrap (ExtraTrees vs majority and Random Forest) and a regression test. This is a reporting correction, not a new model search; the follow-up CI must validate it.
+- Trading gate remains BLOCKED: no contract-level option/futures fills, dated Paytm Money charges, bid/ask spread or slippage stress.

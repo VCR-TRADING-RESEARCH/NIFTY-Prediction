@@ -209,3 +209,51 @@ The daily-close source mismatch gate therefore remains **BLOCKED**. No model sel
 
 **Status:** BLOCKED_WORKFLOW_FAILURE. The automated Dhan-backed rebuild did not produce a successful summary in run 40283691388. This is a blocked execution result, not model performance evidence. See logs/ERROR_LOG.md and docs/PHASE_10_VERIFIED_DATASET.md.
 <!-- PHASE10_RESULTS_END -->
+
+
+# Phase 11 — Diverse Model-Family Benchmark (protocol registered)
+
+## Rationale and research question
+Phase 10 compared a narrow fixed set and did not establish whether other model families provide useful signal. Phase 11 broadens the model-family comparison rather than assuming ExtraTrees is the best method.
+
+**Question:** Under the same causal feature set and expanding chronological prediction dates, do regularized logistic regression, ExtraTrees, Random Forest, Gradient Boosting, Histogram Gradient Boosting or RBF SVC provide more reliable directional or probabilistic forecasts than simple baselines?
+
+## Protocol
+Source-gate-passing weekly UP/DOWN rows from the Dhan-backed Phase 10 dataset are evaluated in expanding windows, requiring at least 104 earlier labelled rows. The fixed candidate set includes expanding majority, prior-cycle direction, five-session momentum, logistic regression, ExtraTrees, Random Forest, Gradient Boosting, Histogram Gradient Boosting and RBF SVC. All preprocessing is fitted on the training prefix only. Evaluation metrics are accuracy, balanced accuracy, MCC, Brier score, log loss and ROC AUC where defined. There is no hyperparameter search.
+
+## Inference boundary
+The Phase 10 holdout has already been inspected. Therefore Phase 11 is explicitly exploratory and cannot establish confirmatory out-of-sample performance. A fresh prospective window is needed for confirmation. The results do not constitute a trading strategy; instrument-level fills, date-effective Paytm Money costs, bid-ask spreads, slippage and expiry settlement still require separate validation.
+
+## Results
+Pending automated Phase 11 workflow. The results will be reported in research/results/phase11/report.md, with machine-readable metrics and predictions alongside the report.
+
+
+# Phase 11 — Diverse Model-Family Benchmark (completed exploratory screen)
+
+## Research question and methods
+A fixed expanding-window benchmark tested regularized logistic regression, ExtraTrees, Random Forest, Gradient Boosting, Histogram Gradient Boosting and RBF SVC alongside expanding-majority, prior-cycle and five-session-momentum baselines. The source-gated Phase 10 dataset contained 256 weekly cycles; each candidate was evaluated on the same 152 forecast dates from 2023-11-16 through 2026-10-19, with at least 104 earlier labelled observations at first fit. Preprocessing was fitted within each training prefix. No hyperparameter tuning was conducted.
+
+## First-run results
+| Candidate | N | Accuracy | Balanced accuracy | MCC | Brier | Log loss | ROC AUC |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| ExtraTrees | 152 | 0.579 | 0.578 | 0.157 | 0.245 | 0.684 | 0.595 |
+| Random Forest | 152 | 0.572 | 0.573 | 0.146 | 0.247 | 0.688 | 0.585 |
+| Histogram Gradient Boosting | 152 | 0.553 | 0.554 | 0.111 | 0.262 | 0.725 | 0.559 |
+| Logistic regression | 152 | 0.546 | 0.546 | 0.092 | 0.260 | 0.718 | 0.531 |
+| RBF SVC | 152 | 0.526 | 0.532 | 0.106 | 0.254 | 0.702 | 0.504 |
+| Gradient Boosting | 152 | 0.500 | 0.503 | 0.006 | 0.254 | 0.703 | 0.555 |
+| Expanding majority | 152 | 0.493 | 0.500 | 0.000 | 0.254 | 0.702 | 0.507 |
+
+Prior-cycle and five-session-momentum hard 0/1 scores yield poor Brier/log-loss values when they are wrong; these are deterministic rules, not calibrated probability forecasts. They are retained as directional baselines only.
+
+## Interpretation and inferential limits
+ExtraTrees ranked first, but its balanced accuracy was only 0.578, MCC 0.157 and ROC AUC 0.595. The small numerical lead over Random Forest is not evidence of a stable or economically meaningful advantage. The Phase 10 holdout has already been examined, so Phase 11 results are exploratory and cannot be presented as fresh confirmatory performance. The registered dependence-aware uncertainty analysis was omitted in the initial run; a fixed paired four-week moving-block bootstrap (ExtraTrees vs expanding-majority and Random Forest) has been added as a plan-compliance correction and awaits automated validation.
+
+## Trading gate and conclusion
+**No usable trading strategy is validated.** The model target is spot-index direction, not executable options/futures P&L. Historical contract-level fills/prices, expiry/settlement handling, date-effective Paytm Money brokerage and statutory costs, bid-ask spread and slippage stress remain untested. Do not trade this result. A new confirmatory evaluation requires a future prospective window after protocol freeze and a separately registered cost-aware instrument-level backtest.
+
+## Reproducibility
+- Protocol: ../docs/PHASE_11_MODEL_FAMILY_BENCHMARK.md
+- Machine-readable results: results/phase11/summary.json and results/phase11/metrics.csv
+- Per-date predictions: results/phase11/predictions_expanding_window.csv
+- Report and figure: results/phase11/report.md and results/phase11/balanced_accuracy.png

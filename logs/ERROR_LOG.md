@@ -300,3 +300,39 @@
 - Plan: docs/PHASE_10_VERIFIED_DATASET.md and docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md.
 - Raw Dhan history remains cache-only; only compact metadata and derived results are committed.
 - Review the failed test/data/rebuild step, preserve the error record, add a regression test and retry once.
+
+
+## Phase 11 pre-run risk register — 2026-10-26
+- **Status:** No Phase 11 runtime failure confirmed at registration time; validation is pending.
+- **Known scientific risk:** The Phase 10 holdout is no longer untouched. Any Phase 11 comparison over the existing sample is exploratory and must not be described as an independent confirmatory result.
+- **Known implementation checks:** Confirm all candidates use identical forecast dates, every estimator/preprocessor is fitted only on prior rows, tests pass, and output metrics are reproducible. If a workflow fails, append the exact run/step/error and regression correction here before retrying.
+- **Trading gate:** Remains blocked; no instrument-level option/futures fills and complete date-effective Paytm Money costs/spread/slippage model have been validated.
+
+## E0011 — 2026-10-26 — Phase 11 first CI attempt exposed Phase 10 report assertion mismatch
+- **Run:** [40284359373](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40284359373).
+- **Severity:** Medium — shared test-suite blocker; Phase 11 benchmark did not execute.
+- **Symptom:** 46 tests passed and one existing Phase 10 report test failed because it expected the exact sentence “Official sessions with Dhan intraday bars: 1231.” while the report combined that count with the separate 250-bars statistic on the same line.
+- **Root cause:** Report wording changed but its regression assertion was not updated.
+- **Correction:** Split the report into separate exact count lines. This preserves the underlying metric and makes the required count unambiguous.
+- **Next gate:** Rerun the full test suite and fixed Phase 11 benchmark; do not interpret this failed run as model evidence.
+
+## E0012 — 2026-10-26 — Phase 11 workflow YAML malformed during pull-request trigger addition
+- **Run:** [40284557263](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40284557263).
+- **Severity:** Medium — workflow failed before creating a job.
+- **Symptom:** A literal backslash-n sequence was inserted into the YAML while adding pull_request triggers, so Actions could not parse the workflow.
+- **Root cause:** Escaped newline text was committed instead of actual newline characters.
+- **Correction:** Replaced the literal escape sequences with actual line breaks; workflow syntax and the next run must be verified.
+
+## E0013 — 2026-10-26 — Pull-request workflow checked out the synthetic merge ref
+- **Run:** [40284609486](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40284609486).
+- **Severity:** Medium — PR-triggered validation stopped at checkout.
+- **Symptom:** Checkout attempted ref 20/merge, which is GitHub's synthetic merge ref name rather than the source branch.
+- **Correction:** Workflow checkout now prefers github.event.pull_request.head.ref and falls back to github.ref_name for push/manual events.
+- **Validation:** A follow-up PR/push run must verify checkout and complete tests.
+
+## E0014 — 2026-10-26 — Phase 11 protocol omitted registered dependence-aware uncertainty output
+- **Detection:** Post-run acceptance audit after successful benchmark [40284704966](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40284704966).
+- **Severity:** Medium — scientific reporting/acceptance-criteria gap; candidate predictions and primary metrics were produced.
+- **Symptom:** Phase 11 plan required uncertainty/stability reporting that respects weekly serial dependence, but the initial implementation only reported point metrics.
+- **Correction:** Added a paired four-week moving-block bootstrap with 2,000 replicates for ExtraTrees versus expanding-majority and Random Forest, plus a regression test and report output. This is a fixed reporting correction; no model parameters/features are changed and no extra candidate search is allowed.
+- **Status:** Awaiting follow-up CI validation. If intervals are underpowered, report that explicitly; do not replace block length or repeat sampling to obtain a preferred result.

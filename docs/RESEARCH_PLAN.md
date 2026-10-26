@@ -108,3 +108,15 @@ The version 1.2 Dhan-backed reconstruction and fixed-candidate evaluation comple
 The development-selected baseline was base ExtraTrees; the selected challenger was ExtraTrees with six additional causal trend/volatility features. Holdout balanced accuracy was 54.85% for the baseline and 53.79% for the challenger, a −1.06 percentage-point difference. The paired four-week moving-block bootstrap 95% interval for the difference was −5.00 to +3.44 points. The preregistered screen did not pass. **Conclusion: no new directional method validated in this bounded run.**
 
 This is a prediction experiment, not a profitable trading strategy. Historical contract-level futures/options fills, Paytm Money date-effective costs, spreads and slippage were not validated. The current phase stops here; do not retune against this holdout. See [Phase 10 plan](PHASE_10_VERIFIED_DATASET.md), [results summary](../research/results/phase10/summary.json), and [full report](../research/results/phase10/phase10_report.md).
+
+
+## Phase 11 addendum — Diverse model-family benchmark (26 October 2026)
+
+Phase 11 is registered in [PHASE_11_MODEL_FAMILY_BENCHMARK.md](PHASE_11_MODEL_FAMILY_BENCHMARK.md). It adds a fixed expanding-window comparison of regularized logistic regression, ExtraTrees, Random Forest, Gradient Boosting, Histogram Gradient Boosting and RBF SVC, plus simple baselines. It uses only source-gated weekly rows and fold-local preprocessing. No hyperparameter tuning is allowed.
+
+The Phase 10 holdout has already been inspected, so Phase 11 outputs are exploratory only. A future confirmatory window must be collected prospectively after the protocol is frozen. The separate executable-trading gate remains blocked until historical contract-level fills/prices and date-effective Paytm Money costs, spreads and slippage are validated.
+
+
+## Phase 11 — Diverse model-family benchmark (2026-10-26)
+
+The first fixed expanding-window benchmark completed over 152 forecast dates with 256 source-gated weekly cycles. ExtraTrees ranked first on balanced accuracy (57.8%) and Random Forest second (57.3%), but this is exploratory reuse of a previously inspected sample, not confirmatory evidence. See [Phase 11 protocol and results](PHASE_11_MODEL_FAMILY_BENCHMARK.md). A paired four-week block-bootstrap reporting correction is undergoing CI validation. No further tuning is allowed in this phase. Trading remains blocked pending contract-level historical fills and full Paytm Money cost/spread/slippage validation.

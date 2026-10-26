@@ -76,3 +76,16 @@
 - Base ExtraTrees balanced accuracy on the holdout was 54.85%; the six-feature augmented ExtraTrees result was 53.79%. Difference −1.06 percentage points; paired four-week moving-block bootstrap 95% interval −5.00 to +3.44 points. The preregistered screen failed; no new directional method is validated.
 - Trading acceptance remains blocked pending contract-level futures/options fills and date-effective Paytm Money fees, spread and slippage validation.
 - Operational publication failures in runs 40282004301 and 40283034584 were traced to a heredoc boundary and escaped workflow expressions, respectively. A standalone reporter and corrected workflow expressions were committed. These are workflow errors, not evidence about model performance.
+
+
+## 2026-10-26 — User approved broader model-family research
+- User challenged why the prior result discussed only ExtraTrees.
+- Decision: treat ExtraTrees as a baseline, not the research endpoint. Register Phase 11 to compare a bounded set of distinct statistical/ML families with shared chronological prediction dates and fold-local preprocessing.
+- The Phase 10 holdout has already been examined; Phase 11 results must be labelled exploratory and cannot be called a fresh confirmatory test.
+- User approved continuation with “Ok proceed”. Only visible decisions and engineering rationale are recorded; hidden chain-of-thought is not stored.
+
+
+## 2026-10-26 — User said “Proceed” for Phase 11
+- The Phase 11 workflow completed successfully in run 40284704966. On 152 chronological expanding-window forecasts, ExtraTrees had balanced accuracy 57.8%, followed by Random Forest 57.3%; all metrics are exploratory because the historical sample/holdout has already been inspected.
+- Audit identified a protocol omission: no block-bootstrap uncertainty interval was included despite the plan requiring dependence-aware stability reporting. A fixed four-week paired bootstrap and test were added for the ExtraTrees-versus-majority and ExtraTrees-versus-Random-Forest comparisons. Await CI validation.
+- No strategy is validated; realistic contract-level P&L and Paytm Money fees/spread/slippage remain a separate required gate. Only visible decisions and rationale are recorded, not hidden chain-of-thought.
