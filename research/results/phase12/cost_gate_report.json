@@ -1,0 +1,32 @@
+{
+  "status": "BLOCKED_MISSING_CONTRACT_LEVEL_DATA",
+  "input_path": "research/data/phase12_contract_fills.csv",
+  "required_columns": [
+    "trade_id",
+    "entry_date",
+    "exit_date",
+    "instrument_type",
+    "side",
+    "entry_mid",
+    "exit_mid",
+    "entry_spread_points",
+    "exit_spread_points",
+    "entry_slippage_points",
+    "exit_slippage_points",
+    "quantity",
+    "lot_size",
+    "brokerage",
+    "exchange_txn_charge",
+    "stt",
+    "gst",
+    "stamp_duty",
+    "sebi_charge",
+    "other_charges",
+    "cost_schedule_source",
+    "price_source",
+    "fill_method"
+  ],
+  "trade_count": 0,
+  "net_pnl": null,
+  "message": "Initial source inventory found no contract-level fills input. Workflow reproduces blocked status unless validated source data is added."
+}
