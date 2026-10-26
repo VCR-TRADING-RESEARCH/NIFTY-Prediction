@@ -1,0 +1,53 @@
+name: Phase 11 — Diverse Model-Family Benchmark
+
+on:
+  push:
+    branches: [research/phase-11-diverse-model-benchmark]
+    paths:
+      - ".github/workflows/phase11-model-benchmark.yml"
+      - "scripts/benchmark_model_families.py"
+      - "tests/test_phase11_model_benchmark.py"
+      - "docs/PHASE_11_MODEL_FAMILY_BENCHMARK.md"
+      - "data/processed/phase10_dhan_weekly_labels_features.csv"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+concurrency:
+  group: phase11-model-benchmark-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+      - name: Run repository tests
+        run: python -m pytest -q tests
+      - name: Run fixed expanding-window benchmark
+        run: python scripts/benchmark_model_families.py
+      - name: Upload benchmark artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase11-model-family-benchmark-${{ github.run_id }}
+          path: research/results/phase11/**
+          if-no-files-found: ignore
+          retention-days: 90
+      - name: Persist benchmark outputs
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/results/phase11
+          git commit -m "Record Phase 11 diverse model-family benchmark [skip ci]" || echo "No changes to commit"
+          git push origin HEAD:${{ github.ref_name }}
