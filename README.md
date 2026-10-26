@@ -112,6 +112,15 @@ The research target is on the spot index. Any executable strategy must separatel
 - **Logs and raw comparison:** [research log](logs/RESEARCH_LOG.md), [error log](logs/ERROR_LOG.md), [daily anchor comparison](data/reconciliation/anchor_source_comparison.csv), [weekly label sensitivity](data/reconciliation/weekly_anchor_label_sensitivity.csv), [summary report](data/reconciliation/anchor_source_comparison_report.json).
 <!-- PHASE9_ANCHOR_AUDIT_STATUS_END -->
 
+<!-- PHASE10_STATUS_START -->
+## Phase 10 — Dhan-backed dataset rebuild
+- **Status:** plan and fixed experiment defined; automated run pending.
+- **Plan:** [Phase 10 research plan](docs/PHASE_10_VERIFIED_DATASET.md); [Version 1.2 addendum](docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md).
+- **Data rule:** official NSE daily OHLC and verified expiry dates; authenticated Dhan 10:00–10:03 anchor; missing Dhan sessions cannot shift the exchange calendar.
+- **Bounded test:** 104-row minimum training history, chronological 80/20 split, six causal trend/volatility features and eight fixed candidates. Holdout used once; Paytm Money instrument-level P&L remains separate.
+- **Artifacts (after run):** [summary](research/results/phase10/summary.json), [full report](research/results/phase10/phase10_report.md), [data quality](research/results/phase10/data_quality_report.json), [split manifest](research/results/phase10/phase10_split_manifest.json), [rebuild script](scripts/rebuild_dhan_verified_dataset.py), [workflow](.github/workflows/phase10-dhan-verified-dataset.yml).
+<!-- PHASE10_STATUS_END -->
+
 ## Research approach
 
 1. Preserve exact target semantics and historical expiry-calendar transitions.
