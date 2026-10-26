@@ -83,3 +83,9 @@
 - Decision: treat ExtraTrees as a baseline, not the research endpoint. Register Phase 11 to compare a bounded set of distinct statistical/ML families with shared chronological prediction dates and fold-local preprocessing.
 - The Phase 10 holdout has already been examined; Phase 11 results must be labelled exploratory and cannot be called a fresh confirmatory test.
 - User approved continuation with “Ok proceed”. Only visible decisions and engineering rationale are recorded; hidden chain-of-thought is not stored.
+
+
+## 2026-10-26 — User said “Proceed” for Phase 11
+- The Phase 11 workflow completed successfully in run 40284704966. On 152 chronological expanding-window forecasts, ExtraTrees had balanced accuracy 57.8%, followed by Random Forest 57.3%; all metrics are exploratory because the historical sample/holdout has already been inspected.
+- Audit identified a protocol omission: no block-bootstrap uncertainty interval was included despite the plan requiring dependence-aware stability reporting. A fixed four-week paired bootstrap and test were added for the ExtraTrees-versus-majority and ExtraTrees-versus-Random-Forest comparisons. Await CI validation.
+- No strategy is validated; realistic contract-level P&L and Paytm Money fees/spread/slippage remain a separate required gate. Only visible decisions and rationale are recorded, not hidden chain-of-thought.
