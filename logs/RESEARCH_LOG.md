@@ -230,3 +230,14 @@
 - Difference summary: {"max": 0.000800000001618173, "median": 0.0, "p95": 0.000800000001618173}.
 - Weekly label sensitivity: {"anchor_difference_max_points": 0.000800000001618173, "anchor_difference_median_points": 0.0, "anchor_difference_p95_points": 0.000800000001618173, "caveat": "Same official expiry closes are used for both returns. This only measures label sensitivity to the secondary anchor; secondary provider lineage is unverified and labels remain exploratory.", "label_agreement_rate": 1.0, "label_switch_rate": 0.0, "labels_agreeing_with_original_published_label": 257, "primary_vs_secondary_direction_switches": 0, "status": "DIAGNOSTIC_ONLY", "weekly_cycles_with_secondary_anchor": 257}.
 - Dhan source chunks are cache-only; credentials and response bodies are not recorded.
+
+
+## 2026-10-26 — Phase 10 Dhan-backed rebuild and bounded method test initiated
+- User said “Proceed” after the Phase 9 anchor audit checkpoint.
+- Branch: research/phase-10-verified-dataset-rebuild.
+- New plan version: 1.2, recorded in docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md and docs/PHASE_10_VERIFIED_DATASET.md. The old public-archive-derived 2019–2026 holdout is not reused.
+- Data-design correction: use the full official NSE daily session calendar for identifying the first trading session after expiry; left-join Dhan bar availability. This prevents missing early Dhan dates from being misinterpreted as non-trading sessions.
+- Canonical sources: official NSE daily OHLC for all lagged daily features and expiry closes; official contract-verified expiry dates; authenticated DhanHQ 1-minute bars for 10:00 anchor and pre-anchor features. Dhan raw chunks remain workflow-cache-only.
+- Fixed candidates and budget: four simple expanding/rule baselines, base Logistic Regression/ExtraTrees and their six-feature causal trend/volatility augmentations. Minimum training history 104 cycles, one chronological 80/20 split, four-week moving-block bootstrap, prespecified improvement/uncertainty screen, one holdout pass.
+- New source gate tests cover the full official-session calendar with missing Dhan bars, feature causality to anchor date, valid-source row criteria, and the Dhan request window length.
+- No model result is available until Phase 10 workflow runs. A directional result will not be described as a trading strategy without contract-level options/futures fills and date-effective Paytm Money fees, spreads and slippage.
