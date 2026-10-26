@@ -352,3 +352,11 @@
 - **Response:** Added Phase 12 fail-closed cost engine. Missing files/schema produce BLOCKED and net P&L=null; no synthetic trades, fee estimates or spot-proxy P&L are permitted.
 - **Status:** Evidence gate remains BLOCKED_PENDING_CONTRACT_LEVEL_DATA. The automated workflow and regression tests must be run before the phase is considered operationally complete.
 - **Security:** No secrets or provider response bodies logged.
+
+
+## E0024 — 2026-10-26 — Free expired-options sample link inaccessible from research browser
+- **Severity:** Low/operational; no market-data result was produced from this source.
+- **Source:** Cloud Trader Pro/Shoonya page advertises free NIFTY expired-option 1-minute OHLCV+OI sample data and links to Google Drive.
+- **Observed:** Opening the linked Drive file returned HTTP 401 Unauthorized in the research browsing environment.
+- **Interpretation:** This is an access limitation, not evidence the dataset is unavailable or invalid. No bytes were ingested and no claims were made about its quality.
+- **Next action:** Test official NSE contract-wise data and accessible free sample alternatives; validate timestamps, contract IDs, coverage and OHLC consistency before using any data. Do not fall back to paid data until free sources are ruled out.
