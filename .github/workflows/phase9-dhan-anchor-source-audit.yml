@@ -1,0 +1,157 @@
+name: Phase 9 — Dhan Historical Anchor Source Audit
+
+on:
+  push:
+    branches:
+      - research/phase-9-anchor-source-audit
+    paths:
+      - ".github/workflows/phase9-dhan-anchor-source-audit.yml"
+      - "scripts/audit_dhan_anchor_source.py"
+      - "scripts/compare_anchor_sources.py"
+      - "scripts/fetch_data.py"
+      - "scripts/research_core.py"
+      - "tests/test_dhan_anchor_source.py"
+  workflow_dispatch:
+    inputs:
+      force_refresh:
+        description: Re-fetch all Dhan historical chunks instead of using cache
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: phase9-dhan-anchor-audit-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PYTHONUNBUFFERED: "1"
+      TZ: Asia/Kolkata
+      FORCE_REFRESH_DHAN_ANCHORS: ${{ inputs.force_refresh }}
+    steps:
+      - name: Checkout phase branch
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install project dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
+      - name: Restore public and private-source caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/raw/nifty50
+            data/cache/dhan-anchors
+          key: nifty-dhan-anchor-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            nifty-dhan-anchor-${{ runner.os }}-
+
+      - name: Run anchor-audit parser and source-gate tests
+        run: python -m pytest -q tests/test_anchor_source_audit.py tests/test_dhan_anchor_source.py
+
+      - name: Clear prior outputs so failures cannot reuse stale results
+        run: |
+          rm -f data/reconciliation/dhan_anchor_comparison.csv
+          rm -f data/reconciliation/dhan_weekly_anchor_label_sensitivity.csv
+          rm -f data/reconciliation/dhan_anchor_comparison_report.json
+
+      - name: Fetch or reuse public primary minute archive
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/fetch_data.py
+
+      - name: Compare Dhan five-year history to public 10:00 anchors
+        id: audit
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+        run: python scripts/audit_dhan_anchor_source.py
+
+      - name: Upload compact Dhan anchor diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase9-dhan-anchor-audit-${{ github.run_id }}
+          path: |
+            data/reconciliation/dhan_anchor_comparison.csv
+            data/reconciliation/dhan_weekly_anchor_label_sensitivity.csv
+            data/reconciliation/dhan_anchor_comparison_report.json
+          if-no-files-found: ignore
+          retention-days: 90
+
+      - name: Record Dhan source status and audit logs
+        if: always() && steps.checkout.outcome == 'success'
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from datetime import datetime, timezone
+          report=Path("data/reconciliation/dhan_anchor_comparison_report.json")
+          stamp=datetime.now(timezone.utc).isoformat()
+          run=os.getenv("GITHUB_RUN_ID","local")
+          if report.exists():
+              data=json.loads(report.read_text())
+              entry=(f"\n\n## Phase 9 Dhan historical anchor audit — run {run} — {stamp}\n"
+                     f"- Status: {data.get('status')}.\n"
+                     f"- Window: {json.dumps(data.get('window',{}),sort_keys=True)}.\n"
+                     f"- Counts: {json.dumps(data.get('counts',{}),sort_keys=True)}.\n"
+                     f"- Difference summary: {json.dumps(data.get('absolute_difference_points',{}),sort_keys=True)}.\n"
+                     f"- Weekly label sensitivity: {json.dumps(data.get('weekly_label_sensitivity',{}),sort_keys=True)}.\n"
+                     "- Dhan source chunks are cache-only; credentials and response bodies are not recorded.\n")
+              with Path("logs/RESEARCH_LOG.md").open("a") as f: f.write(entry)
+              status=data.get("status")
+              counts=data.get("counts",{})
+              if status not in ("DIAGNOSTIC_ONLY","SKIPPED_MISSING_CREDENTIALS") or counts.get("anchor_open_mismatches_over_1_point",0)>0:
+                  with Path("logs/ERROR_LOG.md").open("a") as f:
+                      f.write(entry+"- Interpretation: this is diagnostic evidence only; source conflicts do not pass the confirmatory gate.\n")
+          else:
+              entry=f"\n\n## Phase 9 Dhan historical anchor audit failure — run {run} — {stamp}\n- No fresh report produced; prior reports were cleared before the run. Inspect the failed Actions step.\n- No credentials or provider response bodies are recorded.\n"
+              with Path("logs/ERROR_LOG.md").open("a") as f: f.write(entry)
+
+          readme=Path("README.md")
+          txt=readme.read_text(encoding="utf-8")
+          start="<!-- PHASE9_DHAN_ANCHOR_STATUS_START -->"
+          end="<!-- PHASE9_DHAN_ANCHOR_STATUS_END -->"
+          data=json.loads(report.read_text()) if report.exists() else {"status":"NO_REPORT"}
+          block=(f"{start}\n## Phase 9 Dhan anchor audit\n"
+                 f"- Status: {data.get('status')}. "
+                 f"See [report](data/reconciliation/dhan_anchor_comparison_report.json) and "
+                 f"[audit script](scripts/audit_dhan_anchor_source.py).\n"
+                 "- Even a close recent match is diagnostic; provider/official source validation and the daily OHLC reconciliation gate remain mandatory.\n"
+                 f"{end}")
+          if start in txt and end in txt:
+              before=txt.split(start)[0]
+              after=txt.split(end,1)[1]
+              txt=before+block+after
+          else:
+              txt=txt.rstrip()+"\n\n"+block+"\n"
+          readme.write_text(txt,encoding="utf-8")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+users.noreply.github.com"
+          git add README.md logs/RESEARCH_LOG.md logs/ERROR_LOG.md
+          git add -A data/reconciliation/dhan_anchor_comparison.csv data/reconciliation/dhan_weekly_anchor_label_sensitivity.csv data/reconciliation/dhan_anchor_comparison_report.json
+          if git diff --cached --quiet; then
+            echo "No report/log changes to commit."
+          else
+            git commit -m "Record Dhan historical anchor audit [skip ci]"
+            git pull --rebase --autostash origin "${{ github.ref_name }}"
+            git push origin "HEAD:${{ github.ref_name }}"
+          fi
