@@ -234,3 +234,13 @@
 - Prevention: future anchor audit workflows run focused tests before data work and delete prior report outputs before the next run to avoid accidentally reusing stale results.
 - Remaining blocker: no exchange-grade independent anchor validation for the full label history; broader daily OHLC disagreements remain unresolved. No new model should be trained until the source gate is accepted.
 - Security: no credentials, API tokens, PIN, TOTP values or raw Dhan provider responses are stored in Git.
+
+
+## Phase 9 Dhan historical anchor audit — run 40279493086 — 2026-10-26T06:24:56.225852+00:00
+- Status: ERROR.
+- Window: {}.
+- Counts: {}.
+- Difference summary: {}.
+- Weekly label sensitivity: {}.
+- Dhan source chunks are cache-only; credentials and response bodies are not recorded.
+- Interpretation: this is diagnostic evidence only; source conflicts do not pass the confirmatory gate.

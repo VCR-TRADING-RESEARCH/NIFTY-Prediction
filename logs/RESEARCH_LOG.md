@@ -195,3 +195,12 @@
 - On the 265 overlapping weekly cycles, holding the recorded expiry close constant and substituting the secondary 10:00 anchor produced zero UP/DOWN label switches; all 265 resulting labels matched the original published labels.
 - Interpretation remains DIAGNOSTIC_ONLY: the secondary repository's underlying data-provider lineage is not independently verified. This result indicates low label sensitivity in the overlapping weekly sample, but does not certify anchor-source provenance, other OHLC features, or out-of-overlap dates.
 - Next source check: use the authenticated Dhan historical intraday endpoint over its advertised last-five-year window, cache raw chunks privately in Actions cache, publish only compact comparison statistics and label sensitivity.
+
+
+## Phase 9 Dhan historical anchor audit — run 40279493086 — 2026-10-26T06:24:56.225852+00:00
+- Status: ERROR.
+- Window: {}.
+- Counts: {}.
+- Difference summary: {}.
+- Weekly label sensitivity: {}.
+- Dhan source chunks are cache-only; credentials and response bodies are not recorded.

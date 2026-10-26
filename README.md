@@ -182,3 +182,9 @@ Last repository status update: 2026-10-25.
 
 
 **Target-session retry and diagnostics (2026-10-25):** Inference now makes one targeted, one-day Dhan request for the selected session in addition to the normal chunked history request. This can recover bars omitted from a large response and helps distinguish session-level data gaps from broad-request truncation. If the required anchor is still unavailable, the failure explains whether the whole session had no valid bars or reports the returned session's timestamp range and nearby-bar count. The anchor is never silently substituted.
+
+<!-- PHASE9_DHAN_ANCHOR_STATUS_START -->
+## Phase 9 Dhan anchor audit
+- Status: ERROR. See [report](data/reconciliation/dhan_anchor_comparison_report.json) and [audit script](scripts/audit_dhan_anchor_source.py).
+- Even a close recent match is diagnostic; provider/official source validation and the daily OHLC reconciliation gate remain mandatory.
+<!-- PHASE9_DHAN_ANCHOR_STATUS_END -->
