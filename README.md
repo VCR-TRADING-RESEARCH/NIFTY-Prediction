@@ -195,3 +195,14 @@ Last repository status update: 2026-10-25.
 - Status: DIAGNOSTIC_ONLY. See [report](data/reconciliation/dhan_anchor_comparison_report.json) and [audit script](scripts/audit_dhan_anchor_source.py).
 - Even a close recent match is diagnostic; provider/official source validation and the daily OHLC reconciliation gate remain mandatory.
 <!-- PHASE9_DHAN_ANCHOR_STATUS_END -->
+
+
+## Phase 11 — Diverse model-family benchmark
+
+**Status:** Implementation committed; automated validation/evaluation pending. This phase expands beyond ExtraTrees to regularized logistic regression, Random Forest, Gradient Boosting, Histogram Gradient Boosting and RBF SVC, alongside majority/prior-cycle/momentum baselines. Results are explicitly exploratory because the Phase 10 holdout was already inspected; no candidate may be promoted as confirmatory or profitable from this benchmark alone.
+
+- [Phase 11 plan and acceptance gates](docs/PHASE_11_MODEL_FAMILY_BENCHMARK.md)
+- [Benchmark workflow](.github/workflows/phase11-model-benchmark.yml)
+- [Benchmark implementation](scripts/benchmark_model_families.py)
+- Results, predictions and figures will be written to [research/results/phase11](research/results/phase11) after a successful run.
+- Trading remains blocked until instrument-level option/futures fills, date-effective Paytm Money charges, spreads and slippage are validated.
