@@ -322,3 +322,10 @@
 - **Symptom:** A literal backslash-n sequence was inserted into the YAML while adding pull_request triggers, so Actions could not parse the workflow.
 - **Root cause:** Escaped newline text was committed instead of actual newline characters.
 - **Correction:** Replaced the literal escape sequences with actual line breaks; workflow syntax and the next run must be verified.
+
+## E0013 — 2026-10-26 — Pull-request workflow checked out the synthetic merge ref
+- **Run:** [40284609486](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40284609486).
+- **Severity:** Medium — PR-triggered validation stopped at checkout.
+- **Symptom:** Checkout attempted ref 20/merge, which is GitHub's synthetic merge ref name rather than the source branch.
+- **Correction:** Workflow checkout now prefers github.event.pull_request.head.ref and falls back to github.ref_name for push/manual events.
+- **Validation:** A follow-up PR/push run must verify checkout and complete tests.
