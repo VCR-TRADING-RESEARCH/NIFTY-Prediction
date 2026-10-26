@@ -162,3 +162,11 @@
 - **Method:** Alongside the normal cached/chunked history fetch, request only the selected session once; normalize/validate and deduplicate the combined bars. If anchor remains missing, report aggregate timestamp diagnostics only.
 - **Hypothesis test:** Targeted request returns bars absent from broad request => broad response/cache coverage problem. Targeted request also lacks bars => investigate Dhan response/instrument/time conversion and free-source cross-checks. No inference from fabricated or silently substituted anchors.
 - **Status:** Staged on `fix/target-date-intraday-diagnostic-retry`; CI pending.
+
+
+## Phase 9 historical anchor source audit — run 40278945700 — 2026-10-26T06:18:22.022003+00:00
+- Status: DIAGNOSTIC_ONLY (diagnostic only).
+- Counts: {"anchor_open_mismatches_over_1_point": 62, "exact_timestamp_matches": 0, "overlap_sessions": 1269, "primary_anchors": 1269, "secondary_anchors": 1271}.
+- Difference summary: {"max": 6.700000000000728, "median": 0.049999999999272404, "p95": 1.0}.
+- Caveat: secondary archive provider lineage is unverified; this comparison cannot pass the official independent-anchor gate.
+- Output: data/reconciliation/anchor_source_comparison.csv and anchor_source_comparison_report.json.

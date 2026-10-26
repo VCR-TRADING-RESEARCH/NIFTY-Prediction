@@ -199,3 +199,11 @@
 - **Gap in troubleshooting:** Existing code did not retry the selected date as a one-day request and gave no count/timestamp range for the session.
 - **Fix staged:** Add a targeted one-day Dhan request for the selected session and merge its bars by timestamp; improve safe error diagnostics with valid session bar count, timestamp range, and nearby 09:57–10:06 count. No response bodies, tokens, or client credentials are logged.
 - **Status:** PR/CI pending; provider availability remains unconfirmed.
+
+
+## Phase 9 historical anchor source audit — run 40278945700 — 2026-10-26T06:18:22.022003+00:00
+- Status: DIAGNOSTIC_ONLY (diagnostic only).
+- Counts: {"anchor_open_mismatches_over_1_point": 62, "exact_timestamp_matches": 0, "overlap_sessions": 1269, "primary_anchors": 1269, "secondary_anchors": 1271}.
+- Difference summary: {"max": 6.700000000000728, "median": 0.049999999999272404, "p95": 1.0}.
+- Caveat: secondary archive provider lineage is unverified; this comparison cannot pass the official independent-anchor gate.
+- Output: data/reconciliation/anchor_source_comparison.csv and anchor_source_comparison_report.json.
