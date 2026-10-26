@@ -223,3 +223,14 @@
 - Difference summary: {"max": 6.700000000000728, "median": 0.049999999999272404, "p95": 1.0}.
 - Caveat: secondary archive provider lineage is unverified; this comparison cannot pass the official independent-anchor gate.
 - Output: data/reconciliation/anchor_source_comparison.csv and anchor_source_comparison_report.json.
+
+
+## E0019 — 2026-10-26 — Anchor audit timestamp-match statistic invalid due timezone mismatch
+- Severity: Moderate — the first report understated timestamp matches because the comparison did not normalize timestamp timezone representations.
+- Finding: primary archive timestamps were timezone-aware Asia/Kolkata timestamps; the secondary archive parser left timestamps timezone-naive even though its data convention is local IST. Comparing the values yielded zero exact timestamp matches, which was not a valid inference about candle timestamps.
+- Correction: normalize both timestamp series to timezone-aware Asia/Kolkata before comparison; add regression tests that naive IST and timezone-aware IST timestamps compare equal.
+- Corrected result: 1,269 / 1,269 overlapping session anchor timestamps match. Anchor-open difference median 0.05 points, P95 1.00, max 6.70; 62 of 1,269 daily anchors differ by over 1 point.
+- Weekly sensitivity result: 265 weekly rows overlap the secondary archive; recalculating direction with the same expiry close and secondary anchor produced zero label switches. This is diagnostic only because the second archive's provider lineage is not verified.
+- Prevention: future anchor audit workflows run focused tests before data work and delete prior report outputs before the next run to avoid accidentally reusing stale results.
+- Remaining blocker: no exchange-grade independent anchor validation for the full label history; broader daily OHLC disagreements remain unresolved. No new model should be trained until the source gate is accepted.
+- Security: no credentials, API tokens, PIN, TOTP values or raw Dhan provider responses are stored in Git.
