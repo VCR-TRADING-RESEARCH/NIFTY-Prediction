@@ -262,3 +262,12 @@
 - No fresh Phase 10 summary or failure report was produced; inspect the exact failed Actions step.
 - Plan: docs/PHASE_10_VERIFIED_DATASET.md and docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md.
 - Raw Dhan history remains cache-only; only compact metadata and derived results are committed.
+
+
+## 2026-10-26 — Phase 11 registered: diverse model-family benchmark
+- **Status:** Implementation committed to research/phase-11-diverse-model-benchmark; automated test and benchmark run pending.
+- **Reason:** Phase 10 tested only a small fixed candidate set, with ExtraTrees as the development-selected baseline and a small ExtraTrees augmentation. This was not a comprehensive model-family study.
+- **Scope:** Fixed expanding-window comparison of expanding majority, prior-cycle direction, 5-session momentum, regularized logistic regression, ExtraTrees, Random Forest, Gradient Boosting, Histogram Gradient Boosting and RBF SVC.
+- **Leakage safeguards:** Source-gate-passing UP/DOWN rows only; feature whitelist excludes labels, future closes/returns and source metadata; preprocessing is fit within each chronological training fold.
+- **Inference boundary:** Phase 10 holdout has already been examined. Phase 11 results are exploratory, not fresh confirmatory evidence; no retuning or trading claim is permitted from the ranking.
+- **Artifacts:** scripts/benchmark_model_families.py, tests/test_phase11_model_benchmark.py, .github/workflows/phase11-model-benchmark.yml, and docs/PHASE_11_MODEL_FAMILY_BENCHMARK.md.
