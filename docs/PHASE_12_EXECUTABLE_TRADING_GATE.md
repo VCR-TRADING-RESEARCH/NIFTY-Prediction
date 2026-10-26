@@ -35,3 +35,7 @@ Does any Phase 11 directional forecast translate into positive, robust NIFTY fut
 
 ## Phase status and stop rule
 The code/logic gate may pass while the trading-evidence gate remains blocked. If required historical fills and dated cost schedules are not present, stop this phase with **NO USABLE TRADING STRATEGY VALIDATED**. Do not replace missing data with spot proxies or arbitrary fee assumptions.
+
+
+## Free-source audit update
+A separate source audit identified official NSE contract-wise price/volume history, official daily F&O bhavcopy archives, and a provider-stated free NIFTY expired-options sample. The sample download link returned HTTP 401 in the research browsing environment, so the files have not been acquired or validated. See [Phase 12 source audit](PHASE12_DATA_SOURCE_AUDIT.md). This means the current status is **data not yet acquired/validated**, not a claim that no free data exists.
