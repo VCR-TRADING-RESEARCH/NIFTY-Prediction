@@ -329,3 +329,10 @@
 - **Symptom:** Checkout attempted ref 20/merge, which is GitHub's synthetic merge ref name rather than the source branch.
 - **Correction:** Workflow checkout now prefers github.event.pull_request.head.ref and falls back to github.ref_name for push/manual events.
 - **Validation:** A follow-up PR/push run must verify checkout and complete tests.
+
+## E0014 — 2026-10-26 — Phase 11 protocol omitted registered dependence-aware uncertainty output
+- **Detection:** Post-run acceptance audit after successful benchmark [40284704966](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40284704966).
+- **Severity:** Medium — scientific reporting/acceptance-criteria gap; candidate predictions and primary metrics were produced.
+- **Symptom:** Phase 11 plan required uncertainty/stability reporting that respects weekly serial dependence, but the initial implementation only reported point metrics.
+- **Correction:** Added a paired four-week moving-block bootstrap with 2,000 replicates for ExtraTrees versus expanding-majority and Random Forest, plus a regression test and report output. This is a fixed reporting correction; no model parameters/features are changed and no extra candidate search is allowed.
+- **Status:** Awaiting follow-up CI validation. If intervals are underpowered, report that explicitly; do not replace block length or repeat sampling to obtain a preferred result.
