@@ -1,7 +1,7 @@
 # Phase 11 — Diverse Model-Family Benchmark
 
 **Branch:** research/phase-11-diverse-model-benchmark  
-**Status:** IN PROGRESS — benchmark implementation and reproducible evaluation  
+**Status:** BENCHMARK RUN COMPLETED; uncertainty-reporting correction queued for validation  
 **Plan version:** 1.3 addendum to the pre-registered plan  
 **Budget:** One fixed expanding-window benchmark; no hyperparameter sweep or recursive feature search.
 
@@ -45,3 +45,24 @@ This is an exploratory family benchmark on the existing 256-cycle sample. The Ph
 
 ## Known limitations
 Small sample, weekly serial dependence, limited Dhan window, missing point-in-time options IV/OI/skew and complete flow/sentiment covariates, and no contract-level P&L/cost validation. Results do not constitute investment advice.
+
+
+## First benchmark outcome (2026-10-26)
+
+The first successful fixed run evaluated 152 identical expanding-window dates from 2023-11-16 through 2026-10-19, using 256 source-gated weekly cycles and 104 prior labelled rows for each initial fit. The first-run results are available in [report.md](../research/results/phase11/report.md) and [summary.json](../research/results/phase11/summary.json).
+
+| Candidate | Balanced accuracy | Brier | ROC AUC |
+|---|---:|---:|---:|
+| ExtraTrees | 0.578 | 0.245 | 0.595 |
+| Random Forest | 0.573 | 0.247 | 0.585 |
+| Histogram Gradient Boosting | 0.554 | 0.262 | 0.559 |
+| Logistic regression | 0.546 | 0.260 | 0.531 |
+| RBF SVC | 0.532 | 0.254 | 0.504 |
+| Gradient Boosting | 0.503 | 0.254 | 0.555 |
+| Expanding majority | 0.500 | 0.254 | 0.507 |
+
+These are descriptive exploratory metrics, not evidence of an independent edge. ExtraTrees ranked first, but this is the same reused historical sample and must not be treated as fresh confirmation. The fixed protocol did not include hyperparameter tuning.
+
+A plan-compliance review found that the original plan promised dependence-aware uncertainty reporting but the first implementation omitted it. A paired four-week moving-block bootstrap comparison (ExtraTrees versus majority and Random Forest) has now been added as a bounded reporting correction; it will be validated by CI and is not a new model-selection loop.
+
+**Trading gate remains BLOCKED.** No contract-level historical fills, date-effective Paytm Money charges, bid/ask spread or slippage stress were evaluated. No trading strategy is validated.
