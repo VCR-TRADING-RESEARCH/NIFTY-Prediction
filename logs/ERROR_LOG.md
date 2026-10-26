@@ -272,3 +272,13 @@
 - The fixed model result remains unchanged: base ExtraTrees balanced accuracy 0.5485 versus augmented ExtraTrees 0.5379 on the 52-row locked holdout; bootstrap 95% interval for the difference spans -0.0500 to +0.0344. The augmented method does not pass the pre-registered screen.
 - Trading acceptance remains BLOCKED; no contract-level futures/options P&L with dated Paytm Money costs, bid/ask spread, slippage and conservative fills was performed.
 - Security: no Dhan credentials, tokens, PINs, TOTP values or provider response bodies are logged.
+
+
+## 2026-10-26 — Phase 10 workflow publication errors (runs 40282004301 and 40283034584)
+
+- Error 1: Run 40282004301 completed tests, authenticated Dhan history retrieval and model evaluation, but the final reporting step failed with a Python SyntaxError because an inline shell/Python heredoc boundary was parsed incorrectly.
+- Correction: Extracted the reporting logic to scripts/record_phase10_outcome.py and invoked it as a standalone script.
+- Error 2: Run 40283034584 completed tests, data retrieval and model evaluation, then failed at the Git push step with fatal: invalid refspec due to literal backslashes before the GitHub Actions branch-name expression.
+- Correction: Removed the literal backslashes from github.ref_name and step outcome expressions in .github/workflows/phase10-dhan-verified-dataset.yml.
+- Impact: Both runs produced the same research metrics; the failure was in publishing generated files/logs, not model fitting. A prior run (40282667293) successfully committed the result summary and outputs. No credentials or provider response bodies were logged.
+- Prevention: Keep outcome reporting in a standalone Python file; validate workflow expressions and refspecs before rerunning; check both the job conclusion and the presence/contents of the committed result summary.
