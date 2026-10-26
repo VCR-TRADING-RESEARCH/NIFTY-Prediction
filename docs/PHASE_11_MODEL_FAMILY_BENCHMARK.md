@@ -1,7 +1,7 @@
 # Phase 11 — Diverse Model-Family Benchmark
 
 **Branch:** research/phase-11-diverse-model-benchmark  
-**Status:** BENCHMARK RUN COMPLETED; uncertainty-reporting correction queued for validation  
+**Status:** COMPLETED — corrected CI run passed; results exploratory only  
 **Plan version:** 1.3 addendum to the pre-registered plan  
 **Budget:** One fixed expanding-window benchmark; no hyperparameter sweep or recursive feature search.
 
@@ -66,3 +66,8 @@ These are descriptive exploratory metrics, not evidence of an independent edge. 
 A plan-compliance review found that the original plan promised dependence-aware uncertainty reporting but the first implementation omitted it. A paired four-week moving-block bootstrap comparison (ExtraTrees versus majority and Random Forest) has now been added as a bounded reporting correction; it will be validated by CI and is not a new model-selection loop.
 
 **Trading gate remains BLOCKED.** No contract-level historical fills, date-effective Paytm Money charges, bid/ask spread or slippage stress were evaluated. No trading strategy is validated.
+
+
+## Final CI status (2026-10-26)
+
+Corrected workflow run [40311220819](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40311220819) passed tests, benchmark, artifact upload and persistence. The ExtraTrees–Random Forest balanced-accuracy difference is +0.55 percentage points (paired four-week block-bootstrap 95% interval −6.9 to +8.0 points). This interval crosses zero. Stop Phase 11; no additional tuning is authorized by this phase.
