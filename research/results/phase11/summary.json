@@ -42,8 +42,8 @@
       "accuracy": 0.5460526315789473,
       "balanced_accuracy": 0.5457142857142857,
       "mcc": 0.09154754164341268,
-      "brier": 0.260385816077132,
-      "log_loss": 0.7182966908226467,
+      "brier": 0.2603858160771331,
+      "log_loss": 0.7182966908226489,
       "roc_auc": 0.5307359307359307
     },
     {
@@ -52,7 +52,7 @@
       "accuracy": 0.5263157894736842,
       "balanced_accuracy": 0.5316017316017316,
       "mcc": 0.10595243864638669,
-      "brier": 0.2540884200645385,
+      "brier": 0.2540884200645386,
       "log_loss": 0.7016290239579542,
       "roc_auc": 0.5042424242424244
     },
@@ -97,6 +97,32 @@
       "roc_auc": 0.4667532467532468
     }
   ],
+  "paired_four_week_block_bootstrap": [
+    {
+      "candidate_a": "extra_trees",
+      "candidate_b": "expanding_majority",
+      "status": "COMPLETED",
+      "n": 152,
+      "block_length": 4,
+      "replicates_requested": 2000,
+      "replicates_valid": 2000,
+      "observed_difference": 0.0783549783549784,
+      "difference_ci_95_low": 0.013151458190931806,
+      "difference_ci_95_high": 0.1562716562716563
+    },
+    {
+      "candidate_a": "extra_trees",
+      "candidate_b": "random_forest",
+      "status": "COMPLETED",
+      "n": 152,
+      "block_length": 4,
+      "replicates_requested": 2000,
+      "replicates_valid": 2000,
+      "observed_difference": 0.005454545454545601,
+      "difference_ci_95_low": -0.0686288632792038,
+      "difference_ci_95_high": 0.07959157670178317
+    }
+  ],
   "feature_columns": [
     "ret_1",
     "ret_5",
@@ -126,7 +152,7 @@
     "semivol_asymmetry_20"
   ],
   "seed": 20261026,
-  "important_caveat": "Phase 10 holdout was already examined. This benchmark is exploratory and cannot certify a new edge; no tuning is permitted on this output.",
+  "important_caveat": "Phase 10 holdout was already examined. This benchmark is exploratory and cannot certify a new edge; no tuning is permitted on this output. Bootstrap intervals are descriptive and do not repair prior holdout reuse.",
   "trading_strategy_validated": false,
   "trading_gate": "BLOCKED: no contract-level options/futures fills, date-effective Paytm Money costs, spreads and slippage stress."
 }

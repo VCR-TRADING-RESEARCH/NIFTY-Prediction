@@ -31,3 +31,12 @@ BLOCKED: no contract-level options/futures fills, date-effective Paytm Money cos
 ## Reproducibility
 
 See summary.json, metrics.csv, predictions_expanding_window.csv and balanced_accuracy.png. Preprocessing is fitted inside each expanding training fold.
+
+## Paired four-week moving-block bootstrap
+
+Descriptive balanced-accuracy differences use paired four-week blocks to preserve some local dependence. These intervals are not confirmatory because the Phase 10 sample/holdout has already been inspected.
+
+| Candidate A | Candidate B | Difference A−B | 95% interval | Status |
+|---|---|---:|---:|---|
+| extra_trees | expanding_majority | 0.078 | 0.013 to 0.156 | COMPLETED |
+| extra_trees | random_forest | 0.005 | -0.069 to 0.08 | COMPLETED |
