@@ -300,3 +300,10 @@
 - Plan: docs/PHASE_10_VERIFIED_DATASET.md and docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md.
 - Raw Dhan history remains cache-only; only compact metadata and derived results are committed.
 - Review the failed test/data/rebuild step, preserve the error record, add a regression test and retry once.
+
+
+## Phase 11 pre-run risk register — 2026-10-26
+- **Status:** No Phase 11 runtime failure confirmed at registration time; validation is pending.
+- **Known scientific risk:** The Phase 10 holdout is no longer untouched. Any Phase 11 comparison over the existing sample is exploratory and must not be described as an independent confirmatory result.
+- **Known implementation checks:** Confirm all candidates use identical forecast dates, every estimator/preprocessor is fitted only on prior rows, tests pass, and output metrics are reproducible. If a workflow fails, append the exact run/step/error and regression correction here before retrying.
+- **Trading gate:** Remains blocked; no instrument-level option/futures fills and complete date-effective Paytm Money costs/spread/slippage model have been validated.
