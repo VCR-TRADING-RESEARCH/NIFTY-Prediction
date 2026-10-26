@@ -474,6 +474,7 @@ The target uses the verified actual weekly expiry calendar and official NSE dail
 - Official sessions with Dhan intraday bars: {official_quality.get("official_sessions_with_dhan_intraday", "n/a")}; sessions with at least 250 Dhan bars: {official_quality.get("dhan_sessions_with_at_least_250_bars", "n/a")}.
 - Weekly cycles built / row-source-gate passes: {target_quality.get("weekly_cycles_labelled", source_gate.get("cycles_built", "n/a"))} / {source_gate.get("row_source_gate_pass", "n/a")}.
 - Dhan anchor cross-check: {json.dumps(data_quality.get("dhan_anchor_crosscheck", {}), sort_keys=True)}.
+- Dhan minute-aggregated close vs official daily close differed by more than 1 point on {official_quality.get("dhan_aggregate_vs_official_differences", {}).get("close", {}).get("mismatches_over_1_point", "n/a")} of {official_quality.get("dhan_aggregate_vs_official_differences", {}).get("close", {}).get("compared_sessions", "n/a")} overlapping sessions. Dhan minute aggregates are diagnostic only; all lagged daily features and expiry closes use official NSE daily OHLC.
 - Fresh holdout: {summary.get("holdout_first_expiry_date", "n/a")} to {summary.get("holdout_last_expiry_date", "n/a")} ({summary.get("holdout_rows", "n/a")} rows); development predictions start only after {MIN_HISTORY} earlier labelled rows.
 - All feature engineering is causal to the 10:00 cutoff; the selected candle's later high/low/close is not used.
 
