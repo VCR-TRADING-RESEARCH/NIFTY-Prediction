@@ -575,7 +575,7 @@ def main() -> int:
         actual_last = pd.Timestamp(minutes["timestamp"].max())
         manifest_start = pd.Timestamp(history_manifest["window"]["start"]).date()
         manifest_end = pd.Timestamp(history_manifest["window"]["end"]).date()
-        if actual_first.date() > manifest_start or actual_last.date() < (manifest_end - pd.Timedelta(days=4)):
+        if actual_first.date() > manifest_start or actual_last.date() < (pd.Timestamp(manifest_end) - pd.Timedelta(days=4)).date():
             raise ValueError("Dhan cache timestamp coverage does not match the declared five-year window.")
 
         daily, daily_quality = build_official_daily_calendar(official_raw, minutes)
