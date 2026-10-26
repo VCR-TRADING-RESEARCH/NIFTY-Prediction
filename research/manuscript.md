@@ -209,3 +209,20 @@ The daily-close source mismatch gate therefore remains **BLOCKED**. No model sel
 
 **Status:** BLOCKED_WORKFLOW_FAILURE. The automated Dhan-backed rebuild did not produce a successful summary in run 40283691388. This is a blocked execution result, not model performance evidence. See logs/ERROR_LOG.md and docs/PHASE_10_VERIFIED_DATASET.md.
 <!-- PHASE10_RESULTS_END -->
+
+
+# Phase 11 — Diverse Model-Family Benchmark (protocol registered)
+
+## Rationale and research question
+Phase 10 compared a narrow fixed set and did not establish whether other model families provide useful signal. Phase 11 broadens the model-family comparison rather than assuming ExtraTrees is the best method.
+
+**Question:** Under the same causal feature set and expanding chronological prediction dates, do regularized logistic regression, ExtraTrees, Random Forest, Gradient Boosting, Histogram Gradient Boosting or RBF SVC provide more reliable directional or probabilistic forecasts than simple baselines?
+
+## Protocol
+Source-gate-passing weekly UP/DOWN rows from the Dhan-backed Phase 10 dataset are evaluated in expanding windows, requiring at least 104 earlier labelled rows. The fixed candidate set includes expanding majority, prior-cycle direction, five-session momentum, logistic regression, ExtraTrees, Random Forest, Gradient Boosting, Histogram Gradient Boosting and RBF SVC. All preprocessing is fitted on the training prefix only. Evaluation metrics are accuracy, balanced accuracy, MCC, Brier score, log loss and ROC AUC where defined. There is no hyperparameter search.
+
+## Inference boundary
+The Phase 10 holdout has already been inspected. Therefore Phase 11 is explicitly exploratory and cannot establish confirmatory out-of-sample performance. A fresh prospective window is needed for confirmation. The results do not constitute a trading strategy; instrument-level fills, date-effective Paytm Money costs, bid-ask spreads, slippage and expiry settlement still require separate validation.
+
+## Results
+Pending automated Phase 11 workflow. The results will be reported in research/results/phase11/report.md, with machine-readable metrics and predictions alongside the report.
