@@ -282,3 +282,12 @@
 - Correction: Removed the literal backslashes from github.ref_name and step outcome expressions in .github/workflows/phase10-dhan-verified-dataset.yml.
 - Impact: Both runs produced the same research metrics; the failure was in publishing generated files/logs, not model fitting. A prior run (40282667293) successfully committed the result summary and outputs. No credentials or provider response bodies were logged.
 - Prevention: Keep outcome reporting in a standalone Python file; validate workflow expressions and refspecs before rerunning; check both the job conclusion and the presence/contents of the committed result summary.
+
+
+## E0021 — 2026-10-26 — Phase 10 workflow commit used an escaped Git ref
+- Severity: Moderate — analysis completed and artifacts were uploaded, but the final commit step failed.
+- Finding: the failing Actions run 40283034584 expanded the branch expression with a leading backslash; git rejected the refspec with “invalid refspec”. The local report/log commit therefore was not pushed by that run.
+- Correction: the Phase 10 workflow now uses the explicit branch name research/phase-10-verified-dataset-rebuild in git pull/push rather than interpolating the branch ref in shell arguments.
+- Data/model status is unaffected: 256 Dhan-backed weekly cycles, 204 development rows, 52 chronological holdout rows; base ExtraTrees balanced accuracy 0.5485 versus augmented ExtraTrees 0.5379. The augmented method fails the preregistered screen.
+- The following workflow rerun must validate the corrected report renderer, tests and repo commit. Use the published artifacts from the successful evaluation if a runner publication failure recurs; do not re-tune the holdout.
+- Security: no Dhan credentials, access tokens, PINs, TOTP values or raw provider response bodies are logged.
