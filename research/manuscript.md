@@ -270,3 +270,8 @@ The source-gated 256-cycle dataset supported 152 common expanding-window forecas
 ## 11. Overall conclusion and future direction
 
 **NO USABLE TRADING STRATEGY VALIDATED.** The model-family benchmark is exploratory and does not prove economic value. The bounded next evidence gate is to obtain auditable historical contract-level fills and dated Paytm Money costs, then evaluate a fixed strategy with conservative execution, drawdown and cost stress. If those inputs cannot be sourced, stop rather than continue model tuning. A future confirmatory claim requires a new prospective evaluation window after the protocol is frozen.
+
+
+### Phase 12 free-source search and data availability limitation
+
+The initial free-source audit identified the official NSE contract-wise historical price/volume page, official daily derivatives reports, a public NSE F&O bhavcopy archive project, and a provider-stated free NIFTY expired-options one-minute sample. The sample's linked Google Drive download returned HTTP 401 in the research browsing environment, so no file was ingested. The source audit is documented in [PHASE12_DATA_SOURCE_AUDIT.md](../docs/PHASE12_DATA_SOURCE_AUDIT.md). This does not establish that free historical options data are universally unavailable. The trading gate remains blocked until free-source acquisition and lineage checks are completed and contract-level prices can represent the requested entry time.
