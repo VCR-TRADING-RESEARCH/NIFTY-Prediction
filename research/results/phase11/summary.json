@@ -1,0 +1,132 @@
+{
+  "status": "EXPLORATORY_ONLY_NOT_CONFIRMATORY",
+  "dataset_rows": 256,
+  "minimum_training_history": 104,
+  "evaluation_start_expiry": "2023-11-16",
+  "evaluation_end_expiry": "2026-10-19",
+  "evaluation_rows": 152,
+  "candidates": [
+    {
+      "candidate": "extra_trees",
+      "n": 152,
+      "accuracy": 0.5789473684210527,
+      "balanced_accuracy": 0.5783549783549784,
+      "mcc": 0.15736530700974893,
+      "brier": 0.24538766651145885,
+      "log_loss": 0.6841067224731221,
+      "roc_auc": 0.5951515151515152
+    },
+    {
+      "candidate": "random_forest",
+      "n": 152,
+      "accuracy": 0.5723684210526315,
+      "balanced_accuracy": 0.5729004329004328,
+      "mcc": 0.1462447050796041,
+      "brier": 0.24688691861956244,
+      "log_loss": 0.6876953710032646,
+      "roc_auc": 0.5851082251082251
+    },
+    {
+      "candidate": "hist_gradient_boosting",
+      "n": 152,
+      "accuracy": 0.5526315789473685,
+      "balanced_accuracy": 0.5541125541125541,
+      "mcc": 0.11102902931646058,
+      "brier": 0.26187627033913286,
+      "log_loss": 0.7245354684095362,
+      "roc_auc": 0.5594805194805195
+    },
+    {
+      "candidate": "logistic",
+      "n": 152,
+      "accuracy": 0.5460526315789473,
+      "balanced_accuracy": 0.5457142857142857,
+      "mcc": 0.09154754164341268,
+      "brier": 0.260385816077132,
+      "log_loss": 0.7182966908226467,
+      "roc_auc": 0.5307359307359307
+    },
+    {
+      "candidate": "rbf_svc",
+      "n": 152,
+      "accuracy": 0.5263157894736842,
+      "balanced_accuracy": 0.5316017316017316,
+      "mcc": 0.10595243864638669,
+      "brier": 0.2540884200645385,
+      "log_loss": 0.7016290239579542,
+      "roc_auc": 0.5042424242424244
+    },
+    {
+      "candidate": "gradient_boosting",
+      "n": 152,
+      "accuracy": 0.5,
+      "balanced_accuracy": 0.5026839826839826,
+      "mcc": 0.005878784681076903,
+      "brier": 0.2543364708027916,
+      "log_loss": 0.7029897632734062,
+      "roc_auc": 0.5554978354978356
+    },
+    {
+      "candidate": "expanding_majority",
+      "n": 152,
+      "accuracy": 0.4934210526315789,
+      "balanced_accuracy": 0.5,
+      "mcc": 0.0,
+      "brier": 0.25428096860017363,
+      "log_loss": 0.7017987639743215,
+      "roc_auc": 0.5068398268398269
+    },
+    {
+      "candidate": "prior_cycle",
+      "n": 152,
+      "accuracy": 0.47368421052631576,
+      "balanced_accuracy": 0.47359307359307357,
+      "mcc": -0.05281385281385281,
+      "brier": 0.5263147368431053,
+      "log_loss": 7.271321819973866,
+      "roc_auc": 0.4735930735930737
+    },
+    {
+      "candidate": "momentum_5d",
+      "n": 152,
+      "accuracy": 0.46710526315789475,
+      "balanced_accuracy": 0.46675324675324675,
+      "mcc": -0.06658003028611832,
+      "brier": 0.5328936710536315,
+      "log_loss": 7.362213330223818,
+      "roc_auc": 0.4667532467532468
+    }
+  ],
+  "feature_columns": [
+    "ret_1",
+    "ret_5",
+    "ret_10",
+    "ret_20",
+    "rv_5",
+    "range_5",
+    "rv_10",
+    "range_10",
+    "rv_20",
+    "range_20",
+    "overnight_gap",
+    "pre_anchor_return",
+    "anchor_jump",
+    "prior_cycle_return",
+    "prior_cycle_up",
+    "prior_close_range_position",
+    "session_gap_days",
+    "post_expiry_change",
+    "month_sin",
+    "month_cos",
+    "momentum_spread_5_20",
+    "rv_ratio_5_20",
+    "trend_efficiency_20",
+    "downside_semivol_20",
+    "upside_semivol_20",
+    "semivol_asymmetry_20"
+  ],
+  "seed": 20261026,
+  "important_caveat": "Phase 10 holdout was already examined. This benchmark is exploratory and cannot certify a new edge; no tuning is permitted on this output.",
+  "trading_strategy_validated": false,
+  "trading_gate": "BLOCKED: no contract-level options/futures fills, date-effective Paytm Money costs, spreads and slippage stress."
+}
