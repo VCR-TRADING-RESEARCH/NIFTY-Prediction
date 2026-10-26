@@ -1,7 +1,165 @@
 {
-  "status": "ERROR",
-  "generated_utc": "2026-10-26T06:26:57.360127+00:00",
-  "error": "ValueError: request failed; sensitive provider details withheld",
-  "chunks": [],
+  "status": "DIAGNOSTIC_ONLY",
+  "generated_utc": "2026-10-26T06:30:19.804205+00:00",
+  "source": "DhanHQ API v2 intraday minute bars (NSE NIFTY 50 INDEX); provider-response metadata and credentials are not persisted.",
+  "window": {
+    "start": "2021-10-26",
+    "end": "2026-10-25"
+  },
+  "source_master_sha256": "841262d38a5c577f4e8ee7bfffe85253fdd87cc2fee81e31725460c41a663b29",
+  "counts": {
+    "primary_anchors": 1229,
+    "dhan_anchors": 1235,
+    "overlap_sessions": 1229,
+    "exact_timestamp_matches": 1229,
+    "anchor_open_mismatches_over_1_point": 0
+  },
+  "absolute_difference_points": {
+    "median": 0.0,
+    "p95": 0.000800000001618173,
+    "max": 0.000800000001618173
+  },
+  "weekly_label_sensitivity": {
+    "status": "DIAGNOSTIC_ONLY",
+    "weekly_cycles_with_secondary_anchor": 257,
+    "primary_vs_secondary_direction_switches": 0,
+    "label_switch_rate": 0.0,
+    "labels_agreeing_with_original_published_label": 257,
+    "label_agreement_rate": 1.0,
+    "anchor_difference_median_points": 0.0,
+    "anchor_difference_p95_points": 0.000800000001618173,
+    "anchor_difference_max_points": 0.000800000001618173,
+    "caveat": "Same official expiry closes are used for both returns. This only measures label sensitivity to the secondary anchor; secondary provider lineage is unverified and labels remain exploratory."
+  },
+  "chunks": [
+    {
+      "start": "2021-10-26",
+      "end": "2022-01-23",
+      "status": "downloaded",
+      "bars": 44195
+    },
+    {
+      "start": "2022-01-24",
+      "end": "2022-04-23",
+      "status": "downloaded",
+      "bars": 41941
+    },
+    {
+      "start": "2022-04-24",
+      "end": "2022-07-22",
+      "status": "downloaded",
+      "bars": 31582
+    },
+    {
+      "start": "2022-07-23",
+      "end": "2022-10-20",
+      "status": "downloaded",
+      "bars": 22499
+    },
+    {
+      "start": "2022-10-21",
+      "end": "2023-01-18",
+      "status": "downloaded",
+      "bars": 22930
+    },
+    {
+      "start": "2023-01-19",
+      "end": "2023-04-18",
+      "status": "downloaded",
+      "bars": 21751
+    },
+    {
+      "start": "2023-04-19",
+      "end": "2023-07-17",
+      "status": "downloaded",
+      "bars": 23247
+    },
+    {
+      "start": "2023-07-18",
+      "end": "2023-10-15",
+      "status": "downloaded",
+      "bars": 22888
+    },
+    {
+      "start": "2023-10-16",
+      "end": "2024-01-13",
+      "status": "downloaded",
+      "bars": 22935
+    },
+    {
+      "start": "2024-01-14",
+      "end": "2024-04-12",
+      "status": "downloaded",
+      "bars": 22606
+    },
+    {
+      "start": "2024-04-13",
+      "end": "2024-07-11",
+      "status": "downloaded",
+      "bars": 22602
+    },
+    {
+      "start": "2024-07-12",
+      "end": "2024-10-09",
+      "status": "downloaded",
+      "bars": 22870
+    },
+    {
+      "start": "2024-10-10",
+      "end": "2025-01-07",
+      "status": "downloaded",
+      "bars": 22565
+    },
+    {
+      "start": "2025-01-08",
+      "end": "2025-04-07",
+      "status": "downloaded",
+      "bars": 23258
+    },
+    {
+      "start": "2025-04-08",
+      "end": "2025-07-06",
+      "status": "downloaded",
+      "bars": 22504
+    },
+    {
+      "start": "2025-07-07",
+      "end": "2025-10-04",
+      "status": "downloaded",
+      "bars": 23255
+    },
+    {
+      "start": "2025-10-05",
+      "end": "2026-01-02",
+      "status": "downloaded",
+      "bars": 22944
+    },
+    {
+      "start": "2026-01-03",
+      "end": "2026-04-02",
+      "status": "downloaded",
+      "bars": 22513
+    },
+    {
+      "start": "2026-04-03",
+      "end": "2026-07-01",
+      "status": "downloaded",
+      "bars": 22152
+    },
+    {
+      "start": "2026-07-02",
+      "end": "2026-09-29",
+      "status": "downloaded",
+      "bars": 23654
+    },
+    {
+      "start": "2026-09-30",
+      "end": "2026-10-25",
+      "status": "downloaded",
+      "bars": 5999
+    }
+  ],
+  "cache": "Dhan source chunks are cached under data/cache/dhan-anchors and are not committed.",
+  "acceptance": "Diagnostic only. Dhan has verified authenticated lineage but comparison does not independently validate all archived history or establish exchange-grade truth. Historical expiry labels remain exploratory until source and OHLC audit gates pass.",
   "secret_values_logged": false
 }

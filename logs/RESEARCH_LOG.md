@@ -221,3 +221,12 @@
 - Difference summary: {"max": 6.700000000000728, "median": 0.049999999999272404, "p95": 1.0}.
 - Caveat: secondary archive provider lineage is unverified; this comparison cannot pass the official independent-anchor gate.
 - Output: data/reconciliation/anchor_source_comparison.csv and anchor_source_comparison_report.json.
+
+
+## Phase 9 Dhan historical anchor audit — run 40280081353 — 2026-10-26T06:30:21.187891+00:00
+- Status: DIAGNOSTIC_ONLY.
+- Window: {"end": "2026-10-25", "start": "2021-10-26"}.
+- Counts: {"anchor_open_mismatches_over_1_point": 0, "dhan_anchors": 1235, "exact_timestamp_matches": 1229, "overlap_sessions": 1229, "primary_anchors": 1229}.
+- Difference summary: {"max": 0.000800000001618173, "median": 0.0, "p95": 0.000800000001618173}.
+- Weekly label sensitivity: {"anchor_difference_max_points": 0.000800000001618173, "anchor_difference_median_points": 0.0, "anchor_difference_p95_points": 0.000800000001618173, "caveat": "Same official expiry closes are used for both returns. This only measures label sensitivity to the secondary anchor; secondary provider lineage is unverified and labels remain exploratory.", "label_agreement_rate": 1.0, "label_switch_rate": 0.0, "labels_agreeing_with_original_published_label": 257, "primary_vs_secondary_direction_switches": 0, "status": "DIAGNOSTIC_ONLY", "weekly_cycles_with_secondary_anchor": 257}.
+- Dhan source chunks are cache-only; credentials and response bodies are not recorded.
