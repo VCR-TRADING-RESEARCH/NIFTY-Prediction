@@ -115,3 +115,8 @@ This is a prediction experiment, not a profitable trading strategy. Historical c
 Phase 11 is registered in [PHASE_11_MODEL_FAMILY_BENCHMARK.md](PHASE_11_MODEL_FAMILY_BENCHMARK.md). It adds a fixed expanding-window comparison of regularized logistic regression, ExtraTrees, Random Forest, Gradient Boosting, Histogram Gradient Boosting and RBF SVC, plus simple baselines. It uses only source-gated weekly rows and fold-local preprocessing. No hyperparameter tuning is allowed.
 
 The Phase 10 holdout has already been inspected, so Phase 11 outputs are exploratory only. A future confirmatory window must be collected prospectively after the protocol is frozen. The separate executable-trading gate remains blocked until historical contract-level fills/prices and date-effective Paytm Money costs, spreads and slippage are validated.
+
+
+## Phase 11 — Diverse model-family benchmark (2026-10-26)
+
+The first fixed expanding-window benchmark completed over 152 forecast dates with 256 source-gated weekly cycles. ExtraTrees ranked first on balanced accuracy (57.8%) and Random Forest second (57.3%), but this is exploratory reuse of a previously inspected sample, not confirmatory evidence. See [Phase 11 protocol and results](PHASE_11_MODEL_FAMILY_BENCHMARK.md). A paired four-week block-bootstrap reporting correction is undergoing CI validation. No further tuning is allowed in this phase. Trading remains blocked pending contract-level historical fills and full Paytm Money cost/spread/slippage validation.
