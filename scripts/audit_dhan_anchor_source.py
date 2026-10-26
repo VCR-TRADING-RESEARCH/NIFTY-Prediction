@@ -180,6 +180,7 @@ def fetch_chunk(
 
 
 def main() -> int:
+    stage = "load_credentials"
     force = os.getenv("FORCE_REFRESH_DHAN_ANCHORS", "false").strip().lower() == "true"
     client_id = os.getenv("DHAN_CLIENT_ID", "").strip()
     pin = os.getenv("DHAN_PIN", "").strip()
@@ -199,10 +200,13 @@ def main() -> int:
 
     chunk_reports: list[dict[str, Any]] = []
     try:
+        stage = "token_authentication"
         token = get_access_token(client_id, pin, totp_secret)
+        stage = "security_master_download"
         master_response = requests.get(MASTER_URL, timeout=60, headers={"User-Agent": "NIFTYPredictionResearch/1.0"})
         master_response.raise_for_status()
         master_bytes = master_response.content
+        stage = "security_id_resolution"
         master = pd.read_csv(pd.io.common.BytesIO(master_bytes), low_memory=False)
         security_id = find_nifty50_security(master)
         # Dhan documents intraday history for the last five years. Stay inside that advertised bound.
@@ -214,6 +218,7 @@ def main() -> int:
         end = today - timedelta(days=1)
         all_frames = []
         cursor = start
+        stage = "dhan_minute_history_download"
         while cursor <= end:
             chunk_end = min(cursor + timedelta(days=89), end)
             bars, chunk_status = fetch_chunk(cursor, chunk_end, token, client_id, security_id, force)
@@ -234,6 +239,7 @@ def main() -> int:
             print(json.dumps(report, indent=2))
             return 0
 
+        stage = "anchor_comparison"
         dhan = pd.concat(all_frames, ignore_index=True).sort_values("timestamp").drop_duplicates("timestamp", keep="last")
         clock = dhan.timestamp.dt.time
         dhan = dhan[(clock >= pd.Timestamp("09:15").time()) & (clock <= pd.Timestamp("15:29:59").time())]
@@ -298,6 +304,7 @@ def main() -> int:
         report = {
             "status": "ERROR",
             "generated_utc": pd.Timestamp.now(tz="UTC").isoformat(),
+            "stage": stage,
             "error": _safe_summary_error(exc),
             "chunks": chunk_reports,
             "secret_values_logged": False,
