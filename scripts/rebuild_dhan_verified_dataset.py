@@ -450,6 +450,9 @@ def render_report(summary: dict[str, Any], data_quality: dict[str, Any], dev_met
             lines.append("| " + " | ".join(vals) + " |")
         return "\n".join(lines)
 
+    official_quality = data_quality.get("official_daily_quality", {})
+    target_quality = data_quality.get("target_construction", {})
+    source_gate = data_quality.get("row_source_gate", {})
     return f"""# Phase 10 Results — Dhan-Backed Weekly NIFTY Direction
 
 Generated (UTC): {summary["generated_utc"]}
@@ -467,9 +470,9 @@ Generated (UTC): {summary["generated_utc"]}
 
 The target uses the verified actual weekly expiry calendar and official NSE daily OHLC. The anchor and pre-anchor intraday features use authenticated DhanHQ 1-minute bars. The official NSE session list, not the set of observed Dhan sessions, determines the first trading session after the previous expiry. This avoids shifting the anchor when Dhan has a coverage gap.
 
-- Official NSE daily sessions: {data_quality.get("official_sessions", "n/a")} ({data_quality.get("official_first_session", "n/a")} to {data_quality.get("official_last_session", "n/a")}).
-- Official sessions with Dhan intraday bars: {data_quality.get("official_sessions_with_dhan_intraday", "n/a")}.
-- Weekly cycles built / source-gate rows: {data_quality.get("target_construction", {}).get("cycles_built", "n/a")} / {data_quality.get("target_construction", {}).get("row_source_gate_pass", "n/a")}.
+- Official NSE daily sessions: {official_quality.get("official_sessions", "n/a")} ({official_quality.get("official_first_session", "n/a")} to {official_quality.get("official_last_session", "n/a")}).
+- Official sessions with Dhan intraday bars: {official_quality.get("official_sessions_with_dhan_intraday", "n/a")}.
+- Weekly cycles built / row-source-gate passes: {target_quality.get("weekly_cycles_labelled", source_gate.get("cycles_built", "n/a"))} / {source_gate.get("row_source_gate_pass", "n/a")}.
 - Dhan anchor cross-check: {json.dumps(data_quality.get("dhan_anchor_crosscheck", {}), sort_keys=True)}.
 - Fresh holdout: {summary.get("holdout_first_expiry_date", "n/a")} to {summary.get("holdout_last_expiry_date", "n/a")} ({summary.get("holdout_rows", "n/a")} rows); development predictions start only after {MIN_HISTORY} earlier labelled rows.
 - All feature engineering is causal to the 10:00 cutoff; the selected candle's later high/low/close is not used.
@@ -590,6 +593,16 @@ def main() -> int:
         cycles, calendar, construction = construct_weekly_table(minutes, daily, EXPIRY_PATH)
         excluded_detail = construction.pop("_excluded_detail", [])
         cycles, source_gate = row_source_gate(cycles)
+        # Replace the legacy pre-Dhan confirmatory flag in the core construction summary:
+        # Phase 10 now has a separate row-level gate based on the official calendar/daily OHLC
+        # and authenticated Dhan anchor bars. Model/trading performance remain exploratory.
+        construction["legacy_confirmatory_eligible_rows_before_phase10_gate"] = construction.get("confirmatory_eligible_rows", 0)
+        construction["confirmatory_eligible_rows"] = int(source_gate["row_source_gate_pass"])
+        construction["calendar_warning"] = (
+            "Phase 10 retained rows use the official NSE daily session calendar, verified actual expiry dates, "
+            "official NSE expiry closes and authenticated Dhan 10:00–10:03 anchors. These are source-gated rows; "
+            "model performance remains exploratory and no instrument-level trading edge is validated."
+        )
         cycles = add_causal_features(cycles, daily)
         if not bool(cycles["source_gate_pass"].all()):
             raise ValueError("One or more constructed rows failed the registered Dhan/official-source gate.")
@@ -791,6 +804,8 @@ def main() -> int:
             "feature_complete_rows": int(len(model_data)),
             "development_rows": int(split_idx),
             "holdout_rows": int(len(model_data) - split_idx),
+            "holdout_first_expiry_date": pd.Timestamp(model_data["expiry_date"].iloc[split_idx]).date().isoformat(),
+            "holdout_last_expiry_date": pd.Timestamp(model_data["expiry_date"].iloc[-1]).date().isoformat(),
             "minimum_training_history": MIN_HISTORY,
             "split_manifest": "research/results/phase10/phase10_split_manifest.json",
             "selected_baseline": selected_baseline,
