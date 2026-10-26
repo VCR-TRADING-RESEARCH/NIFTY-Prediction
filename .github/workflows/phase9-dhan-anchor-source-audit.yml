@@ -23,7 +23,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: phase9-dhan-anchor-audit-${{ github.ref }}
+  group: phase9-all-anchor-source-audits-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
