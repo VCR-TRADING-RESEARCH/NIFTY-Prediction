@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from scripts.fetch_dhan_anchor_history import _window
 from scripts.rebuild_dhan_verified_dataset import (
     NEW_FEATURES,
     add_causal_features,
@@ -25,6 +26,19 @@ def _valid_minutes(day: str, count: int = 300) -> pd.DataFrame:
         "session_date": [pd.Timestamp(day).date()] * count,
         "clock_time": [t.time() for t in ts],
     })
+
+
+def test_dhan_request_windows_are_at_most_90_days_and_contiguous():
+    start, end, chunks = _window()
+    assert chunks
+    assert chunks[0][0] == start
+    assert chunks[-1][1] == end
+    for i, (chunk_start, chunk_end, path) in enumerate(chunks):
+        assert chunk_start <= chunk_end
+        assert (chunk_end - chunk_start).days + 1 <= 90
+        assert path.name == f"dhan_{chunk_start:%Y%m%d}_{chunk_end:%Y%m%d}.csv"
+        if i:
+            assert chunks[i - 1][1] + pd.Timedelta(days=1) == chunk_start
 
 
 def test_official_session_calendar_does_not_shift_when_dhan_bars_are_missing():
@@ -88,6 +102,7 @@ def test_six_augmented_features_are_causal_to_anchor_date():
         "bars": [375] * 5,
     })
     extended = add_causal_features(cycle, pd.concat([prior, future], ignore_index=True))
+    assert all(name in extended.columns for name in NEW_FEATURES)
     for name in NEW_FEATURES:
         a = original.loc[0, name]
         b = extended.loc[0, name]
