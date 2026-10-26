@@ -315,3 +315,10 @@
 - **Root cause:** Report wording changed but its regression assertion was not updated.
 - **Correction:** Split the report into separate exact count lines. This preserves the underlying metric and makes the required count unambiguous.
 - **Next gate:** Rerun the full test suite and fixed Phase 11 benchmark; do not interpret this failed run as model evidence.
+
+## E0012 — 2026-10-26 — Phase 11 workflow YAML malformed during pull-request trigger addition
+- **Run:** [40284557263](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40284557263).
+- **Severity:** Medium — workflow failed before creating a job.
+- **Symptom:** A literal backslash-n sequence was inserted into the YAML while adding pull_request triggers, so Actions could not parse the workflow.
+- **Root cause:** Escaped newline text was committed instead of actual newline characters.
+- **Correction:** Replaced the literal escape sequences with actual line breaks; workflow syntax and the next run must be verified.
