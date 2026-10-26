@@ -177,3 +177,29 @@ Limitations include 1,719/1,903 close discrepancies above tolerance; an unvalida
 
 ### Future direction
 If resumed, the next justified step is a bounded source-diagnosis phase: inspect date-level/year-level mismatch patterns; test session aggregation, timezone and close selection; independently validate 10:00 minute prices using a reliable free source first and Dhan if access can be repaired; preserve immutable raw-source values; rebuild labels and re-register the holdout. Only after source and anchor gates pass should contract-level simulation include historical futures/options prices, date-effective Paytm Money charges, bid-ask spread, slippage, lot sizing and conservative fills.
+
+
+## Additional historical anchor audit (26 October 2026)
+
+### Data and timestamp audit
+
+A corrected comparison between the primary public NIFTY minute archive and a separately published minute dataset covered 1 February 2019 through 27 March 2024. The first attempt reported no exact timestamp matches; review found a comparison bug because the primary timestamps were timezone-aware while the secondary timestamps were timezone-naive local IST. That match-count statistic was invalidated. Both sources were normalized to Asia/Kolkata before rerunning and regression tests were added.
+
+| Anchor diagnostic | Result |
+|---|---:|
+| Primary-source anchor sessions | 1,269 |
+| Secondary-source anchor sessions | 1,271 |
+| Sessions with both anchors | 1,269 |
+| Exact timestamps after IST normalization | 1,269 / 1,269 |
+| Median absolute anchor-open difference | 0.05 points |
+| 95th percentile absolute difference | 1.00 point |
+| Maximum absolute difference | 6.70 points |
+| Sessions with difference over 1 point | 62 / 1,269 |
+| Weekly cycles with overlapping alternate anchor | 265 |
+| Weekly UP/DOWN labels changed after alternate-anchor substitution | 0 / 265 |
+
+### Interpretation
+
+The alternate-anchor test holds the recorded expiry closing price constant and recalculates the cycle return using the other archive's 10:00 open. No direction label changed in the 265 overlapping weekly cycles. This reduces concern that small anchor-price discrepancies alone are driving the direction labels within this overlap. It does not establish that either minute archive is a reliable ground-truth source: the secondary data's original provider lineage is not independently verified, the comparison ends in March 2024, and 62 daily anchor opens differ by more than one index point. Other intraday OHLC features may remain affected.
+
+The daily-close source mismatch gate therefore remains **BLOCKED**. No model selection or trading acceptance is inferred from this diagnostic. A Dhan historical anchor-source audit is the next evidence-gathering step; it can corroborate only its available five-year window and does not remove the requirement for complete source provenance, re-built labels and a new locked holdout.
