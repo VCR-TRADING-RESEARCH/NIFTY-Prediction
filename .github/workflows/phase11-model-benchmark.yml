@@ -6,6 +6,7 @@ on:
     paths:
       - ".github/workflows/phase11-model-benchmark.yml"
       - "scripts/benchmark_model_families.py"
+      - "scripts/rebuild_dhan_verified_dataset.py"
       - "tests/test_phase11_model_benchmark.py"
       - "docs/PHASE_11_MODEL_FAMILY_BENCHMARK.md"
       - "data/processed/phase10_dhan_weekly_labels_features.csv"
