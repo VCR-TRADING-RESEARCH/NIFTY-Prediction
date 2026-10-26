@@ -37,6 +37,29 @@ def _prob(model,x):
 def _metrics(frame):
     y=frame.actual.astype(int).to_numpy(); pred=frame.predicted.astype(int).to_numpy(); p=np.clip(frame.p_up.astype(float).to_numpy(),1e-6,1-1e-6)
     return {"n":int(len(frame)),"accuracy":float(accuracy_score(y,pred)),"balanced_accuracy":float(balanced_accuracy_score(y,pred)),"mcc":float(matthews_corrcoef(y,pred)),"brier":float(brier_score_loss(y,p)),"log_loss":float(log_loss(y,p,labels=[0,1])),"roc_auc":float(roc_auc_score(y,p)) if len(np.unique(y))==2 else None}
+def _paired_block_bootstrap(predictions, candidate_a, candidate_b, reps=2000, block=4, seed=SEED):
+    """Descriptive paired moving-block bootstrap of balanced-accuracy difference A minus B."""
+    a=predictions.loc[predictions.candidate==candidate_a].sort_values("expiry_date")
+    b=predictions.loc[predictions.candidate==candidate_b].sort_values("expiry_date")
+    pair=a[["expiry_date","actual","predicted"]].merge(b[["expiry_date","predicted"]],on="expiry_date",how="inner",suffixes=("_a","_b"),validate="one_to_one").sort_values("expiry_date")
+    y=pair.actual.to_numpy(dtype=int); pa=pair.predicted_a.to_numpy(dtype=int); pb=pair.predicted_b.to_numpy(dtype=int)
+    n=len(y)
+    if n < max(12,block*3) or len(np.unique(y))<2:
+        return {"candidate_a":candidate_a,"candidate_b":candidate_b,"status":"UNDERPOWERED","n":n,"block_length":block,"replicates_requested":reps}
+    observed=float(balanced_accuracy_score(y,pa)-balanced_accuracy_score(y,pb))
+    rng=np.random.default_rng(seed); diffs=[]; attempts=0
+    while len(diffs)<reps and attempts<reps*20:
+        attempts+=1; ix=[]
+        while len(ix)<n:
+            start=int(rng.integers(0,n-block+1)); ix.extend(range(start,min(start+block,n)))
+        ix=np.asarray(ix[:n],dtype=int); yy=y[ix]
+        if len(np.unique(yy))<2: continue
+        diffs.append(float(balanced_accuracy_score(yy,pa[ix])-balanced_accuracy_score(yy,pb[ix])))
+    if len(diffs)<max(200,reps//2):
+        return {"candidate_a":candidate_a,"candidate_b":candidate_b,"status":"UNDERPOWERED","n":n,"block_length":block,"replicates_requested":reps,"replicates_valid":len(diffs),"observed_difference":observed}
+    values=np.asarray(diffs)
+    return {"candidate_a":candidate_a,"candidate_b":candidate_b,"status":"COMPLETED","n":n,"block_length":block,"replicates_requested":reps,"replicates_valid":len(values),"observed_difference":observed,"difference_ci_95_low":float(np.quantile(values,0.025)),"difference_ci_95_high":float(np.quantile(values,0.975))}
+
 def run_benchmark(input_path=INPUT,out_dir=OUT):
     data=pd.read_csv(input_path)
     required={"expiry_date","label","source_gate_pass",*FEATURES}
@@ -61,7 +84,8 @@ def run_benchmark(input_path=INPUT,out_dir=OUT):
     out_dir.mkdir(parents=True,exist_ok=True); predictions.to_csv(out_dir/"predictions_expanding_window.csv",index=False)
     metrics=pd.DataFrame([{"candidate":name,**_metrics(g)} for name,g in predictions.groupby("candidate",sort=False)]).sort_values(["balanced_accuracy","brier"],ascending=[False,True])
     metrics.to_csv(out_dir/"metrics.csv",index=False)
-    summary={"status":"EXPLORATORY_ONLY_NOT_CONFIRMATORY","dataset_rows":int(len(data)),"minimum_training_history":MIN_HISTORY,"evaluation_start_expiry":str(data.loc[MIN_HISTORY,"expiry_date"].date()),"evaluation_end_expiry":str(data.iloc[-1].expiry_date.date()),"evaluation_rows":int(len(predictions[predictions.candidate=="logistic"])),"candidates":metrics.to_dict(orient="records"),"feature_columns":FEATURES,"seed":SEED,"important_caveat":"Phase 10 holdout was already examined. This benchmark is exploratory and cannot certify a new edge; no tuning is permitted on this output.","trading_strategy_validated":False,"trading_gate":"BLOCKED: no contract-level options/futures fills, date-effective Paytm Money costs, spreads and slippage stress."}
+    paired_bootstrap=[_paired_block_bootstrap(predictions,"extra_trees","expanding_majority"),_paired_block_bootstrap(predictions,"extra_trees","random_forest")]
+    summary={"status":"EXPLORATORY_ONLY_NOT_CONFIRMATORY","dataset_rows":int(len(data)),"minimum_training_history":MIN_HISTORY,"evaluation_start_expiry":str(data.loc[MIN_HISTORY,"expiry_date"].date()),"evaluation_end_expiry":str(data.iloc[-1].expiry_date.date()),"evaluation_rows":int(len(predictions[predictions.candidate=="logistic"])),"candidates":metrics.to_dict(orient="records"),"paired_four_week_block_bootstrap":paired_bootstrap,"feature_columns":FEATURES,"seed":SEED,"important_caveat":"Phase 10 holdout was already examined. This benchmark is exploratory and cannot certify a new edge; no tuning is permitted on this output. Bootstrap intervals are descriptive and do not repair prior holdout reuse.","trading_strategy_validated":False,"trading_gate":"BLOCKED: no contract-level options/futures fills, date-effective Paytm Money costs, spreads and slippage stress."}
     (out_dir/"summary.json").write_text(json.dumps(summary,indent=2,allow_nan=False)+"\n",encoding="utf-8")
     fig,ax=plt.subplots(figsize=(10,5.5)); plot=metrics.sort_values("balanced_accuracy"); ax.barh(plot.candidate,plot.balanced_accuracy); ax.axvline(0.5,linestyle="--",linewidth=1); ax.set_xlim(0,1); ax.set_xlabel("Balanced accuracy"); ax.set_title("Phase 11 — exploratory expanding-window benchmark"); fig.tight_layout(); fig.savefig(out_dir/"balanced_accuracy.png",dpi=160); plt.close(fig)
     report=["# Phase 11 — Diverse Model-Family Benchmark","","- Status: **"+summary["status"]+"**","- Source-gated rows: "+str(len(data)),"- Expanding-window predictions per candidate: "+str(summary["evaluation_rows"]),"- Evaluation dates: "+summary["evaluation_start_expiry"]+" to "+summary["evaluation_end_expiry"],"- Candidates: expanding majority, prior-cycle direction, 5-session momentum, logistic regression, ExtraTrees, Random Forest, Gradient Boosting, Histogram Gradient Boosting, RBF SVC.","","## Results","","| Candidate | N | Accuracy | Balanced accuracy | MCC | Brier | Log loss | ROC AUC |","|---|---:|---:|---:|---:|---:|---:|---:|"]
