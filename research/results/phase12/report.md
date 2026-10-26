@@ -9,3 +9,7 @@ The automated cost gate requires contract type, side, entry/exit midpoint, sprea
 Required evidence: historical contract identifiers and contract-spec/lot-size history; entry/exit prices with timestamp/fill model; official expiry settlement/exercise treatment; Paytm Money fee schedule effective on each trade date; spread/slippage stress; and an untouched prospective evaluation window.
 
 Conclusion: **NO USABLE TRADING STRATEGY VALIDATED.** Do not trade the directional model on these results.
+
+
+## Free-source search update
+The free-source search identified [official NSE contract-wise historical data](https://www.nseindia.com/report-detail/fo_eq_security), [NSE daily derivatives reports](https://www.nseindia.com/resources/historical-reports-capital-market-daily-monthly-archives-derivative-market), a [public NSE bhavcopy archive project](https://github.com/SantoshSrinivas79/NSE-FNO-Data-bank), and a provider-stated [free NIFTY expired-options sample](https://cloudtraderpro.in/free-historical-nifty-expired-options-data/?ref=shoonyatrader). The free sample's linked Drive download returned HTTP 401 in the research browsing environment. Official EOD bhavcopy alone does not supply the requested 10:00 IST intraday option entry price. Data acquisition and lineage/completeness validation therefore remain pending. This is not a claim that free data is unavailable everywhere; no paid source should be considered before these avenues are tested further. See [source audit](../../docs/PHASE12_DATA_SOURCE_AUDIT.md).
