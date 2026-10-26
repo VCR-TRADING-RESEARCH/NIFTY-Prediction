@@ -129,3 +129,8 @@ Phase 11 fixed diverse model-family benchmark and uncertainty correction are doc
 Phase 12 is bounded to executable trade evidence and cost validation: [Phase 12 plan](PHASE_12_EXECUTABLE_TRADING_GATE.md). Its fail-closed engine requires historical contract-level futures/options prices, expiry/settlement semantics, spread/slippage and per-trade date-effective Paytm Money charges. Missing data yields a BLOCKED status with no estimated P&L. Do not use spot labels as an options backtest, do not assume current fees apply historically, and do not use the previously inspected sample for confirmatory claims.
 
 **Current terminal decision if required trade data cannot be sourced:** NO USABLE TRADING STRATEGY VALIDATED. Stop after this gate rather than extending model searches indefinitely.
+
+
+### Phase 12 source-acquisition amendment
+
+Free-source acquisition is still in progress: official NSE contract-wise data and daily derivatives reports, a public NSE F&O bhavcopy archive, and a provider-stated free one-minute expired-options sample have been identified. The sample link was inaccessible to the research browser (HTTP 401), so it has not been validated. See [source audit](PHASE12_DATA_SOURCE_AUDIT.md). This is not grounds to conclude that free data are unavailable; do not purchase data until free-source avenues have been tested and documented.
