@@ -89,3 +89,11 @@
 - The Phase 11 workflow completed successfully in run 40284704966. On 152 chronological expanding-window forecasts, ExtraTrees had balanced accuracy 57.8%, followed by Random Forest 57.3%; all metrics are exploratory because the historical sample/holdout has already been inspected.
 - Audit identified a protocol omission: no block-bootstrap uncertainty interval was included despite the plan requiring dependence-aware stability reporting. A fixed four-week paired bootstrap and test were added for the ExtraTrees-versus-majority and ExtraTrees-versus-Random-Forest comparisons. Await CI validation.
 - No strategy is validated; realistic contract-level P&L and Paytm Money fees/spread/slippage remain a separate required gate. Only visible decisions and rationale are recorded, not hidden chain-of-thought.
+
+
+## 2026-10-26 — User approved continuing after uncertainty-interval explanation
+- User message: “Proceed”.
+- Phase 11 corrected workflow run [40311220819](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40311220819) passed all steps including repository persistence.
+- The paired block-bootstrap interval for ExtraTrees minus Random Forest remains −6.9 to +8.0 percentage points, crossing zero; model superiority is not established.
+- Began bounded Phase 12: executable options/futures trade evidence and transaction-cost gate. Implemented fail-closed handling rather than manufacturing missing historical fills or Paytm Money charges.
+- Visible decisions and implementation status only are recorded; hidden chain-of-thought is not stored.
