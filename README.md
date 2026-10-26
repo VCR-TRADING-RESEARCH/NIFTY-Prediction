@@ -209,3 +209,12 @@ Last repository status update: 2026-10-25.
 - [Balanced-accuracy chart](research/results/phase11/balanced_accuracy.png)
 - [Benchmark workflow](.github/workflows/phase11-model-benchmark.yml)
 - Trading remains blocked until instrument-level option/futures fills, date-effective Paytm Money charges, spreads and slippage are validated.
+
+
+## Latest research status (2026-10-26 — Phase 12)
+
+- **Phase 11 CI:** PASS. Corrected workflow run [40311220819](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40311220819) passed tests, benchmark, artifact upload and repository persistence.
+- **Phase 11 result:** exploratory only; ExtraTrees balanced accuracy 0.578 versus Random Forest 0.573 on 152 expanding-window predictions. Their paired four-week block-bootstrap difference is +0.55 percentage points with 95% interval −6.9 to +8.0 points; no clear superiority is established.
+- **Phase 12:** [Executable trading/cost gate](docs/PHASE_12_EXECUTABLE_TRADING_GATE.md) added on branch `research/phase-12-executable-trading-gate`. The gate fails closed because no source-registered contract-level options/futures fills and dated Paytm Money cost schedule are present.
+- **Current decision:** **NO USABLE TRADING STRATEGY VALIDATED.** Do not treat direction accuracy as profitability. See [Phase 11 report](research/results/phase11/report.md), [Phase 12 report](research/results/phase12/report.md), [machine-readable cost gate](research/results/phase12/cost_gate_report.json), [research log](logs/RESEARCH_LOG.md), and [error log](logs/ERROR_LOG.md).
+- Phase 12 automated workflow: [.github/workflows/phase12-executable-trading-gate.yml](.github/workflows/phase12-executable-trading-gate.yml). It supports push, pull-request and manual dispatch; it never fabricates P&L if data is absent.
