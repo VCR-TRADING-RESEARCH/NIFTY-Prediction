@@ -307,3 +307,11 @@
 - **Known scientific risk:** The Phase 10 holdout is no longer untouched. Any Phase 11 comparison over the existing sample is exploratory and must not be described as an independent confirmatory result.
 - **Known implementation checks:** Confirm all candidates use identical forecast dates, every estimator/preprocessor is fitted only on prior rows, tests pass, and output metrics are reproducible. If a workflow fails, append the exact run/step/error and regression correction here before retrying.
 - **Trading gate:** Remains blocked; no instrument-level option/futures fills and complete date-effective Paytm Money costs/spread/slippage model have been validated.
+
+## E0011 — 2026-10-26 — Phase 11 first CI attempt exposed Phase 10 report assertion mismatch
+- **Run:** [40284359373](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40284359373).
+- **Severity:** Medium — shared test-suite blocker; Phase 11 benchmark did not execute.
+- **Symptom:** 46 tests passed and one existing Phase 10 report test failed because it expected the exact sentence “Official sessions with Dhan intraday bars: 1231.” while the report combined that count with the separate 250-bars statistic on the same line.
+- **Root cause:** Report wording changed but its regression assertion was not updated.
+- **Correction:** Split the report into separate exact count lines. This preserves the underlying metric and makes the required count unambiguous.
+- **Next gate:** Rerun the full test suite and fixed Phase 11 benchmark; do not interpret this failed run as model evidence.
