@@ -48,7 +48,7 @@
     }
   },
   "research_conclusion": "No new directional method is validated by the pre-registered screen in this bounded run. Do not continue searching on this holdout; use a new, independently registered sample if further research is justified.",
-  "future_model_search": "STOPPED_AFTER_REGISTERED_PHASE10_PASS; do not retune the holdout",
+  "future_model_search": "STOPPED_AFTER_REGISTERED_PHASE10_RUN; do not retune the holdout",
   "usable_trading_strategy_validated": false,
   "trading_gate": "BLOCKED: instrument-specific historical fills, options/futures price series, dated Paytm Money charges, bid-ask spreads and slippage stress have not been validated."
 }
