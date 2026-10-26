@@ -2,7 +2,7 @@
 
 **Branch:** research/phase-10-verified-dataset-rebuild  
 **Plan version:** 1.2 addendum, 26 October 2026  
-**Status:** PLAN LOCKED; AUTOMATED REBUILD/EVALUATION PENDING  
+**Status:** COMPLETED — bounded rebuild and fixed-candidate evaluation completed; no new directional method validated  
 **Research budget:** One source rebuild and one pre-registered development/holdout evaluation pass. No unrestricted hyperparameter or evolutionary search.
 
 ## 1. Research questions
@@ -67,4 +67,8 @@ Stop after this rebuild/evaluation run. Publish compact machine-readable data-qu
 - Official daily OHLC snapshot: through 23 October 2026.
 - Dhan anchor audit: five-year window 26 October 2021–25 October 2026; 1,229 overlapping session anchors compared, all timestamps matched exactly, maximum anchor-open discrepancy 0.0008 points; 257 overlapping cycle labels showed no direction switches. This is strong diagnostic agreement, not a claim that trading P&L has been validated.
 - Prior model results: older 2019–2026 public-archive-derived 80-row holdout remains exploratory and is not reused for model choice.
-- Future Dhan-backed dataset, new split and model results are produced by this Phase 10 workflow.
+- Final bounded run: 256 source-gated weekly cycles; 204 development rows (100 scored walk-forward predictions after the 104-cycle warm-up) and 52 holdout rows from 2025-10-20 through 2026-10-19.
+- Development selected base ExtraTrees and augmented ExtraTrees. Holdout balanced accuracy was 54.85% vs 53.79% (difference −1.06 percentage points); paired four-week block-bootstrap 95% interval was −5.00 to +3.44 points. The registered gate failed, so no new method is validated.
+- The report's source-quality appendix records substantial differences between Dhan minute-aggregated daily OHLC and official daily OHLC. Official daily OHLC is canonical for daily features and expiry closes; minute aggregates are diagnostic only. Intraday anchor matching is a separate diagnostic and is not treated as exchange-official proof.
+- The workflow's first report-publication attempt failed from a malformed inline shell/Python heredoc after the model step itself succeeded; reporting was extracted to scripts/record_phase10_outcome.py and the workflow was corrected. This is logged as an operational error, not a model result.
+- Phase 10 is stopped after this registered run. No holdout tuning or additional model search is authorised by this plan. Trading acceptance remains blocked until historical contract fills and date-effective Paytm Money costs, spreads and slippage are tested.
