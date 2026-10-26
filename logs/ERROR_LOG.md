@@ -215,3 +215,11 @@
 - Difference summary: {"max": 6.700000000000728, "median": 0.049999999999272404, "p95": 1.0}.
 - Caveat: secondary archive provider lineage is unverified; this comparison cannot pass the official independent-anchor gate.
 - Output: data/reconciliation/anchor_source_comparison.csv and anchor_source_comparison_report.json.
+
+
+## Phase 9 historical anchor source audit — run 40279215364 — 2026-10-26T06:21:15.328262+00:00
+- Status: DIAGNOSTIC_ONLY (diagnostic only).
+- Counts: {"anchor_open_mismatches_over_1_point": 62, "exact_timestamp_matches": 1269, "overlap_sessions": 1269, "primary_anchors": 1269, "secondary_anchors": 1271}.
+- Difference summary: {"max": 6.700000000000728, "median": 0.049999999999272404, "p95": 1.0}.
+- Caveat: secondary archive provider lineage is unverified; this comparison cannot pass the official independent-anchor gate.
+- Output: data/reconciliation/anchor_source_comparison.csv and anchor_source_comparison_report.json.
