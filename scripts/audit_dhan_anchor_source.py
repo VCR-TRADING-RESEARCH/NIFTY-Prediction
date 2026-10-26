@@ -30,6 +30,16 @@ IST = "Asia/Kolkata"
 
 def _safe_summary_error(exc: Exception) -> str:
     """Never return request URLs, request bodies, response bodies or secret values."""
+    message = str(exc)
+    prefix = "Dhan token endpoint HTTP "
+    if prefix in message:
+        suffix = message.split(prefix, 1)[1].split()[0]
+        if suffix.isdigit() and len(suffix) == 3:
+            return prefix + suffix
+    response = getattr(exc, "response", None)
+    status = getattr(response, "status_code", None)
+    if isinstance(status, int):
+        return type(exc).__name__ + ": HTTP " + str(status) + "; sensitive details withheld"
     return type(exc).__name__ + ": request failed; sensitive provider details withheld"
 
 
