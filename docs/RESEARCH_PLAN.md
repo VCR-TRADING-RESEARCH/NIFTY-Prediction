@@ -1,8 +1,8 @@
 # Pre-registered Research Plan
 
-Version: 1.0
-Registered: 2026-10-25
-Status: locked for the first research cycle. Change only via documented plan-version update. Empirical run 40167611476 completed on 2026-10-25; Phase 1 is BLOCKED by independent daily-close discrepancies and an unverified expiry calendar. See research/manuscript.md and logs/RESEARCH_LOG.md.
+Current version: 1.2 (26 October 2026; versioned addenda preserve earlier plan history)
+Original baseline: Version 1.0 registered 2026-10-25.
+Version 1.1 method-design amendment is documented on the Phase 9 method branch; Version 1.2 registers an authenticated-Dhan dataset rebuild with a fixed method comparison and one locked chronological holdout. The public minute-archive mismatch remains documented, but Phase 10 uses official NSE daily OHLC plus Dhan intraday anchors in the available five-year window. The model result remains exploratory and trading acceptance is separate. See [Version 1.2 addendum](RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md), [Phase 10 plan](PHASE_10_VERIFIED_DATASET.md), research/manuscript.md and logs/RESEARCH_LOG.md.
 
 ## 1. Title and scope
 NIFTY Weekly Expiry Direction Prediction: estimate whether the NIFTY 50 spot-index close at weekly options expiry is greater than or less than its value at 10:00 IST on the next trading day after the preceding weekly expiry. This is a binary direction task; magnitude forecasting is secondary and only used for risk/cost analysis.
@@ -94,3 +94,8 @@ Deliverables: complete manuscript, charts/tables, appendices, data/code citation
 
 ## 12. Stop rules
 The initial cycle ends after Phase 5 or is explicitly marked BLOCKED when essential data/permissions are unavailable. Do not launch unlimited strategy search. A candidate is called a validated directional model only if it improves on the best pre-registered simple baseline on the locked holdout with uncertainty evidence and stable robustness. A usable trading strategy additionally requires instrument-specific fills and positive net results after verified costs. Otherwise publish a negative, inconclusive or blocked result honestly.
+
+
+## 13. Version 1.2 amendment — Dhan-backed dataset rebuild
+
+The registered data reconstruction, six causal feature additions, fixed candidate list, 104-row minimum training history, chronological 80/20 split, four-week moving-block bootstrap and stop rules are in [RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md](RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md) and [Phase 10](PHASE_10_VERIFIED_DATASET.md). The previous plan remains an auditable record; changes apply only to the Phase 10 source-identifiable sample. No trading strategy is validated by this amendment.
