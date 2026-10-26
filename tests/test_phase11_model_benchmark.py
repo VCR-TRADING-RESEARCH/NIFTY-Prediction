@@ -18,3 +18,5 @@ def test_benchmark_is_reproducible_and_reports_exploratory_status(tmp_path):
     summary=json.loads((out/"summary.json").read_text())
     assert summary["status"]=="EXPLORATORY_ONLY_NOT_CONFIRMATORY"
     assert summary["trading_strategy_validated"] is False
+    assert len(summary["paired_four_week_block_bootstrap"]) == 2
+    assert all(item["status"] in {"COMPLETED", "UNDERPOWERED"} for item in summary["paired_four_week_block_bootstrap"])
