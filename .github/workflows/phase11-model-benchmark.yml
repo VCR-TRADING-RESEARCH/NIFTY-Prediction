@@ -10,7 +10,7 @@ on:
       - "tests/test_phase11_model_benchmark.py"
       - "docs/PHASE_11_MODEL_FAMILY_BENCHMARK.md"
       - "data/processed/phase10_dhan_weekly_labels_features.csv"
-  workflow_dispatch: {}
+  pull_request:\n    branches: [research/phase-10-verified-dataset-rebuild]\n    paths:\n      - ".github/workflows/phase11-model-benchmark.yml"\n      - "scripts/benchmark_model_families.py"\n      - "scripts/rebuild_dhan_verified_dataset.py"\n      - "tests/test_phase11_model_benchmark.py"\n      - "docs/PHASE_11_MODEL_FAMILY_BENCHMARK.md"\n  workflow_dispatch: {}
 
 permissions:
   contents: write
