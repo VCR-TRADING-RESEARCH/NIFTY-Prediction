@@ -262,3 +262,13 @@
 - Difference summary: {"max": 6.700000000000728, "median": 0.049999999999272404, "p95": 1.0}.
 - Caveat: secondary archive provider lineage is unverified; this comparison cannot pass the official independent-anchor gate.
 - Output: data/reconciliation/anchor_source_comparison.csv and anchor_source_comparison_report.json.
+
+
+## E0020 — 2026-10-26 — Phase 10 manuscript renderer displayed missing source metrics
+- Severity: Moderate — the machine-readable dataset report and holdout metrics were correct, but the generated manuscript's data-quality summary read some values from the wrong JSON nesting and displayed "n/a".
+- Finding: official daily-session counts are under official_daily_quality; weekly row-gate counts are under row_source_gate; holdout boundary dates were in the split manifest but were not copied into the top-level summary.
+- Correction: the report renderer now reads the nested data-quality fields and the summary now records the exact first/last holdout expiry dates. The data-quality construction summary now reconciles its legacy pre-Dhan confirmatory flag with the Phase 10 row-level source gate and states the correct Dhan-backed source semantics.
+- Regression prevention: added a test asserting official session counts, source-gate counts and holdout dates are rendered, rather than left as missing values.
+- The fixed model result remains unchanged: base ExtraTrees balanced accuracy 0.5485 versus augmented ExtraTrees 0.5379 on the 52-row locked holdout; bootstrap 95% interval for the difference spans -0.0500 to +0.0344. The augmented method does not pass the pre-registered screen.
+- Trading acceptance remains BLOCKED; no contract-level futures/options P&L with dated Paytm Money costs, bid/ask spread, slippage and conservative fills was performed.
+- Security: no Dhan credentials, tokens, PINs, TOTP values or provider response bodies are logged.
