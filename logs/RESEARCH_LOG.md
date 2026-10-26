@@ -186,3 +186,12 @@
 - Difference summary: {"max": 6.700000000000728, "median": 0.049999999999272404, "p95": 1.0}.
 - Caveat: secondary archive provider lineage is unverified; this comparison cannot pass the official independent-anchor gate.
 - Output: data/reconciliation/anchor_source_comparison.csv and anchor_source_comparison_report.json.
+
+
+## 2026-10-26 — Historical 10:00 anchor cross-check, corrected timestamp handling
+- Workflow run [40278945700](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40278945700) completed the first public-archive comparison. A timestamp metric defect was then identified: the primary timestamps were timezone-aware IST and the secondary archive timestamps were naive local timestamps. As a result, the first run's "zero exact timestamp matches" was invalid and must not be used.
+- Corrected code localizes source-specified naive secondary times to Asia/Kolkata before comparing. New run [40279215364](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40279215364) passed the new timestamp and label-sensitivity unit tests and the comparison workflow.
+- Corrected result over 1 February 2019–27 March 2024: primary anchors 1,269; secondary anchors 1,271; overlap 1,269; exact timestamp matches 1,269 / 1,269. Absolute open-price difference: median 0.05 index points, 95th percentile 1.00, maximum 6.70. 62 sessions exceed a one-point price mismatch.
+- On the 265 overlapping weekly cycles, holding the recorded expiry close constant and substituting the secondary 10:00 anchor produced zero UP/DOWN label switches; all 265 resulting labels matched the original published labels.
+- Interpretation remains DIAGNOSTIC_ONLY: the secondary repository's underlying data-provider lineage is not independently verified. This result indicates low label sensitivity in the overlapping weekly sample, but does not certify anchor-source provenance, other OHLC features, or out-of-overlap dates.
+- Next source check: use the authenticated Dhan historical intraday endpoint over its advertised last-five-year window, cache raw chunks privately in Actions cache, publish only compact comparison statistics and label sensitivity.
