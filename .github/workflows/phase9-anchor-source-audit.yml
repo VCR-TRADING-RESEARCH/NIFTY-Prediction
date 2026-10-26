@@ -9,6 +9,7 @@ on:
       - "scripts/compare_anchor_sources.py"
       - "scripts/fetch_data.py"
       - "scripts/research_core.py"
+      - "tests/test_anchor_source_audit.py"
   workflow_dispatch:
 
 permissions:
@@ -45,6 +46,13 @@ jobs:
           key: nifty-anchor-audit-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             nifty-anchor-audit-${{ runner.os }}-
+      - name: Run anchor audit unit tests
+        run: python -m pytest -q tests/test_anchor_source_audit.py
+      - name: Remove previous outputs to prevent stale-report reuse
+        run: |
+          rm -f data/reconciliation/anchor_source_comparison.csv
+          rm -f data/reconciliation/weekly_anchor_label_sensitivity.csv
+          rm -f data/reconciliation/anchor_source_comparison_report.json
       - name: Fetch or reuse primary minute archive
         run: python scripts/fetch_data.py
       - name: Compare historical 10:00 anchors
@@ -57,6 +65,7 @@ jobs:
           name: phase9-anchor-audit-${{ github.run_id }}
           path: |
             data/reconciliation/anchor_source_comparison.csv
+            data/reconciliation/weekly_anchor_label_sensitivity.csv
             data/reconciliation/anchor_source_comparison_report.json
           if-no-files-found: ignore
           retention-days: 90
@@ -82,7 +91,7 @@ jobs:
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/reconciliation/anchor_source_comparison.csv data/reconciliation/anchor_source_comparison_report.json logs/RESEARCH_LOG.md logs/ERROR_LOG.md
+          git add -A data/reconciliation/anchor_source_comparison.csv data/reconciliation/weekly_anchor_label_sensitivity.csv data/reconciliation/anchor_source_comparison_report.json logs/RESEARCH_LOG.md logs/ERROR_LOG.md
           if git diff --cached --quiet; then echo "No report to commit"; else
             git commit -m "Record Phase 9 historical anchor source audit [skip ci]"
             git pull --rebase --autostash origin "${{ github.ref_name }}"
