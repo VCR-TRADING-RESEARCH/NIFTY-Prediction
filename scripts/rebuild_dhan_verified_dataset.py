@@ -471,7 +471,7 @@ Generated (UTC): {summary["generated_utc"]}
 The target uses the verified actual weekly expiry calendar and official NSE daily OHLC. The anchor and pre-anchor intraday features use authenticated DhanHQ 1-minute bars. The official NSE session list, not the set of observed Dhan sessions, determines the first trading session after the previous expiry. This avoids shifting the anchor when Dhan has a coverage gap.
 
 - Official NSE daily sessions: {official_quality.get("official_sessions", "n/a")} ({official_quality.get("official_first_session", "n/a")} to {official_quality.get("official_last_session", "n/a")}).
-- Official sessions with Dhan intraday bars: {official_quality.get("official_sessions_with_dhan_intraday", "n/a")}.
+- Official sessions with Dhan intraday bars: {official_quality.get("official_sessions_with_dhan_intraday", "n/a")}; sessions with at least 250 Dhan bars: {official_quality.get("dhan_sessions_with_at_least_250_bars", "n/a")}.
 - Weekly cycles built / row-source-gate passes: {target_quality.get("weekly_cycles_labelled", source_gate.get("cycles_built", "n/a"))} / {source_gate.get("row_source_gate_pass", "n/a")}.
 - Dhan anchor cross-check: {json.dumps(data_quality.get("dhan_anchor_crosscheck", {}), sort_keys=True)}.
 - Fresh holdout: {summary.get("holdout_first_expiry_date", "n/a")} to {summary.get("holdout_last_expiry_date", "n/a")} ({summary.get("holdout_rows", "n/a")} rows); development predictions start only after {MIN_HISTORY} earlier labelled rows.
@@ -504,7 +504,7 @@ The data rebuild is source-identified for the Dhan coverage window and uses offi
 
 The sample is limited to the available Dhan historical window. The holdout is small, and a single positive metric does not establish a repeatable trading edge. Options IV/OI/skew, timestamp-valid global inputs and lagged flow data have not been added in this experiment. No futures/options instrument-level backtest or costs were computed. The correct stopping outcome if the augmented method does not pass the pre-registered screening rule is **no new directional method validated in this bounded run**.
 
-Reproducibility files: phase10_split_manifest.json; data_quality_report.json; development_metrics.csv; holdout_metrics.csv; holdout_predictions.csv; source and exclusion tables; plots.
+Reproducibility files: phase10_split_manifest.json; data_quality_report.json; development_metrics.csv; holdout_metrics.csv; walk_forward_predictions_all_candidates.csv (includes holdout rows); source and exclusion tables; plots.
 """
 
 
@@ -812,7 +812,7 @@ def main() -> int:
             "selected_augmented_candidate": selected_challenger,
             "screening": screen,
             "research_conclusion": screen["interpretation"],
-            "future_model_search": "STOPPED_AFTER_REGISTERED_PHASE10_PASS; do not retune the holdout",
+            "future_model_search": "STOPPED_AFTER_REGISTERED_PHASE10_RUN; do not retune the holdout",
             "usable_trading_strategy_validated": False,
             "trading_gate": "BLOCKED: instrument-specific historical fills, options/futures price series, dated Paytm Money charges, bid-ask spreads and slippage stress have not been validated.",
         }
