@@ -15,11 +15,11 @@ Generated (UTC): 2026-10-26T06:59:45.545138+00:00
 
 The target uses the verified actual weekly expiry calendar and official NSE daily OHLC. The anchor and pre-anchor intraday features use authenticated DhanHQ 1-minute bars. The official NSE session list, not the set of observed Dhan sessions, determines the first trading session after the previous expiry. This avoids shifting the anchor when Dhan has a coverage gap.
 
-- Official NSE daily sessions: n/a (n/a to n/a).
-- Official sessions with Dhan intraday bars: n/a.
-- Weekly cycles built / source-gate rows: n/a / n/a.
+- Official NSE daily sessions: 1,913 (2019-02-01 to 2026-10-23).
+- Official sessions with Dhan intraday bars: 1,231; sessions with at least 250 Dhan bars: 1,229.
+- Weekly cycles built / source-gate rows: 256 / 256.
 - Dhan anchor cross-check: {"absolute_difference_points": {"max": 0.000800000001618173, "median": 0.0, "p95": 0.000800000001618173}, "counts": {"anchor_open_mismatches_over_1_point": 0, "dhan_anchors": 1235, "exact_timestamp_matches": 1229, "overlap_sessions": 1229, "primary_anchors": 1229}, "interpretation": "Cross-check covers the overlapping sessions only; the Dhan source is authenticated, but the public comparison is diagnostic rather than exchange-official ground truth.", "report_status": "DIAGNOSTIC_ONLY", "weekly_label_sensitivity": {"anchor_difference_max_points": 0.000800000001618173, "anchor_difference_median_points": 0.0, "anchor_difference_p95_points": 0.000800000001618173, "caveat": "Same official expiry closes are used for both returns. This only measures label sensitivity to the secondary anchor; secondary provider lineage is unverified and labels remain exploratory.", "label_agreement_rate": 1.0, "label_switch_rate": 0.0, "labels_agreeing_with_original_published_label": 257, "primary_vs_secondary_direction_switches": 0, "status": "DIAGNOSTIC_ONLY", "weekly_cycles_with_secondary_anchor": 257}}.
-- Fresh holdout: n/a to n/a (52 rows); development predictions start only after 104 earlier labelled rows.
+- Fresh holdout: 2025-10-20 to 2026-10-19 (52 rows); development predictions start only after 104 earlier labelled rows.
 - All feature engineering is causal to the 10:00 cutoff; the selected candle's later high/low/close is not used.
 
 ## Development walk-forward metrics
@@ -61,10 +61,10 @@ The target uses the verified actual weekly expiry calendar and official NSE dail
 
 No new directional method is validated by the pre-registered screen in this bounded run. Do not continue searching on this holdout; use a new, independently registered sample if further research is justified.
 
-The data rebuild is source-identified for the Dhan coverage window and uses official daily prices/calendars. The earlier public minute archive remains in the error history for its mismatch with official daily OHLC; it was not used for the rebuilt labels or lagged daily features. The secondary-public-source anchor comparison is diagnostic rather than official ground truth.
+The data rebuild is source-identified for the Dhan coverage window and uses official daily prices/calendars. In the overlap diagnostic, Dhan minute-aggregated closes differed from official daily closes by more than one point on 1,099 of 1,231 sessions; these minute aggregates are diagnostic only and are not used for daily features or expiry labels. Official NSE daily OHLC is canonical for lagged daily features and expiry closes. The earlier public minute archive remains in the error history for its mismatch with official daily OHLC. The secondary-public-source anchor comparison is diagnostic rather than official ground truth.
 
 ## Limitations and next steps
 
 The sample is limited to the available Dhan historical window. The holdout is small, and a single positive metric does not establish a repeatable trading edge. Options IV/OI/skew, timestamp-valid global inputs and lagged flow data have not been added in this experiment. No futures/options instrument-level backtest or costs were computed. The correct stopping outcome if the augmented method does not pass the pre-registered screening rule is **no new directional method validated in this bounded run**.
 
-Reproducibility files: phase10_split_manifest.json; data_quality_report.json; development_metrics.csv; holdout_metrics.csv; holdout_predictions.csv; source and exclusion tables; plots.
+Reproducibility files: phase10_split_manifest.json; data_quality_report.json; development_metrics.csv; holdout_metrics.csv; walk_forward_predictions_all_candidates.csv (includes holdout rows); source and exclusion tables; plots.
