@@ -191,6 +191,7 @@ jobs:
               else:
                   mt=mt.rstrip()+"\n\n"+mblock+"\n"
               manuscript.write_text(mt,encoding="utf-8")
+          PY
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -204,4 +205,3 @@ jobs:
             git pull --rebase --autostash origin "${{ github.ref_name }}"
             git push origin "HEAD:${{ github.ref_name }}"
           fi
-          PY
