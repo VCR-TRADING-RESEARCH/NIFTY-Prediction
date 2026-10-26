@@ -107,9 +107,9 @@ jobs:
       - name: Record phase outcome and persist report, README and logs
         if: always() && steps.checkout.outcome == 'success'
         env:
-          TEST_OUTCOME: \${{ steps.tests.outcome }}
-          FETCH_OUTCOME: \${{ steps.fetch.outcome }}
-          REBUILD_OUTCOME: \${{ steps.rebuild.outcome }}
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
+          FETCH_OUTCOME: ${{ steps.fetch.outcome }}
+          REBUILD_OUTCOME: ${{ steps.rebuild.outcome }}
         run: |
           python scripts/record_phase10_outcome.py
           git config user.name "github-actions[bot]"
@@ -121,6 +121,6 @@ jobs:
             echo "No generated report/log changes to commit."
           else
             git commit -m "Record Phase 10 Dhan-backed dataset and bounded evaluation [skip ci]"
-            git pull --rebase --autostash origin "\${{ github.ref_name }}"
-            git push origin "HEAD:\${{ github.ref_name }}"
+            git pull --rebase --autostash origin "${{ github.ref_name }}"
+            git push origin "HEAD:${{ github.ref_name }}"
           fi
