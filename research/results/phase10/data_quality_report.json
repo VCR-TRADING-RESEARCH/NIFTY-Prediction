@@ -1,0 +1,342 @@
+{
+  "generated_utc": "2026-10-26T06:59:45.543558+00:00",
+  "dataset_status": "SOURCE_GATE_PASS_FOR_DHAN_WINDOW",
+  "model_status": "EXPLORATORY_ONLY",
+  "dhan_history_manifest": {
+    "status": "READY",
+    "generated_utc": "2026-10-26T06:57:12.399009+00:00",
+    "source": "Authenticated DhanHQ v2 NIFTY 50 INDEX one-minute history",
+    "window": {
+      "start": "2021-10-26",
+      "end": "2026-10-25"
+    },
+    "expected_chunks": 21,
+    "chunks_ready": 21,
+    "chunks_downloaded_this_run": 21,
+    "total_raw_rows": 510890,
+    "first_timestamp": "2021-10-26T09:16:00+05:30",
+    "last_timestamp": "2026-10-23T15:29:00+05:30",
+    "chunks": [
+      {
+        "file": "dhan_20211026_20220123.csv",
+        "status": "cached",
+        "rows": 44195,
+        "bytes": 3005209,
+        "sha256": "ed6933b186195f0215f1a3e203fd4b2ee385425c56bd6454d7dd0cef038705c2",
+        "first_timestamp": "2021-10-26T09:16:00+05:30",
+        "last_timestamp": "2022-01-22T09:43:00+05:30"
+      },
+      {
+        "file": "dhan_20220124_20220423.csv",
+        "status": "cached",
+        "rows": 41941,
+        "bytes": 2855023,
+        "sha256": "be2a82f0984a759b8eda22c9168e8bb77c3f92c022214da0415e3764695b5fb4",
+        "first_timestamp": "2022-01-24T09:16:00+05:30",
+        "last_timestamp": "2022-04-23T00:59:00+05:30"
+      },
+      {
+        "file": "dhan_20220424_20220722.csv",
+        "status": "cached",
+        "rows": 31582,
+        "bytes": 2155045,
+        "sha256": "a7a93693fe7cd55d7be02d8f5b7049f46489099e7e785b4ef0ec62395a4e8323",
+        "first_timestamp": "2022-04-25T07:06:00+05:30",
+        "last_timestamp": "2022-07-22T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20220723_20221020.csv",
+        "status": "cached",
+        "rows": 22499,
+        "bytes": 1530125,
+        "sha256": "25b174eb2879a63b607b27a875ca1dce66e7b06acf43c1f5a322d04c8de7b743",
+        "first_timestamp": "2022-07-25T09:15:00+05:30",
+        "last_timestamp": "2022-10-20T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20221021_20230118.csv",
+        "status": "cached",
+        "rows": 22930,
+        "bytes": 1559428,
+        "sha256": "61caf4a2cf2ec53de66a643ba71fa7a12ad9b498c8a85f8bcf1229ec4e7ffcc4",
+        "first_timestamp": "2022-10-21T09:16:00+05:30",
+        "last_timestamp": "2023-01-18T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20230119_20230418.csv",
+        "status": "cached",
+        "rows": 21751,
+        "bytes": 1479170,
+        "sha256": "27f33310f14e67c1b8e72d7337d0fd72a786a051a9f6be71679441248451f3d6",
+        "first_timestamp": "2023-01-19T09:16:00+05:30",
+        "last_timestamp": "2023-04-18T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20230419_20230717.csv",
+        "status": "cached",
+        "rows": 23247,
+        "bytes": 1493795,
+        "sha256": "ce8da152025a21e79a26a4a3e26d08bcf9cd962c644cd16b5aff9cb54411bdfb",
+        "first_timestamp": "2023-04-19T09:16:00+05:30",
+        "last_timestamp": "2023-07-17T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20230718_20231015.csv",
+        "status": "cached",
+        "rows": 22888,
+        "bytes": 1373148,
+        "sha256": "85e9443f11ad6832afb9acd764c2c5d340a92e0abb5a992e30c44ae8c4fde920",
+        "first_timestamp": "2023-07-18T09:16:00+05:30",
+        "last_timestamp": "2023-10-13T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20231016_20240113.csv",
+        "status": "cached",
+        "rows": 22935,
+        "bytes": 1376201,
+        "sha256": "0ec56804243190ebd43577a2940014c99a08a82bba916d7096dbc0c8acdb886d",
+        "first_timestamp": "2023-10-16T09:16:00+05:30",
+        "last_timestamp": "2024-01-12T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20240114_20240412.csv",
+        "status": "cached",
+        "rows": 22606,
+        "bytes": 1356652,
+        "sha256": "fb1dc6b07ec5ef1ae4f35bf2d31ec76180df59eb58309924b1ebd16546f39259",
+        "first_timestamp": "2024-01-15T09:15:00+05:30",
+        "last_timestamp": "2024-04-12T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20240413_20240711.csv",
+        "status": "cached",
+        "rows": 22602,
+        "bytes": 1366792,
+        "sha256": "f7d9b63f8fadfcc3486acd176b35d7fd5337fa2bbfe209e7d3d1f9818c01fca1",
+        "first_timestamp": "2024-04-15T09:15:00+05:30",
+        "last_timestamp": "2024-07-11T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20240712_20241009.csv",
+        "status": "cached",
+        "rows": 22870,
+        "bytes": 1382595,
+        "sha256": "002df514caff4f361ec54319248c379362e583f412a1c32ed21d5dcd2dacf7d9",
+        "first_timestamp": "2024-07-12T09:16:00+05:30",
+        "last_timestamp": "2024-10-09T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20241010_20250107.csv",
+        "status": "cached",
+        "rows": 22565,
+        "bytes": 1365464,
+        "sha256": "21d044d4e919738a55813d4b93f0e594876be7b36e10374a6d02496a86d00626",
+        "first_timestamp": "2024-10-10T09:16:00+05:30",
+        "last_timestamp": "2025-01-07T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20250108_20250407.csv",
+        "status": "cached",
+        "rows": 23258,
+        "bytes": 1406823,
+        "sha256": "2ae5005fc5cd68eff0c6539aa6b5e134249f1349e4f031748155f658da34c706",
+        "first_timestamp": "2025-01-08T09:16:00+05:30",
+        "last_timestamp": "2025-04-07T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20250408_20250706.csv",
+        "status": "cached",
+        "rows": 22504,
+        "bytes": 1359421,
+        "sha256": "9a636044de6c197af6f817f78b177b86b8154a9681b0bcefe91304fb01225c9a",
+        "first_timestamp": "2025-04-08T09:16:00+05:30",
+        "last_timestamp": "2025-07-04T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20250707_20251004.csv",
+        "status": "cached",
+        "rows": 23255,
+        "bytes": 1406045,
+        "sha256": "a9afb8fcf10c1d093a2eb638e5817d4274eebb3cfbd9ad8e89ef1359cea79338",
+        "first_timestamp": "2025-07-07T09:16:00+05:30",
+        "last_timestamp": "2025-10-03T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20251005_20260102.csv",
+        "status": "cached",
+        "rows": 22944,
+        "bytes": 1376694,
+        "sha256": "d929bef887925f069a7bb335d39a9a294aae4349ef74ca4b8d427351ff74ee32",
+        "first_timestamp": "2025-10-06T09:15:00+05:30",
+        "last_timestamp": "2026-01-02T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20260103_20260402.csv",
+        "status": "cached",
+        "rows": 22513,
+        "bytes": 1350999,
+        "sha256": "5d00cb9e29fe02aa2482e529cc890f8318600fbc797ff5c30ec3734f33bf75b1",
+        "first_timestamp": "2026-01-05T09:15:00+05:30",
+        "last_timestamp": "2026-04-02T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20260403_20260701.csv",
+        "status": "cached",
+        "rows": 22152,
+        "bytes": 1328969,
+        "sha256": "cc2be498d5fbc87cf5819a3323620c1099416a4e4e77c442d9c06a12d7e56ef6",
+        "first_timestamp": "2026-04-06T09:15:00+05:30",
+        "last_timestamp": "2026-07-01T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20260702_20260929.csv",
+        "status": "cached",
+        "rows": 23654,
+        "bytes": 1419701,
+        "sha256": "02996d95e449c90722c704830c84a3ccf6bc93532f550571527fb6c7db627566",
+        "first_timestamp": "2026-07-02T09:16:00+05:30",
+        "last_timestamp": "2026-09-29T15:29:00+05:30"
+      },
+      {
+        "file": "dhan_20260930_20261025.csv",
+        "status": "cached",
+        "rows": 5999,
+        "bytes": 360085,
+        "sha256": "b2274465a9ebb3665313ce2e723c06661818ef4f90716c27fd883033f1ca2354",
+        "first_timestamp": "2026-09-30T09:16:00+05:30",
+        "last_timestamp": "2026-10-23T15:29:00+05:30"
+      }
+    ],
+    "cache_path": "data/cache/dhan-anchors (never committed)",
+    "secret_values_logged": false
+  },
+  "minute_source_quality": {
+    "source_files_read": 21,
+    "raw_rows_before_deduplication": 510890,
+    "unparsed_timestamps": 0,
+    "duplicate_timestamp_rows": 0,
+    "conflicting_duplicate_timestamp_groups": 0,
+    "invalid_ohlc_rows_removed": 0,
+    "valid_in_session_rows": 460939,
+    "first_timestamp": "2021-10-26T09:16:00+05:30",
+    "last_timestamp": "2026-10-23T15:29:00+05:30",
+    "timezone": "Asia/Kolkata",
+    "timestamp_assumption": "Naive source timestamps are interpreted as IST; offset-aware values converted to IST.",
+    "source_archive": "technovusin/nifty50-historical-data"
+  },
+  "official_daily_quality": {
+    "official_sessions": 1913,
+    "official_first_session": "2019-02-01",
+    "official_last_session": "2026-10-23",
+    "official_sessions_with_dhan_intraday": 1231,
+    "official_sessions_without_dhan_intraday": 682,
+    "dhan_sessions_with_at_least_250_bars": 1229,
+    "official_daily_ohlc_checks": "PASS",
+    "lagged_feature_source": "official NSE daily OHLC snapshot",
+    "session_calendar_source": "official NSE daily dates",
+    "dhan_aggregate_vs_official_differences": {
+      "open": {
+        "compared_sessions": 1231,
+        "median_absolute_difference_points": 0.00019999999858555384,
+        "p95_absolute_difference_points": 5.199999999998909,
+        "mismatches_over_1_point": 114,
+        "max_absolute_difference_points": 105.85080000000016
+      },
+      "high": {
+        "compared_sessions": 1231,
+        "median_absolute_difference_points": 0.0007812500007275958,
+        "p95_absolute_difference_points": 1.9749999999985448,
+        "mismatches_over_1_point": 140,
+        "max_absolute_difference_points": 229.85019999999895
+      },
+      "low": {
+        "compared_sessions": 1231,
+        "median_absolute_difference_points": 0.0007812500007275958,
+        "p95_absolute_difference_points": 2.0499999999992724,
+        "mismatches_over_1_point": 174,
+        "max_absolute_difference_points": 71.40079999999944
+      },
+      "close": {
+        "compared_sessions": 1231,
+        "median_absolute_difference_points": 9.200000000000728,
+        "p95_absolute_difference_points": 35.44999999999891,
+        "mismatches_over_1_point": 1099,
+        "max_absolute_difference_points": 119.70000000000073
+      }
+    }
+  },
+  "target_construction": {
+    "candidate_expiry_events": 402,
+    "weekly_cycles_labelled": 256,
+    "label_counts": {
+      "UP": 135,
+      "DOWN": 121
+    },
+    "calendar_status_counts": {
+      "official_verified": 232,
+      "official_verified_with_shift": 24
+    },
+    "confirmatory_eligible_rows": 0,
+    "calendar_warning": "Official NSE expiry verification is available; however, the 10:00 anchor remains minute-archive-derived and is not independently validated.",
+    "excluded_cycle_candidates": 145,
+    "exclusion_reason_counts": {
+      "missing_1000_anchor_bar": 144,
+      "anchor_session_gap_too_large": 1
+    }
+  },
+  "row_source_gate": {
+    "cycles_built": 256,
+    "row_source_gate_pass": 256,
+    "row_source_gate_fail": 0,
+    "all_passing_rows_use_official_daily_expiry_close": true,
+    "calendar_status_counts": {
+      "official_verified": 232,
+      "official_verified_with_shift": 24
+    },
+    "exclusion_or_flag_counts": {
+      "anchor_delay_outside_0_to_3_minutes": 0,
+      "official_calendar_not_verified": 0,
+      "expiry_close_not_official": 0,
+      "anchor_session_under_250_Dhan_bars": 0,
+      "expiry_session_under_250_Dhan_bars": 0
+    }
+  },
+  "dhan_anchor_crosscheck": {
+    "report_status": "DIAGNOSTIC_ONLY",
+    "counts": {
+      "primary_anchors": 1229,
+      "dhan_anchors": 1235,
+      "overlap_sessions": 1229,
+      "exact_timestamp_matches": 1229,
+      "anchor_open_mismatches_over_1_point": 0
+    },
+    "absolute_difference_points": {
+      "median": 0.0,
+      "p95": 0.000800000001618173,
+      "max": 0.000800000001618173
+    },
+    "weekly_label_sensitivity": {
+      "status": "DIAGNOSTIC_ONLY",
+      "weekly_cycles_with_secondary_anchor": 257,
+      "primary_vs_secondary_direction_switches": 0,
+      "label_switch_rate": 0.0,
+      "labels_agreeing_with_original_published_label": 257,
+      "label_agreement_rate": 1.0,
+      "anchor_difference_median_points": 0.0,
+      "anchor_difference_p95_points": 0.000800000001618173,
+      "anchor_difference_max_points": 0.000800000001618173,
+      "caveat": "Same official expiry closes are used for both returns. This only measures label sensitivity to the secondary anchor; secondary provider lineage is unverified and labels remain exploratory."
+    },
+    "interpretation": "Cross-check covers the overlapping sessions only; the Dhan source is authenticated, but the public comparison is diagnostic rather than exchange-official ground truth."
+  },
+  "weekly_cycles_labelled": 256,
+  "binary_rows": 256,
+  "feature_complete_rows": 256,
+  "official_calendar_all_rows_verified": true,
+  "daily_feature_source": "official NSE daily OHLC for all historical sessions",
+  "target_anchor_source": "authenticated DhanHQ v2 NIFTY 50 INDEX 1-minute open in the 10:00–10:03 IST window",
+  "target_close_source": "official NSE daily close on verified actual weekly expiry date",
+  "anchor_window_start": "2021-10-26T09:16:00+05:30",
+  "anchor_window_last_bar": "2026-10-23T15:29:00+05:30",
+  "raw_dhan_bars_committed": false
+}

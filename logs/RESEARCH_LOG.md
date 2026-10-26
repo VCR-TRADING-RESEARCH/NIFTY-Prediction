@@ -241,3 +241,16 @@
 - Fixed candidates and budget: four simple expanding/rule baselines, base Logistic Regression/ExtraTrees and their six-feature causal trend/volatility augmentations. Minimum training history 104 cycles, one chronological 80/20 split, four-week moving-block bootstrap, prespecified improvement/uncertainty screen, one holdout pass.
 - New source gate tests cover the full official-session calendar with missing Dhan bars, feature causality to anchor date, valid-source row criteria, and the Dhan request window length.
 - No model result is available until Phase 10 workflow runs. A directional result will not be described as a trading strategy without contract-level options/futures fills and date-effective Paytm Money fees, spreads and slippage.
+
+
+## Phase 10 automated run 40282667293 — 2026-10-26T06:59:47.425175+00:00
+- Workflow outcomes: tests=success, Dhan history=success, rebuild/evaluation=success.
+- Final status: NO_NEW_DIRECTIONAL_METHOD_VALIDATED.
+- Dataset status: SOURCE_GATE_PASS_FOR_DHAN_WINDOW.
+- Model result: NO_NEW_DIRECTIONAL_METHOD_VALIDATED.
+- Source-gated cycles: 256; binary rows: 256; development/holdout: 204/52.
+- Baseline/challenger selected on development: extra_trees_base / extra_trees_augmented.
+- Screening details: {"balanced_accuracy_difference": -0.010606060606060619, "baseline_balanced_accuracy": 0.5484848484848485, "baseline_brier": 0.2556642402091326, "baseline_candidate": "extra_trees_base", "baseline_log_loss": 0.7049818422273262, "brier_non_degradation_pass": true, "challenger_balanced_accuracy": 0.5378787878787878, "challenger_brier": 0.25396777652043795, "challenger_candidate": "extra_trees_augmented", "challenger_log_loss": 0.7015298328114193, "first_half_balanced_accuracy_difference": 0.01874999999999999, "interpretation": "No new directional method is validated by the pre-registered screen in this bounded run. Do not continue searching on this holdout; use a new, independently registered sample if further research is justified.", "log_loss_non_degradation_pass": true, "paired_bootstrap": {"block_length": 4, "difference_ci_95_high": 0.0343836805555555, "difference_ci_95_low": -0.050000000000000044, "difference_mean": -0.007351808676011449, "n": 52, "replicates_requested": 2000, "replicates_valid": 2000, "status": "COMPLETED"}, "pass": false, "reason": "holdout balanced-accuracy improvement is below +0.03; paired four-week bootstrap 95% interval does not establish improvement above zero; one or both holdout subperiods are underpowered or show direction reversal", "second_half_balanced_accuracy_difference": -0.0357142857142857, "subperiod_stability_pass": false}.
+- Trading strategy: NOT VALIDATED; no contract-level cost-adjusted futures/options P&L was run.
+- Plan: docs/PHASE_10_VERIFIED_DATASET.md and docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md.
+- Raw Dhan history remains cache-only; only compact metadata and derived results are committed.

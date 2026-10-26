@@ -1,0 +1,208 @@
+{
+  "status": "READY",
+  "generated_utc": "2026-10-26T06:57:12.399009+00:00",
+  "source": "Authenticated DhanHQ v2 NIFTY 50 INDEX one-minute history",
+  "window": {
+    "start": "2021-10-26",
+    "end": "2026-10-25"
+  },
+  "expected_chunks": 21,
+  "chunks_ready": 21,
+  "chunks_downloaded_this_run": 21,
+  "total_raw_rows": 510890,
+  "first_timestamp": "2021-10-26T09:16:00+05:30",
+  "last_timestamp": "2026-10-23T15:29:00+05:30",
+  "chunks": [
+    {
+      "file": "dhan_20211026_20220123.csv",
+      "status": "cached",
+      "rows": 44195,
+      "bytes": 3005209,
+      "sha256": "ed6933b186195f0215f1a3e203fd4b2ee385425c56bd6454d7dd0cef038705c2",
+      "first_timestamp": "2021-10-26T09:16:00+05:30",
+      "last_timestamp": "2022-01-22T09:43:00+05:30"
+    },
+    {
+      "file": "dhan_20220124_20220423.csv",
+      "status": "cached",
+      "rows": 41941,
+      "bytes": 2855023,
+      "sha256": "be2a82f0984a759b8eda22c9168e8bb77c3f92c022214da0415e3764695b5fb4",
+      "first_timestamp": "2022-01-24T09:16:00+05:30",
+      "last_timestamp": "2022-04-23T00:59:00+05:30"
+    },
+    {
+      "file": "dhan_20220424_20220722.csv",
+      "status": "cached",
+      "rows": 31582,
+      "bytes": 2155045,
+      "sha256": "a7a93693fe7cd55d7be02d8f5b7049f46489099e7e785b4ef0ec62395a4e8323",
+      "first_timestamp": "2022-04-25T07:06:00+05:30",
+      "last_timestamp": "2022-07-22T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20220723_20221020.csv",
+      "status": "cached",
+      "rows": 22499,
+      "bytes": 1530125,
+      "sha256": "25b174eb2879a63b607b27a875ca1dce66e7b06acf43c1f5a322d04c8de7b743",
+      "first_timestamp": "2022-07-25T09:15:00+05:30",
+      "last_timestamp": "2022-10-20T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20221021_20230118.csv",
+      "status": "cached",
+      "rows": 22930,
+      "bytes": 1559428,
+      "sha256": "61caf4a2cf2ec53de66a643ba71fa7a12ad9b498c8a85f8bcf1229ec4e7ffcc4",
+      "first_timestamp": "2022-10-21T09:16:00+05:30",
+      "last_timestamp": "2023-01-18T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20230119_20230418.csv",
+      "status": "cached",
+      "rows": 21751,
+      "bytes": 1479170,
+      "sha256": "27f33310f14e67c1b8e72d7337d0fd72a786a051a9f6be71679441248451f3d6",
+      "first_timestamp": "2023-01-19T09:16:00+05:30",
+      "last_timestamp": "2023-04-18T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20230419_20230717.csv",
+      "status": "cached",
+      "rows": 23247,
+      "bytes": 1493795,
+      "sha256": "ce8da152025a21e79a26a4a3e26d08bcf9cd962c644cd16b5aff9cb54411bdfb",
+      "first_timestamp": "2023-04-19T09:16:00+05:30",
+      "last_timestamp": "2023-07-17T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20230718_20231015.csv",
+      "status": "cached",
+      "rows": 22888,
+      "bytes": 1373148,
+      "sha256": "85e9443f11ad6832afb9acd764c2c5d340a92e0abb5a992e30c44ae8c4fde920",
+      "first_timestamp": "2023-07-18T09:16:00+05:30",
+      "last_timestamp": "2023-10-13T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20231016_20240113.csv",
+      "status": "cached",
+      "rows": 22935,
+      "bytes": 1376201,
+      "sha256": "0ec56804243190ebd43577a2940014c99a08a82bba916d7096dbc0c8acdb886d",
+      "first_timestamp": "2023-10-16T09:16:00+05:30",
+      "last_timestamp": "2024-01-12T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20240114_20240412.csv",
+      "status": "cached",
+      "rows": 22606,
+      "bytes": 1356652,
+      "sha256": "fb1dc6b07ec5ef1ae4f35bf2d31ec76180df59eb58309924b1ebd16546f39259",
+      "first_timestamp": "2024-01-15T09:15:00+05:30",
+      "last_timestamp": "2024-04-12T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20240413_20240711.csv",
+      "status": "cached",
+      "rows": 22602,
+      "bytes": 1366792,
+      "sha256": "f7d9b63f8fadfcc3486acd176b35d7fd5337fa2bbfe209e7d3d1f9818c01fca1",
+      "first_timestamp": "2024-04-15T09:15:00+05:30",
+      "last_timestamp": "2024-07-11T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20240712_20241009.csv",
+      "status": "cached",
+      "rows": 22870,
+      "bytes": 1382595,
+      "sha256": "002df514caff4f361ec54319248c379362e583f412a1c32ed21d5dcd2dacf7d9",
+      "first_timestamp": "2024-07-12T09:16:00+05:30",
+      "last_timestamp": "2024-10-09T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20241010_20250107.csv",
+      "status": "cached",
+      "rows": 22565,
+      "bytes": 1365464,
+      "sha256": "21d044d4e919738a55813d4b93f0e594876be7b36e10374a6d02496a86d00626",
+      "first_timestamp": "2024-10-10T09:16:00+05:30",
+      "last_timestamp": "2025-01-07T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20250108_20250407.csv",
+      "status": "cached",
+      "rows": 23258,
+      "bytes": 1406823,
+      "sha256": "2ae5005fc5cd68eff0c6539aa6b5e134249f1349e4f031748155f658da34c706",
+      "first_timestamp": "2025-01-08T09:16:00+05:30",
+      "last_timestamp": "2025-04-07T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20250408_20250706.csv",
+      "status": "cached",
+      "rows": 22504,
+      "bytes": 1359421,
+      "sha256": "9a636044de6c197af6f817f78b177b86b8154a9681b0bcefe91304fb01225c9a",
+      "first_timestamp": "2025-04-08T09:16:00+05:30",
+      "last_timestamp": "2025-07-04T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20250707_20251004.csv",
+      "status": "cached",
+      "rows": 23255,
+      "bytes": 1406045,
+      "sha256": "a9afb8fcf10c1d093a2eb638e5817d4274eebb3cfbd9ad8e89ef1359cea79338",
+      "first_timestamp": "2025-07-07T09:16:00+05:30",
+      "last_timestamp": "2025-10-03T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20251005_20260102.csv",
+      "status": "cached",
+      "rows": 22944,
+      "bytes": 1376694,
+      "sha256": "d929bef887925f069a7bb335d39a9a294aae4349ef74ca4b8d427351ff74ee32",
+      "first_timestamp": "2025-10-06T09:15:00+05:30",
+      "last_timestamp": "2026-01-02T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20260103_20260402.csv",
+      "status": "cached",
+      "rows": 22513,
+      "bytes": 1350999,
+      "sha256": "5d00cb9e29fe02aa2482e529cc890f8318600fbc797ff5c30ec3734f33bf75b1",
+      "first_timestamp": "2026-01-05T09:15:00+05:30",
+      "last_timestamp": "2026-04-02T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20260403_20260701.csv",
+      "status": "cached",
+      "rows": 22152,
+      "bytes": 1328969,
+      "sha256": "cc2be498d5fbc87cf5819a3323620c1099416a4e4e77c442d9c06a12d7e56ef6",
+      "first_timestamp": "2026-04-06T09:15:00+05:30",
+      "last_timestamp": "2026-07-01T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20260702_20260929.csv",
+      "status": "cached",
+      "rows": 23654,
+      "bytes": 1419701,
+      "sha256": "02996d95e449c90722c704830c84a3ccf6bc93532f550571527fb6c7db627566",
+      "first_timestamp": "2026-07-02T09:16:00+05:30",
+      "last_timestamp": "2026-09-29T15:29:00+05:30"
+    },
+    {
+      "file": "dhan_20260930_20261025.csv",
+      "status": "cached",
+      "rows": 5999,
+      "bytes": 360085,
+      "sha256": "b2274465a9ebb3665313ce2e723c06661818ef4f90716c27fd883033f1ca2354",
+      "first_timestamp": "2026-09-30T09:16:00+05:30",
+      "last_timestamp": "2026-10-23T15:29:00+05:30"
+    }
+  ],
+  "cache_path": "data/cache/dhan-anchors (never committed)",
+  "secret_values_logged": false
+}

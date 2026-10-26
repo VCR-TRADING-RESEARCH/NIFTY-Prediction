@@ -113,12 +113,13 @@ The research target is on the spot index. Any executable strategy must separatel
 <!-- PHASE9_ANCHOR_AUDIT_STATUS_END -->
 
 <!-- PHASE10_STATUS_START -->
-## Phase 10 — Dhan-backed dataset rebuild
-- **Status:** plan and fixed experiment defined; automated run pending.
-- **Plan:** [Phase 10 research plan](docs/PHASE_10_VERIFIED_DATASET.md); [Version 1.2 addendum](docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md).
-- **Data rule:** official NSE daily OHLC and verified expiry dates; authenticated Dhan 10:00–10:03 anchor; missing Dhan sessions cannot shift the exchange calendar.
-- **Bounded test:** 104-row minimum training history, chronological 80/20 split, six causal trend/volatility features and eight fixed candidates. Holdout used once; Paytm Money instrument-level P&L remains separate.
-- **Artifacts (after run):** [summary](research/results/phase10/summary.json), [full report](research/results/phase10/phase10_report.md), [data quality](research/results/phase10/data_quality_report.json), [split manifest](research/results/phase10/phase10_split_manifest.json), [rebuild script](scripts/rebuild_dhan_verified_dataset.py), [workflow](.github/workflows/phase10-dhan-verified-dataset.yml).
+## Phase 10 — Dhan-backed dataset rebuild and method test
+- **Dataset gate:** SOURCE_GATE_PASS_FOR_DHAN_WINDOW; 256 source-gated weekly cycles from the Dhan history window.
+- **Model outcome:** NO_NEW_DIRECTIONAL_METHOD_VALIDATED; selected augmented challenger extra_trees_augmented vs baseline extra_trees_base.
+- **Holdout comparison:** balanced-accuracy difference -0.011; paired bootstrap status COMPLETED. No strategy is approved for trading.
+- [Phase 10 plan](docs/PHASE_10_VERIFIED_DATASET.md); [machine-readable summary](research/results/phase10/summary.json); [full report](research/results/phase10/phase10_report.md); [data quality](research/results/phase10/data_quality_report.json); [split manifest](research/results/phase10/phase10_split_manifest.json).
+- [Rebuilt weekly labels/features](data/processed/phase10_dhan_weekly_labels_features.csv); [development metrics](research/results/phase10/development_metrics.csv); [holdout metrics](research/results/phase10/holdout_metrics.csv); [comparison chart](research/results/phase10/phase10_method_comparison.png).
+- **Trading acceptance:** BLOCKED until contract-level fills and date-effective Paytm Money fees, bid/ask spreads and slippage are tested.
 <!-- PHASE10_STATUS_END -->
 
 ## Research approach
