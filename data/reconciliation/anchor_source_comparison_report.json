@@ -1,12 +1,13 @@
 {
-  "generated_utc": "2026-10-26T06:18:20.545163+00:00",
+  "generated_utc": "2026-10-26T06:20:20.218263+00:00",
   "status": "DIAGNOSTIC_ONLY",
-  "primary_source": "technovusin/nifty50-historical-data; this is the pipeline's current input archive",
+  "primary_source": "technovusin/nifty50-historical-data; the pipeline's current input archive",
   "secondary_source": {
     "source_url": "https://raw.githubusercontent.com/sandeepkapri/Nifty50-Minute-Data/main/nifty50_candlestick_data.csv",
     "sha256": "9b347479bb242e8cea8f85011a4d53e8938c1bfea1697fa25d8ef25d8888784d",
     "bytes": 51305261,
     "bars": 476218,
+    "downloaded_this_run": false,
     "lineage_independently_verified": false,
     "official_source": false
   },
@@ -18,7 +19,7 @@
     "primary_anchors": 1269,
     "secondary_anchors": 1271,
     "overlap_sessions": 1269,
-    "exact_timestamp_matches": 0,
+    "exact_timestamp_matches": 1269,
     "anchor_open_mismatches_over_1_point": 62
   },
   "absolute_difference_points": {
@@ -26,6 +27,21 @@
     "p95": 1.0,
     "max": 6.700000000000728
   },
-  "acceptance": "Does not pass the independent-anchor gate: both datasets are non-official and the secondary provider lineage is unverified. Use results to locate discrepant dates only.",
-  "output": "data/reconciliation/anchor_source_comparison.csv"
+  "weekly_label_sensitivity": {
+    "status": "DIAGNOSTIC_ONLY",
+    "weekly_cycles_with_secondary_anchor": 265,
+    "primary_vs_secondary_direction_switches": 0,
+    "label_switch_rate": 0.0,
+    "labels_agreeing_with_original_published_label": 265,
+    "label_agreement_rate": 1.0,
+    "anchor_difference_median_points": 0.049999999999272404,
+    "anchor_difference_p95_points": 1.3399999999990533,
+    "anchor_difference_max_points": 6.700000000000728,
+    "caveat": "Same official expiry closes are used for both returns. This only measures label sensitivity to the secondary anchor; secondary provider lineage is unverified and labels remain exploratory."
+  },
+  "acceptance": "Does not pass the independent-anchor gate: the secondary data's provider lineage is unverified and neither published archive is official ground truth. Use this report to locate source discrepancies only.",
+  "outputs": [
+    "data/reconciliation/anchor_source_comparison.csv",
+    "data/reconciliation/weekly_anchor_label_sensitivity.csv"
+  ]
 }
