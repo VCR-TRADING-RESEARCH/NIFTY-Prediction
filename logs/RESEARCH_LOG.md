@@ -295,3 +295,11 @@
 - **Implementation:** Added fail-closed input schema and cost engine in scripts/phase12_cost_gate.py, arithmetic/provenance tests in tests/test_phase12_cost_gate.py, plan in docs/PHASE_12_EXECUTABLE_TRADING_GATE.md, workflow in .github/workflows/phase12-executable-trading-gate.yml, and initial report under research/results/phase12/.
 - **Required evidence:** Historical option/futures contract mapping, executable prices, date-effective Paytm Money fees, bid/ask spread, slippage, lot-size/contract-spec history and expiry settlement handling.
 - **Outcome:** No contract-level fills/cost schedule was source-registered in the inspected repo. No strategy P&L was invented. Terminal decision remains NO USABLE TRADING STRATEGY VALIDATED until the data gate can pass.
+
+
+## 2026-10-26 — Phase 12 free-source audit
+- **Status:** Free sources identified; acquisition/completeness validation still pending.
+- **Sources checked:** Official NSE contract-wise price/volume history; official NSE daily derivatives reports; public GitHub NSE F&O bhavcopy archive; Cloud Trader Pro/Shoonya provider-stated free NIFTY expired-options sample.
+- **Access result:** The linked free sample Google Drive download returned HTTP 401 in this research environment. No raw file was acquired and no data lineage claim is made.
+- **Important distinction:** Official EOD contract data does not by itself reproduce a 10:00 IST intraday option fill. Free-source search is not exhausted; no paid source is justified yet.
+- **Details:** docs/PHASE12_DATA_SOURCE_AUDIT.md.
