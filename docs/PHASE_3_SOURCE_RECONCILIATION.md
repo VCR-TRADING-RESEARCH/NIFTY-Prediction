@@ -78,3 +78,14 @@ Latest workflow: [40181901081](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Pre
 A previous zero-mismatch PASS was false because the comparator used a table whose closes had already been overridden by official values. The result was circular and is invalidated. The separate `scripts/reconcile_archive_closes.py` audit compares preserved archive close against official close. See `data/reconciliation/source_reconciliation_report.json`, `data/reconciliation/minute_vs_official_daily.csv`, and `data/reconciliation/daily_close_mismatch_summary_by_year.csv`.
 
 The downstream model run 40181159630 reported 61.25% holdout accuracy on 80 observations, but the 10:00 anchor is still provisional and source validation fails. Results remain exploratory. Do not proceed to further model search or trading-cost optimization until the anchor and source mismatches are resolved. No strategy is accepted.
+
+
+## Phase 9 historical 10:00 anchor cross-check (26 October 2026)
+
+The first anchor audit compared a public minute archive with a separately published minute dataset. The initial report incorrectly showed zero exact timestamp matches because the primary timestamps were timezone-aware IST and the secondary timestamps were timezone-naive local times. That statistic is invalidated and recorded in E0019.
+
+After normalizing both sources to Asia/Kolkata, the corrected run compared 1,269 overlapping session anchors. All 1,269 timestamps match exactly. Differences in the anchor open have median 0.05 index points, P95 1.00 point and maximum 6.70 points; 62 sessions differ by more than one point. On 265 weekly cycles where the second archive has an anchor, recalculating the target return using the same expiry close and the secondary anchor changed zero UP/DOWN labels.
+
+This is diagnostic evidence only. The second repository's data-provider lineage is not independently verified, it ends on 27 March 2024, and it does not establish source integrity after that date. It also does not repair the separate daily OHLC mismatch or validate historical futures/options inputs. The source gate remains BLOCKED.
+
+A separate automated DhanHQ historical audit has been added for the available five-year minute-history window. It refreshes the access token with the documented POST method, caches raw Dhan chunks in the private workflow cache, publishes only compact comparison outputs and never logs credentials or provider response bodies. Even if recent/overlapping Dhan anchors match, this will validate only the covered period; historical data source reconciliation and instrument-level costs remain separate gates.
