@@ -1,0 +1,89 @@
+name: Phase 9 — New NIFTY Direction Methods Readiness
+
+on:
+  push:
+    branches:
+      - research/phase-9-new-direction-methods
+    paths:
+      - ".github/workflows/phase9-method-discovery.yml"
+      - "scripts/audit_new_method_readiness.py"
+      - "tests/test_method_readiness.py"
+      - "docs/PHASE_9_NEW_DIRECTION_METHODS.md"
+      - "docs/RESEARCH_PLAN.md"
+      - "docs/RESEARCH_PLAN_V1_1_METHODS_ADDENDUM.md"
+      - "docs/LITERATURE_REVIEW.md"
+      - "docs/DATA_SOURCES.md"
+      - "research/manuscript.md"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: phase9-method-readiness-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  readiness-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONUNBUFFERED: "1"
+      TZ: Asia/Kolkata
+    steps:
+      - name: Checkout Phase 9 branch
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install project requirements
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
+      - name: Run repository tests
+        id: tests
+        run: python -m pytest -q tests
+
+      - name: Produce source-gated method readiness report
+        id: audit
+        run: python scripts/audit_new_method_readiness.py
+
+      - name: Log automated failure
+        if: failure() && steps.checkout.outcome == 'success'
+        run: |
+          printf '\n\n## Phase 9 workflow failure — run %s\n- Status: FAIL; an automated test or readiness-audit step failed. Inspect this Actions run for the failing step and preserve the failure before correcting it.\n- No secrets or provider response bodies are copied into the repository log.\n' "$GITHUB_RUN_ID" >> logs/ERROR_LOG.md
+
+      - name: Upload phase report and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase9-method-readiness-${{ github.run_id }}
+          path: |
+            research/results/method_discovery_readiness.json
+            logs/RESEARCH_LOG.md
+            logs/ERROR_LOG.md
+            README.md
+          if-no-files-found: ignore
+          retention-days: 90
+
+      - name: Commit readiness report, README status and logs
+        if: always() && steps.checkout.outcome == 'success'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md logs/RESEARCH_LOG.md logs/ERROR_LOG.md research/results/method_discovery_readiness.json
+          if git diff --cached --quiet; then
+            echo "No new phase artifacts to persist."
+          else
+            git commit -m "Record Phase 9 method readiness audit"
+            git pull --rebase --autostash origin "${{ github.ref_name }}"
+            git push origin "HEAD:${{ github.ref_name }}"
+          fi

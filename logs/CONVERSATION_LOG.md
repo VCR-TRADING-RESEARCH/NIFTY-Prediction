@@ -61,3 +61,11 @@
 - Added `?as_of_date=YYYY-MM-DD` support to the Pages predictor so a completed date-specific JSON result can be opened directly without generating another request. The Actions completion comment now links back to that exact result page.
 - Pages deployment for the deep-link JavaScript passed in run [40201836007](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201836007). A later documentation deployment was still running at latest inspection.
 - Direct historical result link: https://vcr-trading-research.github.io/NIFTY-Prediction/?as_of_date=2024-09-20. External browser verification of the rendered page was unavailable; the JSON record and deployment run are verified.
+
+
+## 2026-10-26 — New-method research extension
+- User request: “Extend the research to identify new methods to predict weekly expiry nifty up or down!”
+- Decision: extend the research plan through a dated v1.1 addendum and a separate Phase 9 branch, preserving the existing target and leakage rules.
+- Method direction: evaluate hypotheses around multiscale trend/reversal, volatility regimes, point-in-time options surfaces, global overnight inputs, lagged FII/DII/participant positioning, uncertainty/abstention, and bounded symbolic/evolutionary methods.
+- Research gate: existing source/anchor integrity remains blocked, so no new candidate was trained or selected on the potentially defective target data. The phase records a readiness audit and the exact prerequisite to resume model comparison.
+- Only visible decisions and auditable rationales are logged; hidden private chain-of-thought is not stored in the repository.

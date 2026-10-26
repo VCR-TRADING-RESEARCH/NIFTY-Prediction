@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-10-25T21:31:42.483330+00:00",
+  "run_id": "40235870912",
+  "branch": "research/phase-9-new-direction-methods",
+  "plan_version": "1.1",
+  "phase": "phase-9-new-direction-methods",
+  "phase_status": "METHOD_DESIGN_COMPLETE; EMPIRICAL_TESTING_BLOCKED",
+  "status": "BLOCKED_EMPIRICAL_METHOD_SEARCH",
+  "blockers": [
+    "Repository data-quality report marks confirmatory target construction BLOCKED.",
+    "1719 preserved minute-archive daily closes differ from official closes by more than one point.",
+    "No rows are marked confirmatory-eligible; the independent 10:00 anchor/source gate remains unresolved.",
+    "Independent intraday-source cross-check is unavailable in the current quality report."
+  ],
+  "dataset": {
+    "feature_rows": 398,
+    "feature_column_count": 40,
+    "feature_columns": [
+      "previous_nominal_expiry",
+      "nominal_expiry",
+      "previous_expiry",
+      "expiry_date",
+      "anchor_date",
+      "anchor_timestamp",
+      "anchor_price",
+      "expiry_close_timestamp",
+      "expiry_close",
+      "expiry_close_source",
+      "return_pct",
+      "label",
+      "previous_calendar_status",
+      "calendar_status",
+      "source_quality_status",
+      "confirmatory_eligible",
+      "anchor_bar_delay_minutes",
+      "anchor_session_bars",
+      "expiry_session_bars",
+      "expiry_max_unchanged_close_run",
+      "ret_1",
+      "ret_5",
+      "ret_10",
+      "ret_20",
+      "rv_5",
+      "range_5",
+      "rv_10",
+      "range_10",
+      "rv_20",
+      "range_20",
+      "overnight_gap",
+      "pre_anchor_return",
+      "anchor_jump",
+      "prior_cycle_return",
+      "prior_cycle_up",
+      "prior_close_range_position",
+      "session_gap_days",
+      "post_expiry_change",
+      "month_sin",
+      "month_cos"
+    ],
+    "binary_rows_in_latest_summary": 398,
+    "development_rows_in_latest_summary": 318,
+    "heldout_rows_in_latest_summary": 80,
+    "confirmatory_eligible_rows": 0
+  },
+  "current_exploratory_metrics": {
+    "extra_trees": {
+      "accuracy": 0.6125,
+      "balanced_accuracy": 0.6018227529855437,
+      "mcc": 0.21287724099894847,
+      "brier": 0.2464511402667025,
+      "log_loss": 0.686232145490863,
+      "roc_auc": 0.5744814582023885,
+      "n": 80,
+      "validation_scope": "EXPLORATORY_ONLY: historical expiry calendar has not been fully verified"
+    },
+    "logistic": {
+      "accuracy": 0.5625,
+      "balanced_accuracy": 0.5703959773727215,
+      "mcc": 0.14329047444629314,
+      "brier": 0.2563543308294765,
+      "log_loss": 0.720417369078503,
+      "roc_auc": 0.5700817096165933,
+      "n": 80,
+      "validation_scope": "EXPLORATORY_ONLY: historical expiry calendar has not been fully verified"
+    },
+    "majority": {
+      "accuracy": 0.4625,
+      "balanced_accuracy": 0.5,
+      "mcc": 0.0,
+      "brier": 0.26120332053535755,
+      "log_loss": 0.7157735729238766,
+      "roc_auc": 0.47454431175361406,
+      "n": 80,
+      "validation_scope": "EXPLORATORY_ONLY: historical expiry calendar has not been fully verified"
+    }
+  },
+  "method_matrix": [
+    {
+      "priority": "P0",
+      "family": "Independent anchor and source integrity",
+      "hypothesis": "Correct labels and verified timestamps are prerequisites for directional inference.",
+      "current_input_status": "blocked",
+      "evidence": "The source-quality report records official-close discrepancies and no accepted independent 10:00 anchor.",
+      "next_action": "Reconcile row-level 10:00 anchor prices against a genuinely independent source and explain the daily-close mismatch."
+    },
+    {
+      "priority": "P1",
+      "family": "Multiscale trend, gap, range and volatility interactions",
+      "hypothesis": "Trend strength and reversal features conditional on volatility may add information beyond the current weekly-cycle features.",
+      "current_input_status": "features_present_source_gate_blocked",
+      "evidence": "The current table has ret_1/5/10/20, rv_5/10/20, range_5/10/20, overnight_gap, pre_anchor_return and anchor_jump.",
+      "next_action": "After source acceptance, add causal ratios and interactions, then compare nested walk-forward ablations."
+    },
+    {
+      "priority": "P1",
+      "family": "India VIX and conditional volatility state",
+      "hypothesis": "Directional effects may vary across volatility regimes; volatility alone is not assumed to predict direction.",
+      "current_input_status": "source_series_not_joined",
+      "evidence": "No verified point-in-time India VIX series is joined to the current weekly feature table.",
+      "next_action": "Acquire official VIX history, align availability times, and compute fold-local state/rank features."
+    },
+    {
+      "priority": "P1",
+      "family": "Point-in-time options surface and positioning",
+      "hypothesis": "ATM IV, skew, term structure, straddle-implied move and OI changes may add information beyond spot OHLC.",
+      "current_input_status": "unavailable_in_current_feature_table",
+      "evidence": "No historical 10:00 option-chain snapshot table is currently linked to the labelled rows. End-of-day OI cannot be backdated to the 10:00 forecast.",
+      "next_action": "Inspect selective Zenodo/Hugging Face partitions and Dhan history; validate contracts, timestamps, rights and missingness."
+    },
+    {
+      "priority": "P1",
+      "family": "Global overnight and cross-market inputs",
+      "hypothesis": "Overnight global price discovery may help explain NIFTY movement from 10:00 to expiry close.",
+      "current_input_status": "unavailable_in_current_feature_table",
+      "evidence": "No timestamp-audited GIFT NIFTY, US/Asia, FX or commodity panel is joined to the labelled rows.",
+      "next_action": "Build a lag-safe panel with market-specific timezones, holidays, closes and publication-time metadata."
+    },
+    {
+      "priority": "P2",
+      "family": "FII/DII, participant OI and breadth",
+      "hypothesis": "Lagged flow, positioning or breadth measures may explain conditional weekly direction.",
+      "current_input_status": "unavailable_in_current_feature_table",
+      "evidence": "A verified point-in-time flow/participant table is not joined to the current feature table.",
+      "next_action": "Use the last report actually published by the forecast cutoff; do not use post-close information at 10:00."
+    },
+    {
+      "priority": "P2",
+      "family": "Fold-local regime models and change-point features",
+      "hypothesis": "Transparent volatility state labels or regime interactions may improve stability over one global estimator.",
+      "current_input_status": "design_only_source_gate_blocked",
+      "evidence": "The weekly sample is approximately 400 cycles and current source quality blocks model fitting or tuning.",
+      "next_action": "Start with simple development-fold volatility thresholds and regularised interactions before complex hidden-state models."
+    },
+    {
+      "priority": "P2",
+      "family": "Probability calibration and abstention",
+      "hypothesis": "Uncertainty estimates may improve selective decision quality by abstaining on ambiguous cycles.",
+      "current_input_status": "design_only_source_gate_blocked",
+      "evidence": "Current holdout probabilities are exploratory; sequential coverage has not been accepted.",
+      "next_action": "Calibrate inside development folds and measure sequential uncertainty coverage/abstention versus error."
+    },
+    {
+      "priority": "P3 bounded",
+      "family": "PySR symbolic and Quantevolve-inspired bounded search",
+      "hypothesis": "A compact formula may reveal an interpretable interaction missed by fixed features.",
+      "current_input_status": "not_run_deferred_by_source_gate",
+      "evidence": "The experiment registry explicitly lists PySR and Quantevolve searches as not run.",
+      "next_action": "Only after source acceptance: cap at 100 candidate expressions/rules and up to 3 development-only generations, with complexity controls and a complete registry."
+    },
+    {
+      "priority": "Deferred",
+      "family": "LLM news agents and deep sequence models",
+      "hypothesis": "Potential value depends on richer, correctly timestamped inputs than the current weekly sample contains.",
+      "current_input_status": "deferred_low_sample_and_data_requirements",
+      "evidence": "About 398 weekly rows are not a sound basis for unrestricted neural sequence search.",
+      "next_action": "Use LLMs only to propose auditable hypotheses; defer deep sequence models until a larger, independently validated sample exists."
+    }
+  ],
+  "experiment_registry": {
+    "path": "research/results/experiment_registry.json",
+    "currently_not_run": [
+      "PySR symbolic-regression expansion",
+      "Quantevolve evolutionary search",
+      "TradingAgents multi-agent feature research",
+      "Futures/options instrument-level P&L simulation",
+      "Options open-interest/IV/skew and FII/DII/global-feature model"
+    ],
+    "interpretation": "Not-run means no empirical conclusion; it must not be reported as a failed or underperforming model."
+  },
+  "guardrail": "This readiness audit did not train or select any candidate estimator.",
+  "next_gate": "Independent 10:00 anchor validation and official-close/source discrepancy investigation must pass; then rebuild labels and freeze a new split manifest."
+}

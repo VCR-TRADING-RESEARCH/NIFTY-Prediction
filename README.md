@@ -102,6 +102,15 @@ The research target is on the spot index. Any executable strategy must separatel
 
 **Live behavior (Phase 7):** Clicking Predict is wired to a secure backend that refreshes Dhan authentication, fetches or reuses DhanHQ one-minute NIFTY 50 bars through the selected date, rebuilds the research features and fits ExtraTrees on settled historical labels. Backend deployment is currently **BLOCKED by Hugging Face HTTP 402**: current Hugging Face docs say Docker Spaces on CPU-basic require an eligible Pro/Team/Enterprise plan. To enable live requests, either provide eligible Hugging Face compute or set HF_SPACE_ID to an existing writable Docker Space, or provide deployment credentials for an alternative host such as Render or Cloudflare. GOOGLE_API_KEY alone does not authorize deployment of a Google Cloud service. The page stays disabled until the secure endpoint is configured and passes `/health`; it never falls back to saved forecasts. See [Phase 7 plan](docs/PHASE_7_LIVE_DHAN_INFERENCE.md) and [deployment Actions](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions).
 
+<!-- METHOD_DISCOVERY_STATUS_START -->
+## Phase 9 — New weekly-expiry direction methods
+- **Readiness status:** DESIGN COMPLETE; empirical comparison remains blocked by the current source/anchor gate.
+- **Research plan:** [Phase 9 method plan](docs/PHASE_9_NEW_DIRECTION_METHODS.md); [Version 1.1 addendum](docs/RESEARCH_PLAN_V1_1_METHODS_ADDENDUM.md).
+- **Automated readiness audit:** [script](scripts/audit_new_method_readiness.py); [regression tests](tests/test_method_readiness.py); [workflow](.github/workflows/phase9-method-discovery.yml); [report](research/results/method_discovery_readiness.json).
+- **Prioritised methods:** volatility-regime interactions, multiscale trend/reversal, point-in-time options skew/straddle/OI, global overnight leads, lagged FII/DII/positioning, and time-series uncertainty/abstention. PySR/Quantevolve is deferred and bounded.
+- **Current blocker:** 1,719 / 1,903 minute-archive daily closes differ from official closes by more than one point; no accepted independent historical 10:00 anchor. No new model has been trained by this phase, and no strategy is validated.
+<!-- METHOD_DISCOVERY_STATUS_END -->
+
 ## Research approach
 
 1. Preserve exact target semantics and historical expiry-calendar transitions.
@@ -172,3 +181,12 @@ Last repository status update: 2026-10-25.
 
 
 **Target-session retry and diagnostics (2026-10-25):** Inference now makes one targeted, one-day Dhan request for the selected session in addition to the normal chunked history request. This can recover bars omitted from a large response and helps distinguish session-level data gaps from broad-request truncation. If the required anchor is still unavailable, the failure explains whether the whole session had no valid bars or reports the returned session's timestamp range and nearby-bar count. The anchor is never silently substituted.
+
+<!-- METHOD_DISCOVERY_STATUS_START -->
+## Phase 9 — New weekly-expiry direction methods
+- **Readiness status:** BLOCKED — source/anchor quality gate.
+- **Research plan:** [Phase 9 method plan](docs/PHASE_9_NEW_DIRECTION_METHODS.md); [Version 1.1 addendum](docs/RESEARCH_PLAN_V1_1_METHODS_ADDENDUM.md).
+- **Automated report:** [method-discovery readiness JSON](research/results/method_discovery_readiness.json).
+- **Current blocker:** Repository data-quality report marks confirmatory target construction BLOCKED.
+- **Interpretation:** the readiness audit trains no new model; existing ExtraTrees metrics remain exploratory and no trading strategy is validated.
+<!-- METHOD_DISCOVERY_STATUS_END -->

@@ -41,3 +41,17 @@ Required columns: previous_expiry, expiry_date, anchor_date, anchor_timestamp, a
 
 ## Data-rights note
 The upstream repository has a published MIT licence file. That is not by itself proof every underlying market-data value can be freely redistributed. Use remote caching/analysis first and avoid republishing raw data; keep attribution and verify rights before committing substantial data.
+
+
+## Phase 9 — Candidate inputs for new direction methods (26 October 2026)
+
+| Candidate input | Free/official starting point | Required timestamp and quality checks | Current status |
+|---|---|---|---|
+| Independent NIFTY 50 10:00 minute anchor | Genuinely independent intraday archive; recent Dhan overlap; inspect Zenodo record https://zenodo.org/records/10899828 | Exact timestamp/session alignment, OHLC comparison, provider lineage, year-by-year coverage and provenance | **Blocking requirement; not validated across history** |
+| India VIX and index OHLC | NSE/NSE Indices historical reports: https://www.nseindia.com/static/resources/historical-reports-capital-market-daily-monthly-archives | Official index definition, session calendar and availability by the forecast cutoff | Not joined to weekly table |
+| Options surface and strike-level IV/OI | NSE F&O reports: https://www.nseindia.com/all-reports-derivatives; selective historical options candidates in the literature review | Contract symbol/expiry/strike/right, quote timestamp, moneyness, stale/missing quotes, source rights and intraday 10:00 snapshot | Not joined; EOD fields must not be backdated |
+| FII/DII and participant positioning | NSE F&O report catalogue and official historical reports | Actual publication timestamp; properly lag values published after 10:00 | Not joined as point-in-time features |
+| Global benchmarks, FX and commodities | Free historical benchmark sources with source-specific timezone/holiday data; GIFT NIFTY/futures where data rights and coverage allow | Only information available by 09:59:59 IST; align weekends, holidays, close times and stale marks | Not joined |
+| News and event context | Timestamped public news sources and official event calendars | Published-at time, revisions, duplicate stories, event alignment and licence | Not joined |
+
+NSE's public report catalogue lists historical derivative and participant-report families, but does not itself prove that all intraday option quotes or 10:00 snapshots are freely available. The Phase 9 workflow reports missing inputs rather than silently filling them. For every added source, record the URL, rights/licence, dates, hashes, timezone, publication-time semantics and missingness. Never commit credentials or raw source files before size/rights checks.

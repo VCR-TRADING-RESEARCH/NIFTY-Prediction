@@ -199,3 +199,13 @@
 - **Gap in troubleshooting:** Existing code did not retry the selected date as a one-day request and gave no count/timestamp range for the session.
 - **Fix staged:** Add a targeted one-day Dhan request for the selected session and merge its bars by timestamp; improve safe error diagnostics with valid session bar count, timestamp range, and nearby 09:57–10:06 count. No response bodies, tokens, or client credentials are logged.
 - **Status:** PR/CI pending; provider availability remains unconfirmed.
+
+
+## E0018 — 2026-10-26 — Unrun symbolic/evolutionary methods overstated in manuscript
+- Severity: Moderate — a documentation inconsistency could mislead a later reviewer about what was empirically tested.
+- Finding: research/results/experiment_registry.json explicitly lists PySR symbolic-regression expansion and Quantevolve evolutionary search as not_run, while an earlier manuscript sentence described recorded evolutionary/symbolic experiments as not improving the baseline.
+- Correction: manuscript wording now states that the methods were not run and no performance conclusion is available.
+- Prevention: Phase 9 readiness output exposes not_run entries and explicitly labels them as missing evidence, not failed candidates.
+- Separate blocker: 1,719 / 1,903 archive daily closes exceed the one-point mismatch tolerance; independent historical 10:00 anchor validation remains unresolved. New-method workflows must not bypass this gate.
+- Required follow-up: repair source/anchor integrity first, then rebuild targets and freeze a new holdout before training additional candidates.
+- Security: no credentials, provider response bodies, access tokens, PIN, TOTP values or private reasoning are recorded.
