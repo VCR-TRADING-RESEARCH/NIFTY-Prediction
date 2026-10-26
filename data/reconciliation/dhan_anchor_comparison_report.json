@@ -1,6 +1,6 @@
 {
   "status": "ERROR",
-  "generated_utc": "2026-10-26T06:24:55.267428+00:00",
+  "generated_utc": "2026-10-26T06:26:57.360127+00:00",
   "error": "ValueError: request failed; sensitive provider details withheld",
   "chunks": [],
   "secret_values_logged": false

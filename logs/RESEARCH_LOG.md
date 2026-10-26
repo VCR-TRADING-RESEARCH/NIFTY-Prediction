@@ -204,3 +204,12 @@
 - Difference summary: {}.
 - Weekly label sensitivity: {}.
 - Dhan source chunks are cache-only; credentials and response bodies are not recorded.
+
+
+## Phase 9 Dhan historical anchor audit — run 40279800889 — 2026-10-26T06:26:58.935386+00:00
+- Status: ERROR.
+- Window: {}.
+- Counts: {}.
+- Difference summary: {}.
+- Weekly label sensitivity: {}.
+- Dhan source chunks are cache-only; credentials and response bodies are not recorded.
