@@ -1,0 +1,29 @@
+{
+  "baseline_candidate": "extra_trees_base",
+  "challenger_candidate": "extra_trees_augmented",
+  "baseline_balanced_accuracy": 0.5484848484848485,
+  "challenger_balanced_accuracy": 0.5378787878787878,
+  "balanced_accuracy_difference": -0.010606060606060619,
+  "baseline_brier": 0.2556642402091326,
+  "challenger_brier": 0.25396777652043795,
+  "baseline_log_loss": 0.7049818422273262,
+  "challenger_log_loss": 0.7015298328114193,
+  "first_half_balanced_accuracy_difference": 0.01874999999999999,
+  "second_half_balanced_accuracy_difference": -0.0357142857142857,
+  "brier_non_degradation_pass": true,
+  "log_loss_non_degradation_pass": true,
+  "subperiod_stability_pass": false,
+  "pass": false,
+  "reason": "holdout balanced-accuracy improvement is below +0.03; paired four-week bootstrap 95% interval does not establish improvement above zero; one or both holdout subperiods are underpowered or show direction reversal",
+  "interpretation": "No new directional method is validated by the pre-registered screen in this bounded run. Do not continue searching on this holdout; use a new, independently registered sample if further research is justified.",
+  "paired_bootstrap": {
+    "status": "COMPLETED",
+    "n": 52,
+    "block_length": 4,
+    "replicates_requested": 2000,
+    "replicates_valid": 2000,
+    "difference_mean": -0.007351808676011449,
+    "difference_ci_95_low": -0.050000000000000044,
+    "difference_ci_95_high": 0.0343836805555555
+  }
+}

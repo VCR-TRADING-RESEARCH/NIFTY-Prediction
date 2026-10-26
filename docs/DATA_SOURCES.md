@@ -41,3 +41,18 @@ Required columns: previous_expiry, expiry_date, anchor_date, anchor_timestamp, a
 
 ## Data-rights note
 The upstream repository has a published MIT licence file. That is not by itself proof every underlying market-data value can be freely redistributed. Use remote caching/analysis first and avoid republishing raw data; keep attribution and verify rights before committing substantial data.
+
+
+## Phase 10 — Official-daily + Dhan intraday rebuild (26 October 2026)
+
+| Role | Canonical source | Use in the rebuilt dataset | Guardrail |
+|---|---|---|---|
+| Daily session calendar and historical OHLC | Committed official NSE/NIFTY Indices snapshot: data/reconciliation/nifty50_official_daily.csv | All session dates; lagged daily open/high/low/close; expiry closing price | No minute-archive OHLC substituted for official daily history |
+| Actual weekly expiry dates | Official contract-verified table: data/reconciliation/expiry_verification.csv | Consecutive actual expiries, including verified holiday shifts | Pipeline fails closed if any verification row is not verified or duplicated |
+| 10:00 anchor and intraday features | Authenticated DhanHQ v2 NIFTY 50 INDEX 1-minute history | First valid minute open at/after 10:00 and no later than 10:03 IST; intraday features only from bars available by anchor time | Five-year API window; no request longer than 90 days; no raw data or secrets committed |
+| Cross-source diagnostic | data/reconciliation/dhan_anchor_comparison_report.json | Compare Dhan anchor timestamps/open to the existing public archive on overlapping dates | Diagnostic corroboration only; public provider lineage is not independently established |
+| Model evaluation | Rebuilt official-calendar, Dhan-anchor weekly feature table | Fixed expanding walk-forward candidates and one contiguous 20% holdout | Split manifest locked before fitting; no post-holdout tuning loop |
+
+### Phase 10 source construction
+
+The complete official daily calendar is left-joined to Dhan intraday coverage. Missing Dhan bars remain explicit as zero-covered sessions and cannot shift the anchor to the next *observed* date. Official daily OHLC is kept canonical for all lagged features; Dhan-aggregated OHLC is retained separately for disagreement diagnostics. The raw Dhan chunks live only in the workflow cache, with a compact manifest and derived weekly table committed for reproducibility.

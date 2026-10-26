@@ -1,0 +1,126 @@
+name: Phase 10 — Dhan Verified Dataset and Bounded Method Test
+
+on:
+  push:
+    branches:
+      - research/phase-10-verified-dataset-rebuild
+    paths:
+      - ".github/workflows/phase10-dhan-verified-dataset.yml"
+      - "scripts/fetch_dhan_anchor_history.py"
+      - "scripts/rebuild_dhan_verified_dataset.py"
+      - "tests/test_phase10_verified_dataset.py"
+      - "docs/PHASE_10_VERIFIED_DATASET.md"
+      - "docs/RESEARCH_PLAN.md"
+      - "docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md"
+      - "docs/DATA_SOURCES.md"
+  workflow_dispatch:
+    inputs:
+      force_refresh:
+        description: Force refresh of all cached Dhan minute-history chunks
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: phase10-verified-dataset-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  rebuild-evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    env:
+      PYTHONUNBUFFERED: "1"
+      TZ: Asia/Kolkata
+      FORCE_REFRESH_DHAN_ANCHORS: ${{ inputs.force_refresh }}
+    steps:
+      - name: Checkout Phase 10 branch
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install research dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
+      - name: Restore Dhan historical cache
+        uses: actions/cache@v4
+        with:
+          path: data/cache/dhan-anchors
+          key: nifty-dhan-anchor-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            nifty-dhan-anchor-${{ runner.os }}-
+
+      - name: Remove prior Phase 10 outputs to prevent stale reuse
+        run: |
+          rm -rf research/results/phase10
+          rm -f data/processed/dhan_history_manifest.json
+          rm -f data/processed/phase10_dhan_weekly_labels_features.csv
+          rm -f data/processed/phase10_expiry_calendar_used.csv
+          rm -f data/processed/phase10_excluded_cycle_candidates.csv
+
+      - name: Run full repository and Phase 10 source-gate tests
+        id: tests
+        run: python -m pytest -q tests
+
+      - name: Prepare or refresh authenticated Dhan history
+        id: fetch
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+        run: python scripts/fetch_dhan_anchor_history.py
+
+      - name: Rebuild targets with official NSE OHLC and run the fixed candidate evaluation
+        id: rebuild
+        run: python scripts/rebuild_dhan_verified_dataset.py
+
+      - name: Upload compact Phase 10 results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase10-dhan-verified-research-${{ github.run_id }}
+          path: |
+            data/processed/dhan_history_manifest.json
+            data/processed/phase10_dhan_weekly_labels_features.csv
+            data/processed/phase10_expiry_calendar_used.csv
+            data/processed/phase10_excluded_cycle_candidates.csv
+            research/results/phase10/**
+            README.md
+            research/manuscript.md
+            logs/RESEARCH_LOG.md
+            logs/ERROR_LOG.md
+          if-no-files-found: ignore
+          retention-days: 90
+
+      - name: Record phase outcome and persist report, README and logs
+        if: always() && steps.checkout.outcome == 'success'
+        env:
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
+          FETCH_OUTCOME: ${{ steps.fetch.outcome }}
+          REBUILD_OUTCOME: ${{ steps.rebuild.outcome }}
+        run: |
+          python scripts/record_phase10_outcome.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for p in README.md research/manuscript.md logs/RESEARCH_LOG.md logs/ERROR_LOG.md data/processed/dhan_history_manifest.json data/processed/phase10_dhan_weekly_labels_features.csv data/processed/phase10_expiry_calendar_used.csv data/processed/phase10_excluded_cycle_candidates.csv research/results/phase10; do
+            if [ -e "$p" ]; then git add -A "$p"; fi
+          done
+          if git diff --cached --quiet; then
+            echo "No generated report/log changes to commit."
+          else
+            git commit -m "Record Phase 10 Dhan-backed dataset and bounded evaluation [skip ci]"
+            git pull --rebase --autostash origin "research/phase-10-verified-dataset-rebuild"
+            git push origin "HEAD:research/phase-10-verified-dataset-rebuild"
+          fi

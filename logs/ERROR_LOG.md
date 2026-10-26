@@ -262,3 +262,41 @@
 - Difference summary: {"max": 6.700000000000728, "median": 0.049999999999272404, "p95": 1.0}.
 - Caveat: secondary archive provider lineage is unverified; this comparison cannot pass the official independent-anchor gate.
 - Output: data/reconciliation/anchor_source_comparison.csv and anchor_source_comparison_report.json.
+
+
+## E0020 — 2026-10-26 — Phase 10 manuscript renderer displayed missing source metrics
+- Severity: Moderate — the machine-readable dataset report and holdout metrics were correct, but the generated manuscript's data-quality summary read some values from the wrong JSON nesting and displayed "n/a".
+- Finding: official daily-session counts are under official_daily_quality; weekly row-gate counts are under row_source_gate; holdout boundary dates were in the split manifest but were not copied into the top-level summary.
+- Correction: the report renderer now reads the nested data-quality fields and the summary now records the exact first/last holdout expiry dates. The data-quality construction summary now reconciles its legacy pre-Dhan confirmatory flag with the Phase 10 row-level source gate and states the correct Dhan-backed source semantics.
+- Regression prevention: added a test asserting official session counts, source-gate counts and holdout dates are rendered, rather than left as missing values.
+- The fixed model result remains unchanged: base ExtraTrees balanced accuracy 0.5485 versus augmented ExtraTrees 0.5379 on the 52-row locked holdout; bootstrap 95% interval for the difference spans -0.0500 to +0.0344. The augmented method does not pass the pre-registered screen.
+- Trading acceptance remains BLOCKED; no contract-level futures/options P&L with dated Paytm Money costs, bid/ask spread, slippage and conservative fills was performed.
+- Security: no Dhan credentials, tokens, PINs, TOTP values or provider response bodies are logged.
+
+
+## 2026-10-26 — Phase 10 workflow publication errors (runs 40282004301 and 40283034584)
+
+- Error 1: Run 40282004301 completed tests, authenticated Dhan history retrieval and model evaluation, but the final reporting step failed with a Python SyntaxError because an inline shell/Python heredoc boundary was parsed incorrectly.
+- Correction: Extracted the reporting logic to scripts/record_phase10_outcome.py and invoked it as a standalone script.
+- Error 2: Run 40283034584 completed tests, data retrieval and model evaluation, then failed at the Git push step with fatal: invalid refspec due to literal backslashes before the GitHub Actions branch-name expression.
+- Correction: Removed the literal backslashes from github.ref_name and step outcome expressions in .github/workflows/phase10-dhan-verified-dataset.yml.
+- Impact: Both runs produced the same research metrics; the failure was in publishing generated files/logs, not model fitting. A prior run (40282667293) successfully committed the result summary and outputs. No credentials or provider response bodies were logged.
+- Prevention: Keep outcome reporting in a standalone Python file; validate workflow expressions and refspecs before rerunning; check both the job conclusion and the presence/contents of the committed result summary.
+
+
+## E0021 — 2026-10-26 — Phase 10 workflow commit used an escaped Git ref
+- Severity: Moderate — analysis completed and artifacts were uploaded, but the final commit step failed.
+- Finding: the failing Actions run 40283034584 expanded the branch expression with a leading backslash; git rejected the refspec with “invalid refspec”. The local report/log commit therefore was not pushed by that run.
+- Correction: the Phase 10 workflow now uses the explicit branch name research/phase-10-verified-dataset-rebuild in git pull/push rather than interpolating the branch ref in shell arguments.
+- Data/model status is unaffected: 256 Dhan-backed weekly cycles, 204 development rows, 52 chronological holdout rows; base ExtraTrees balanced accuracy 0.5485 versus augmented ExtraTrees 0.5379. The augmented method fails the preregistered screen.
+- The following workflow rerun must validate the corrected report renderer, tests and repo commit. Use the published artifacts from the successful evaluation if a runner publication failure recurs; do not re-tune the holdout.
+- Security: no Dhan credentials, access tokens, PINs, TOTP values or raw provider response bodies are logged.
+
+
+## Phase 10 automated run 40283691388 — 2026-10-26T07:08:14.253584+00:00
+- Workflow outcomes: tests=failure, Dhan history=skipped, rebuild/evaluation=skipped.
+- Final status: BLOCKED_WORKFLOW_FAILURE.
+- No fresh Phase 10 summary or failure report was produced; inspect the exact failed Actions step.
+- Plan: docs/PHASE_10_VERIFIED_DATASET.md and docs/RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md.
+- Raw Dhan history remains cache-only; only compact metadata and derived results are committed.
+- Review the failed test/data/rebuild step, preserve the error record, add a regression test and retry once.

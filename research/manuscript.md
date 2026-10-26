@@ -203,3 +203,9 @@ A corrected comparison between the primary public NIFTY minute archive and a sep
 The alternate-anchor test holds the recorded expiry closing price constant and recalculates the cycle return using the other archive's 10:00 open. No direction label changed in the 265 overlapping weekly cycles. This reduces concern that small anchor-price discrepancies alone are driving the direction labels within this overlap. It does not establish that either minute archive is a reliable ground-truth source: the secondary data's original provider lineage is not independently verified, the comparison ends in March 2024, and 62 daily anchor opens differ by more than one index point. Other intraday OHLC features may remain affected.
 
 The daily-close source mismatch gate therefore remains **BLOCKED**. No model selection or trading acceptance is inferred from this diagnostic. A Dhan historical anchor-source audit is the next evidence-gathering step; it can corroborate only its available five-year window and does not remove the requirement for complete source provenance, re-built labels and a new locked holdout.
+
+<!-- PHASE10_RESULTS_START -->
+## Phase 10 execution status
+
+**Status:** BLOCKED_WORKFLOW_FAILURE. The automated Dhan-backed rebuild did not produce a successful summary in run 40283691388. This is a blocked execution result, not model performance evidence. See logs/ERROR_LOG.md and docs/PHASE_10_VERIFIED_DATASET.md.
+<!-- PHASE10_RESULTS_END -->

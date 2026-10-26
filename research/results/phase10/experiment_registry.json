@@ -1,0 +1,64 @@
+{
+  "plan_version": "1.2",
+  "generated_utc": "2026-10-26T06:59:45.545436+00:00",
+  "candidates": [
+    "majority",
+    "prior_cycle",
+    "momentum_5d",
+    "prior_cycle_return",
+    "logistic_base",
+    "extra_trees_base",
+    "logistic_augmented",
+    "extra_trees_augmented"
+  ],
+  "base_features": [
+    "ret_1",
+    "ret_5",
+    "ret_10",
+    "ret_20",
+    "rv_5",
+    "rv_10",
+    "rv_20",
+    "range_5",
+    "range_10",
+    "range_20",
+    "overnight_gap",
+    "pre_anchor_return",
+    "anchor_jump",
+    "prior_cycle_return",
+    "prior_cycle_up",
+    "prior_close_range_position",
+    "session_gap_days",
+    "post_expiry_change",
+    "month_sin",
+    "month_cos"
+  ],
+  "added_features": [
+    "momentum_spread_5_20",
+    "rv_ratio_5_20",
+    "trend_efficiency_20",
+    "downside_semivol_20",
+    "upside_semivol_20",
+    "semivol_asymmetry_20"
+  ],
+  "source_window": {
+    "first_anchor": "2021-10-29",
+    "last_expiry": "2026-10-19"
+  },
+  "selection": "Development predictions only; one base baseline and one augmented challenger were selected before holdout analysis.",
+  "holdout_evaluated_once": true,
+  "bootstrap": {
+    "method": "paired moving-block bootstrap",
+    "block_weeks": 4,
+    "replicates": 2000,
+    "seed": 20261026
+  },
+  "not_run": [
+    "PySR symbolic-regression search",
+    "Quantevolve evolutionary search",
+    "TradingAgents multi-agent features",
+    "options IV/OI/skew and global/FII/DII inputs because a point-in-time historical feature table is not yet joined",
+    "instrument-level futures/options P&L because historical fills and dated Paytm Money costs are not validated"
+  ],
+  "stop_rule": "Stop after this single fixed-candidate evaluation; do not retune using holdout rankings."
+}

@@ -61,3 +61,18 @@
 - Added `?as_of_date=YYYY-MM-DD` support to the Pages predictor so a completed date-specific JSON result can be opened directly without generating another request. The Actions completion comment now links back to that exact result page.
 - Pages deployment for the deep-link JavaScript passed in run [40201836007](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201836007). A later documentation deployment was still running at latest inspection.
 - Direct historical result link: https://vcr-trading-research.github.io/NIFTY-Prediction/?as_of_date=2024-09-20. External browser verification of the rendered page was unavailable; the JSON record and deployment run are verified.
+
+
+## 2026-10-26 — User authorised Phase 10 continuation
+- User message: “Proceed”.
+- Decision: run one bounded rebuild using authenticated Dhan intraday anchors plus official NSE daily OHLC and verified expiry dates, then perform one locked chronological walk-forward evaluation of fixed baseline and augmented candidates.
+- Target and feature clock remain unchanged. The official daily session calendar is used even where Dhan bars are absent, so provider coverage gaps cannot shift the target anchor.
+- No private chain-of-thought is recorded; this log captures the visible decision and auditable method.
+
+
+## 2026-10-26 — Phase 10 bounded evaluation result and publication fixes
+- Visible user direction: “Resume”.
+- The authenticated-Dhan/official-NSE rebuild completed with 256 source-gated weekly cycles. The chronological split was 204 development rows and 52 holdout rows; the 104-cycle warm-up left 100 scored development predictions.
+- Base ExtraTrees balanced accuracy on the holdout was 54.85%; the six-feature augmented ExtraTrees result was 53.79%. Difference −1.06 percentage points; paired four-week moving-block bootstrap 95% interval −5.00 to +3.44 points. The preregistered screen failed; no new directional method is validated.
+- Trading acceptance remains blocked pending contract-level futures/options fills and date-effective Paytm Money fees, spread and slippage validation.
+- Operational publication failures in runs 40282004301 and 40283034584 were traced to a heredoc boundary and escaped workflow expressions, respectively. A standalone reporter and corrected workflow expressions were committed. These are workflow errors, not evidence about model performance.

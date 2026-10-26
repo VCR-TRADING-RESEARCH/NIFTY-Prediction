@@ -112,6 +112,13 @@ The research target is on the spot index. Any executable strategy must separatel
 - **Logs and raw comparison:** [research log](logs/RESEARCH_LOG.md), [error log](logs/ERROR_LOG.md), [daily anchor comparison](data/reconciliation/anchor_source_comparison.csv), [weekly label sensitivity](data/reconciliation/weekly_anchor_label_sensitivity.csv), [summary report](data/reconciliation/anchor_source_comparison_report.json).
 <!-- PHASE9_ANCHOR_AUDIT_STATUS_END -->
 
+<!-- PHASE10_STATUS_START -->
+## Phase 10 — Dhan-backed dataset rebuild
+- **Status:** BLOCKED_WORKFLOW_FAILURE; no successful rebuilt model report is available for this run.
+- Check [workflow](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions) and the [Phase 10 plan](docs/PHASE_10_VERIFIED_DATASET.md).
+- No stale result is reused and no trading strategy is validated.
+<!-- PHASE10_STATUS_END -->
+
 ## Research approach
 
 1. Preserve exact target semantics and historical expiry-calendar transitions.
