@@ -99,3 +99,12 @@ The initial cycle ends after Phase 5 or is explicitly marked BLOCKED when essent
 ## 13. Version 1.2 amendment — Dhan-backed dataset rebuild
 
 The registered data reconstruction, six causal feature additions, fixed candidate list, 104-row minimum training history, chronological 80/20 split, four-week moving-block bootstrap and stop rules are in [RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md](RESEARCH_PLAN_V1_2_DHAN_DATASET_ADDENDUM.md) and [Phase 10](PHASE_10_VERIFIED_DATASET.md). The previous plan remains an auditable record; changes apply only to the Phase 10 source-identifiable sample. No trading strategy is validated by this amendment.
+
+
+## Phase 10 outcome — bounded method screen (26 October 2026)
+
+The version 1.2 Dhan-backed reconstruction and fixed-candidate evaluation completed. The source-gated dataset contains 256 weekly cycles, with a 204-row development partition and 52-row chronological holdout. The development-scored portion begins after the registered 104-cycle minimum training history.
+
+The development-selected baseline was base ExtraTrees; the selected challenger was ExtraTrees with six additional causal trend/volatility features. Holdout balanced accuracy was 54.85% for the baseline and 53.79% for the challenger, a −1.06 percentage-point difference. The paired four-week moving-block bootstrap 95% interval for the difference was −5.00 to +3.44 points. The preregistered screen did not pass. **Conclusion: no new directional method validated in this bounded run.**
+
+This is a prediction experiment, not a profitable trading strategy. Historical contract-level futures/options fills, Paytm Money date-effective costs, spreads and slippage were not validated. The current phase stops here; do not retune against this holdout. See [Phase 10 plan](PHASE_10_VERIFIED_DATASET.md), [results summary](../research/results/phase10/summary.json), and [full report](../research/results/phase10/phase10_report.md).
