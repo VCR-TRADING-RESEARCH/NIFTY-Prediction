@@ -336,3 +336,27 @@
 - **Symptom:** Phase 11 plan required uncertainty/stability reporting that respects weekly serial dependence, but the initial implementation only reported point metrics.
 - **Correction:** Added a paired four-week moving-block bootstrap with 2,000 replicates for ExtraTrees versus expanding-majority and Random Forest, plus a regression test and report output. This is a fixed reporting correction; no model parameters/features are changed and no extra candidate search is allowed.
 - **Status:** Awaiting follow-up CI validation. If intervals are underpowered, report that explicitly; do not replace block length or repeat sampling to obtain a preferred result.
+
+
+## E0022 — 2026-10-26 — Phase 11 workflow persistence targeted synthetic PR ref
+- **Run:** [40285962471](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40285962471).
+- **Symptom:** Tests, benchmark and artifact upload completed, but persistence tried pushing to GitHub's synthetic `20/merge` ref and was rejected.
+- **Root cause:** The checkout had been corrected to use the PR head branch, but the push destination still used `github.ref_name`.
+- **Correction:** Push target now uses `${{ github.event.pull_request.head.ref || github.ref_name }}`.
+- **Validation:** Corrected run [40311220819](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40311220819) passed every job step, including persistence.
+- **Impact:** No model metrics changed; this was a publishing failure only.
+
+## E0023 — 2026-10-26 — Trading gate blocked by missing contract-level evidence
+- **Severity:** High for strategy acceptance; no strategy P&L may be claimed.
+- **Finding:** Repository inspection did not identify source-registered historical option/futures fills paired with date-effective Paytm Money charges, spread/slippage and settlement treatment.
+- **Response:** Added Phase 12 fail-closed cost engine. Missing files/schema produce BLOCKED and net P&L=null; no synthetic trades, fee estimates or spot-proxy P&L are permitted.
+- **Status:** Evidence gate remains BLOCKED_PENDING_CONTRACT_LEVEL_DATA. The automated workflow and regression tests must be run before the phase is considered operationally complete.
+- **Security:** No secrets or provider response bodies logged.
+
+
+## E0024 — 2026-10-26 — Free expired-options sample link inaccessible from research browser
+- **Severity:** Low/operational; no market-data result was produced from this source.
+- **Source:** Cloud Trader Pro/Shoonya page advertises free NIFTY expired-option 1-minute OHLCV+OI sample data and links to Google Drive.
+- **Observed:** Opening the linked Drive file returned HTTP 401 Unauthorized in the research browsing environment.
+- **Interpretation:** This is an access limitation, not evidence the dataset is unavailable or invalid. No bytes were ingested and no claims were made about its quality.
+- **Next action:** Test official NSE contract-wise data and accessible free sample alternatives; validate timestamps, contract IDs, coverage and OHLC consistency before using any data. Do not fall back to paid data until free sources are ruled out.

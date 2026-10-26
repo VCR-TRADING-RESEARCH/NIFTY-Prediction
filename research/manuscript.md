@@ -257,3 +257,21 @@ ExtraTrees ranked first, but its balanced accuracy was only 0.578, MCC 0.157 and
 - Machine-readable results: results/phase11/summary.json and results/phase11/metrics.csv
 - Per-date predictions: results/phase11/predictions_expanding_window.csv
 - Report and figure: results/phase11/report.md and results/phase11/balanced_accuracy.png
+
+
+## 9. Phase 11 model-family benchmark (exploratory addendum, 2026-10-26)
+
+The source-gated 256-cycle dataset supported 152 common expanding-window forecast dates from 2023-11-16 through 2026-10-19. Across nine fixed candidates, ExtraTrees had the highest observed balanced accuracy (0.578), followed closely by Random Forest (0.573). The paired four-week moving-block bootstrap difference was +0.55 percentage points, with 95% interval −6.9 to +8.0 points. Since the interval crosses zero and the historical holdout has already been inspected, this does not establish ExtraTrees superiority or confirmatory predictive edge. See [Phase 11 report](results/phase11/report.md).
+
+## 10. Phase 12 executable trading gate
+
+**Status: BLOCKED_PENDING_CONTRACT_LEVEL_DATA.** Directional spot-index scores cannot be converted into option or futures profitability without actual contract mapping, prices, expiry/settlement treatment, realistic fills, date-effective Paytm Money brokerage and statutory charges, bid/ask spread and slippage. A fail-closed cost engine was added in [scripts/phase12_cost_gate.py](../scripts/phase12_cost_gate.py), with tests and an automated workflow. No source-registered contract-level fills and complete dated cost schedule were found in the inspected repository; therefore no strategy P&L is reported. Missing evidence is not replaced with assumed costs or spot proxies.
+
+## 11. Overall conclusion and future direction
+
+**NO USABLE TRADING STRATEGY VALIDATED.** The model-family benchmark is exploratory and does not prove economic value. The bounded next evidence gate is to obtain auditable historical contract-level fills and dated Paytm Money costs, then evaluate a fixed strategy with conservative execution, drawdown and cost stress. If those inputs cannot be sourced, stop rather than continue model tuning. A future confirmatory claim requires a new prospective evaluation window after the protocol is frozen.
+
+
+### Phase 12 free-source search and data availability limitation
+
+The initial free-source audit identified the official NSE contract-wise historical price/volume page, official daily derivatives reports, a public NSE F&O bhavcopy archive project, and a provider-stated free NIFTY expired-options one-minute sample. The sample's linked Google Drive download returned HTTP 401 in the research browsing environment, so no file was ingested. The source audit is documented in [PHASE12_DATA_SOURCE_AUDIT.md](../docs/PHASE12_DATA_SOURCE_AUDIT.md). This does not establish that free historical options data are universally unavailable. The trading gate remains blocked until free-source acquisition and lineage checks are completed and contract-level prices can represent the requested entry time.

@@ -120,3 +120,17 @@ The Phase 10 holdout has already been inspected, so Phase 11 outputs are explora
 ## Phase 11 — Diverse model-family benchmark (2026-10-26)
 
 The first fixed expanding-window benchmark completed over 152 forecast dates with 256 source-gated weekly cycles. ExtraTrees ranked first on balanced accuracy (57.8%) and Random Forest second (57.3%), but this is exploratory reuse of a previously inspected sample, not confirmatory evidence. See [Phase 11 protocol and results](PHASE_11_MODEL_FAMILY_BENCHMARK.md). A paired four-week block-bootstrap reporting correction is undergoing CI validation. No further tuning is allowed in this phase. Trading remains blocked pending contract-level historical fills and full Paytm Money cost/spread/slippage validation.
+
+
+## Version 1.4 addendum — Phase 11 and Phase 12 (2026-10-26)
+
+Phase 11 fixed diverse model-family benchmark and uncertainty correction are documented in [Phase 11 plan](PHASE_11_MODEL_FAMILY_BENCHMARK.md) and [results](../research/results/phase11/report.md). CI run [40311220819](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40311220819) passed tests, benchmark, artifact upload and persistence. The result remains exploratory because the Phase 10 sample has been inspected. ExtraTrees vs Random Forest balanced-accuracy difference is +0.55 percentage points, 95% paired four-week block-bootstrap interval −6.9 to +8.0 points; no meaningful superiority is established.
+
+Phase 12 is bounded to executable trade evidence and cost validation: [Phase 12 plan](PHASE_12_EXECUTABLE_TRADING_GATE.md). Its fail-closed engine requires historical contract-level futures/options prices, expiry/settlement semantics, spread/slippage and per-trade date-effective Paytm Money charges. Missing data yields a BLOCKED status with no estimated P&L. Do not use spot labels as an options backtest, do not assume current fees apply historically, and do not use the previously inspected sample for confirmatory claims.
+
+**Current terminal decision if required trade data cannot be sourced:** NO USABLE TRADING STRATEGY VALIDATED. Stop after this gate rather than extending model searches indefinitely.
+
+
+### Phase 12 source-acquisition amendment
+
+Free-source acquisition is still in progress: official NSE contract-wise data and daily derivatives reports, a public NSE F&O bhavcopy archive, and a provider-stated free one-minute expired-options sample have been identified. The sample link was inaccessible to the research browser (HTTP 401), so it has not been validated. See [source audit](PHASE12_DATA_SOURCE_AUDIT.md). This is not grounds to conclude that free data are unavailable; do not purchase data until free-source avenues have been tested and documented.
