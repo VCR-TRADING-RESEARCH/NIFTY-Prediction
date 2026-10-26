@@ -199,3 +199,9 @@
 - **Gap in troubleshooting:** Existing code did not retry the selected date as a one-day request and gave no count/timestamp range for the session.
 - **Fix staged:** Add a targeted one-day Dhan request for the selected session and merge its bars by timestamp; improve safe error diagnostics with valid session bar count, timestamp range, and nearby 09:57–10:06 count. No response bodies, tokens, or client credentials are logged.
 - **Status:** PR/CI pending; provider availability remains unconfirmed.
+
+
+## Scheduled prediction failure — run 40310768077
+- Date: 2026-10-26
+- Status: FAILED; inspect the linked Actions run for the failing step.
+- No secrets or provider response bodies are copied into logs.
