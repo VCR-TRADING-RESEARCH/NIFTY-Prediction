@@ -121,6 +121,6 @@ jobs:
             echo "No generated report/log changes to commit."
           else
             git commit -m "Record Phase 10 Dhan-backed dataset and bounded evaluation [skip ci]"
-            git pull --rebase --autostash origin "${{ github.ref_name }}"
-            git push origin "HEAD:${{ github.ref_name }}"
+            git pull --rebase --autostash origin "research/phase-10-verified-dataset-rebuild"
+            git push origin "HEAD:research/phase-10-verified-dataset-rebuild"
           fi
