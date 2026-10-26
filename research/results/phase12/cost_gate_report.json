@@ -28,5 +28,5 @@
   ],
   "trade_count": 0,
   "net_pnl": null,
-  "message": "Initial source inventory found no contract-level fills input. Workflow reproduces blocked status unless validated source data is added."
+  "message": "No contract-level fills input. No P&L was estimated. Source-register historical contracts, prices, date-effective Paytm Money costs, spread and slippage before evaluating profitability."
 }
