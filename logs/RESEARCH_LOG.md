@@ -280,3 +280,18 @@
 - Interpretation: exploratory only because the Phase 10 sample/holdout has already been inspected. Ranking does not establish statistical significance or tradability. No additional hyperparameter tuning will be performed.
 - Plan-compliance correction: the registered plan required dependence-aware uncertainty reporting; the first implementation omitted it. Added a paired four-week moving-block bootstrap (ExtraTrees vs majority and Random Forest) and a regression test. This is a reporting correction, not a new model search; the follow-up CI must validate it.
 - Trading gate remains BLOCKED: no contract-level option/futures fills, dated Paytm Money charges, bid/ask spread or slippage stress.
+
+
+## 2026-10-26 — Phase 11 uncertainty correction and CI persistence fix
+- **Phase:** 11 diverse model-family benchmark.
+- **Status:** PASS for reproducibility/CI; exploratory model evidence only.
+- **Workflow:** [40311220819](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40311220819) passed repository tests, fixed expanding-window benchmark, artifact upload and persistence after correcting the PR branch push target.
+- **Result:** 152 identical expanding-window predictions; ExtraTrees balanced accuracy 0.578, Random Forest 0.573. Difference +0.55 percentage points; paired four-week block-bootstrap 95% interval −6.9 to +8.0 points. Interval crosses zero.
+- **Inference:** No demonstrated ExtraTrees superiority over Random Forest; no trading edge inferred. The historical sample has already been inspected, so all Phase 11 metrics are exploratory.
+
+## 2026-10-26 — Phase 12 executable trading gate registered
+- **Phase:** 12, bounded contract-level execution/cost validation.
+- **Status:** BLOCKED_PENDING_CONTRACT_LEVEL_DATA.
+- **Implementation:** Added fail-closed input schema and cost engine in scripts/phase12_cost_gate.py, arithmetic/provenance tests in tests/test_phase12_cost_gate.py, plan in docs/PHASE_12_EXECUTABLE_TRADING_GATE.md, workflow in .github/workflows/phase12-executable-trading-gate.yml, and initial report under research/results/phase12/.
+- **Required evidence:** Historical option/futures contract mapping, executable prices, date-effective Paytm Money fees, bid/ask spread, slippage, lot-size/contract-spec history and expiry settlement handling.
+- **Outcome:** No contract-level fills/cost schedule was source-registered in the inspected repo. No strategy P&L was invented. Terminal decision remains NO USABLE TRADING STRATEGY VALIDATED until the data gate can pass.
