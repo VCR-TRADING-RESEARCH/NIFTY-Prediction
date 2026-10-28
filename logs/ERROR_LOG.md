@@ -216,3 +216,9 @@
 ## Dhan authentication attempt — run 40675278048
 - Status: FAILED or incomplete. The public archive route will still be attempted.
 - Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.
+
+
+## Scheduled prediction failure — run 40677745627
+- Date: 2026-10-28
+- Status: FAILED; inspect the linked Actions run for the failing step.
+- No secrets or provider response bodies are copied into logs.
