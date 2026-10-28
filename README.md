@@ -7,9 +7,9 @@
 <!-- AUTO_STATUS_START -->
 ## Latest automated research status
 
-Last status refresh: 2026-10-25 13:19 UTC
+Last status refresh: 2026-10-28 10:53 UTC
 
-- Run ID: 40196840830
+- Run ID: 40675278048
 - Target labels: 398
 - Binary rows with sufficient features: 398
 - Development / final holdout rows: 318 / 80
@@ -22,11 +22,11 @@ The 10:00 anchor remains minute-archive-derived and independently unvalidated; e
 The target uses official NSE expiry dates and daily closes. The 10:00 anchor is still minute-archive-derived and independently unvalidated. No executable futures/options P&L with broker charges, spreads, slippage and fills has been validated.
 
 - Source CSV files: 19
-- Valid minute bars after checks: 882839
+- Valid minute bars after checks: 883964
 - Official NSE daily closes matched: 1903
 - Minute-archive closes differing from official close by >1 point: 1719
 - Median absolute minute-vs-official close difference: 8.25 points
-- Yahoo daily-close cross-check: available; compared rows: 2352; mismatches over tolerance: 0
+- Yahoo daily-close cross-check: available; compared rows: 2355; mismatches over tolerance: 0
 
 ### Final holdout metrics (exploratory)
 - extra_trees: accuracy 0.613, balanced accuracy 0.602, n=80
