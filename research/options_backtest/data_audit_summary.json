@@ -1,0 +1,89 @@
+{
+  "run_id": 41144264886,
+  "generated_date": "2026-10-31",
+  "dataset": "rissin/nse-options-intraday",
+  "purpose": "NIFTY option 1-minute data quality and coverage audit only; no strategy P&L",
+  "source_license": "other; no raw redistribution",
+  "coverage": {
+    "start_ist": "2024-10-01T09:15:00+05:30",
+    "end_ist": "2026-07-21T15:29:00+05:30",
+    "requested_period": "2021-2026",
+    "missing_period": "2021-10 through 2024-09"
+  },
+  "partitions": [
+    {
+      "year": 2024,
+      "rows": 14592609,
+      "bytes": 140912219,
+      "sha256": "573b6fa788dbe06cbb7f6c4a48ee2fcd259434ad05f70a1cca3e775bb5b9d934",
+      "min_timestamp_utc": "2024-10-01T03:45:00Z",
+      "max_timestamp_utc": "2024-12-31T09:59:00Z",
+      "min_expiry": "2024-10-03",
+      "max_expiry": "2026-06-30",
+      "zero_volume_rows": 7728049,
+      "negative_volume_rows": 0
+    },
+    {
+      "year": 2025,
+      "rows": 69687860,
+      "bytes": 674710222,
+      "sha256": "33c2525b57ba442cfabeaebfc63ace63d0292e8f69474d5ea1541b75c9546972",
+      "min_timestamp_utc": "2025-01-01T03:45:00Z",
+      "max_timestamp_utc": "2025-12-31T09:59:00Z",
+      "min_expiry": "2025-01-02",
+      "max_expiry": "2026-06-30",
+      "zero_volume_rows": 36816119,
+      "negative_volume_rows": 35
+    },
+    {
+      "year": 2026,
+      "rows": 40177780,
+      "bytes": 394805617,
+      "sha256": "bae9943b2fa99ee9c1214fb7c695b84f9f661a050a5cd04d9c5c2ffc7bc59f73",
+      "min_timestamp_utc": "2026-01-01T03:45:00Z",
+      "max_timestamp_utc": "2026-07-21T09:59:00Z",
+      "min_expiry": "2026-01-06",
+      "max_expiry": "2026-07-21",
+      "zero_volume_rows": 21224180,
+      "negative_volume_rows": 0
+    }
+  ],
+  "totals": {
+    "rows": 124458249,
+    "bytes": 1210428058,
+    "null_ohlc_rows": 0,
+    "nonpositive_ohlc_rows": 0,
+    "malformed_ohlc_rows": 0,
+    "null_oi_rows": 0,
+    "null_volume_rows": 0,
+    "zero_volume_rows": 65768348,
+    "negative_volume_rows": 35,
+    "positive_volume_rows": 58689866,
+    "positive_volume_pct": 47.15626844468943,
+    "invalid_timestamp_rows": 0
+  },
+  "schema": {
+    "has_oi": true,
+    "has_iv": false,
+    "has_bid_ask": false,
+    "has_volume": true,
+    "granularity": "1min"
+  },
+  "gates": {
+    "schema_ohlc_timestamp": "PASS",
+    "OI_volume_field_presence": "PASS",
+    "full_2021_2026_coverage": "FAIL",
+    "delta_selection": "EXPLORATORY_RECONSTRUCTED_IV",
+    "VWAP": "BLOCKED_NO_FUTURES_VOLUME",
+    "strategy_pnl": "NOT_RUN"
+  },
+  "dhan": {
+    "collection_status": "BLOCKED",
+    "observed_errors": [
+      "token renewal/TOTP authentication inconsistent",
+      "rolling options request returned DH-905 for requiredData"
+    ],
+    "raw_data_downloaded": false,
+    "workflow": "manual dispatch plus monthly schedule"
+  }
+}
