@@ -14,18 +14,19 @@
 
 | Component | Up to 2026-02-28 | From 2026-03-01 / 2026-04-01 | Basis |
 |---|---:|---:|---|
-| NSE equity options transaction charge | 0.03553% | 0.03553% | Option premium turnover, buy and sell sides |
+| NSE equity options transaction charge | 0.03503% from 2024-10-01 to 2026-02-28 | 0.03553% from 2026-03-01 | Option premium turnover, buy and sell sides |
 | STT on option sale | 0.10% through 2026-03-31 | 0.15% from 2026-04-01 | Premium value, seller |
 | STT on option exercised | 0.125% through 2026-03-31 | 0.15% from 2026-04-01 | Intrinsic value, purchaser |
 | Stamp duty on option purchase | 0.003% | 0.003% | Buyer, premium value |
 | SEBI turnover fee | 0.0001% (₹10/crore) | 0.0001% (₹10/crore) | Turnover, both sides |
 | GST | 18% | 18% | Applicable taxable service charges; calculate only on components prescribed as GST base |
 
-NSE's February 27, 2026 circular specifies equity-options transaction charge of ₹3,552 per crore plus ₹0.01 per crore NSE IPFT contribution (total ₹3,553 per crore) effective March 1, 2026, i.e. 0.03553% total. The fee is on option premium, not notional strike value.
+NSE circular NSE/FA/64232 dated September 27, 2024 specifies equity-options transaction charges of ₹35.03 per lakh (0.03503%) effective October 1, 2024. NSE circular NSE/FA/73061 dated February 27, 2026 specifies ₹3,552 per crore plus ₹0.01 per crore NSE IPFT contribution (total ₹3,553 per crore) effective March 1, 2026, i.e. 0.03553% total. Both are on option premium, not notional strike value.
 
 Sources:
 - Paytm Money F&O FAQ (₹10 per unique executed order): https://www.paytmmoney.com/stocks/customer/fno-faq/onboarding-and-kyc/account-segment-activation/how-to-activate-fo-from-mobile-app-web
-- NSE transaction charge circular NSE/FA/73061, 2026-02-27, effective 2026-03-01: https://nsearchives.nseindia.com/content/circulars/FA73061.pdf
+- NSE transaction charge circular NSE/FA/64232, 2024-09-27, effective 2024-10-01 (₹35.03/lakh): https://nsearchives.nseindia.com/content/circulars/FA64232.pdf
+- NSE transaction charge circular NSE/FA/73061, 2026-02-27, effective 2026-03-01 (₹35.53/lakh): https://nsearchives.nseindia.com/content/circulars/FA73061.pdf
 - NSE STT table, effective 2026-04-01: https://www.nseindia.com/static/products-services/equity-derivatives-securities-transaction-tax
 - NSE stamp duty and SEBI fee table: https://www.nseindia.com/static/invest/first-time-investor-sebi-turnover-fees-stt-other-levies
 
