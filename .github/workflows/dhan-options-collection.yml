@@ -1,5 +1,10 @@
 name: Dhan NIFTY expired-options collection
 on:
+  pull_request:
+    paths:
+      - "scripts/fetch_dhan_expired_options.py"
+      - "scripts/refresh_dhan_token.py"
+      - ".github/workflows/dhan-options-collection.yml"
   workflow_dispatch:
     inputs:
       from_date:
