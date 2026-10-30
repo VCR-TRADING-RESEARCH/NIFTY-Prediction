@@ -1,7 +1,7 @@
 # NIFTY Options Dual-Sleeve Backtest — Phase Plan
 
 **Branch:** research/nifty-options-dual-sleeve-backtest  
-**Plan version:** 1.4  
+**Plan version:** 1.5  
 **Status at 2026-10-31:** B-LIMITED EXPLORATORY POSITIONAL CREDIT-SPREAD BACKTEST IMPLEMENTED; AUTOMATED EXECUTION / RESULTS PENDING; FULL-PERIOD GATES BLOCKED  
 **Capital assumption:** INR 200,000  
 **Research period:** intraday options source currently identified from October 2024 onward; do not imply 2021–2023 minute-option coverage from this source.
@@ -9,12 +9,12 @@
 ## Updated execution order — user selected limited exploratory path B first
 
 1. **B1 — Run now:** positional bull-put / bear-call credit spreads only, using the public 2024-10-01 to 2026-07-21 NIFTY option archive. This first pass uses a pre-registered proxy directional filter: prior completed session close above/below its 20-session SMA and same-direction 5-session return. It enters once per expiry at the first available 10:00 IST snapshot in the 7–14 calendar-DTE window. This proxy is not claimed to be the original user's separately specified signal.
-2. B1 reconstructs short-option absolute delta from last-traded premiums using Black–Scholes (6% risk-free rate, 1% dividend yield), chooses 0.15–0.20 delta, buys the 50-point farther-OTM wing, and uses next common positive-volume minute open for fills. Target is 50% credit capture; stop is 1.5x initial credit; forced exit is before expiry. No overlapping positions; ₹3,000 per-trade max loss, ₹70,000 sleeve cap, ₹4,000 daily and ₹10,000 weekly realized-loss entry stops.
+2. B1 reconstructs short-option absolute delta from last-traded premiums using Black–Scholes (6% risk-free rate, 1% dividend yield), chooses 0.15–0.20 delta, buys the 50-point farther-OTM wing, and uses next common positive-volume minute open for fills. Target is 50% credit capture; stop is 1.5x initial credit; forced exit is before expiry. No overlapping positions; ₹3,000 per-trade max loss, ₹70,000 sleeve cap, ₹4,000 daily and ₹10,000 weekly realized-loss entry stops. Monthly 6% drawdown of total ₹2 lakh capital is recorded as a mandatory review trigger (not silently treated as a hard stop). Position sizing includes modeled worst-case exit slippage and estimated entry/exit charges inside the ₹3,000 per-trade risk cap.
 3. Run slippage stress at 0.5, 1.0 and 2.0 index points per leg. Apply Paytm Money brokerage and dated NSE charges. Fees remain provisional until reconciled to contract notes; no bid/ask exists in this source.
 4. **B2 — After B1:** implement the iron-condor range-regime experiment and portfolio combination only if individual strategy gates pass. Intraday debit spreads remain a separate no-VWAP ablation because the source lacks a verified NIFTY futures volume series.
 5. **A — Later full research:** after Dhan credentials/request validation and/or additional free-source reconciliation, extend the option history toward 2021–2026, obtain synchronized futures volume for VWAP, validate IV/Greeks and execution assumptions, and rerun the full locked system.
 
-B1 is exploratory only. Its directional proxy, no-VWAP treatment, reconstructed delta, and last-trade fill model are material deviations. Do not compare its results directly with the full strategy or label them live-ready.
+B1 is exploratory only. Its directional proxy, no-VWAP treatment, reconstructed delta, and last-trade fill model are material deviations. Do not compare its results directly with the full strategy or label them live-ready. A first pilot run produced negative net P&L across all three slippage scenarios; that pilot is provisional because the initial risk sizing omitted worst-case exit costs. The corrected risk-budget and monthly-review implementation must pass before B1 is signed off.
 
 ## Purpose and hypotheses
 
