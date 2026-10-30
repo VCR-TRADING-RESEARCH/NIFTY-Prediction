@@ -191,3 +191,10 @@
 - Execution: next common positive-volume minute open, adverse slippage scenarios 0.5/1/2 points per leg. Date-effective NSE fees updated to 0.03503% through 2026-02-28 and 0.03553% from 2026-03-01; STT 0.10% through 2026-03-31 and 0.15% from 2026-04-01; Paytm Money brokerage assumed ₹10 per executed leg order.
 - Added unit tests and a cached GitHub Actions workflow. Run results not yet available; no performance figures claimed.
 - Deviations: no VWAP, no IV/bid-ask supplied, reconstructed delta, directional proxy not original fully specified signal, positional sleeve only. A/C/D deferred.
+
+## 2026-10-31 — B1 first pilot and final corrections
+- First successful exploratory pilot: run 41145612220; 91 candidate signals, 38 trades at 0.5-point slippage, 38 at 1-point, 25 at 2-point. Pilot net P&L: -₹8,325.29, -₹12,161.29 and -₹12,817.68 respectively; win rates 18.4%, 5.3%, 0%. These are provisional pilot figures, not the final B1 result, because initial position sizing omitted worst-case exit slippage and estimated fees from the risk cap.
+- Corrected B1 risk sizing to include worst-case exit slippage and estimated entry/exit costs inside the ₹3,000 per-trade cap.
+- Added monthly 6% drawdown review report (6% of ₹2 lakh = ₹12,000); this is a review trigger, not a newly invented stop.
+- Corrected automatic result publication for push-triggered and manual workflow runs.
+- Final corrected B1 run pending; cached public options and spot data are now available to Actions.
