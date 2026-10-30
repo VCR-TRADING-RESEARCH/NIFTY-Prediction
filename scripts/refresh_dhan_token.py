@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Create an ephemeral Dhan access token for the current GitHub Actions job.
+"""Create or renew an ephemeral Dhan access token for this Actions job.
 
-Never writes the token to the repository and never prints the token, PIN or TOTP secret.
-GitHub Actions secrets must be provided as environment variables by the workflow.
+Never writes a token to the repository or prints credentials/response bodies.
 """
 from __future__ import annotations
 import os
@@ -27,22 +26,50 @@ def find_access_token(value):
                 return found
     return None
 
+def export_token(token, github_env):
+    with open(github_env, "a", encoding="utf-8") as handle:
+        handle.write("DHAN_JOB_ACCESS_TOKEN=" + token.replace("\n", "") + "\n")
+
 def main() -> int:
     client_id = os.getenv("DHAN_CLIENT_ID", "").strip()
     pin = os.getenv("DHAN_PIN", "").strip()
     totp_secret = os.getenv("DHAN_TOTP_SECRET", "").strip()
+    existing_token = os.getenv("DHAN_ACCESS_TOKEN", "").strip()
     github_env = os.getenv("GITHUB_ENV", "")
-    if not any((client_id, pin, totp_secret)):
-        print("DHAN_AUTH_SKIPPED: Dhan secrets are not configured; public data workflow may continue.")
-        return 0
-    if not all((client_id, pin, totp_secret)):
-        print("DHAN_AUTH_ERROR: One or more required Dhan authentication secrets are missing.", file=sys.stderr)
+    if not client_id:
+        print("DHAN_AUTH_ERROR: Client ID is missing.", file=sys.stderr)
         return 2
     if not github_env:
-        print("DHAN_AUTH_ERROR: GITHUB_ENV is unavailable; refusing to print or persist token elsewhere.", file=sys.stderr)
+        print("DHAN_AUTH_ERROR: GITHUB_ENV is unavailable; refusing to persist token elsewhere.", file=sys.stderr)
+        return 2
+
+    # First renew a supplied active token. Dhan only renews tokens that are still active.
+    if existing_token:
+        try:
+            response = requests.get(
+                "https://api.dhan.co/v2/RenewToken",
+                headers={"access-token": existing_token, "dhanClientId": client_id},
+                timeout=30,
+            )
+            if response.ok:
+                token = find_access_token(response.json())
+                if token:
+                    export_token(token, github_env)
+                    print("DHAN_AUTH_RENEW_OK: Existing active token renewed; token value withheld.")
+                    return 0
+        except Exception:
+            pass
+
+    # If renewal is unavailable, generate a fresh 24-hour token using TOTP.
+    if not pin or not totp_secret:
+        print("DHAN_AUTH_ERROR: No renewable token and PIN/TOTP credentials are incomplete.", file=sys.stderr)
         return 2
     try:
-        totp = pyotp.TOTP(totp_secret).now()
+        secret = totp_secret
+        if secret.lower().startswith("otpauth://"):
+            secret = pyotp.parse_uri(secret).secret
+        secret = "".join(secret.split()).replace("-", "").upper()
+        totp = pyotp.TOTP(secret).now()
         response = requests.post(
             "https://auth.dhan.co/app/generateAccessToken",
             params={"dhanClientId": client_id, "pin": pin, "totp": totp},
@@ -70,9 +97,8 @@ def main() -> int:
                   "status=", str(status)[:32], "error_code=", str(error_code)[:32],
                   "reason=", reason, file=sys.stderr)
             return 2
-        with open(github_env, "a", encoding="utf-8") as handle:
-            handle.write("DHAN_JOB_ACCESS_TOKEN=" + token.replace("\n", "") + "\n")
-        print("DHAN_AUTH_OK: Short-lived token generated and exported to this Actions job; token value withheld.")
+        export_token(token, github_env)
+        print("DHAN_AUTH_OK: Short-lived token generated; token value withheld.")
         return 0
     except Exception as exc:
         print("DHAN_AUTH_ERROR:", type(exc).__name__, "Authentication failed; sensitive response contents withheld.", file=sys.stderr)
