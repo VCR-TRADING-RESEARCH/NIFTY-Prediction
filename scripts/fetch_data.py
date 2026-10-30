@@ -83,6 +83,8 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--force", action="store_true", help="Redownload all source files")
+    parser.add_argument("--no-refresh-current-year", action="store_true",
+                        help="Reuse cached current-year files; suitable for reproducible historical backtests")
     parser.add_argument("--max-files", type=int, default=0, help="Testing only: limit number of CSV files")
     args = parser.parse_args()
 
@@ -95,7 +97,7 @@ def main() -> int:
         records = []
         for item in candidates:
             dest = args.output_dir / item["name"]
-            should_refresh = args.force or item["force_refresh"]
+            should_refresh = args.force or (item["force_refresh"] and not args.no_refresh_current_year)
             record = download(item["download_url"], dest, force=should_refresh)
             record["year"] = item["year"]
             records.append(record)
