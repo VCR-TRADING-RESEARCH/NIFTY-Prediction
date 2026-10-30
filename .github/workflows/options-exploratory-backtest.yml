@@ -5,6 +5,12 @@ on:
   push:
     branches:
       - "research/nifty-options-b1-*"
+    paths:
+      - "scripts/exploratory_positional_backtest.py"
+      - "scripts/fetch_data.py"
+      - "tests/test_exploratory_positional_backtest.py"
+      - ".github/workflows/options-exploratory-backtest.yml"
+      - "research/options_backtest/PHASE_PLAN.md"
   pull_request:
     paths:
       - "scripts/exploratory_positional_backtest.py"
