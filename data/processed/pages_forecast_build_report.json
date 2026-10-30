@@ -4,7 +4,7 @@
   "latest_forecast_generated": false,
   "latest_forecast_error": "The next nominal expiry derived from the latest verified calendar has already passed. Refresh the official expiry/calendar data before issuing another current forecast.",
   "data_quality_status": "BLOCKED",
-  "generated_at_utc": "2026-10-28T10:53:00.780851+00:00",
+  "generated_at_utc": "2026-10-30T23:42:37.850734+00:00",
   "payload_schema_valid": true,
   "temporal_leakage_checks": "PASS"
 }
