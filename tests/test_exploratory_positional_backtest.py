@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 
 from scripts.exploratory_positional_backtest import (
-    bs_price, implied_vol, option_delta, lot_size, fee_rates, order_costs
+    bs_price, implied_vol, option_delta, lot_size, fee_rates, order_costs, conservative_risk_per_lot
 )
 
 def test_black_scholes_iv_round_trip_call_and_put():
@@ -46,3 +46,9 @@ def test_credit_spread_pnl_sign_convention():
     buyback=10.0
     assert (credit-buyback)*qty==750
     assert (credit-30.0)*qty==-750
+
+def test_risk_budget_includes_worst_case_exit_costs_and_slippage():
+    low=conservative_risk_per_lot(20.0,75,0.5,date(2025,1,6),date(2025,1,14),30.0,10.0)
+    high=conservative_risk_per_lot(20.0,75,2.0,date(2025,1,6),date(2025,1,14),30.0,10.0)
+    assert low>0
+    assert high>low
