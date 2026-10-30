@@ -46,6 +46,11 @@ def main() -> None:
         null_ohlc = 0
         nonpositive_ohlc = 0
         malformed_ohlc = 0
+        null_oi = 0
+        null_volume = 0
+        zero_volume = 0
+        negative_volume = 0
+        invalid_timestamps = 0
         min_ts = max_ts = None
         min_expiry = max_expiry = None
         for batch in pf.iter_batches(batch_size=250_000, columns=sorted(required)):
@@ -60,9 +65,18 @@ def main() -> None:
             ohlc = ["open","high","low","close"]
             null_ohlc += int(df[ohlc].isna().any(axis=1).sum())
             nonpositive_ohlc += int((df[ohlc] <= 0).any(axis=1).sum())
+            if "oi" in df.columns:
+                null_oi += int(pd.to_numeric(df["oi"], errors="coerce").isna().sum())
+            else:
+                null_oi += int(len(df))
+            volume_values = pd.to_numeric(df["volume"], errors="coerce")
+            null_volume += int(volume_values.isna().sum())
+            zero_volume += int((volume_values == 0).sum())
+            negative_volume += int((volume_values < 0).sum())
             malformed_ohlc += int(((df["low"] > df[["open","close","high"]].min(axis=1)) |
                                    (df["high"] < df[["open","close","low"]].max(axis=1))).sum())
             ts = pd.to_datetime(df["timestamp"], errors="coerce", utc=True)
+            invalid_timestamps += int(ts.isna().sum())
             lo, hi = ts.min(), ts.max()
             if pd.notna(lo): min_ts = lo if min_ts is None else min(min_ts, lo)
             if pd.notna(hi): max_ts = hi if max_ts is None else max(max_ts, hi)
@@ -76,6 +90,9 @@ def main() -> None:
             "nifty_rows": nifty_rows, "nifty_1min_rows": one_min_rows,
             "null_ohlc_rows": null_ohlc, "nonpositive_ohlc_rows": nonpositive_ohlc,
             "malformed_ohlc_rows": malformed_ohlc,
+            "null_oi_rows": null_oi, "null_volume_rows": null_volume,
+            "zero_volume_rows": zero_volume, "negative_volume_rows": negative_volume,
+            "invalid_timestamp_rows": invalid_timestamps,
             "min_timestamp_utc": str(min_ts), "max_timestamp_utc": str(max_ts),
             "min_expiry": str(min_expiry), "max_expiry": str(max_expiry),
             "schema": sorted(schema),
