@@ -400,17 +400,19 @@ def main():
                 if last_exit is not None and entry_ts<=last_exit:
                     exclusions.append({**trade,"slippage_points_per_leg":slip,"exclusion_reason":"OVERLAPPING_POSITION"})
                     continue
-                exit_date=exit_ts.date()
-                week_key=exit_date.isocalendar()[:2]
-                if daily_pnl.get(exit_date,0.0)<=-4000:
+                entry_date=date.fromisoformat(trade["entry_date"])
+                entry_week=entry_date.isocalendar()[:2]
+                if daily_pnl.get(entry_date,0.0)<=-4000:
                     exclusions.append({**trade,"slippage_points_per_leg":slip,"exclusion_reason":"DAILY_LOSS_LIMIT"})
                     continue
-                if weekly_pnl.get(week_key,0.0)<=-10000:
+                if weekly_pnl.get(entry_week,0.0)<=-10000:
                     exclusions.append({**trade,"slippage_points_per_leg":slip,"exclusion_reason":"WEEKLY_LOSS_LIMIT"})
                     continue
                 all_results.append(result)
+                exit_date=exit_ts.date()
+                exit_week=exit_date.isocalendar()[:2]
                 daily_pnl[exit_date]=daily_pnl.get(exit_date,0.0)+float(result["net_pnl_inr"])
-                weekly_pnl[week_key]=weekly_pnl.get(week_key,0.0)+float(result["net_pnl_inr"])
+                weekly_pnl[exit_week]=weekly_pnl.get(exit_week,0.0)+float(result["net_pnl_inr"])
                 last_exit=exit_ts
             else:
                 exclusions.append({**trade,"slippage_points_per_leg":slip,"exclusion_reason":reason})
