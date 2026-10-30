@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: nifty-options-exploratory-\${{ github.ref }}
+  group: nifty-options-exploratory-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: \${{ github.head_ref || github.ref_name }}
+          ref: ${{ github.head_ref || github.ref_name }}
           persist-credentials: true
 
       - uses: actions/setup-python@v5
@@ -41,13 +41,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache/hf-options
-          key: nifty-options-hf-v1-\${{ runner.os }}-2024-2026
+          key: nifty-options-hf-v1-${{ runner.os }}-2024-2026
 
       - name: Restore NIFTY spot cache
         uses: actions/cache@v4
         with:
           path: .cache/nifty-spot
-          key: nifty-spot-v1-\${{ runner.os }}-2024-2026
+          key: nifty-spot-v1-${{ runner.os }}-2024-2026
 
       - name: Download missing NIFTY spot files
         run: python scripts/fetch_data.py --output-dir .cache/nifty-spot --no-refresh-current-year
@@ -57,7 +57,7 @@ jobs:
 
       - name: Run exploratory positional credit-spread backtest
         env:
-          HF_TOKEN: \${{ secrets.HF_TOKEN }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_DATASETS_CACHE: .cache/hf-options
         run: |
           python scripts/exploratory_positional_backtest.py \
@@ -73,7 +73,7 @@ jobs:
           git add research/options_backtest/results
           if ! git diff --cached --quiet; then
             git commit -m "Publish exploratory positional options backtest results"
-            git push origin "HEAD:\${GITHUB_HEAD_REF}"
+            git push origin "HEAD:${GITHUB_HEAD_REF}"
           fi
 
       - name: Upload complete exploratory outputs
