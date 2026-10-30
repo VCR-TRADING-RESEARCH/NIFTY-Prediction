@@ -373,7 +373,7 @@ def main():
     for y in YEARS:
         name=f"upstox_intraday/NIFTY/NIFTY_{y}.parquet"
         paths.append(Path(hf_hub_download(repo_id=DATASET,filename=name,repo_type="dataset",
-            token=None,cache_dir=str(args.hf_cache))))
+            token=(__import__("os").environ.get("HF_TOKEN") or None),cache_dir=str(args.hf_cache))))
     spot,daily=load_spot(args.spot_dir)
     spot_by_date=spot.groupby("session").apply(lambda x:float(x.iloc[(x.timestamp.dt.time==ENTRY_CLOCK).to_numpy().nonzero()[0][0]].close) if (x.timestamp.dt.time==ENTRY_CLOCK).any() else np.nan).to_dict()
     spot_by_date={k:v for k,v in spot_by_date.items() if np.isfinite(v)}
