@@ -87,6 +87,7 @@ def main() -> int:
                         help="Reuse cached current-year files; suitable for reproducible historical backtests")
     parser.add_argument("--max-files", type=int, default=0, help="Testing only: limit number of CSV files")
     args = parser.parse_args()
+    args.output_dir = args.output_dir.resolve()
 
     try:
         candidates = source_files()
