@@ -2,6 +2,9 @@ name: NIFTY exploratory positional options backtest
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - "research/nifty-options-b1-*"
   pull_request:
     paths:
       - "scripts/exploratory_positional_backtest.py"
