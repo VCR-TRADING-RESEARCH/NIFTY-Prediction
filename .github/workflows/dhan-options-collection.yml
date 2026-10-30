@@ -45,7 +45,6 @@ jobs:
       - name: Collect five-year rolling NIFTY options
         env:
           DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
-          DHAN_JOB_ACCESS_TOKEN: ${{ env.DHAN_JOB_ACCESS_TOKEN }}
           DHAN_FROM_DATE: ${{ inputs.from_date }}
           DHAN_TO_DATE: ${{ inputs.to_date }}
           DHAN_OPTIONS_CACHE: .cache/dhan-options
