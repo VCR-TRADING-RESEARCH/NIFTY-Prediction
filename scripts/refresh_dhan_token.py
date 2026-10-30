@@ -57,8 +57,18 @@ def main() -> int:
             keys = sorted(str(k) for k in payload.keys()) if isinstance(payload, dict) else [type(payload).__name__]
             status = payload.get("status") if isinstance(payload, dict) else None
             error_code = payload.get("errorCode") or payload.get("error_code") if isinstance(payload, dict) else None
+            message = str(payload.get("message", "")).lower() if isinstance(payload, dict) else ""
+            if "totp" in message or "otp" in message:
+                reason = "TOTP_REJECTED_OR_NOT_ENABLED"
+            elif "pin" in message:
+                reason = "PIN_REJECTED"
+            elif "client" in message or "dhan" in message:
+                reason = "CLIENT_AUTH_REJECTED"
+            else:
+                reason = "AUTH_REJECTED_UNCLASSIFIED"
             print("DHAN_AUTH_ERROR: No access token in response; keys=", ",".join(keys),
-                  "status=", str(status)[:32], "error_code=", str(error_code)[:32], file=sys.stderr)
+                  "status=", str(status)[:32], "error_code=", str(error_code)[:32],
+                  "reason=", reason, file=sys.stderr)
             return 2
         with open(github_env, "a", encoding="utf-8") as handle:
             handle.write("DHAN_JOB_ACCESS_TOKEN=" + token.replace("\n", "") + "\n")
