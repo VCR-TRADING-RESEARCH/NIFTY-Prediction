@@ -309,15 +309,21 @@ def simulate_one(trade,contract_data,spot_sessions,slippage):
         long_exit=float(exitrow.open_num_l)-slippage
     else:
         force=allbars[(allbars.index.date==force_date)&(allbars.index.time>=EXIT_CLOCK)]
+        fallback_close=False
         if force.empty:
             force=allbars[allbars.index.date==force_date].tail(1)
+            fallback_close=True
         else:
             force=force.head(1)
         if force.empty:return None,"FORCED_EXIT_NOT_EXECUTABLE"
         exit_ts=force.index[0];exitrow=force.iloc[0]
         exit_reason="PRE_EXPIRY_TIME_EXIT"
-        short_exit=float(exitrow.open_num_s)+slippage
-        long_exit=float(exitrow.open_num_l)-slippage
+        if fallback_close:
+            short_exit=float(exitrow.close_num_s)+slippage
+            long_exit=float(exitrow.close_num_l)-slippage
+        else:
+            short_exit=float(exitrow.open_num_s)+slippage
+            long_exit=float(exitrow.open_num_l)-slippage
     if min(short_exit,long_exit)<=0:return None,"NONPOSITIVE_EXIT_FILL"
     debit=short_exit-long_exit
     gross=(initial_credit-debit)*qty
