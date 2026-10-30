@@ -1,0 +1,85 @@
+name: NIFTY exploratory positional options backtest
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/exploratory_positional_backtest.py"
+      - "scripts/fetch_data.py"
+      - "tests/test_exploratory_positional_backtest.py"
+      - ".github/workflows/options-exploratory-backtest.yml"
+      - "research/options_backtest/PHASE_PLAN.md"
+  schedule:
+    - cron: "30 2 1 * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nifty-options-exploratory-\${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  exploratory-backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: \${{ github.head_ref || github.ref_name }}
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install research dependencies
+        run: python -m pip install --upgrade pandas numpy pyarrow huggingface_hub pytest matplotlib
+
+      - name: Restore public option-data cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/hf-options
+          key: nifty-options-hf-v1-\${{ runner.os }}-2024-2026
+
+      - name: Restore NIFTY spot cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/nifty-spot
+          key: nifty-spot-v1-\${{ runner.os }}-2024-2026
+
+      - name: Download missing NIFTY spot files
+        run: python scripts/fetch_data.py --output-dir .cache/nifty-spot --no-refresh-current-year
+
+      - name: Validate option model, fees and payoff calculations
+        run: python -m pytest -q tests/test_exploratory_positional_backtest.py
+
+      - name: Run exploratory positional credit-spread backtest
+        env:
+          HF_TOKEN: \${{ secrets.HF_TOKEN }}
+          HF_DATASETS_CACHE: .cache/hf-options
+        run: |
+          python scripts/exploratory_positional_backtest.py \
+            --hf-cache .cache/hf-options \
+            --spot-dir .cache/nifty-spot \
+            --out research/options_backtest/results
+
+      - name: Commit reproducible results to the research branch
+        if: success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/options_backtest/results
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish exploratory positional options backtest results"
+            git push origin "HEAD:\${GITHUB_HEAD_REF}"
+          fi
+
+      - name: Upload complete exploratory outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nifty-options-exploratory-backtest
+          path: research/options_backtest/results/
+          if-no-files-found: warn
