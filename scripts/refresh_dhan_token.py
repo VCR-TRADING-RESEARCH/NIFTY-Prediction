@@ -34,7 +34,7 @@ def main() -> int:
         totp = pyotp.TOTP(totp_secret).now()
         params = urlencode({"dhanClientId": client_id, "pin": pin, "totp": totp})
         endpoint = "https://auth.dhan.co/app/generateAccessToken?" + params
-        response = requests.get(endpoint, timeout=30)
+        response = requests.post(endpoint, timeout=30)
         if not response.ok:
             print("DHAN_AUTH_ERROR: Token service returned HTTP", response.status_code, file=sys.stderr)
             return 2
