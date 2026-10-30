@@ -218,12 +218,12 @@ def choose_candidates(snapshots,daily,spot):
 def load_selected_contracts(parquet_paths,trades):
     keys=set()
     for t in trades:
-        ex=t["expiry_date"]; kind=t["option_type"]
+        ex=date.fromisoformat(t["expiry_date"]); kind=t["option_type"]
         keys.add((ex,float(t["short_strike"]),kind))
         keys.add((ex,float(t["long_strike"]),kind))
     if not keys:return {}
     expiries={k[0] for k in keys}; strikes={k[1] for k in keys}; kinds={k[2] for k in keys}
-    out={k:[] for k in keys}
+    out={(ex.isoformat(),strike,kind):[] for ex,strike,kind in keys}
     cols=["timestamp","expiry","strike","option_type","open","close","volume","underlying","granularity"]
     for path in parquet_paths:
         pf=pq.ParquetFile(path)
