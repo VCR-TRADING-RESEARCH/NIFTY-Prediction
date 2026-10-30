@@ -390,10 +390,30 @@ def main():
     spot_sessions=sorted(spot.session.unique())
     all_results=[]; exclusions=[]
     for slip in (0.5,1.0,2.0):
-        for trade in candidates:
+        last_exit=None
+        daily_pnl={}; weekly_pnl={}
+        for trade in sorted(candidates,key=lambda x:(x["entry_date"],x["expiry_date"])):
             result,reason=simulate_one(trade,contract_data,spot_sessions,slip)
-            if result:all_results.append(result)
-            else:exclusions.append({**trade,"slippage_points_per_leg":slip,"exclusion_reason":reason})
+            if result:
+                entry_ts=pd.Timestamp(result["entry_timestamp"])
+                exit_ts=pd.Timestamp(result["exit_timestamp"])
+                if last_exit is not None and entry_ts<=last_exit:
+                    exclusions.append({**trade,"slippage_points_per_leg":slip,"exclusion_reason":"OVERLAPPING_POSITION"})
+                    continue
+                exit_date=exit_ts.date()
+                week_key=exit_date.isocalendar()[:2]
+                if daily_pnl.get(exit_date,0.0)<=-4000:
+                    exclusions.append({**trade,"slippage_points_per_leg":slip,"exclusion_reason":"DAILY_LOSS_LIMIT"})
+                    continue
+                if weekly_pnl.get(week_key,0.0)<=-10000:
+                    exclusions.append({**trade,"slippage_points_per_leg":slip,"exclusion_reason":"WEEKLY_LOSS_LIMIT"})
+                    continue
+                all_results.append(result)
+                daily_pnl[exit_date]=daily_pnl.get(exit_date,0.0)+float(result["net_pnl_inr"])
+                weekly_pnl[week_key]=weekly_pnl.get(week_key,0.0)+float(result["net_pnl_inr"])
+                last_exit=exit_ts
+            else:
+                exclusions.append({**trade,"slippage_points_per_leg":slip,"exclusion_reason":reason})
     results=pd.DataFrame(all_results)
     exclusions_df=pd.DataFrame(exclusions)
     results.to_csv(args.out/"positional_credit_spread_trade_ledger.csv",index=False)
