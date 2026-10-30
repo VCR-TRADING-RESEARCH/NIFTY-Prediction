@@ -249,3 +249,10 @@
 - Status: BLOCKED. One or more workflow steps failed; inspect the Actions run for the exact failing step.
 - The workflow is configured to continue with public data when the optional Dhan branch fails.
 - No secrets, access tokens, PINs or TOTP values should be copied from runner diagnostics into repository logs.
+
+
+## E0030 — 2026-10-31 — Exploratory B1 backtest requires proxy signal and execution assumptions
+- **Severity:** Medium — interpretation / external-validity limitation.
+- **Finding:** Public archive supports a limited positional credit-spread prototype but lacks futures VWAP, IV and bid/ask. The original positional sleeve did not fully specify a directional regime formula.
+- **Correction:** Pre-registered B1 proxy: prior completed session close above/below 20-session SMA plus same-direction 5-session return; one entry per expiry at first available 10:00 IST snapshot in 7–14 DTE window. Reconstructed Black–Scholes delta and next-common-positive-volume open fills with per-leg slippage stress. Explicitly not full strategy replication.
+- **Status:** Run pending; A/C/D deferred to subsequent gates.
