@@ -1,10 +1,20 @@
 # NIFTY Options Dual-Sleeve Backtest — Phase Plan
 
 **Branch:** research/nifty-options-dual-sleeve-backtest  
-**Plan version:** 1.3  
-**Status at 2026-10-31:** PUBLIC DATA AUDIT PASSED BASIC INTEGRITY; FULL-PERIOD / EXECUTION-FIDELITY GATES BLOCKED; NO STRATEGY P&L RUN  
+**Plan version:** 1.4  
+**Status at 2026-10-31:** B-LIMITED EXPLORATORY POSITIONAL CREDIT-SPREAD BACKTEST IMPLEMENTED; AUTOMATED EXECUTION / RESULTS PENDING; FULL-PERIOD GATES BLOCKED  
 **Capital assumption:** INR 200,000  
 **Research period:** intraday options source currently identified from October 2024 onward; do not imply 2021–2023 minute-option coverage from this source.
+
+## Updated execution order — user selected limited exploratory path B first
+
+1. **B1 — Run now:** positional bull-put / bear-call credit spreads only, using the public 2024-10-01 to 2026-07-21 NIFTY option archive. This first pass uses a pre-registered proxy directional filter: prior completed session close above/below its 20-session SMA and same-direction 5-session return. It enters once per expiry at the first available 10:00 IST snapshot in the 7–14 calendar-DTE window. This proxy is not claimed to be the original user's separately specified signal.
+2. B1 reconstructs short-option absolute delta from last-traded premiums using Black–Scholes (6% risk-free rate, 1% dividend yield), chooses 0.15–0.20 delta, buys the 50-point farther-OTM wing, and uses next common positive-volume minute open for fills. Target is 50% credit capture; stop is 1.5x initial credit; forced exit is before expiry. No overlapping positions; ₹3,000 per-trade max loss, ₹70,000 sleeve cap, ₹4,000 daily and ₹10,000 weekly realized-loss entry stops.
+3. Run slippage stress at 0.5, 1.0 and 2.0 index points per leg. Apply Paytm Money brokerage and dated NSE charges. Fees remain provisional until reconciled to contract notes; no bid/ask exists in this source.
+4. **B2 — After B1:** implement the iron-condor range-regime experiment and portfolio combination only if individual strategy gates pass. Intraday debit spreads remain a separate no-VWAP ablation because the source lacks a verified NIFTY futures volume series.
+5. **A — Later full research:** after Dhan credentials/request validation and/or additional free-source reconciliation, extend the option history toward 2021–2026, obtain synchronized futures volume for VWAP, validate IV/Greeks and execution assumptions, and rerun the full locked system.
+
+B1 is exploratory only. Its directional proxy, no-VWAP treatment, reconstructed delta, and last-trade fill model are material deviations. Do not compare its results directly with the full strategy or label them live-ready.
 
 ## Purpose and hypotheses
 
@@ -73,9 +83,9 @@ Per experiment and cost scenario: number of trades/no-trades, win rate with Wils
 
 - Gate 0: source files and legal-use policy inspected; reproducible cache and code tests.
 - Gate 1: basic schema/OHLC/timestamp and OI/volume completeness passed on the 2024-10 to 2026-07 public archive; full 2021–2026 coverage, bid/ask execution, IV/Greeks validation, futures VWAP and Dhan source remain blocked. Positive-volume filtering is mandatory.
-- Gate 2: all four strategies are coded against locked rules and unit-tested with synthetic payoff cases.
-- Gate 3: walk-forward results produced for A/B/C separately, including all failures and exclusions.
-- Gate 4: combined portfolio D tested only after individual results; costs and slippage stress pass.
+- Gate 2B1: positional credit-spread prototype is coded and unit-tested with synthetic option-pricing, fee and payoff cases; A/C/D remain pending.
+- Gate 3B1: chronological exploratory results for positional credit spreads only, including exclusions and slippage stress; no claim of full walk-forward robustness.
+- Gate 4: iron condor, intraday debit spread and combined portfolio are deferred until their data/signal gates pass.
 - Gate 5: independent audit of signs, payoff, quantity, lot-size changes, order counts, fee formulas, timestamps, leakage and accounting; manuscript and README status updated.
 
 Stop after Gate 5. If source licence, required option history, synchronization, historical lot sizes, or Paytm Money fee schedule cannot be verified, mark the affected result BLOCKED/EXPLORATORY. Never manufacture missing prices, zero missing costs, or claim live readiness. Do not purchase a paid dataset without explicit user authorization.
