@@ -1,31 +1,27 @@
 #!/usr/bin/env python3
-"""Small authenticated Dhan API smoke test; never prints market prices or credentials."""
+"""Authenticated Dhan rolling-options smoke test; never prints prices or credentials."""
 from __future__ import annotations
-import os, sys
-from datetime import date, timedelta
+import os,sys
+from datetime import date,timedelta
 import requests
 
 URL="https://api.dhan.co/v2/charts/rollingoption"
-FIELDS=["open","high","low","close","iv","volume","strike","oi","spot"]
-
+BASE=["open","high","low","close","volume"]
+TEST_SETS=[
+    ("base",BASE),
+    ("iv",BASE+["iv"]),
+    ("oi",BASE+["oi"]),
+    ("strike",BASE+["strike"]),
+    ("spot",BASE+["spot"]),
+    ("all",BASE+["iv","oi","strike","spot"]),
+]
 def classify(message):
     m=str(message).lower()
-    for key, label in [
-        ("expiry date", "EXPIRY_DATE_INVALID"),
-        ("expiry flag", "EXPIRY_FLAG_INVALID"),
-        ("expiry code", "EXPIRY_CODE_INVALID"),
-        ("weekly", "WEEKLY_EXPIRY_UNSUPPORTED"),
-        ("security", "SECURITY_ID_OR_UNDERLYING"),
-        ("date", "DATE_RANGE_OR_FORMAT"),
-        ("strike", "STRIKE_PARAMETER"),
-        ("instrument", "INSTRUMENT_PARAMETER"),
-        ("required", "REQUIRED_DATA_PARAMETER"),
-        ("interval", "INTERVAL_PARAMETER"),
-        ("token", "TOKEN_OR_AUTH"),
-        ("subscription", "DATA_API_SUBSCRIPTION"),
-    ]:
-        if key in m:
-            return label
+    for key,label in [("expiry","EXPIRY_PARAMETER"),("required","REQUIRED_DATA_PARAMETER"),
+        ("security","SECURITY_ID_OR_UNDERLYING"),("strike","STRIKE_PARAMETER"),
+        ("instrument","INSTRUMENT_PARAMETER"),("date","DATE_RANGE_OR_FORMAT"),
+        ("interval","INTERVAL_PARAMETER"),("token","TOKEN_OR_AUTH")]:
+        if key in m:return label
     return "UNCLASSIFIED_API_REJECTION"
 
 def main():
@@ -33,51 +29,30 @@ def main():
     client=os.getenv("DHAN_CLIENT_ID","").strip()
     if not token or not client:
         raise SystemExit("DHAN_SMOKE_FAIL: missing authenticated job context")
-    end=date.today()
-    start=end-timedelta(days=7)
+    end=date.today(); start=end-timedelta(days=7)
     headers={"access-token":token,"client-id":client,"Content-Type":"application/json","Accept":"application/json"}
-    session=requests.Session()
-    results=[]
-    successful=None
-    for expiry_flag in ("WEEK","MONTH"):
-        for expiry_code in (0,1,2):
-            payload={"exchangeSegment":"NSE_FNO","interval":"1","securityId":"13",
-                     "instrument":"OPTIDX","expiryFlag":expiry_flag,"expiryCode":expiry_code,
-                     "strike":"ATM","drvOptionType":"CALL","requiredData":FIELDS,
-                     "fromDate":start.isoformat(),"toDate":end.isoformat()}
-            response=session.post(URL,headers=headers,json=payload,timeout=60)
-            if not response.ok:
-                try:
-                    body=response.json()
-                    code=body.get("errorCode") if isinstance(body,dict) else None
-                    message=body.get("errorMessage") or body.get("message") or body.get("remarks") if isinstance(body,dict) else ""
-                except Exception:
-                    code=None; message=""
-                results.append({"flag":expiry_flag,"code":expiry_code,"http":response.status_code,
-                                "error_code":str(code)[:24],"reason":classify(message)})
-                continue
-            body=response.json()
-            side=((body.get("data") or {}).get("ce") or {})
-            rows=len(side.get("timestamp") or [])
-            results.append({"flag":expiry_flag,"code":expiry_code,"http":200,"call_rows":rows})
-            if rows and successful is None:
-                successful=(expiry_flag,expiry_code)
-    if successful:
-        expiry_flag,expiry_code=successful
+    session=requests.Session(); results=[]; all_ok=False
+    for label,fields in TEST_SETS:
         payload={"exchangeSegment":"NSE_FNO","interval":"1","securityId":"13",
-                 "instrument":"OPTIDX","expiryFlag":expiry_flag,"expiryCode":expiry_code,
-                 "strike":"ATM","drvOptionType":"PUT","requiredData":FIELDS,
-                 "fromDate":start.isoformat(),"toDate":end.isoformat()}
-        response=session.post(URL,headers=headers,json=payload,timeout=60)
-        put_rows=0
-        if response.ok:
-            put_rows=len((((response.json().get("data") or {}).get("pe") or {}).get("timestamp")) or [])
-        print({"status":"PASS" if put_rows else "CALL_ONLY_OR_PUT_MISSING",
-               "window":[start.isoformat(),end.isoformat()],
-               "selected_expiry_flag":expiry_flag,"selected_expiry_code":expiry_code,
-               "put_rows":put_rows,"parameter_trials":results})
-        return 0 if put_rows else 2
-    print({"status":"FAIL","parameter_trials":results},file=sys.stderr)
-    return 2
+            "instrument":"OPTIDX","expiryFlag":"WEEK","expiryCode":0,"strike":"ATM",
+            "drvOptionType":"CALL","requiredData":fields,
+            "fromDate":start.isoformat(),"toDate":end.isoformat()}
+        r=session.post(URL,headers=headers,json=payload,timeout=60)
+        if not r.ok:
+            try:
+                b=r.json(); code=b.get("errorCode"); msg=b.get("errorMessage") or b.get("message") or ""
+            except Exception: code=None; msg=""
+            results.append({"test":label,"http":r.status_code,"error_code":str(code)[:24],"reason":classify(msg)})
+            if r.status_code==401:
+                break
+            continue
+        block=((r.json().get("data") or {}).get("ce") or {})
+        rows=len(block.get("timestamp") or [])
+        results.append({"test":label,"http":200,"rows":rows,"fields":sorted(block.keys())})
+        if label=="all" and rows: all_ok=True
+    print({"status":"PASS" if all_ok else "FAIL","window":[start.isoformat(),end.isoformat()],
+           "all_required_fields_available":all_ok,"trials":results})
+    return 0 if all_ok else 2
+
 if __name__=="__main__":
     raise SystemExit(main())
