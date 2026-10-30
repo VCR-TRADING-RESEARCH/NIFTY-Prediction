@@ -1,8 +1,8 @@
 # NIFTY Options Dual-Sleeve Backtest — Phase Plan
 
 **Branch:** research/nifty-options-dual-sleeve-backtest  
-**Plan version:** 1.2  
-**Status at 2026-10-31:** DHAN COLLECTION IMPLEMENTED; AUTOMATED API RUN AND CONTRACT-LEVEL VALIDATION PENDING  
+**Plan version:** 1.3  
+**Status at 2026-10-31:** PUBLIC DATA AUDIT PASSED BASIC INTEGRITY; FULL-PERIOD / EXECUTION-FIDELITY GATES BLOCKED; NO STRATEGY P&L RUN  
 **Capital assumption:** INR 200,000  
 **Research period:** intraday options source currently identified from October 2024 onward; do not imply 2021–2023 minute-option coverage from this source.
 
@@ -19,7 +19,7 @@ H0: no candidate has positive net expectancy after date-effective costs and cons
 ## Source investigation completed
 
 1. Repository already contains NIFTY spot minute/daily research data, but not an archived, contract-level option minute series.
-2. Hugging Face dataset `rissin/nse-options-intraday` documents 1-minute NIFTY option candles from October 2024 to 2026 and daily bhavcopy history from 2001 onward. Intraday schema includes date, timestamp, underlying, expiry, strike, option_type, OHLC, volume, source and granularity. Its documented intraday data is sourced from Upstox historical API; open interest is absent on those intraday rows. License is listed as "other"; redistribution rights must be checked before committing raw data.
+2. Hugging Face dataset `rissin/nse-options-intraday` provides audited NIFTY 1-minute option rows from 2024-10-01 to 2026-07-21 (124,458,249 rows). The audited schema includes OI and volume; no null OI or volume rows were found. OHLC/timestamp integrity passed. However, 65,768,348 rows (52.84%) have zero volume and 35 rows have negative volume; only 58,689,866 rows (47.16%) have positive volume and are candidates for executable fills. There is no IV or bid/ask field. Full details and checksums are in [DATA_AUDIT_REPORT.md](DATA_AUDIT_REPORT.md) and [data_audit_summary.json](data_audit_summary.json). The intraday data is sourced from Upstox historical API; licence is listed as "other", so raw data is not committed or redistributed.
 3. Zenodo DOI 10.5281/zenodo.10899828 provides NIFTY spot, futures and options one-minute data for 2017–2020. It is useful for an independent historical slice but predates the main current expiry structure and requires schema, contract and timestamp audit.
 4. Neither identified free intraday source guarantees bid/ask quotes. OHLC fills are not actual broker fills. Use conservative bar-based execution and sensitivity analysis; clearly separate modeled slippage from observed spread.
 5. Dhan credentials must remain in Actions secrets. Do not assume Dhan can retrieve expired options merely because live token refresh works.
@@ -58,7 +58,7 @@ No midpoint or close fills by default. Use next executable bar open as a proxy w
 ## Data and validation gates
 
 1. Download only needed NIFTY partitions to Actions cache; retain manifest, dataset revision, file checksums, row counts and source provenance. Do not commit raw Parquet unless licence explicitly permits it.
-2. Audit schema, timestamp timezone, duplicates/conflicts, session boundaries, OHLC invariants, zero-price rows, volume, expiry/strike mapping, missing bars and contract survivorship.
+2. Audit schema, timestamp timezone, duplicates/conflicts, session boundaries, OHLC invariants, zero-price rows, OI/volume completeness, zero/negative volume, expiry/strike mapping, missing bars and contract survivorship. Only positive-volume bars are eligible for fills.
 3. Independently reconcile a sample to NSE/broker sources and spot series. Confirm the source's expiry labels are actual contract expiries and account for historical weekly expiry weekday changes. Apply the expiry-date-based NIFTY lot schedule in [LOT_SIZE_SCHEDULE.md](LOT_SIZE_SCHEDULE.md): 25 for 2024-10-01 through 2024-12-19 expiries, 75 for 2025-01-02 through 2025-12-23, and 65 from 2026-01-06; resolve holiday shifts before sizing.
 4. Verify point-in-time strike selection: only data available at signal time; no selecting contracts based on future liquidity or end-of-day volume.
 5. Build contract chain panel; compute IV/Greeks only with a documented solver, rates, dividends and bounds. Validate reconstructed prices/deltas against independent observations where available.
@@ -72,7 +72,7 @@ Per experiment and cost scenario: number of trades/no-trades, win rate with Wils
 ## Acceptance gates and stop rules
 
 - Gate 0: source files and legal-use policy inspected; reproducible cache and code tests.
-- Gate 1: data quality, contracts, expiries, spot synchronization and delta reconstruction pass.
+- Gate 1: basic schema/OHLC/timestamp and OI/volume completeness passed on the 2024-10 to 2026-07 public archive; full 2021–2026 coverage, bid/ask execution, IV/Greeks validation, futures VWAP and Dhan source remain blocked. Positive-volume filtering is mandatory.
 - Gate 2: all four strategies are coded against locked rules and unit-tested with synthetic payoff cases.
 - Gate 3: walk-forward results produced for A/B/C separately, including all failures and exclusions.
 - Gate 4: combined portfolio D tested only after individual results; costs and slippage stress pass.
@@ -82,7 +82,7 @@ Stop after Gate 5. If source licence, required option history, synchronization, 
 
 ## Deliverables
 
-- data manifest and data quality report (no restricted raw data committed)
+- data manifest and [data quality report](DATA_AUDIT_REPORT.md) (no restricted raw data committed)
 - contract-level trade ledger CSV and per-leg cashflow ledger
 - metrics by experiment and cost/slippage scenario
 - equity curve, drawdown, monthly/yearly and regime charts
