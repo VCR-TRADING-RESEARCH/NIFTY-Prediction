@@ -6,7 +6,7 @@ positive-volume option bars, synchronized NIFTY spot, next-common-bar fills,
 date-effective fees, and per-leg adverse slippage. It is not live-trading advice.
 """
 from __future__ import annotations
-import argparse, json, math, hashlib
+import argparse, json, math, hashlib, os
 from datetime import date, datetime, time, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -373,10 +373,13 @@ def main():
     for y in YEARS:
         name=f"upstox_intraday/NIFTY/NIFTY_{y}.parquet"
         paths.append(Path(hf_hub_download(repo_id=DATASET,filename=name,repo_type="dataset",
-            token=(__import__("os").environ.get("HF_TOKEN") or None),cache_dir=str(args.hf_cache))))
+            token=(os.environ.get("HF_TOKEN") or None),cache_dir=str(args.hf_cache))))
     spot,daily=load_spot(args.spot_dir)
-    spot_by_date=spot.groupby("session").apply(lambda x:float(x.iloc[(x.timestamp.dt.time==ENTRY_CLOCK).to_numpy().nonzero()[0][0]].close) if (x.timestamp.dt.time==ENTRY_CLOCK).any() else np.nan).to_dict()
-    spot_by_date={k:v for k,v in spot_by_date.items() if np.isfinite(v)}
+    spot_by_date={}
+    for session, group in spot.groupby("session"):
+        at_entry=group[group.timestamp.dt.time==ENTRY_CLOCK]
+        if not at_entry.empty:
+            spot_by_date[session]=float(at_entry.iloc[0].close)
     daily=daily.copy()
     daily["direction"]=np.select(
         [(daily.signal_close>daily.signal_sma20)&(daily.signal_ret5>0),
@@ -442,11 +445,22 @@ def main():
             "One trade per expiry; sample is expected to be small; intervals are not evidence of robustness.",
             "Source licence is labelled other; raw source data is not redistributed."]}
     (args.out/"positional_credit_spread_metrics.json").write_text(json.dumps(report,indent=2,default=str)+"\n")
-    # Deterministic drawdown/equity data by slippage scenario.
+    # Deterministic drawdown/equity data and plots by slippage scenario.
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
     for slip in (0.5,1.0,2.0):
         d=results[np.isclose(results.slippage_points_per_leg,slip)].sort_values("exit_timestamp") if not results.empty else results
         if not d.empty:
-            d[["exit_timestamp","net_pnl_inr"]].to_csv(args.out/f"equity_curve_slippage_{slip:.1f}.csv",index=False)
+            curve=d[["exit_timestamp","net_pnl_inr"]].copy()
+            curve["equity_inr"]=200000+curve.net_pnl_inr.cumsum()
+            curve["drawdown_inr"]=curve.equity_inr-curve.equity_inr.cummax()
+            curve.to_csv(args.out/f"equity_curve_slippage_{slip:.1f}.csv",index=False)
+            fig,ax=plt.subplots(figsize=(10,5))
+            ax.plot(pd.to_datetime(curve.exit_timestamp),curve.equity_inr)
+            ax.set_title(f"Exploratory positional credit-spread equity — {slip:.1f} pt/leg slippage")
+            ax.set_ylabel("Equity (INR)");ax.set_xlabel("Exit timestamp");ax.grid(True,alpha=.25)
+            fig.tight_layout();fig.savefig(args.out/f"equity_curve_slippage_{slip:.1f}.png",dpi=150);plt.close(fig)
     print(json.dumps(report,indent=2,default=str))
 if __name__=="__main__":
     main()
