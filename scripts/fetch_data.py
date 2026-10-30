@@ -85,6 +85,7 @@ def main() -> int:
     parser.add_argument("--force", action="store_true", help="Redownload all source files")
     parser.add_argument("--max-files", type=int, default=0, help="Testing only: limit number of CSV files")
     args = parser.parse_args()
+    args.output_dir = args.output_dir.resolve()
 
     try:
         candidates = source_files()
