@@ -173,3 +173,13 @@
 - Calendar gate: OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL — The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.
 - Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
 - Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.
+
+
+## 2026-10-31 — NIFTY options backtest source investigation
+- User request: backtest the proposed ₹2 lakh dual-sleeve NIFTY options system (intraday debit spreads, positional credit spreads, optional iron condor, combined portfolio).
+- Repository audit: current main research dataset is predominantly NIFTY spot/index; no verified contract-level intraday option ledger was found in the repository. Prior ExtraTrees outputs are spot-direction classification, not option P&L.
+- New source candidates found: Hugging Face `rissin/nse-options-intraday` documents 1-minute NIFTY options from Oct-2024 to 2026 (259M rows across index options; schema includes expiry/strike/CE-PE/OHLC/volume; intraday OI unavailable); Zenodo DOI 10.5281/zenodo.10899828 documents 1-minute NIFTY spot/futures/options from 2017–2020.
+- Limitations: neither source guarantees bid/ask; Hugging Face dataset licence is listed as "other" and raw redistribution terms need review; delta/IV must be reconstructed and synchronized spot required; Paytm Money date-effective costs not yet joined.
+- Created branch `research/nifty-options-dual-sleeve-backtest` and committed the pre-registered implementation/acceptance plan at `research/options_backtest/PHASE_PLAN.md` (commit 790ec102765d7911bcedcdc4735687dcd7c4cbd9).
+- Phase status: source discovery = PARTIAL PASS; data licence/ingestion = PENDING; contract validation = PENDING; strategy implementation/backtest = NOT RUN; independent audit = PENDING.
+- No performance numbers, win rates, profitability, or usable strategy are claimed. No paid data purchase initiated.
