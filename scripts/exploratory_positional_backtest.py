@@ -382,6 +382,25 @@ def metrics(df):
         "gross_loss_inr":gross_loss,"mean_cost_inr":float(df.total_cost_inr.mean()),
         "mean_slippage_points_per_leg":float(df.slippage_points_per_leg.mean())}
 
+def monthly_drawdown_review(df,capital=200000,review_pct=0.06):
+    if df.empty:return pd.DataFrame(columns=["month","net_pnl_inr","max_monthly_drawdown_inr","review_triggered"])
+    d=df.copy()
+    d["exit_dt"]=pd.to_datetime(d.exit_timestamp)
+    d=d.sort_values("exit_dt")
+    d["month"]=d.exit_dt.dt.strftime("%Y-%m")
+    equity=float(capital);rows=[]
+    for month,g in d.groupby("month",sort=True):
+        pnl=g.net_pnl_inr.astype(float).to_numpy()
+        curve=equity+np.cumsum(pnl)
+        peaks=np.maximum.accumulate(np.r_[equity,curve])[1:]
+        drawdown=curve-peaks
+        worst=float(drawdown.min()) if len(drawdown) else 0.0
+        rows.append({"month":month,"net_pnl_inr":float(pnl.sum()),
+                     "max_monthly_drawdown_inr":worst,
+                     "review_triggered":bool(worst<=-capital*review_pct)})
+        if len(curve):equity=float(curve[-1])
+    return pd.DataFrame(rows)
+
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--hf-cache",type=Path,default=Path(".cache/hf-options"))
@@ -443,10 +462,16 @@ def main():
     exclusions_df=pd.DataFrame(exclusions)
     results.to_csv(args.out/"positional_credit_spread_trade_ledger.csv",index=False)
     exclusions_df.to_csv(args.out/"positional_credit_spread_exclusions.csv",index=False)
-    summary={}
+    summary={}; monthly_reviews={}
     for slip in (0.5,1.0,2.0):
         d=results[np.isclose(results.slippage_points_per_leg,slip)] if not results.empty else results
         summary[str(slip)]=metrics(d)
+        monthly=monthly_drawdown_review(d)
+        monthly_reviews[str(slip)]={
+            "months_reviewed":int(len(monthly)),
+            "months_triggering_6pct_review":int(monthly.review_triggered.sum()) if not monthly.empty else 0,
+            "worst_monthly_drawdown_inr":float(monthly.max_monthly_drawdown_inr.min()) if not monthly.empty else 0.0}
+        monthly.to_csv(args.out/f"monthly_drawdown_review_slippage_{slip:.1f}.csv",index=False)
     report={"study":"Exploratory positional NIFTY credit spreads",
         "status":"EXPLORATORY_NOT_LIVE_READY","period":["2024-10-01","2026-07-21"],
         "source":DATASET,"raw_rows_audited":124458249,"candidate_signals":len(candidates),
@@ -457,7 +482,7 @@ def main():
             "nse_options_transaction_rate_from_2026_03_01":NSE_NEW,"stt_sell_premium_to_2026_03_31":STT_OLD,
             "stt_sell_premium_from_2026_04_01":STT_NEW,"stamp_buy_premium":STAMP,"sebi_turnover":SEBI,"gst":GST},
         "capital_inr":200000,"positional_sleeve_capital_inr":SLEEVE_CAPITAL,"max_risk_per_trade_inr":MAX_RISK,
-        "metrics_by_slippage":summary,
+        "metrics_by_slippage":summary,"monthly_drawdown_review_6pct":monthly_reviews,
         "limitations":["Paytm Money cost model is provisional pending contract-note reconciliation.",
             "No historical bid/ask; OHLC last-trade data cannot prove executable liquidity.",
             "Broker margin and intraday margin utilization are not modelled; defined-risk max loss is used as capital proxy.",
