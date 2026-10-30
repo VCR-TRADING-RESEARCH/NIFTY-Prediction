@@ -262,3 +262,26 @@
 - Status: BLOCKED. One or more workflow steps failed; inspect the Actions run for the exact failing step.
 - The workflow is configured to continue with public data when the optional Dhan branch fails.
 - No secrets, access tokens, PINs or TOTP values should be copied from runner diagnostics into repository logs.
+
+## E0031 — 2026-10-31 — Missing requests dependency in B1 workflow
+- **Run:** 41145385931.
+- **Symptom:** Spot downloader failed at import with `ModuleNotFoundError: requests`.
+- **Correction:** Added requests to the workflow dependency installation.
+- **Status:** Corrected; subsequent spot fetch passed.
+
+## E0032 — 2026-10-31 — Relative spot output path broke manifest generation
+- **Run:** 41145542158.
+- **Symptom:** `Path.relative_to(ROOT)` rejected the relative `.cache/nifty-spot` output path.
+- **Correction:** Resolve the output directory to an absolute path immediately after argument parsing.
+- **Status:** Corrected; subsequent spot fetch passed.
+
+## E0033 — 2026-10-31 — Initial B1 risk cap omitted worst-case exit costs
+- **Pilot run:** 41145612220.
+- **Symptom:** Initial position sizing limited gross spread risk to ₹3,000 but did not include adverse exit slippage and estimated statutory/broker costs in the risk cap.
+- **Correction:** Added a conservative per-lot risk calculation including 2-point-per-leg adverse exit stress and estimated entry/exit charges; also added monthly 6% drawdown review reporting.
+- **Status:** Corrected; final B1 run pending.
+
+## E0034 — 2026-10-31 — B1 result artifact was not automatically committed on push
+- **Symptom:** Successful push-triggered run uploaded artifacts but skipped the branch commit step.
+- **Correction:** Commit step now supports push, manual dispatch and same-repository PR runs; push target resolves from GITHUB_REF_NAME when no PR head ref exists.
+- **Status:** Corrected; final B1 run pending.
