@@ -35,7 +35,7 @@ def main() -> None:
         ))
         pf = pq.ParquetFile(path)
         required = {"date","timestamp","underlying","expiry","strike","option_type",
-                    "open","high","low","close","volume","granularity"}
+                    "open","high","low","close","volume","oi","granularity"}
         schema = set(pf.schema.names)
         missing = sorted(required - schema)
         if missing:
