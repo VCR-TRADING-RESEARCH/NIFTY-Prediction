@@ -141,6 +141,19 @@ def order_costs(orders,trade_date):
             "stt":stt_cost,"stamp":stamp_cost,"gst":gst_cost,
             "total":brokerage+exchange+sebi+stt_cost+stamp_cost+gst_cost}
 
+def conservative_risk_per_lot(credit,lot,slippage,entry_date,exit_date,short_entry,long_entry):
+    """Worst-case spread loss plus entry/exit statutory and broker costs, per lot."""
+    gross=(WING_POINTS+2*slippage-credit)*lot
+    entry=order_costs([
+        {"side":"SELL","price":short_entry,"qty":lot},
+        {"side":"BUY","price":long_entry,"qty":lot}],entry_date)
+    # Conservative max-width close: buy back short at width plus adverse slippage,
+    # sell the hedge near the minimum tick; do not assume a zero-cost expiry exit.
+    exit=order_costs([
+        {"side":"BUY","price":WING_POINTS+2*slippage+0.05,"qty":lot},
+        {"side":"SELL","price":0.05,"qty":lot}],exit_date)
+    return gross+entry["total"]+exit["total"]
+
 def load_snapshots(parquet_paths,spot_by_date):
     """Stream source once and retain positive-volume 10:00 NIFTY chain snapshots."""
     snapshots=[]
@@ -279,15 +292,15 @@ def simulate_one(trade,contract_data,spot_sessions,slippage):
     if credit<=0:return None,"NONPOSITIVE_EXECUTABLE_CREDIT"
     expiry=date.fromisoformat(ex)
     lot=lot_size(expiry)
-    max_loss_per_lot=(WING_POINTS-credit)*lot
-    if max_loss_per_lot<=0:return None,"INVALID_SPREAD_RISK"
-    lots=min(int(MAX_RISK//max_loss_per_lot),int(SLEEVE_CAPITAL//max_loss_per_lot))
-    if lots<1:return None,"RISK_CAP_REJECTED"
-    qty=lots*lot
     # Force exit on the last available spot session strictly before expiry.
     prior=[d for d in spot_sessions if d<expiry]
     if not prior:return None,"NO_PRE_EXPIRY_SESSION"
     force_date=max(prior)
+    max_loss_per_lot=conservative_risk_per_lot(credit,lot,slippage,entry_date,force_date,short_entry,long_entry)
+    if max_loss_per_lot<=0:return None,"INVALID_SPREAD_RISK"
+    lots=min(int(MAX_RISK//max_loss_per_lot),int(SLEEVE_CAPITAL//max_loss_per_lot))
+    if lots<1:return None,"RISK_CAP_REJECTED"
+    qty=lots*lot
     force_end=pd.Timestamp(datetime.combine(force_date,EXIT_CLOCK,tzinfo=IST)+timedelta(minutes=20))
     allbars=common_bars(s,l,et,force_end)
     if allbars.empty:return None,"NO_COMMON_EXIT_BARS"
@@ -348,7 +361,7 @@ def simulate_one(trade,contract_data,spot_sessions,slippage):
         "sebi_inr":entry_cost["sebi"]+exit_cost["sebi"],"stt_inr":entry_cost["stt"]+exit_cost["stt"],
         "stamp_inr":entry_cost["stamp"]+exit_cost["stamp"],"gst_inr":entry_cost["gst"]+exit_cost["gst"],
         "total_cost_inr":total_cost,"slippage_points_per_leg":slippage,
-        "net_pnl_inr":net,"max_loss_at_entry_inr":max_loss,
+        "net_pnl_inr":net,"max_loss_at_entry_inr":max_loss,"max_loss_including_slippage_and_estimated_fees_inr":max_loss_per_lot*lots,
         "holding_minutes":(exit_ts-et).total_seconds()/60},None
 
 def metrics(df):
