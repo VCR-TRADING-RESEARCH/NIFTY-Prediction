@@ -114,7 +114,7 @@ def main():
             for offset in OFFSETS:
                 strike = "ATM" if offset == 0 else f"ATM{offset:+d}"
                 for opt in OPTION_TYPES:
-                    payload = {"exchangeSegment":"NSE_FNO","interval":"1","securityId":13,
+                    payload = {"exchangeSegment":"NSE_FNO","interval":"1","securityId":"13",
                                "instrument":"OPTIDX","expiryFlag":"WEEK",
                                "expiryCode":expiry_code,"strike":strike,
                                "drvOptionType":opt,"requiredData":FIELDS,
