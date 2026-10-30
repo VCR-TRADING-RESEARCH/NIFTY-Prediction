@@ -172,3 +172,8 @@ Last repository status update: 2026-10-25.
 
 
 **Target-session retry and diagnostics (2026-10-25):** Inference now makes one targeted, one-day Dhan request for the selected session in addition to the normal chunked history request. This can recover bars omitted from a large response and helps distinguish session-level data gaps from broad-request truncation. If the required anchor is still unavailable, the failure explains whether the whole session had no valid bars or reports the returned session's timestamp range and nearby-bar count. The anchor is never silently substituted.
+
+
+## NIFTY options dual-sleeve backtest (new research branch)
+
+A separate pre-registered options P&L study is being prepared on branch [research/nifty-options-dual-sleeve-backtest](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/research/nifty-options-dual-sleeve-backtest). See [the options backtest phase plan](research/options_backtest/PHASE_PLAN.md). A free candidate intraday option source has been identified (Hugging Face `rissin/nse-options-intraday`, October 2024 onward), alongside the 2017–2020 Zenodo archive. These are source candidates, not yet validated backtest inputs. Data ingestion, licence review, contract/expiry validation, spot synchronization, delta reconstruction, Paytm Money date-effective charges, and execution simulation are still pending. **No options backtest result or trading strategy is claimed yet.**
