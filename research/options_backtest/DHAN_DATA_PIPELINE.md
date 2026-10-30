@@ -15,3 +15,4 @@ Sources:
 - Dhan expired options API: https://dhanhq.co/docs/v2/expired-options-data/
 - Dhan expiry-code definitions: https://dhanhq.co/docs/v2/annexure/
 - Dhan historical data API: https://dhanhq.co/docs/v2/historical-data/
+\n\n## Current validation status (2026-10-31)\n- Dhan authentication and rolling-options request did not pass the automated smoke test. The existing token could not be renewed; TOTP generation was inconsistent; one request returned DH-905 (input exception) on the tested requiredData fields. No Dhan raw data was downloaded.\n- Workflow triggers are manual dispatch and monthly schedule only, to avoid repeated failing PR retries.\n- User intervention needed before a full five-year Dhan pull: verify/refresh the organization secrets DHAN_ACCESS_TOKEN, DHAN_PIN and DHAN_TOTP_SECRET, and confirm the Dhan TOTP setup. Never paste these values into chat or repository logs.\n- Public fallback audit is documented in DATA_AUDIT_REPORT.md.\n
