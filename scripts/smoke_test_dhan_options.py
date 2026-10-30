@@ -8,6 +8,23 @@ import requests
 URL="https://api.dhan.co/v2/charts/rollingoption"
 FIELDS=["open","high","low","close","iv","volume","strike","oi","spot"]
 
+def classify(message):
+    m=str(message).lower()
+    for key, label in [
+        ("security", "SECURITY_ID_OR_UNDERLYING"),
+        ("expiry", "EXPIRY_PARAMETER"),
+        ("date", "DATE_RANGE_OR_FORMAT"),
+        ("strike", "STRIKE_PARAMETER"),
+        ("instrument", "INSTRUMENT_PARAMETER"),
+        ("required", "REQUIRED_DATA_PARAMETER"),
+        ("interval", "INTERVAL_PARAMETER"),
+        ("token", "TOKEN_OR_AUTH"),
+        ("subscription", "DATA_API_SUBSCRIPTION"),
+    ]:
+        if key in m:
+            return label
+    return "UNCLASSIFIED_API_REJECTION"
+
 def main():
     token=os.getenv("DHAN_JOB_ACCESS_TOKEN","").strip()
     client=os.getenv("DHAN_CLIENT_ID","").strip()
@@ -19,13 +36,23 @@ def main():
     session=requests.Session()
     summary=[]
     for opt in ("CALL","PUT"):
-        payload={"exchangeSegment":"NSE_FNO","interval":"1","securityId":13,
+        payload={"exchangeSegment":"NSE_FNO","interval":"1","securityId":"13",
                  "instrument":"OPTIDX","expiryFlag":"WEEK","expiryCode":0,
                  "strike":"ATM","drvOptionType":opt,"requiredData":FIELDS,
                  "fromDate":start.isoformat(),"toDate":end.isoformat()}
         response=session.post(URL,headers=headers,json=payload,timeout=60)
         if not response.ok:
-            print("DHAN_SMOKE_FAIL: HTTP",response.status_code,file=sys.stderr)
+            try:
+                body=response.json()
+                keys=sorted(str(k) for k in body.keys()) if isinstance(body,dict) else [type(body).__name__]
+                status=body.get("status") if isinstance(body,dict) else None
+                code=body.get("errorCode") or body.get("error_code") if isinstance(body,dict) else None
+                message=body.get("message") or body.get("remarks") if isinstance(body,dict) else ""
+            except Exception:
+                keys=["non_json_response"]; status=None; code=None; message=""
+            print({"status":"FAIL","http_status":response.status_code,"keys":keys,
+                   "api_status":str(status)[:32],"error_code":str(code)[:32],
+                   "reason":classify(message)},file=sys.stderr)
             return 2
         body=response.json()
         data=body.get("data") or {}
