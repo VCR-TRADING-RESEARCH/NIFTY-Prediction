@@ -1,7 +1,7 @@
 # NIFTY Options Dual-Sleeve Backtest — Phase Plan
 
 **Branch:** research/nifty-options-dual-sleeve-backtest  
-**Plan version:** 1.1  
+**Plan version:** 1.2  
 **Status at 2026-10-31:** DHAN COLLECTION IMPLEMENTED; AUTOMATED API RUN AND CONTRACT-LEVEL VALIDATION PENDING  
 **Capital assumption:** INR 200,000  
 **Research period:** intraday options source currently identified from October 2024 onward; do not imply 2021–2023 minute-option coverage from this source.
@@ -59,7 +59,7 @@ No midpoint or close fills by default. Use next executable bar open as a proxy w
 
 1. Download only needed NIFTY partitions to Actions cache; retain manifest, dataset revision, file checksums, row counts and source provenance. Do not commit raw Parquet unless licence explicitly permits it.
 2. Audit schema, timestamp timezone, duplicates/conflicts, session boundaries, OHLC invariants, zero-price rows, volume, expiry/strike mapping, missing bars and contract survivorship.
-3. Independently reconcile a sample to NSE/broker sources and spot series. Confirm the source's expiry labels are actual contract expiries and account for historical weekly expiry weekday changes.
+3. Independently reconcile a sample to NSE/broker sources and spot series. Confirm the source's expiry labels are actual contract expiries and account for historical weekly expiry weekday changes. Apply the expiry-date-based NIFTY lot schedule in [LOT_SIZE_SCHEDULE.md](LOT_SIZE_SCHEDULE.md): 25 for 2024-10-01 through 2024-12-19 expiries, 75 for 2025-01-02 through 2025-12-23, and 65 from 2026-01-06; resolve holiday shifts before sizing.
 4. Verify point-in-time strike selection: only data available at signal time; no selecting contracts based on future liquidity or end-of-day volume.
 5. Build contract chain panel; compute IV/Greeks only with a documented solver, rates, dividends and bounds. Validate reconstructed prices/deltas against independent observations where available.
 6. Keep development, validation and final untouched chronological holdout. Use walk-forward selection; no random shuffling or holdout tuning.
