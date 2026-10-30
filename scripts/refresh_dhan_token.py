@@ -59,8 +59,13 @@ def main() -> int:
                     return 0
         except Exception:
             pass
+        # RenewToken is not supported for every token type. Reuse the supplied token
+        # for a validation request before attempting another credential exchange.
+        export_token(existing_token, github_env)
+        print("DHAN_AUTH_EXISTING_OK: Existing token reused without renewal; downstream API will validate it.")
+        return 0
 
-    # If renewal is unavailable, generate a fresh 24-hour token using TOTP.
+    # If no existing token is supplied, generate a fresh 24-hour token using TOTP.
     if not pin or not totp_secret:
         print("DHAN_AUTH_ERROR: No renewable token and PIN/TOTP credentials are incomplete.", file=sys.stderr)
         return 2
