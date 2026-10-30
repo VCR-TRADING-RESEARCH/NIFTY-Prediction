@@ -176,42 +176,43 @@ def load_snapshots(parquet_paths,spot_by_date):
 
 def choose_candidates(snapshots,daily,spot):
     if snapshots.empty: return []
-    # One entry per expiry: first available trading session in the 7-14 DTE window.
-    candidate_dates=(snapshots[["entry_date","expiry_date"]].drop_duplicates()
-                     .sort_values(["expiry_date","entry_date"]))
-    candidate_dates=candidate_dates.groupby("expiry_date",as_index=False).first()
     trades=[]
-    for _,row in candidate_dates.iterrows():
-        entry_date=row.entry_date; expiry=row.expiry_date
-        sig=daily.loc[entry_date] if entry_date in daily.index else None
-        if sig is None or sig.direction=="NONE": continue
-        chain=snapshots[(snapshots.entry_date==entry_date)&(snapshots.expiry_date==expiry)].copy()
-        if chain.empty: continue
-        direction=sig.direction
-        kind="PUT" if direction=="BULL" else "CALL"
-        chain=chain[chain.option_type.astype(str).str.upper().isin([kind,"PE" if kind=="PUT" else "CE"])]
-        if chain.empty: continue
-        chain["kind"]=kind
-        T=max((datetime.combine(expiry,time(15,30),tzinfo=IST)-chain.timestamp_ist.iloc[0]).total_seconds(),0)/(365.25*86400)
-        chain["iv"]=chain.apply(lambda z:implied_vol(float(z.close),float(z.spot),float(z.strike),T,kind),axis=1)
-        chain["abs_delta"]=chain.apply(lambda z:abs(option_delta(float(z.spot),float(z.strike),T,RISK_FREE,DIVIDEND_YIELD,float(z.iv),kind)) if np.isfinite(z.iv) else np.nan,axis=1)
-        eligible=chain[chain.abs_delta.between(SHORT_DELTA_LOW,SHORT_DELTA_HIGH)].copy()
-        if eligible.empty: continue
-        eligible["delta_gap"]=(eligible.abs_delta-SHORT_DELTA_TARGET).abs()
-        short=eligible.sort_values(["delta_gap","volume"],ascending=[True,False]).iloc[0]
-        short_strike=float(short.strike)
-        wing_strike=short_strike-WING_POINTS if kind=="PUT" else short_strike+WING_POINTS
-        wing=chain[np.isclose(chain.strike.astype(float),wing_strike,atol=0.01)]
-        if wing.empty: continue
-        long=wing.sort_values("volume",ascending=False).iloc[0]
-        credit=float(short.close-long.close)
-        if not np.isfinite(credit) or credit<=0: continue
-        trades.append({"entry_date":entry_date.isoformat(),"snapshot_ts":short.timestamp_ist.isoformat(),
-            "expiry_date":expiry.isoformat(),"direction":direction,"option_type":kind,
-            "short_strike":short_strike,"long_strike":float(long.strike),
-            "short_iv":float(short.iv),"short_abs_delta":float(short.abs_delta),
-            "snapshot_credit":credit,"spot_snapshot":float(short.spot),
-            "short_volume_snapshot":float(short.volume),"long_volume_snapshot":float(long.volume)})
+    # One entry per expiry. If the first 7-14 DTE session has no directional
+    # signal or a valid spread, advance to the next eligible session in that window.
+    for expiry, expiry_rows in snapshots.groupby("expiry_date",sort=True):
+        selected=False
+        for entry_date in sorted(expiry_rows.entry_date.unique()):
+            sig=daily.loc[entry_date] if entry_date in daily.index else None
+            if sig is None or sig.direction=="NONE": continue
+            chain=expiry_rows[expiry_rows.entry_date==entry_date].copy()
+            if chain.empty: continue
+            direction=sig.direction
+            kind="PUT" if direction=="BULL" else "CALL"
+            chain=chain[chain.option_type.astype(str).str.upper().isin([kind,"PE" if kind=="PUT" else "CE"])]
+            if chain.empty: continue
+            chain["kind"]=kind
+            T=max((datetime.combine(expiry,time(15,30),tzinfo=IST)-chain.timestamp_ist.iloc[0]).total_seconds(),0)/(365.25*86400)
+            chain["iv"]=chain.apply(lambda z:implied_vol(float(z.close),float(z.spot),float(z.strike),T,kind),axis=1)
+            chain["abs_delta"]=chain.apply(lambda z:abs(option_delta(float(z.spot),float(z.strike),T,RISK_FREE,DIVIDEND_YIELD,float(z.iv),kind)) if np.isfinite(z.iv) else np.nan,axis=1)
+            eligible=chain[chain.abs_delta.between(SHORT_DELTA_LOW,SHORT_DELTA_HIGH)].copy()
+            if eligible.empty: continue
+            eligible["delta_gap"]=(eligible.abs_delta-SHORT_DELTA_TARGET).abs()
+            short=eligible.sort_values(["delta_gap","volume"],ascending=[True,False]).iloc[0]
+            short_strike=float(short.strike)
+            wing_strike=short_strike-WING_POINTS if kind=="PUT" else short_strike+WING_POINTS
+            wing=chain[np.isclose(chain.strike.astype(float),wing_strike,atol=0.01)]
+            if wing.empty: continue
+            long=wing.sort_values("volume",ascending=False).iloc[0]
+            credit=float(short.close-long.close)
+            if not np.isfinite(credit) or credit<=0: continue
+            trades.append({"entry_date":entry_date.isoformat(),"snapshot_ts":short.timestamp_ist.isoformat(),
+                "expiry_date":expiry.isoformat(),"direction":direction,"option_type":kind,
+                "short_strike":short_strike,"long_strike":float(long.strike),
+                "short_iv":float(short.iv),"short_abs_delta":float(short.abs_delta),
+                "snapshot_credit":credit,"spot_snapshot":float(short.spot),
+                "short_volume_snapshot":float(short.volume),"long_volume_snapshot":float(long.volume)})
+            selected=True
+            break
     return trades
 
 def load_selected_contracts(parquet_paths,trades):
