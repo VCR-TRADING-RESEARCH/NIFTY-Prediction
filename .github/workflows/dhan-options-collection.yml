@@ -49,6 +49,8 @@ jobs:
           DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
         run: python scripts/refresh_dhan_token.py
       - name: Verify Dhan expired-options endpoint
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
         run: python scripts/smoke_test_dhan_options.py
       - name: Collect five-year rolling NIFTY options
         env:
