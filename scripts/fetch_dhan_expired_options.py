@@ -86,9 +86,9 @@ def main():
     client_id = os.getenv("DHAN_CLIENT_ID", "").strip()
     if not token or not client_id:
         raise SystemExit("DHAN_AUTH_REQUIRED: Dhan token/client ID missing; no public-data fallback is implied.")
-    end = date.fromisoformat(os.getenv("DHAN_TO_DATE", date.today().isoformat()))
+    end_text = os.getenv("DHAN_TO_DATE", "").strip() or date.today().isoformat()\n    end = date.fromisoformat(end_text)
     default_start = end.replace(year=end.year - 5)
-    start = date.fromisoformat(os.getenv("DHAN_FROM_DATE", default_start.isoformat()))
+    start_text = os.getenv("DHAN_FROM_DATE", "").strip() or default_start.isoformat()\n    start = date.fromisoformat(start_text)
     if (end-start).days > 5*365+5:
         raise SystemExit("Requested range exceeds Dhan's documented rolling five-year window.")
     OUT.mkdir(parents=True, exist_ok=True)
