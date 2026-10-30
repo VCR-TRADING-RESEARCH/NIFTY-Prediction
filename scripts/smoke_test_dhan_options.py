@@ -47,7 +47,7 @@ def main():
                 keys=sorted(str(k) for k in body.keys()) if isinstance(body,dict) else [type(body).__name__]
                 status=body.get("status") if isinstance(body,dict) else None
                 code=body.get("errorCode") or body.get("error_code") if isinstance(body,dict) else None
-                message=body.get("message") or body.get("remarks") if isinstance(body,dict) else ""
+                message=body.get("errorMessage") or body.get("message") or body.get("remarks") if isinstance(body,dict) else ""
             except Exception:
                 keys=["non_json_response"]; status=None; code=None; message=""
             print({"status":"FAIL","http_status":response.status_code,"keys":keys,
