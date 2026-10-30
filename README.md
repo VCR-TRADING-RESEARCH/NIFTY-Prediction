@@ -175,7 +175,7 @@ Last repository status update: 2026-10-25.
 
 ## NIFTY options dual-sleeve backtest research
 
-A separate options strategy study is underway on [research branch](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/research/nifty-options-dual-sleeve-backtest) and [draft PR #22](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/22).
+A separate options strategy study is underway on [research branch](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/research/nifty-options-dual-sleeve-backtest) and [draft PR #22](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/22). The limited B1 execution is tracked in [PR #24](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/24).
 
 - [Phase plan](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/research/nifty-options-dual-sleeve-backtest/research/options_backtest/PHASE_PLAN.md)
 - [Data audit report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/research/nifty-options-dual-sleeve-backtest/research/options_backtest/DATA_AUDIT_REPORT.md)
