@@ -234,3 +234,12 @@
 - Date: 2026-10-30
 - Status: FAILED; inspect the linked Actions run for the failing step.
 - No secrets or provider response bodies are copied into logs.
+
+
+## E0018 — 2026-10-31 — Options strategy cannot be backtested from spot-direction artifacts
+- Severity: High — instrument-level research data gap.
+- Observed: existing weekly ExtraTrees labels/features and model holdout outputs are NIFTY spot direction data; they do not contain historical contract-specific CE/PE prices, per-leg fills, or executable cashflows.
+- Impact: using these files to report option spread win rate/P&L would be a category error and could materially misstate risk.
+- Corrective action: separate options backtest branch created; candidate 1-minute historical option datasets identified (Hugging Face Oct-2024 onward; Zenodo 2017–2020). Require schema/rights/contract/expiry/spot-sync checks before use.
+- Remaining blockers: data ingestion and licence review; synchronized spot; IV/delta reconstruction; bid/ask absence and conservative fill model; historical lot size; Paytm Money date-effective fee schedule. Never set unknown costs to zero.
+- Status: OPEN. No options strategy is validated; no paid dataset ordered.
