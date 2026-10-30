@@ -1,57 +1,75 @@
 #!/usr/bin/env python3
-"""Create an ephemeral Dhan access token for the current GitHub Actions job.
-
-Never writes the token to the repository and never prints the token, PIN or TOTP secret.
-GitHub Actions secrets must be provided as environment variables by the workflow.
-"""
+"""Create or renew an ephemeral Dhan access token for this Actions job."""
 from __future__ import annotations
-
-import os
-import sys
-from urllib.parse import urlencode
-
-import pyotp
+import os, sys
 import requests
+import pyotp
 
+def find_access_token(value):
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if str(key).replace("_", "").replace("-", "").lower() == "accesstoken":
+                if isinstance(item, str) and len(item) >= 20:
+                    return item
+        for item in value.values():
+            found=find_access_token(item)
+            if found: return found
+    elif isinstance(value, list):
+        for item in value:
+            found=find_access_token(item)
+            if found: return found
+    return None
 
-def main() -> int:
-    client_id = os.getenv("DHAN_CLIENT_ID", "").strip()
-    pin = os.getenv("DHAN_PIN", "").strip()
-    totp_secret = os.getenv("DHAN_TOTP_SECRET", "").strip()
-    github_env = os.getenv("GITHUB_ENV", "")
+def export_token(token, path):
+    with open(path,"a",encoding="utf-8") as f:
+        f.write("DHAN_JOB_ACCESS_TOKEN="+token.replace("\n","")+"\n")
 
-    if not any((client_id, pin, totp_secret)):
-        print("DHAN_AUTH_SKIPPED: Dhan secrets are not configured; public data workflow may continue.")
-        return 0
-    if not all((client_id, pin, totp_secret)):
-        print("DHAN_AUTH_ERROR: One or more required Dhan authentication secrets are missing.", file=sys.stderr)
+def main():
+    client=os.getenv("DHAN_CLIENT_ID","").strip()
+    pin=os.getenv("DHAN_PIN","").strip()
+    secret=os.getenv("DHAN_TOTP_SECRET","").strip()
+    existing=os.getenv("DHAN_ACCESS_TOKEN","").strip()
+    envfile=os.getenv("GITHUB_ENV","")
+    if not client or not envfile:
+        print("DHAN_AUTH_ERROR: Client ID or GITHUB_ENV missing.",file=sys.stderr); return 2
+
+    if existing:
+        try:
+            r=requests.get("https://api.dhan.co/v2/RenewToken",
+                           headers={"access-token":existing,"dhanClientId":client},timeout=30)
+            if r.ok:
+                token=find_access_token(r.json())
+                if token:
+                    export_token(token,envfile)
+                    print("DHAN_AUTH_RENEW_OK: Existing active token renewed; token withheld.")
+                    return 0
+        except Exception:
+            pass
+
+    if not pin or not secret:
+        print("DHAN_AUTH_ERROR: No renewable token and PIN/TOTP credentials are incomplete.",file=sys.stderr)
         return 2
-    if not github_env:
-        print("DHAN_AUTH_ERROR: GITHUB_ENV is unavailable; refusing to print or persist token elsewhere.", file=sys.stderr)
-        return 2
-
     try:
-        totp = pyotp.TOTP(totp_secret).now()
-        params = urlencode({"dhanClientId": client_id, "pin": pin, "totp": totp})
-        endpoint = "https://auth.dhan.co/app/generateAccessToken?" + params
-        response = requests.get(endpoint, timeout=30)
-        if not response.ok:
-            print("DHAN_AUTH_ERROR: Token service returned HTTP", response.status_code, file=sys.stderr)
-            return 2
-        payload = response.json()
-        token = payload.get("accessToken") or payload.get("access_token")
-        if not isinstance(token, str) or len(token) < 20:
-            # Do not print the response body; it may contain sensitive values.
-            print("DHAN_AUTH_ERROR: Response did not contain a valid access-token field.", file=sys.stderr)
-            return 2
-        with open(github_env, "a", encoding="utf-8") as handle:
-            handle.write("DHAN_JOB_ACCESS_TOKEN=" + token.replace("\n", "") + "\n")
-        print("DHAN_AUTH_OK: Short-lived token generated and exported to this Actions job; token value withheld.")
+        if secret.lower().startswith("otpauth://"):
+            secret=pyotp.parse_uri(secret).secret
+        secret="".join(secret.split()).replace("-","").upper()
+        code=pyotp.TOTP(secret).now()
+        r=requests.post("https://auth.dhan.co/app/generateAccessToken",
+                        params={"dhanClientId":client,"pin":pin,"totp":code},timeout=30)
+        if not r.ok:
+            print("DHAN_AUTH_ERROR: Token service returned HTTP",r.status_code,file=sys.stderr); return 2
+        body=r.json()
+        token=find_access_token(body)
+        if not token:
+            keys=sorted(str(k) for k in body.keys()) if isinstance(body,dict) else [type(body).__name__]
+            status=body.get("status") if isinstance(body,dict) else None
+            print("DHAN_AUTH_ERROR: No access token in response; keys=",",".join(keys),
+                  "status=",str(status)[:32],file=sys.stderr); return 2
+        export_token(token,envfile)
+        print("DHAN_AUTH_OK: Fresh short-lived token generated; token withheld.")
         return 0
     except Exception as exc:
-        print("DHAN_AUTH_ERROR:", type(exc).__name__, "Authentication failed; sensitive response contents withheld.", file=sys.stderr)
-        return 2
+        print("DHAN_AUTH_ERROR:",type(exc).__name__,"Sensitive response contents withheld.",file=sys.stderr); return 2
 
-
-if __name__ == "__main__":
+if __name__=="__main__":
     raise SystemExit(main())
