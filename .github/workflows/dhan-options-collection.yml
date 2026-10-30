@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - "scripts/fetch_dhan_expired_options.py"
-      - "scripts/refresh_dhan_token.py"
+      - "scripts/refresh_dhan_token.py"\n      - "scripts/smoke_test_dhan_options.py"
       - ".github/workflows/dhan-options-collection.yml"
   workflow_dispatch:
     inputs:
@@ -47,7 +47,7 @@ jobs:
           DHAN_PIN: ${{ secrets.DHAN_PIN }}
           DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
         run: python scripts/refresh_dhan_token.py
-      - name: Collect five-year rolling NIFTY options
+      - name: Verify Dhan expired-options endpoint\n        env:\n          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}\n        run: python scripts/smoke_test_dhan_options.py\n      - name: Collect five-year rolling NIFTY options
         env:
           DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
           DHAN_FROM_DATE: ${{ inputs.from_date }}
