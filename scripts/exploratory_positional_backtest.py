@@ -66,7 +66,7 @@ def load_spot(spot_dir:Path):
         frames.append(z)
     x=pd.concat(frames,ignore_index=True).dropna()
     x=x.sort_values("timestamp").drop_duplicates("timestamp",keep="last")
-    x=x[(x.timestamp.dt.date>=date(2024,10,1))&(x.timestamp.dt.date<=date(2026,7,21))]
+    x=x[(x.timestamp.dt.date>=date(2024,1,1))&(x.timestamp.dt.date<=date(2026,7,21))]
     x["session"]=x.timestamp.dt.date
     daily=x.groupby("session").agg(close=("close","last"))
     daily["sma20"]=daily.close.rolling(20,min_periods=20).mean()
@@ -79,6 +79,7 @@ def load_spot(spot_dir:Path):
         [(daily.signal_close>daily.signal_sma20)&(daily.signal_ret5>0),
          (daily.signal_close<daily.signal_sma20)&(daily.signal_ret5<0)],
         ["BULL","BEAR"],default="NONE")
+    x=x[(x.timestamp.dt.date>=date(2024,10,1))&(x.timestamp.dt.date<=date(2026,7,21))]
     return x,daily
 
 def bs_price(S,K,T,r,q,sigma,kind):
@@ -115,7 +116,7 @@ def implied_vol(premium,S,K,T,kind):
 
 def lot_size(expiry:date)->int:
     if expiry<=date(2024,12,19): return 25
-    if expiry<=date(2025,12,23): return 75
+    if expiry<=date(2025,12,30): return 75
     if expiry>=date(2026,1,6): return 65
     raise ValueError(f"Unmapped NIFTY lot-size transition expiry: {expiry}")
 
@@ -291,7 +292,9 @@ def simulate_one(trade,contract_data,spot_sessions,slippage):
     if allbars.empty:return None,"NO_COMMON_EXIT_BARS"
     initial_credit=credit
     trigger=None; trigger_ts=None
-    for ts,row in allbars.iterrows():
+    pre_force=allbars[(allbars.index.date<force_date)|
+                      ((allbars.index.date==force_date)&(allbars.index.time<EXIT_CLOCK))]
+    for ts,row in pre_force.iterrows():
         buyback=float(row.close_num_s-row.close_num_l)
         if buyback<=initial_credit*0.5:
             trigger="TARGET_50_PERCENT";trigger_ts=ts;break
@@ -307,7 +310,9 @@ def simulate_one(trade,contract_data,spot_sessions,slippage):
     else:
         force=allbars[(allbars.index.date==force_date)&(allbars.index.time>=EXIT_CLOCK)]
         if force.empty:
-            force=allbars[allbars.index.date==force_date]
+            force=allbars[allbars.index.date==force_date].tail(1)
+        else:
+            force=force.head(1)
         if force.empty:return None,"FORCED_EXIT_NOT_EXECUTABLE"
         exit_ts=force.index[0];exitrow=force.iloc[0]
         exit_reason="PRE_EXPIRY_TIME_EXIT"
