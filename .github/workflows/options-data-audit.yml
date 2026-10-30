@@ -1,0 +1,42 @@
+name: NIFTY options data audit
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/audit_nifty_option_data.py"
+      - ".github/workflows/options-data-audit.yml"
+      - "research/options_backtest/**"
+permissions:
+  contents: read
+concurrency:
+  group: options-data-audit-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install data audit dependencies
+        run: python -m pip install --upgrade pandas pyarrow huggingface_hub
+      - name: Restore cached option partitions
+        uses: actions/cache@v4
+        with:
+          path: .cache/hf-options
+          key: nifty-options-hf-v1-${{ runner.os }}-2024-2026
+      - name: Audit NIFTY intraday option partitions
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_DATASETS_CACHE: .cache/hf-options
+        run: python scripts/audit_nifty_option_data.py
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nifty-options-data-audit
+          path: research/options_backtest/data_audit.json
+          if-no-files-found: ignore
