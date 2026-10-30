@@ -1,8 +1,8 @@
 # NIFTY Options Dual-Sleeve Backtest — Phase Plan
 
 **Branch:** research/nifty-options-dual-sleeve-backtest  
-**Plan version:** 1.0  
-**Status at 2026-10-31:** DATA SOURCE IDENTIFIED; EXECUTION PENDING DATA INGESTION AND QUALITY GATES  
+**Plan version:** 1.1  
+**Status at 2026-10-31:** DHAN COLLECTION IMPLEMENTED; AUTOMATED API RUN AND CONTRACT-LEVEL VALIDATION PENDING  
 **Capital assumption:** INR 200,000  
 **Research period:** intraday options source currently identified from October 2024 onward; do not imply 2021–2023 minute-option coverage from this source.
 
