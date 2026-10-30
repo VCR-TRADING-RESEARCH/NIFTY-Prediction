@@ -172,3 +172,16 @@ Last repository status update: 2026-10-25.
 
 
 **Target-session retry and diagnostics (2026-10-25):** Inference now makes one targeted, one-day Dhan request for the selected session in addition to the normal chunked history request. This can recover bars omitted from a large response and helps distinguish session-level data gaps from broad-request truncation. If the required anchor is still unavailable, the failure explains whether the whole session had no valid bars or reports the returned session's timestamp range and nearby-bar count. The anchor is never silently substituted.
+
+## NIFTY options dual-sleeve backtest research
+
+A separate options strategy study is underway on [research branch](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/research/nifty-options-dual-sleeve-backtest) and [draft PR #22](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/22).
+
+- [Phase plan](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/research/nifty-options-dual-sleeve-backtest/research/options_backtest/PHASE_PLAN.md)
+- [Data audit report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/research/nifty-options-dual-sleeve-backtest/research/options_backtest/DATA_AUDIT_REPORT.md)
+- [Machine-readable audit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/research/nifty-options-dual-sleeve-backtest/research/options_backtest/data_audit_summary.json)
+- [Historical NIFTY lot sizes](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/research/nifty-options-dual-sleeve-backtest/research/options_backtest/LOT_SIZE_SCHEDULE.md)
+- [Paytm Money cost schedule](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/research/nifty-options-dual-sleeve-backtest/research/options_backtest/PAYTM_MONEY_COST_SCHEDULE.md)
+- [Dhan data pipeline and current blocker](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/research/nifty-options-dual-sleeve-backtest/research/options_backtest/DHAN_DATA_PIPELINE.md)
+
+**Current gate:** the public archive audit scanned 124,458,249 one-minute NIFTY option rows from 2024-10-01 to 2026-07-21. OHLC/timestamps and OI/volume completeness passed; 52.84% of rows have zero volume and 35 have negative volume. Only positive-volume bars are eligible for fills. The archive has no IV or bid/ask and does not cover 2021–2024. Dhan authenticated collection remains blocked. NIFTY spot has no traded volume, so the original VWAP condition needs verified NIFTY futures volume. **No options strategy P&L has been run; no profitability or risk metrics are claimed.**
