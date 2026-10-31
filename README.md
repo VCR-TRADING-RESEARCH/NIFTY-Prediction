@@ -139,7 +139,7 @@ The research target is on the spot index. Any executable strategy must separatel
 - Time-series momentum paper: https://doi.org/10.1016/j.jfineco.2011.11.003
 - Probability of Backtest Overfitting: https://doi.org/10.21314/jcf.2016.322
 
-Last repository status update: 2026-10-25.
+Last repository status update: 2026-10-31.
 
 
 ## Free GitHub Actions + Pages prediction flow
