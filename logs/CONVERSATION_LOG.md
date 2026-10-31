@@ -117,3 +117,10 @@
 - Recorded offline audit success, 10/10 Dhan mocked tests passing, live token response without accessToken and profile HTTP 401.
 - Updated the C1 branch status, README, source register, research/error/conversation logs. Also mirrored the latest C1 status and links into main README and logs.
 - No private reasoning, credentials or secrets are copied into repository logs.
+
+
+## BUP-01 Dhan authentication update — 2026-10-31
+
+- Shared token helper fix (POST, masked ephemeral token, newline validation) and regression tests have been copied to the C1 research branch. The BUP-01 preflight itself already used POST.
+- Verified Actions run [41182555655](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182555655): 10/10 offline tests passed; live token endpoint HTTP 200 returned no access-token field; fallback profile returned HTTP 401. No equity security-master or candle request was reached.
+- Safe provider-error category diagnostics and a regression test have been added; follow-up Actions run is pending/in progress. C1 remains blocked; no constituent prediction or trading strategy is claimed.
