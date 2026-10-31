@@ -237,3 +237,12 @@
 - Parsed ownership roll-ups do not include detailed strategic holdings required to reconstruct official IWF. The flat parsed file omits broadcast timestamp; the source manifest includes broadcast_date and must be joined by XBRL filename before any feature is made available. No ownership field is used yet.
 - AMFI ETF scheme portfolio history was identified as a possible external cross-check, but AMFI's Terms of Use restrict personal/non-commercial use and derivative/public redistribution; no AMFI data was ingested or cached.
 - C1 remains BLOCKED on exact numeric IWF/weights, 2025-10 onward NIFTY50 membership update and Dhan constituent intraday data.
+
+
+## 2026-10-31 — BUP-01 C1 offline Actions validation passed; Dhan equity preflight staged
+
+- C1 offline source-audit run [41180457400](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41180457400) passed all job steps: checkout, Python setup, offline source-audit tests, local archive inspection, status updater and job summary.
+- No authorised local archive was present; the audit status was NO_AUTHORISED_ARCHIVE. This is a workflow pass, not a data/weight pass.
+- Added Dhan-equity preflight script and offline tests; it uses the existing correct POST token function in live_api.app, probes only five symbols/two days plus a small daily-history window, and stores counts/status only.
+- A manual/read-only Dhan workflow was added. No execution is visible yet; no Dhan equity bar success is claimed.
+- C1 remains BLOCKED on point-in-time IWF, membership update after 2025-09-30 and stock minute history.
