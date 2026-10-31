@@ -224,3 +224,10 @@ The licensed CC BY 4.0 NIFTY 50 interval subset is now cached at [data/derived/c
 - [Dhan token-refresh PR #28](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/28): mocked regression and integration Actions checks passed; PR remains draft/open, so the main scheduled helper is not yet updated.
 - C1 remains **BLOCKED** on Dhan profile/data entitlement, authorised point-in-time numerical free-float weights, post-2025-09 membership, security identity/corporate actions and basket reconciliation. No stock panel/model/forecast exists.
 - Detailed gate record: [BUP-01 STATUS](research/constituent_weekly/STATUS.md), [C1 source feasibility](research/constituent_weekly/C1_SOURCE_FEASIBILITY.md), [data source register](research/constituent_weekly/DATA_SOURCE_REGISTER.md), [error log](logs/ERROR_LOG.md).
+
+### Latest C1 Dhan diagnostic — 31 October 2026
+
+- [Latest preflight run 41181948126](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181948126): workflow passed; 10/10 offline tests passed. Live token-generation endpoint returned HTTP 200 but no `accessToken`; fallback token then failed profile authentication with HTTP 401.
+- The profile request now matches Dhan's documented header shape (access-token only). No stock equity endpoint was reached and no bars were collected.
+- **Actionable blocker:** verify the Dhan client ID, six-digit PIN, TOTP secret/TOTP enablement, and fallback token in organisation secrets. Dhan token validity is 24 hours and Data APIs require an active plan. See [Dhan authentication docs](https://dhanhq.co/docs/v2/authentication/).
+- C1 remains BLOCKED on authentication, authorised point-in-time numeric free-float weights, current membership, corporate-action/security identity history and basket reconciliation. No constituent model/forecast exists.
