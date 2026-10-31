@@ -223,3 +223,6 @@ The existing Dhan implementation refreshes a 24-hour access token and retrieves 
 
 
 **BUP-01 C1 workflow note (2026-10-31):** the automated NSE fetch was disabled after source-rights review. The offline-only workflow has a corrected checkout ref, but the latest run is `action_required` with no test steps; C1 test execution is not yet verified. Historical weights, membership rights and stock-level Dhan coverage remain unresolved. Cleanup of the earlier raw Actions artifact is tracked in [issue #27](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/issues/27). No constituent model or bottom-up forecast is available.
+
+
+BUP-01 literature review has been extended to include recent component-based aggregate-market research, intraday constituent-to-index prediction, Indian momentum/reversal/liquidity evidence, and cross-sectional forecasting methodology. These are research precedents only; the bottom-up NIFTY weekly-expiry hypothesis remains untested. See the linked [BUP-01 literature review](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/LITERATURE_REVIEW.md).
