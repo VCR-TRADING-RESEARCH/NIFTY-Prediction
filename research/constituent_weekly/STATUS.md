@@ -101,15 +101,18 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_DHAN_STATUS_START -->
 ## Latest Dhan equity preflight
 
-- Recorded at (UTC): 2026-10-31T07:48:06Z (Actions run [41181948126](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181948126))
-- Status: **BLOCKED_PROFILE_HTTP_401**
-- Offline response-validation tests: **10 passed**
-- TOTP token-generation endpoint: HTTP 200, but response contained only `message` and `status` keys and no `accessToken`; the supplied-token fallback was attempted.
-- Profile endpoint: HTTP 401. The code now follows Dhan's documented profile request shape (access-token header only); the issue is not an extra client-id header.
-- Data-plan status: unknown; profile did not authenticate. Equity security-master resolution, daily history and minute bars were not reached (0/0).
-- No raw bars, prices, security IDs, credentials, tokens or provider message values are stored.
-- Next gate: validate the organisation secrets against the correct Dhan account: client ID, 6-digit PIN, TOTP secret (TOTP enabled on that account), and the fallback access token. Regenerate/replace the token after confirming the TOTP configuration; then rerun preflight. Dhan's profile endpoint must return 200 before any price endpoint is queried.
-- This probe does not establish inactive/delisted instrument history, point-in-time membership or index weights.
+- Recorded at (UTC): 2026-10-31T07:59:07Z (Actions run [41182679514](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514))
+- Status: **PARTIAL_OR_BLOCKED** — authentication and historical equity data succeeded; recent-session close coverage remains incomplete.
+- Offline response-validation tests: **11 passed**.
+- TOTP token generation: HTTP 200; a valid access-token field was returned. Token value withheld.
+- Profile: HTTP 200; Data API plan active.
+- Current security master: **5/5** probe symbols resolved.
+- Historical daily history: **PASS**, 22 bars for 2018-01-01 through 2018-02-01.
+- Historical intraday: **5/5 PASS** for 2022-10-31; each returned 374 bars including the 10:00 anchor and 15:25–15:29 close window.
+- Recent intraday: 2026-10-30 returned 359 bars per symbol and 10:00 anchors, but no 15:25–15:29 close bars; targeted close-window requests returned empty arrays (**0/5**).
+- No raw bars, prices, security IDs, credentials, tokens or provider message text are stored.
+- Next gate: probe the latest completed trading session (2026-10-29) for complete session and expiry-close windows; verify whether the 2026-10-30 close gap is date-specific or a Dhan recent-history limitation.
+- This does not establish inactive/delisted instrument history, point-in-time membership or index weights.
 <!-- C1_DHAN_STATUS_END -->
 
 ## C1 resume checkpoint — 2026-10-31
