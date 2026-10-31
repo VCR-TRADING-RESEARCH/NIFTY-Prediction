@@ -147,7 +147,7 @@ No model training until point-in-time membership, numeric free-float weights, se
 
 ## C1 membership sub-gate — 2026-10-31
 
-<badge>MEMBERSHIP PASS WITH LIMITATIONS</badge>
+**MEMBERSHIP PASS WITH LIMITATIONS**
 
 - Added the NIFTY 50-only CC BY 4.0 point-in-time membership subset at `data/constituent_weekly/nifty50_membership_intervals.csv`, with attribution/provenance in [MEMBERSHIP_DATA_PROVENANCE.md](MEMBERSHIP_DATA_PROVENANCE.md).
 - Upstream data has 83 NIFTY 50 intervals, with no weights, and last reconstitution at 2025-09-30. The project snapshot adds the official 2026-09-30 one-for-one change WIPRO → BSE using the 2026-08-10 NSE Indices press release.
