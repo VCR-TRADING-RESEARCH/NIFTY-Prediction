@@ -209,3 +209,10 @@ The existing Dhan implementation refreshes a 24-hour access token and retrieves 
 ## C1 candidate source addition
 
 The licensed CC BY 4.0 NIFTY 50 interval subset is now cached at [data/derived/constituent_weekly/nifty50_membership_intervals.csv](data/derived/constituent_weekly/nifty50_membership_intervals.csv); full attribution, coverage and quality caveats are in [C1_MEMBERSHIP_DATA_ATTRIBUTION.md](research/constituent_weekly/C1_MEMBERSHIP_DATA_ATTRIBUTION.md). The related ownership facts are a possible causal feature source after manifest broadcast-time joining, but they do not establish the official NIFTY free-float IWF. C1 remains blocked on exact weights, the post-Sep-2025 universe and Dhan stock intraday bars.
+
+
+### Latest C1 execution note
+
+- Offline C1 source-audit workflow: [run 41180457400](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41180457400) — SUCCESS, including offline parser tests. No authorised local weight archive was present; this is not a historical IWF pass.
+- Dhan equity preflight workflow and mocked response tests are staged; no Dhan preflight run/result is visible yet. No stock bars or access-token data are claimed.
+- The cached CC BY 4.0 membership subset and attribution are now linked above. It does not contain numeric weights and stops at 2025-09-30.
