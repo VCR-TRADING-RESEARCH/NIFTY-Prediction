@@ -11,10 +11,12 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import pandas as pd
+import pyotp
 import requests
 
-from live_api.app import MASTER_URL, PublicPredictionError, refresh_dhan_token
+from live_api.app import MASTER_URL, PublicPredictionError
 OUTPUT = ROOT / "research" / "constituent_weekly" / "C1_DHAN_PREFLIGHT.json"
+AUTH_URL = "https://auth.dhan.co/app/generateAccessToken"
 PROFILE_URL = "https://api.dhan.co/v2/profile"
 INTRADAY_URL = "https://api.dhan.co/v2/charts/intraday"
 DAILY_URL = "https://api.dhan.co/v2/charts/historical"
@@ -31,21 +33,87 @@ def write_result(data: dict) -> None:
 
 
 
-def acquire_access_token() -> tuple[str, str, str, str]:
-    """Prefer a fresh TOTP token; fall back to a supplied token only after refresh failure."""
+def auth_response_diagnostics(body: object) -> dict:
+    """Return response-shape metadata only; never retain provider field values."""
+    if not isinstance(body, dict):
+        return {"body_type": type(body).__name__, "response_keys": []}
+
+    keys = sorted(str(key) for key in body.keys())
+    data = body.get("data")
+    data_keys = sorted(str(key) for key in data.keys()) if isinstance(data, dict) else []
+    containers = [("top_level", body)]
+    if isinstance(data, dict):
+        containers.append(("data", data))
+
+    candidate = None
+    candidate_container = None
+    candidate_type = "missing"
+    candidate_length = 0
+    for container_name, container in containers:
+        for field in ("accessToken", "access_token"):
+            if field in container:
+                value = container[field]
+                candidate_type = type(value).__name__
+                candidate_length = len(value) if isinstance(value, str) else 0
+                if isinstance(value, str) and len(value) >= 20:
+                    candidate = value
+                    candidate_container = container_name
+                    break
+        if candidate:
+            break
+
+    return {
+        "body_type": "dict",
+        "response_keys": keys,
+        "data_keys": data_keys,
+        "access_token_field_type": candidate_type,
+        "access_token_length": candidate_length,
+        "token_container": candidate_container,
+    }
+
+
+def acquire_access_token() -> tuple[str, str, str, str, dict]:
+    """Prefer fresh TOTP generation; use the configured token only after safe validation."""
     client_id = os.getenv("DHAN_CLIENT_ID", "").strip()
+    pin = os.getenv("DHAN_PIN", "").strip()
+    totp_secret = os.getenv("DHAN_TOTP_SECRET", "").strip()
     fallback_token = os.getenv("DHAN_ACCESS_TOKEN", "").strip()
-    refresh_error = ""
-    try:
-        token, refreshed_client_id = refresh_dhan_token()
-        if not token or "\n" in token or "\r" in token:
-            raise PublicPredictionError("TOTP refresh returned an unusable access token.")
-        return token, refreshed_client_id, "totp_refresh", "SUCCESS"
-    except PublicPredictionError as exc:
-        refresh_error = str(exc)[:180]
-        if fallback_token and client_id and "\n" not in fallback_token and "\r" not in fallback_token:
-            return fallback_token, client_id, "provided_token_fallback", "FAILED_FALLBACK_USED"
-        raise PublicPredictionError(refresh_error or "Dhan token refresh failed and no fallback token is configured.") from None
+    refresh_error = "TOTP credentials are not fully configured."
+    diagnostics: dict = {"status": "NOT_ATTEMPTED"}
+
+    if client_id and pin and totp_secret:
+        try:
+            otp = pyotp.TOTP(totp_secret).now()
+            response = requests.post(
+                AUTH_URL,
+                params={"dhanClientId": client_id, "pin": pin, "totp": otp},
+                timeout=30,
+            )
+            diagnostics = auth_response_diagnostics(response.json())
+            diagnostics["http_status"] = int(response.status_code)
+            if response.ok:
+                body = response.json()
+                candidate = body.get("accessToken") or body.get("access_token") if isinstance(body, dict) else None
+                if isinstance(body, dict) and not (isinstance(candidate, str) and len(candidate) >= 20):
+                    nested = body.get("data")
+                    if isinstance(nested, dict):
+                        candidate = nested.get("accessToken") or nested.get("access_token")
+                if isinstance(candidate, str) and len(candidate) >= 20 and "\n" not in candidate and "\r" not in candidate:
+                    return candidate, client_id, "totp_refresh", "SUCCESS", diagnostics
+                refresh_error = "Token service returned HTTP success but no usable access token; response values withheld."
+            else:
+                refresh_error = f"Token service returned HTTP {response.status_code}; response values withheld."
+        except (requests.RequestException, ValueError) as exc:
+            refresh_error = f"Token refresh request/JSON failed ({type(exc).__name__}); response values withheld."
+        except Exception as exc:
+            refresh_error = f"Token refresh failed ({type(exc).__name__}); response values withheld."
+
+    if fallback_token and client_id and "\n" not in fallback_token and "\r" not in fallback_token:
+        diagnostics["fallback_available"] = True
+        return fallback_token, client_id, "provided_token_fallback", "FAILED_FALLBACK_USED", diagnostics
+
+    diagnostics["fallback_available"] = bool(fallback_token)
+    raise PublicPredictionError(refresh_error)
 
 def resolve_ids(master: pd.DataFrame) -> dict[str, str]:
     columns = {str(c).strip().upper(): c for c in master.columns}
@@ -128,9 +196,10 @@ def main() -> int:
         "intraday_probe": [],
     }
     try:
-        token, client_id, auth_method, refresh_status = acquire_access_token()
+        token, client_id, auth_method, refresh_status, auth_diagnostics = acquire_access_token()
         result["auth_method"] = auth_method
         result["token_refresh_status"] = refresh_status
+        result["token_refresh_diagnostics"] = auth_diagnostics
         headers = {"access-token": token, "client-id": client_id, "Accept": "application/json", "Content-Type": "application/json"}
 
         profile = requests.get(PROFILE_URL, headers=headers, timeout=25)
@@ -143,6 +212,9 @@ def main() -> int:
                     profile = retry
                     result["auth_method"] = "provided_token_fallback"
                     result["token_refresh_status"] = "FRESH_TOKEN_PROFILE_FAILED_FALLBACK_USED"
+                    result["fallback_profile_retry"] = "PASS"
+                else:
+                    result["fallback_profile_retry"] = f"HTTP_{retry.status_code}"
         if not profile.ok:
             result["status"] = f"BLOCKED_PROFILE_HTTP_{profile.status_code}"
             write_result(result)
