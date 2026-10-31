@@ -75,3 +75,7 @@
 - Aligned the profile request with Dhan's documented access-token-only header and added a regression test.
 - Latest Actions run 41181948126 passed 10/10 offline tests; live token generation returned HTTP 200 without an accessToken field and the fallback token was rejected by profile with HTTP 401.
 - Updated STATUS.md, README.md, ERROR_LOG.md and RESEARCH_LOG.md. This is a visible-outcome summary only; credentials and private reasoning are not stored.
+
+2026-10-31 — PR #28 review state updated
+
+- After its mocked Actions checks passed, PR #28 was marked ready for review. GitHub reports `mergeable_state=dirty`, so it was not merged. No direct main-branch bypass was used.
