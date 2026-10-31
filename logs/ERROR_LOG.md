@@ -324,3 +324,25 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed bar gap:** Five-stock sample returned 359 one-minute bars through 15:14 IST on 2026-10-29; 15:25–15:29 bars absent, targeted close-window arrays empty (0/5). The 2022-10-31 five-stock probe passed (5/5).
 - **Impact:** Cannot construct reliable weekly-expiry outcome labels or proceed to C2 until close bars and historical instrument identity are recovered for the full point-in-time universe.
 - **Status:** C1 BLOCKED; current symbol mapping sub-gate PASS, historical alias mapping PARTIAL, recent expiry-close coverage FAIL/PARTIAL. C2 remains gated. No strategy or model result claimed.
+
+## E0032 — 2026-10-31 — Dhan workflow diagnostics were not persisted after autostash
+
+- **Observed:** Live Dhan job logs showed full-universe resolution and price-probe results, but C1_DHAN_PREFLIGHT.json and the C1 status file remained unchanged on the branch.
+- **Root cause:** The workflow staged generated files, then ran git pull --rebase --autostash. The autostash reapplied those changes as unstaged modifications; the subsequent push had no commit to push.
+- **Correction:** Commit staged diagnostics before rebasing, then push the rebased commit. Event-specific concurrency groups were also introduced so protected push runs are not discarded behind pull-request validation runs.
+- **Verification:** The corrected commit step created diagnostics commit 696a8a9 during run [41223923790](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223923790). That run's auth attempt was blocked, so the last successful market-data audit was separately reconstructed from the sanitized logs of run [41223795394](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223795394) and explicitly labelled as such in the C1 report.
+- **Impact:** No raw bars, prices, security IDs, credentials or tokens were lost; the defect affected report persistence only.
+
+## E0033 — 2026-10-31 — Intermittent Dhan token response without accessToken
+
+- **Observed:** Successful live run [41223795394](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223795394) returned a valid fresh token and profile HTTP 200. Subsequent runs [41223827716](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223827716), [41223892930](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223892930) and [41223923790](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223923790) received HTTP 200 responses containing only message/status, with no usable access token. The configured fallback token failed profile authentication with HTTP 401.
+- **Impact:** These failed retries made no market-data calls. Do not treat token-endpoint HTTP 200 as authentication success.
+- **Correction/handling:** Preserve only response shape, status and field metadata; never persist provider message values or credentials. Avoid repeated TOTP retries without a concrete diagnostic reason. The latest failed attempt is preserved in research/constituent_weekly/C1_DHAN_LAST_ATTEMPT.json.
+
+## E0034 — 2026-10-31 — Recent constituent expiry-close bars missing
+
+- **Observed:** On 2026-10-29, all five sampled stocks returned 359 one-minute bars with valid 10:00 anchors and valid OHLC invariants, but no 15:25–15:29 bars. Separate targeted close-window requests returned empty arrays for all five symbols.
+- **Historical control:** All five symbols passed the 2022-10-31 sample, with 374 bars and both required windows.
+- **Impact:** Recent expiry-close coverage is not established. The five-stock panel gate cannot pass on these data.
+- **Next diagnostic:** Inspect Dhan's intraday response pagination/range semantics and compare the requested final window with a separately validated free/official source where permitted. Do not infer the missing close or synthesize prices.
+
