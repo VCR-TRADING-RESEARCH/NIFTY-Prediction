@@ -230,3 +230,11 @@
 - A subsequent full 50-stock 90-day run did not reach data requests because token refresh returned no usable access token and the stored fallback returned HTTP 401. A bounded retry and last-success preservation were added; current validation run 41251346795 was pending at this update.
 - Logged E0041 (special-session QA), E0042 (transient Dhan auth) and E0043 (initial retry newline guard).
 - Only visible outcomes and decisions are logged, not private reasoning or secrets.
+
+
+## 2026-11-01 — Full 50-stock 90-day Dhan coverage check completed
+- User said “Ok proceed”.
+- The expanded Dhan run [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795) completed successfully after the transient auth incident was corrected.
+- Result: 50/50 point-in-time active constituents passed for 2026-06-29–2026-09-26. Each symbol had 23,414 bars over 64 regular sessions, 64/64 anchor and expiry-proxy coverage, no missing bars, no duplicates and valid OHLCV; 1,170,700 aggregate rows.
+- The last-success JSON is now separately preserved. Raw prices and private credentials are not committed.
+- Phase status and full validation report updated. C1 remains NOT PASSED; no model/strategy yet.

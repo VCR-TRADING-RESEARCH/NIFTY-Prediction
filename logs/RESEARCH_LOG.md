@@ -384,3 +384,10 @@
 - A later full 50-stock 90-day request did not execute because a TOTP auth response contained no access token and the fallback token was rejected with HTTP 401 (run 41251079084). The preceding fresh-token run 41251003359 passed 50/50 one-day coverage and 3/3 sample 90-day checks.
 - Added one bounded TOTP retry after the next code window, fixed newline validation, and created C1_DHAN_LAST_SUCCESS.json to preserve the prior passing diagnostics separately from the latest attempt. Live re-validation run 41251346795 is pending at this log timestamp.
 - No raw prices are stored in the public GitHub repo. The full 50-stock/90-day test is one bounded coverage probe, not a five-year panel.
+
+
+## 2026-11-01 — Full NIFTY 50 90-day minute coverage result
+- Successful Dhan workflow [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795): fresh TOTP auth; 23 offline tests passed; 50/50 point-in-time current constituents resolved and passed for 2026-06-29–2026-09-26.
+- Per symbol: 23,414 bars, 64 regular sessions, 64/64 anchor sessions, 64/64 expiry-proxy sessions; 0 missing anchor or expiry sessions; 0 duplicate timestamps; OHLCV invariants passed. Aggregate count: 1,170,700 rows. No raw price data committed.
+- Added C1_DHAN_90D_RANGE_VALIDATION.md and updated phase status/source audit. E0041 (special session misclassification), E0042 (transient Dhan TOTP response) and E0043 (newline validation) are resolved with code/test fixes; latest run succeeded.
+- C1 remains NOT PASSED: only one recent quarter validated; full five-year point-in-time constituent coverage, inactive/legacy security identities, minute corporate-action basis, official weights and index reconstruction are still gated.

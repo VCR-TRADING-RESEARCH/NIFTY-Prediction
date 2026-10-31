@@ -403,3 +403,12 @@ The subsequent status/validator correction was also pushed and validated: [run 4
 - 90-day sample: **3/3** (RELIANCE, TCS, INFY) passed on 2022-10-03–2022-12-30 in run [41250854958](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250854958), with 61 normal sessions, valid anchor/expiry-proxy coverage, no duplicate timestamps and OHLCV invariants passing. The evening-only Diwali Muhurat session is tracked separately.
 - A larger 50-stock/90-day run was attempted but blocked by a transient Dhan token-refresh response and expired fallback token in run [41251079084](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251079084). A bounded retry and last-success preservation were added; current validation is run [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795).
 - No full five-year panel or point-in-time weights series is yet validated. C1 remains NOT PASSED; C2/model training remains gated.
+
+
+## C1 milestone — complete 50-stock 90-day minute coverage check (2026-11-01)
+
+- Dhan preflight run [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795) passed fresh authentication, 23 offline tests and the complete 50-stock 90-day panel slice (2026-06-29–2026-09-26).
+- 50/50 point-in-time security IDs resolved; 50/50 stocks passed. Each symbol returned 23,414 bars over 64 regular sessions, with 64/64 10:00 anchors and 64/64 15:14 expiry-proxy sessions, zero missing bars, zero duplicates and OHLCV invariants passing (1,170,700 aggregate rows).
+- The three-stock older 2022 90-day sample passed 3/3 in [run 41250854958](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250854958); the one-day current universe passed 50/50 in [run 41249642409](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642409).
+- Full result: [C1 Dhan 90-day validation report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_DHAN_90D_RANGE_VALIDATION.md).
+- C1 remains NOT PASSED: this is one recent quarter, not a five-year panel. Legacy/inactive constituent history, corporate-action treatment for minute data, official authorised weights and basket-to-NIFTY reconstruction remain unresolved. No model or strategy has been trained or claimed.

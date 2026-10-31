@@ -447,3 +447,13 @@ The protected live Dhan run is no longer awaiting manual dispatch. It was initia
 - Symptom: 22 tests passed and one test failed because a fallback token containing a newline was not rejected.
 - Root cause: the first retry implementation used a double-escaped newline check.
 - Correction: restored direct newline/carriage-return checks and reran the suite in [https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795]; result pending at time of log entry.
+
+
+## E0041 — resolution (2026-11-01)
+Special-session misclassification fixed by separating regular 09:15–15:30 sessions from non-standard evening-only dates. Verified with run [41250854958](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250854958): RELIANCE, TCS and INFY all passed 61/61 regular sessions with anchor/expiry coverage.
+
+## E0042 — resolution (2026-11-01)
+The transient TOTP no-token response and expired fallback-token failure from run [41251079084](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251079084) did not recur on run [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795): fresh token obtained (HTTP 200, access token present), Dhan profile/data plan checks passed and the complete 50-stock 90-day test completed. A single bounded TOTP retry is implemented.
+
+## E0043 — resolution (2026-11-01)
+The double-escaped fallback-token newline guard was corrected in commit c8253e9. Confirmed by run [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795): all 23 offline tests passed, including rejection of fallback tokens containing newline characters.
