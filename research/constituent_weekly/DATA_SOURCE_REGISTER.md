@@ -56,3 +56,28 @@ Combine sources only after matching stable identifiers, timestamps and adjustmen
 - [ ] Realised weighted basket reconciles with official NIFTY within a tolerance frozen before modelling.
 - [ ] Data rights reviewed; no raw private/broker data committed.
 - [ ] Cache keys, hashes, provenance and exclusions retained.
+
+
+## C1 weight-report discovery (2026-10-31)
+
+The official [NSE Indices monthly reports page](https://niftyindices.com/reports/monthly-reports) lists “Indices Market Capitalisation & Weightage (zip)” and “Market Capitalisation, Weightage, Beta (Zip)”. The official [NSE India all-reports archive](https://www.nseindia.com/all-reports) separately lists “Market Capitalisation, Weightage, Beta for NIFTY 50 & NIFTY Next 50”, equity UDiFF bhavcopy, historical index data, security-wise price/volume and daily/monthly report archives. These are the preferred source paths. A page link alone does not establish historical file coverage or schema.
+
+A page extraction exposed a current-style file path using the mcwb_*.zip naming convention under the NSE Indices monthly report directory. The chat runtime could not fetch the ZIP payload, so no row counts, data columns or historical month coverage are asserted. The Actions workflow records the real retrieval status, URL, archive members, CSV headers, row counts and SHA-256 when available.
+
+## Third-party historic weights candidate — restricted and diagnostic only
+
+The Hugging Face dataset AMP4010/Historical_Nifty_50_Constituent_Weights_20Y describes 216 monthly/event observations from 2008-01 through 2025-08 with 100 ticker columns. The data card says it derives from NSE Indices reports but includes extrapolation for some event changes, static-between-snapshot assumptions and normalisation to 100%; it is licensed CC-BY-NC-SA 4.0. It is not accepted as primary data and must not be used for commercial deployment. A direct chat-runtime download attempt failed; no local raw data was retrieved. Use the data card only for discovery and, subject to licence, an optional non-commercial sanity check.
+
+## Daily point-in-time weight derivation
+
+Between official snapshots, a daily weight may be algebraically drifted only under the explicit fixed-universe, fixed-index-shares and fixed-IWF assumption:
+
+w_i(t) = [w_i(t0) × P_i(t) / P_i(t0)] / Σ_j [w_j(t0) × P_j(t) / P_j(t0)]
+
+This is a hypothesis to validate, not an approved input yet. A rebalance, IWF change, split, bonus, rights, merger, demerger, spin-off, divisor/index-share change or security-identity event resets the reconstruction or invalidates the affected cycle until the official treatment is applied. Check report publication time, not just as-of date; a report published after the 10:00 forecast is future information.
+
+The audit must compare reconstructed weights against the next official snapshot, report top-weight and total absolute deviations, and then compare the realised weighted constituent basket with the official NIFTY price-return index. Tolerance must be registered before model fitting.
+
+## Source-code review of the membership candidate
+
+The BKKB20 reconstruction uses circular-derived ticker snapshots and audit warnings, not numerical free-float weights. The reviewed query script has a hard-coded Windows path and derives snapshot keys from a parsed circular date; confirm that the date is the index effective date rather than publication/announcement date. Alias mappings that collapse predecessors and successors (for example HDFC/HDFCBANK and MINDTREE/LTIM) are not sufficient for point-in-time security identity. The current-member CSV has 50 symbols, but is not date-certified for the forecast history. Preserve distinct ISIN/security IDs and validity dates before reconstructing past membership.
