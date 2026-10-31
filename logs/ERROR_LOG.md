@@ -301,3 +301,9 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Replace historical TMPV alias with TATAMOTORS to 2025-10-23; start TMPV on 2025-10-24; add the dummy interval 2025-10-14 to 2025-11-17 with `market_data_required=FALSE`. Update count expectations to 50 for 102 month-ends and 51 only for 2025-10-31.
 - **Impact:** The earlier all-50 cardinality claim is superseded. Previous Actions run 41184751617 validated only the earlier four-test revision. New six-test workflow run is pending. No model or result used the flawed timeline.
 - **Status:** CORRECTED IN DATA; POST-CORRECTION CI PENDING. Other C1 IWF/security/bar-coverage gates remain blocked.
+
+## E0030 — 2026-10-31 — Membership CSV serialization and audit sequencing caused CI failures
+- **Runs:** [41184902797](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41184902797) and [41184934278](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41184934278), both failed in the membership test step.
+- **Observed:** An unquoted comma inside the DUMMYTATAM `notes` field was parsed as an extra CSV column, shifting `member_type` / `market_data_required`. The second assertion saw the earlier 84-row machine audit because the test revision triggered before the updated audit JSON had landed.
+- **Correction:** Re-serialized the dummy row with valid CSV quoting and a comma-free note; verified 86 data rows × 11 columns, 85 unique symbols and no nonblank weightage. Ensured the updated audit JSON was committed before the next path-triggered test run.
+- **Status:** Corrected in branch. Post-fix run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) is queued; keep this item open until it succeeds. No market/model data was changed or used.
