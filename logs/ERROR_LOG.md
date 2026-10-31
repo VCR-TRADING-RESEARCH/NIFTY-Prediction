@@ -301,3 +301,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Repository check:** Latest main commit and branch state were readable. BUP-01 membership workflow run 41185169548 completed successfully; six tests passed. The conversation transport error is not evidence that GitHub Actions or a repository commit failed.
 - **Recovery:** Reconcile GitHub state before retrying; do not replay successful writes or regenerate Dhan tokens without a concrete need. Record this separately from market-data/model errors.
 - **Research impact:** No change to empirical findings or acceptance gates. Membership sub-gate PASS WITH LIMITATIONS; overall C1 BLOCKED; no C2 model or strategy exists.
+
+
+## E0030 — 2026-10-31 — Remaining C1 source/rights gate not cleared
+- **Observed:** Official NSE Indices documentation identifies historical constituent identifiers, market capitalisation, weights and prices as subscription data. Public alternatives located in this bounded search are not sufficient: one HF dataset is CC BY-NC-SA 4.0; one GitHub dataset explicitly uses equal-weighted/binary approximations.
+- **Observed:** Dhan's official v2 docs limit minute history requests to 90 days and describe five-year intraday history for active instruments; they do not establish coverage for delisted/inactive constituents.
+- **Impact:** C1 cannot pass on current evidence. This is a data-rights and coverage gate, not a modelling or compute failure.
+- **Correction:** Keep approximate/non-commercial weights out of the trading research pipeline; do not scrape NSE without permission; do not proceed to C2 until exact weights, identities/corporate actions and full constituent price coverage are independently verified.
+- Sources: https://www.nseindia.com/static/nse-indices/index-data-subscription ; https://dhanhq.co/docs/v2/historical-data/ ; https://huggingface.co/datasets/AMP4010/Historical_Nifty_50_Constituent_Weights_20Y ; https://github.com/vishalvx/nifty-indices-datasets.
