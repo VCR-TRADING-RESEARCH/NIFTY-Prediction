@@ -202,7 +202,16 @@ def main() -> int:
     result["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
     write_result(result)
     print(f"Dhan equity preflight status: {result['status']}")
+    print(f"Data API plan active: {result.get('data_plan_active')}")
+    print(f"Current symbols resolved: {len(result.get('resolved_probe_symbols', []))}; unresolved: {len(result.get('missing_probe_symbols', []))}")
+    print(f"Daily history probe: {result.get('daily_history_probe', {}).get('status', 'NOT_RUN')}; bars={result.get('daily_history_probe', {}).get('bar_count', 0)}")
     print(f"Intraday windows passing: {result.get('intraday_probe_passed', 0)}/{result.get('intraday_probe_expected', 0)}")
+    for probe in result.get("intraday_probe", []):
+        print("PROBE", probe.get("symbol"), probe.get("date"), probe.get("status"),
+              "bars=", probe.get("bar_count", 0),
+              "anchor=", probe.get("anchor_window_bars", 0),
+              "expiry_close=", probe.get("expiry_close_window_bars", 0),
+              "ohlc_ok=", probe.get("ohlc_volume_invariants_pass"))
     print("No raw bars, prices, security IDs, tokens, PINs or TOTP values were saved or logged.")
     return 0
 
