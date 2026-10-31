@@ -274,3 +274,9 @@
 - Found a Hugging Face historical weight dataset with CC BY-NC-SA 4.0 licence and monthly coverage 2008-01 to 2025-08. Non-commercial terms make it unsuitable as a default input to a trading workflow without explicit licence review/permission. Source: https://huggingface.co/datasets/AMP4010/Historical_Nifty_50_Constituent_Weights_20Y.
 - Found a public GitHub historical constituent dataset that explicitly describes its weights as equal-weighted or binary approximations, not official index weights. It cannot satisfy exact IWF reconstruction. Source: https://github.com/vishalvx/nifty-indices-datasets.
 - **Decision:** free-source search has not established a rights-compatible, official, numerical historical IWF plus full identity/corporate-action series. Do not substitute equal weights, approximate weights or ownership roll-ups. C1 remains BLOCKED; no C2 panel/model or strategy. Continue only if an appropriately licensed dataset/permission is available or another rights-compatible source is verified.
+
+
+## 2026-10-31 — Dhan-first continuation approved
+- User confirmed “Dhan” as the available data route. Updated C1 direction to use the existing Dhan Data API subscription as primary source for constituent price data.
+- Next work is a cache-first, bounded Dhan security-ID and historical coverage inventory for the point-in-time constituent universe, explicitly testing delisted/inactive instruments, forecast-time anchors and expiry-close windows. Authentication calls must be serialized; avoid repeated TOTP refreshes.
+- Clarification preserved: Dhan price access does not prove availability of official historical free-float IWF. We keep exact weights and security/corporate-action mapping as independent gates; C1 remains blocked and C2 remains gated.
