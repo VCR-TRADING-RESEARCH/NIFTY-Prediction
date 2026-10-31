@@ -149,3 +149,12 @@ Decision: **exploratory candidate only; not admitted to the canonical C1 dataset
 NSE Indices' March 2026 NIFTY 50 white paper, Exhibit 26, publishes all 50 constituent weights as of 2026-02-27. The 50 published two-decimal values were transcribed to [nifty50_official_weights_2026-02-27.csv](../../data/constituent_weekly/nifty50_official_weights_2026-02-27.csv). Their rounded sum is 100.02%, so values are kept exactly as published, without normalisation.
 
 This materially improves the official cross-check evidence: we now have a licensed-authority source for a single complete date. It does **not** supply the missing 2025-09 onward continuous historical series, the daily publication timestamps, or the earlier 2018–2025 exact weights. It is a reference snapshot, not a substitute for the official monthly/daily IWF history. Full source limitations and the PDF rendering limitation are recorded in [NIFTY50_OFFICIAL_WEIGHT_SNAPSHOT_NOTE.md](../../data/constituent_weekly/NIFTY50_OFFICIAL_WEIGHT_SNAPSHOT_NOTE.md).
+
+
+## Official monthly weights archive and access terms — 2026-11-01
+
+The official NSE Indices monthly "Market Capitalisation, Weightage, Beta" ZIP family was located. Third-party documentation reports 159 month-end files from June 2013 onward; public research code documents the `mcwb_{mon}{yy}.zip` filename pattern. These figures and the filename convention are a discovery lead, not a direct download or validation in this project.
+
+NSE's research-data policy includes historical reports/index data in its research/analysis basket, while Nifty Indices Terms of Use separately restrict systematic/automated collection without express written consent. The scope of permission for recurring automated retrieval, caching and subsequent use for this research-to-personal-trading workflow is not clear enough to proceed. **No ZIP was requested, downloaded or parsed in this step.**
+
+Automated collection remains disabled pending express written consent or a suitable licence. See [C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md](C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md). The 2026-02-27 official white-paper snapshot is a single-date reference only; the third-party monthly weights file remains CC BY-NC-SA, provisional and non-commercial. C1 remains NOT PASSED.
