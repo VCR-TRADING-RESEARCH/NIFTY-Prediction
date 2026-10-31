@@ -239,3 +239,11 @@
 ## Dhan authentication attempt — run 41145607225
 - Status: FAILED or incomplete. The public archive route will still be attempted.
 - Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.
+
+
+## E0024 — 2026-10-31 — Dhan equity preflight blocked at profile authentication
+- **Run:** [41181684573](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181684573).
+- **Observed:** The Dhan equity preflight workflow completed successfully and its nine offline response-validation tests passed. The live `/v2/profile` request returned HTTP 401 after the configured TOTP refresh/fallback path.
+- **Impact:** No active data-plan confirmation, scrip-master equity ID resolution, 2018 daily-history request or stock intraday bars were obtained. This is not evidence that the stock historical endpoint lacks coverage; the request was blocked before those endpoints.
+- **Correction/next step:** Keep the workflow fail-closed. Verify token/client binding and account/data-plan entitlement against Dhan's current authentication/profile requirements. Do not infer or hard-code security IDs, and do not attempt historical equity requests until profile authentication succeeds.
+- **Security:** No credential, token, PIN, TOTP or raw provider response was copied to the repository.
