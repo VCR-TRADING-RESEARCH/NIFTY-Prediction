@@ -257,3 +257,11 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Protected Dhan run [41249642409](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642409) succeeded with **50/50** point-in-time current-universe security IDs resolved and **50/50** one-minute data QA checks passing for 2026-10-29. Each passing sample had four 10:00–10:03 bars, one 15:14 expiry-proxy bar, 359 bars for the session and OHLCV invariants passing. This is a one-session coverage probe only, not full historical data or an expiry-return panel.
 - New public source candidates: HF original dataset declares MIT but source feed provenance is unverified and its README limits intended use to research/education/backtesting; it is not admitted. NSE Indices March 2026 whitepaper Exhibit 26 gives a full 50-name 2026-02-27 weight snapshot; 2dp rounded weights sum to 100.02%, preserved as published in a separate reference CSV. It does not close the historical monthly/daily weight gap.
 - C1 remains **NOT PASSED**: full historical point-in-time minute panel, official time-series weights, corporate-action security mapping and reconstructed-index tolerance remain outstanding. C2/model training remains gated.
+
+
+## Official monthly archive permission gate — 2026-11-01
+
+- Official monthly "Market Capitalisation, Weightage, Beta" ZIP family identified; independent documentation reports 159 monthly files from June 2013 onward and a public code example documents the `mcwb_{mon}{yy}.zip` filename pattern.
+- NSE research-data policy lists historical reports/index data for research/analysis, but Nifty Indices Terms separately restrict automated collection without express written consent. The permissions interaction for recurring retrieval and caching is unresolved.
+- No archive ZIP was fetched or parsed. Automated retrieval remains disabled until written permission or a suitable licence is confirmed.
+- See [C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md](C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md). C1 NOT PASSED; C2 gated.
