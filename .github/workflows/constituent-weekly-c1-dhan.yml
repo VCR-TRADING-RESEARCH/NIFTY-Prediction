@@ -1,0 +1,62 @@
+name: BUP-01 Dhan equity data preflight
+
+on:
+  push:
+    branches:
+      - "phase/constituent-weekly-outcomes-c1-data"
+    paths:
+      - "scripts/constituent_weekly/dhan_equity_preflight.py"
+      - "scripts/constituent_weekly/update_c1_dhan_status.py"
+      - "tests/test_constituent_weekly_dhan_preflight.py"
+      - ".github/workflows/constituent-weekly-c1-dhan.yml"
+      - "live_api/app.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bup01-c1-dhan-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  dhan-equity-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout C1 data branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install project and live API dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r live_api/requirements.txt pytest
+      - name: Run offline Dhan response-validation tests
+        run: python -m pytest -q tests/test_constituent_weekly_dhan_preflight.py
+      - name: Test current Dhan profile, security master and equity candles
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+        run: python scripts/constituent_weekly/dhan_equity_preflight.py
+      - name: Update sanitized C1 Dhan status
+        if: always()
+        run: python scripts/constituent_weekly/update_c1_dhan_status.py
+      - name: Commit compact Dhan preflight evidence only
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/constituent_weekly/C1_DHAN_PREFLIGHT.json research/constituent_weekly/STATUS.md
+          if ! git diff --cached --quiet; then
+            git commit -m "Record BUP-01 C1 Dhan equity preflight"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
