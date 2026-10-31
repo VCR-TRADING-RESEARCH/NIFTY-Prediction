@@ -288,3 +288,12 @@
 - PR validation run [41223379333](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223379333) completed SUCCESS; test log confirms 13 passed in 2.37s. Live Dhan step was skipped by the PR safety guard. No new market-data calls were made.
 - Next live gate: manually dispatch .github/workflows/constituent-weekly-c1-dhan.yml on phase/constituent-weekly-outcomes-c1-data; this is the existing secret-backed workflow and should run only after the code review test passed. Latest successful live probe remains 41182679514 (five symbols only, partial recent expiry-close coverage).
 - Overall C1 remains BLOCKED; no C2 panel/model or trading strategy is authorised.
+
+## 2026-10-31 — Live Dhan full-universe scrip-master audit and expiry-close probe
+- Protected live workflow [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41224048773) completed SUCCESS. Offline validation: 13 tests passed. TOTP refresh returned an access token (length only logged), profile succeeded, Data API plan active.
+- Current active NIFTY 50 symbols: **50/50** resolve in the current Dhan scrip master.
+- Historical tradable membership symbols/aliases: **79/84** resolve in the current master. Five absent current-master names: HDFC, JPASSOCIAT, MCDOWELL-N, RANBAXY, TATAMOTORS. These are unresolved current-master identifiers; they must be mapped using dated corporate-action/successor/security-ID records. Do not infer historical Dhan price unavailability solely from absence in today's master.
+- Dhan historical daily probe: 22 bars for RELIANCE, 2018-01-01 through 2018-02-01. Five sample stocks passed 2022-10-31 minute-data checks: 374 bars each, 10:00 anchor and 15:25–15:29 close window.
+- For 2026-10-29, all five sample stocks returned 359 minute bars and a valid 10:00 anchor but stopped at 15:14 IST. Targeted 15:20–15:30 requests returned empty arrays for all five; expiry-close pass **0/5**. This is the immediate data blocker for leakage-safe weekly-expiry outcome labels.
+- The workflow's diagnostic commit step was corrected to commit the sanitized JSON/status before pushing; latest sanitized report is committed in C1 branch. No raw bars, prices, security IDs or credentials are persisted.
+- Decision: current symbol resolution sub-gate PASS (50/50); historical symbol resolution PARTIAL (79/84); sample historical OHLCV PASS for 2022; recent close-bar sub-gate FAIL/PARTIAL (0/5). Overall C1 remains BLOCKED; C2 not authorised.
