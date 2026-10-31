@@ -124,3 +124,9 @@
 ## 2026-10-31 — BUP-01 membership validation automation
 - Added `bup01-c1-membership-tests.yml` with automatic push/path and pull-request triggers plus a manual Actions dispatch button. It runs only local membership integrity tests and does not call Dhan or scrape NSE.
 - Added an audit-JSON consistency test. The code and data files are committed on the C1 branch; workflow outcome must be inspected before labelling CI as passed.
+
+## 2026-10-31 — BUP-01 Tata Motors identity correction
+- Further audit found that the historical membership dataset carried `TMPV` back to 2014, although NSE circular NSE/FAOP/70882 makes the TATAMOTORS -> TMPV symbol change effective 2025-10-24.
+- Official NSE Indices demerger releases also add zero-price `DUMMYTATAM` on 2025-10-14 and remove it effective 2025-11-17. Corrected the project membership CSV, provenance, machine audit and tests. The placeholder is explicitly flagged non-tradable and excluded from the stock panel.
+- Correct month-end cardinality: 50 entries at 102 of 103 snapshots and 51 on 2025-10-31 due the official temporary placeholder. Earlier 103/103 all-50 statement was corrected and logged.
+- Previous Actions run 41184751617 covered the earlier four-test revision only. A new six-test run is pending. Overall C1 remains blocked; no model training done.
