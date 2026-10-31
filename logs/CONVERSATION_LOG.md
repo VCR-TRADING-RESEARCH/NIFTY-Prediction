@@ -133,3 +133,9 @@
 - Recovery action: checked the main README, main research/error/conversation logs, available branches, BUP-01 C1 status and membership workflow definition. Verified Actions run 41185169548 directly; it completed successfully with six tests passing.
 - Decision: do not repeat completed membership work or trigger another Dhan token request. Membership sub-gate PASS WITH LIMITATIONS; overall C1 BLOCKED; C2 remains gated by licensed exact IWF, security identity/corporate actions and complete constituent price coverage.
 - Only visible conversation statements and auditable decisions are recorded; hidden private reasoning is not stored.
+
+
+## 2026-10-31 — Recovery continuation: bounded C1 source audit
+- After verifying membership CI success, performed a bounded search of official NSE Indices, Dhan documentation, Hugging Face and public GitHub datasets for exact historical IWF, identifiers and constituent price coverage.
+- Found official historical weights/identifiers are a licensed NSE Indices subscription product; the HF dataset is CC BY-NC-SA 4.0; the GitHub alternative explicitly uses equal-weighted/binary approximations; Dhan minute history is documented for active instruments, not guaranteed inactive/delisted constituents.
+- Updated main README, research log and error log with the source audit and retained C1 BLOCKED / C2 gated. No Dhan token refresh, market-data call, panel build or model fit was initiated.
