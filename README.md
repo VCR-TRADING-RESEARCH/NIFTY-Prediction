@@ -226,3 +226,18 @@ The existing Dhan implementation refreshes a 24-hour access token and retrieves 
 
 
 BUP-01 literature review has been extended to include recent component-based aggregate-market research, intraday constituent-to-index prediction, Indian momentum/reversal/liquidity evidence, and cross-sectional forecasting methodology. These are research precedents only; the bottom-up NIFTY weekly-expiry hypothesis remains untested. See the linked [BUP-01 literature review](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/LITERATURE_REVIEW.md).
+
+
+### BUP-01 C1 licensed historical-membership / ownership audit (2026-10-31)
+
+A CC BY 4.0 point-in-time membership dataset has now been reviewed and its NIFTY 50-only interval subset is cached on the C1 branch:
+- [Cached membership intervals (83 rows)](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/data/derived/constituent_weekly/nifty50_membership_intervals.csv)
+- [Attribution and detailed audit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_MEMBERSHIP_DATA_ATTRIBUTION.md)
+
+The source has 83 intervals / 82 distinct symbols, with 50 records marked as snapshot-floor reconstructions and 33 backed by press-release events. There were 93/93 monthly 15th-day cardinality checks of 50 active intervals from Jan-2018 to Sep-2025. Its latest NIFTY 50 event is **30-Sep-2025**, and it has no numeric historical weights. The publisher's own validation report flags major pre-2018 reconstruction drift. This is a candidate point-in-time universe, not a certified October-2026 universe.
+
+The same CC BY 4.0 source has quarterly shareholding roll-ups. Matching historical NIFTY50 constituents yields 2,584 records across 78 symbols; quarter-end coverage ranges from 37/50 in Mar-2018 to full 50/50 from Sep-2023 through Sep-2025. Filings have a separate broadcast timestamp in their manifest, which must be joined before any ownership feature is used. The parsed fields do not contain the detailed strategic holdings required for official IWF; **do not use 100% minus promoter percentage as an index weight**.
+
+**C1 remains BLOCKED:** point-in-time numeric free-float weights, the 2025-10 to 2026-10 constituent update, exact corporate-action/security identity and Dhan constituent-equity bars are not yet validated. The ownership data is a feature candidate, not a replacement for the weights gate.
+
+**Shared Dhan auth fix:** [Draft PR #28](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/28) corrects the scheduled token-refresh helper from GET to POST and adds mocked tests. Its GitHub Actions execution has not yet been observed.
