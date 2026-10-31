@@ -159,3 +159,13 @@
 - Live findings: current active NIFTY 50 resolution 50/50; historical membership aliases 79/84 (missing current-master symbols HDFC, JPASSOCIAT, MCDOWELL-N, RANBAXY, TATAMOTORS); daily 2018 probe PASS; 2022-10-31 minute bars 5/5 PASS; 2026-10-29 minute bars stop at 15:14 and targeted expiry-close 0/5.
 - One preceding attempt failed because TOTP returned HTTP 200 without accessToken and fallback profile returned 401; later refresh succeeded. A workflow defect that staged but did not commit diagnostics was corrected; latest run committed sanitized JSON and phase status.
 - Decision: do not keep refreshing tokens unnecessarily. Next research task is resolve historical symbol aliases and investigate missing recent expiry-close bars using documented Dhan parameters/free alternative sources; no C2 model until complete universe labels/weights pass.
+
+## 2026-10-31 — User asked assistant to run protected Dhan workflow
+
+- User instructed: “Run it yourself as you were doing before.”
+- Triggered the C1 Dhan workflow through the branch's existing push trigger rather than asking the user to click the manual dispatch button.
+- Successful live run [41223795394](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223795394): 13 offline tests passed; fresh TOTP authentication/profile and active Data API plan passed; current universe resolved 50/50; historical aliases 79/84; five-stock daily-history sample passed; 2022 intraday sample 5/5 passed; recent 2026 expiry-close sample 0/5.
+- Later TOTP retries returned HTTP 200 without an access token and fallback profile HTTP 401. No price calls occurred in those retries. No secrets or token values were requested or recorded.
+- Diagnosed and fixed the workflow's generated-report persistence bug. The first workflow revision's autostash/rebase sequence left generated files unstaged. The corrected workflow commits diagnostics before rebasing.
+- Preserved the successful run's sanitized results and the later failed auth-only attempt separately in the C1 branch. Current status remains C1 BLOCKED; C2 is not authorised until historic IDs, weights, corporate actions and full price/close coverage pass.
+
