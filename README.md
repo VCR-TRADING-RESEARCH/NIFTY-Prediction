@@ -258,3 +258,15 @@ The licensed CC BY 4.0 NIFTY 50 interval subset is now cached at [data/derived/c
 - Hardened workflow so pull-request checks run offline tests only, Dhan calls are serialized, and editing the workflow file alone does not consume another TOTP token. Offline tests passed 11/11 on the last live preflight.
 - Dhan official guidance states access tokens are valid for 24 hours, API-key/secret authentication is the intended automation route, and at most five active tokens may be retained simultaneously. Avoid repeated token-generation loops. Sources: https://dhanhq.co/docs/v2/authentication/ and https://dhan.co/support/platforms/dhanhq-api/how-many-access-tokens-can-i-generate-for-my-dhan-account/.
 - C1 remains BLOCKED: recent-session close coverage and point-in-time index data/rights gates remain unresolved. No constituent model or trading result exists.
+
+## BUP-01 constituent-level weekly expiry research
+
+**Current status (2026-10-31): C0 PASS; C1 BLOCKED / RIGHTS-DEPENDENT.** No constituent panel, stock model, bottom-up forecast or trading strategy has been validated. C2 model work remains gated until point-in-time membership, official numerical free-float weights, security/corporate-action mappings and full stock-bar coverage pass.
+
+- [BUP-01 status](research/constituent_weekly/STATUS.md)
+- [BUP-01 source register](research/constituent_weekly/DATA_SOURCE_REGISTER.md)
+- [BUP-01 research log](logs/RESEARCH_LOG.md)
+- [BUP-01 error log](logs/ERROR_LOG.md)
+- [BUP-01 visible conversation log](logs/CONVERSATION_LOG.md)
+
+Official methodology requires free-float IWF and specified strategic-holding exclusions. NSE website terms restrict automated collection and reuse, so automated website scraping remains disabled pending permission/licence confirmation. Dhan intraday documentation covers active instruments only; inactive/delisted coverage still requires proof. No additional Dhan token refresh was attempted during this update.
