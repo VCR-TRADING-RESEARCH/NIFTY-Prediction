@@ -244,3 +244,16 @@ The same CC BY 4.0 source has quarterly shareholding roll-ups. Matching historic
 
 
 **BUP-01 latest CI note (2026-10-31):** the C1 offline source-audit workflow passed in [run 41180457400](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41180457400). This confirms the offline validator and report handling only; no licensed local weight archive or historical IWF was present. The new Dhan equity preflight is staged but no execution is yet visible. A separate shared authentication correction is in [draft PR #28](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/28). C1 remains blocked on exact weights, current membership after 2025-09-30 and verified stock 1-minute coverage.
+
+## BUP-01 constituent weekly-expiry research — latest phase status (2026-10-31)
+
+The active research phase is [phase/constituent-weekly-outcomes-c1-data](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c1-data). C0 governance is PASS. C1 remains **BLOCKED**; no bottom-up stock panel, constituent model, index forecast or trading strategy has been validated.
+
+- [C1 status and gates](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md)
+- [C1 source register](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/DATA_SOURCE_REGISTER.md)
+- [C1 source feasibility](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_SOURCE_FEASIBILITY.md)
+- [C1 error log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/ERROR_LOG.md)
+
+Latest Dhan preflight [run 41181948126](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181948126): 10/10 offline tests passed; live TOTP token endpoint returned HTTP 200 without an accessToken field and profile rejected the fallback token with HTTP 401. No stock-equity price request was reached. The user-held Dhan client ID/PIN/TOTP/token secrets need verification before further data calls. Dhan v2 docs: https://dhanhq.co/docs/v2/authentication/.
+
+The open weight-source sweep found no permissively reusable official historic IWF series. The HF candidate is CC BY-NC-SA 4.0 and not accepted for this trading workflow; other GitHub candidates are binary or best-effort membership reconstructions, not numeric official weights. No stock model training is authorised until C1 data/rights/identity/weight/basket gates pass.
