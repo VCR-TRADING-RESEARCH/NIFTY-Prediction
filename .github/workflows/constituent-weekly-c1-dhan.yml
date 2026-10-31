@@ -22,7 +22,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: bup01-c1-dhan-${{ github.ref }}
+  group: bup01-c1-dhan-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:
@@ -49,6 +49,7 @@ jobs:
       - name: Run offline Dhan response-validation tests
         run: python -m pytest -q tests/test_constituent_weekly_dhan_preflight.py
       - name: Test current Dhan profile, security master and equity candles
+        if: github.event_name != 'pull_request'
         env:
           DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
           DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
@@ -56,10 +57,10 @@ jobs:
           DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
         run: python scripts/constituent_weekly/dhan_equity_preflight.py
       - name: Update sanitized C1 Dhan status
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         run: python scripts/constituent_weekly/update_c1_dhan_status.py
       - name: Publish sanitized result to job summary
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         run: |
           if [ -f research/constituent_weekly/C1_DHAN_PREFLIGHT.json ]; then
             cat research/constituent_weekly/C1_DHAN_PREFLIGHT.json >> "$GITHUB_STEP_SUMMARY"
@@ -69,7 +70,7 @@ jobs:
             echo "The phase status was updated; no token, security ID or raw price values are included." >> "$GITHUB_STEP_SUMMARY"
           fi
       - name: Commit compact Dhan diagnostics only
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
