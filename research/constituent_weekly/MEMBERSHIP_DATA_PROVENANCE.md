@@ -52,7 +52,7 @@ Intervals are half-open: a row is active on date (d) when `valid_from <= d < val
 - Upstream documentation states NIFTY 50 membership is reliable from 2018-04 onward; earlier rows have known snapshot-floor / walk-back drift. Exclude pre-2018-04 rows from confirmatory modelling unless independently validated.
 - Project output contains **86 interval rows and 85 distinct symbols** after the above official corrections.
 - The offline regression checks 103 month-end dates from 2018-04-30 through 2026-10-31: 102 snapshots contain 50 unique members; the 2025-10-31 snapshot contains 51 entries because the official temporary zero-price dummy was active. All 103 dates match the documented expected cardinality.
-- GitHub Actions run `41184751617` completed successfully: **6 tests passed**. It is an offline integrity check, not independent verification of every historical membership event or a market-data validation.
+- The earlier Actions run `41184751617` passed the pre-correction four-test suite only. After the Tata identity/dummy update and CSV quoting correction, Actions run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) completed successfully: **6 tests passed**. This is an offline integrity check, not independent verification of every historical membership event or market-data validation.
 - The upstream validation report records curated transition checks passing but discloses pre-2018 drift. Keep these limitations attached to the data.
 - No numerical historical free-float weights, ISIN history, or complete point-in-time security-ID mapping is supplied here. C1 remains blocked until these separate requirements and constituent price coverage pass.
 
