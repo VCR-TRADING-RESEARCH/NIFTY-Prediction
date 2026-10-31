@@ -68,3 +68,10 @@
 - Reviewed existing C1 plan/status, source register, feasibility note, README, research/error logs, and the latest relevant GitHub Actions evidence.
 - Reported and recorded: offline source audit run 41181684637 passed; Dhan preflight run 41181684573 had 9/9 offline tests pass but live profile HTTP 401; token-refresh PR #28 checks pass but PR remains draft/open; licensed membership candidate is not a weight series and is stale after 2025-09.
 - Updated C1 status and README. No private reasoning or credentials are stored; this log records the visible decision and outcomes only.
+
+2026-10-31 — Dhan profile authentication diagnostic follow-up
+
+- Continued the BUP-01 C1 resume after the Dhan preflight returned HTTP 401.
+- Aligned the profile request with Dhan's documented access-token-only header and added a regression test.
+- Latest Actions run 41181948126 passed 10/10 offline tests; live token generation returned HTTP 200 without an accessToken field and the fallback token was rejected by profile with HTTP 401.
+- Updated STATUS.md, README.md, ERROR_LOG.md and RESEARCH_LOG.md. This is a visible-outcome summary only; credentials and private reasoning are not stored.
