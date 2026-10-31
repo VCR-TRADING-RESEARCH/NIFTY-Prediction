@@ -219,3 +219,10 @@
 - C1 status: IN PROGRESS / RIGHTS-BLOCKED. No point-in-time numeric historic weights with cleared reuse rights, certified membership ledger, constituent stock API data, basket reconciliation, panel or model exists.
 - No Dhan constituent equity request has been completed. The existing parent integration is index-only; Dhan equity entitlement and inactive historical instrument coverage remain unverified.
 - Outstanding administrative cleanup: issue #27 asks the maintainer to delete raw artifact 13033492871 from run 41177903446, and any related cache if accessible.
+
+
+## 2026-10-31 — BUP-01 literature review extension
+
+- Extended the BUP-01 literature review with recent component-based aggregate-market forecasting and cross-sectional return-prediction studies: Ellington, Pybis & Zheng (2026); Huddleston, Liu & Stentoft (2023); Chui et al. (2023); Chen et al. (2025); Goyal & Jegadeesh (2018); Han et al. (2024).
+- Key design implication: separate cross-sectional stock-ranking skill from aggregate NIFTY direction. Component forecasts may contribute to aggregate forecasts, but performance depends on the aggregation design, cross-stock dependence and forecast horizon. Evidence from U.S. monthly or intraday markets and broad Indian BSE samples is motivation only, not a NIFTY weekly result.
+- Plan v1.0 remains locked; no model-family expansion or empirical claims were introduced.
