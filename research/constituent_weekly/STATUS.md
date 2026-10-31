@@ -265,3 +265,10 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - NSE research-data policy lists historical reports/index data for research/analysis, but Nifty Indices Terms separately restrict automated collection without express written consent. The permissions interaction for recurring retrieval and caching is unresolved.
 - No archive ZIP was fetched or parsed. Automated retrieval remains disabled until written permission or a suitable licence is confirmed.
 - See [C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md](C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md). C1 NOT PASSED; C2 gated.
+
+
+## 90-day Dhan range test — initial CI correction — 2026-11-01
+
+- Initial push run [41250624129](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250624129) and PR regression run [41250629010](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250629010) failed two new unit tests because the new range-QA helper referenced NumPy without importing it (19 other tests passed in PR run).
+- Added the missing `import numpy as np` in commit 3a9545e. The new push run [41250690640](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250690640) is the corrective validation; its final status will be recorded after completion.
+- No live market-data API call was reached in the failed test runs. The 90-day historical data probe therefore has no result yet.
