@@ -400,3 +400,9 @@ The protected live Dhan run is no longer awaiting manual dispatch. It was initia
 - Root cause: the regex used in the first correction contained excessive escaping and never matched the Markdown header.
 - Correction: removed the regex and extracted the version from the exact plan header; validate numeric major/minor format and require matching history. No market data or modeling was touched.
 - Verification: pending the next workflow result.
+
+
+## E0037 / E0038 resolution — 2026-11-01
+- The plan-version governance failures caused by the v1.1 amendment (E0037) and the over-escaped first parser correction (E0038) are resolved.
+- Confirmed by push run [41249521876](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249521876): plan validator PASS and all 4 governance tests passed. The separate source-audit run [41249642494](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642494) passed.
+- The Dhan full-universe data check also passed 50/50 for a single fixed session in run [41249642409](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642409). This is not a complete historical panel.

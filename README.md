@@ -341,7 +341,7 @@ The protected live Dhan run [41223795394](https://github.com/VCR-TRADING-RESEARC
 The bounded five-stock price probes found 22 daily bars for January 2018, and all five stocks passed the 31 October 2022 one-minute anchor/expiry-close checks. The recent 29 October 2026 sample had 10:00 anchors but no 15:25–15:29 close bars for any of the five; targeted close-window requests were empty (0/5). A later authentication-only retry returned HTTP 200 without an access token and the fallback profile check returned HTTP 401; no data requests were made in that retry.
 
 The first workflow revision did not persist generated diagnostics after an autostash/rebase. The commit step was corrected, and the sanitized successful-run report plus the subsequent auth-only failure are now preserved in the C1 branch:
-- [C1 status](research/constituent_weekly/STATUS.md)
+- [C1 status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md)
 - [Successful-run sanitized report](research/constituent_weekly/C1_DHAN_PREFLIGHT.json)
 - [Latest auth-only attempt](research/constituent_weekly/C1_DHAN_LAST_ATTEMPT.json)
 
@@ -379,3 +379,11 @@ The subsequent status/validator correction was also pushed and validated: [run 4
 - The archive's README claims MIT but the fork and inspected upstream root have no LICENSE file; it is not imported. Other candidates are either non-commercial/research-only, lack verified licence, or are not downloadable yet.
 - Dhan's current documentation confirms minute history up to five years for active instruments and 90-day request windows, and daily history from inception; it does not guarantee intraday data for inactive/delisted symbols.
 - C1 is still NOT PASSED. No canonical constituent panel, bottom-up model, index forecast or strategy exists. [C1 source audit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md) · [Research plan v1.1](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/RESEARCH_PLAN.md) · [C1 status](research/constituent_weekly/STATUS.md)
+
+
+## BUP-01 new evidence — Dhan full-universe check and official weight snapshot
+
+- The protected Dhan run [41249642409](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642409) resolved and passed **50/50** point-in-time current NIFTY 50 symbols on 2026-10-29 for one-minute bar coverage/quality. All passing symbols had four 10:00–10:03 bars and a 15:14 proxy bar. This is one session only; it does not imply full historical coverage or index reconstruction.
+- The NSE Indices March 2026 white paper publishes the full NIFTY 50 weights on 2026-02-27. A 50-row transcription is cached as [official 2026-02-27 snapshot](`https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/data/constituent_weekly/nifty50_official_weights_2026-02-27.csv`) with a source note. Rounded weights total 100.02%; published values are not normalised. This is one-date evidence only, not a historic series.
+- A Hugging Face 1-minute dataset (2022–2026) declares MIT and describes daily data to 2000, but explicit feed provenance is missing and the card warns against use as a primary live-trading source. It remains exploratory/not admitted.
+- C0 governance run [41249521876](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249521876) and source-audit run [41249642494](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642494) passed. C1 remains NOT PASSED; no bottom-up model or strategy is certified.

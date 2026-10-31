@@ -200,3 +200,12 @@
 - Visible outcome: amended the frozen expiry target to use the user-approved 15:15 proxy consistently for stock and index outcomes; found a public minute archive with 47/50 member-file presence on a 2022 expiry/next-session pair; sampled five equities plus NIFTY at 10:00–10:03 and 15:14.
 - Licence finding: README-only MIT assertion was not accepted because no LICENSE file was present in the inspected fork or upstream root. No bars were imported. Other public candidates were not admitted because their rights/availability were unresolved or restrictive.
 - C1 remains NOT PASSED; no model/strategy result exists. Only visible messages, decisions and outcomes are logged; private reasoning and secrets are not stored.
+
+
+## 2026-11-01 — BUP-01 full-universe data and weight-source audit continuation
+- User: “Ok proceed”.
+- Assistant ran a fixed-session Dhan coverage probe across all 50 point-in-time current NIFTY 50 constituents on 2026-10-29. Result: 50/50 security IDs resolved, 50/50 one-minute sessions passed QA with the 10:00–10:03 anchor and latest 15:14 expiry-proxy bar.
+- Governance C0 run 41249521876 passed plan validation and 4 tests; C1 source-audit run 41249642494 passed.
+- Found and cached the NSE Indices March 2026 whitepaper full 50-constituent weight snapshot as of 2026-02-27, preserving two-decimal published weights (sum 100.02% due rounding, no normalisation).
+- Identified the original HF minute dataset declaring MIT and broad 2022–2026/2000–2026 coverage; upstream feed provenance is not documented, and the README restricts stated purpose to research/education/backtesting. No bulk data import yet.
+- E0037/E0038 governance CI issues resolved. C1 remains NOT PASSED; no model or trading result produced. Only visible outcomes are logged.

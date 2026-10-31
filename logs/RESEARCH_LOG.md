@@ -357,3 +357,11 @@
 - Actions run 41249450033 identified that the initial regex fix still had over-escaped metacharacters and failed to read the v1.1 plan header.
 - Replaced the regex with direct line extraction, numeric version validation and matching history check. No empirical data or model results were touched.
 - New workflow run must confirm C0 plan validation and regression tests before considering this CI defect closed.
+
+
+## 2026-11-01 — Full-universe Dhan probe and weight snapshot
+- The full point-in-time active NIFTY 50 Dhan probe passed 50/50 on 2026-10-29 in Actions run [41249642409](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642409). Security IDs resolved 50/50; all 50 had valid 10:00–10:03 anchor bars, 15:14 proxy, 359 session bars and OHLCV invariants. This is a single-session data-quality probe, not a weekly-expiry label panel.
+- Found a 50-stock official weight snapshot in the NSE Indices March 2026 whitepaper (Exhibit 26, as of 2026-02-27). Transcribed 50 weights to data/constituent_weekly/nifty50_official_weights_2026-02-27.csv; rounded values sum 100.02% and are not normalised. It is a one-date cross-check only.
+- Discovered HF original xxparthparekhxx/indian-stock-market-minute-data (MIT tag, ~10.5GB 1m from 2022–2026, daily 2000–2026). Dataset card states research/backtesting only and not primary live trading; exact underlying source/provenance is unverified. It remains exploratory; no 10.5GB bulk download performed yet.
+- Governance validator errors E0037/E0038 confirmed resolved by push run 41249521876; four governance tests passed. C1 source-audit run 41249642494 passed.
+- C1 remains NOT PASSED: official point-in-time time-series weights, historic constituent price history/corporate actions, and basket-to-index reconciliation remain incomplete. No modeling.
