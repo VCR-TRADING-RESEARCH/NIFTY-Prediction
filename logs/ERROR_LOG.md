@@ -349,3 +349,10 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 
 ## E0031 resolution — 2026-10-31
 The protected live Dhan run is no longer awaiting manual dispatch. It was initiated automatically by a controlled push to the C1 data branch and completed in [Actions run 41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41224048773). Full-universe current-master resolution is now measured at 50/50 and historical-symbol lookup at 79/84. The remaining blockers are recorded under E0032 and in the C1 status; C1 remains BLOCKED.
+
+### E0033 resolution update — 2026-10-31
+
+- A later fresh TOTP attempt [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41224048773) succeeded after the earlier HTTP-200/no-token responses. Profile authentication and the Data API plan check passed.
+- This demonstrates intermittent authentication-response behavior; the precise provider-side cause remains unconfirmed. Do not repeat token refreshes without a concrete need.
+- The latest successful report is persisted in C1_DHAN_PREFLIGHT.json; the failed auth-only attempt remains separately preserved in C1_DHAN_LAST_ATTEMPT.json.
+
