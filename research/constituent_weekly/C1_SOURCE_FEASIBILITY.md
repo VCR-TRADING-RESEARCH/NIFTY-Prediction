@@ -6,7 +6,7 @@
 
 ## 1. Executive finding
 
-There is a credible official route for constituent weight data: NSE Indices publishes monthly report categories including “Indices Market Capitalisation & Weightage” and “Market Capitalisation, Weightage, Beta”. The NSE India all-reports archive also lists “Market Capitalisation, Weightage, Beta for NIFTY 50 & NIFTY Next 50”, equity UDiFF bhavcopies and other historical reports. The actual monthly ZIP payload has not yet been retrieved or parsed in this runtime. This is a **network retrieval limitation in this run**, not a finding that the source is unavailable.
+There is a credible official source family for constituent weight data: NSE Indices lists monthly report categories including “Indices Market Capitalisation & Weightage” and “Market Capitalisation, Weightage, Beta”. A one-time sample was retrieved through Actions during this initial feasibility attempt; its September 2026 NIFTY50 CSV was structurally parsed (50 unique constituent rows and displayed weights summing to 100.0%). This is a technical format check only. The website Terms of Use were reviewed afterward and restrict automated collection without express written consent and copying/distribution without prior written permission. Repeated remote retrieval is therefore disabled pending permission or a separately licensed route.
 
 Official sources:
 - NSE Indices monthly reports: https://niftyindices.com/reports/monthly-reports
@@ -15,14 +15,14 @@ Official sources:
 - NSE IWF: https://www.nseindia.com/static/products-services/indices-investible-weight-factors
 - Dhan v2 historical data: https://dhanhq.co/docs/v2/historical-data/
 
-The next automated task is to download the latest available official monthly ZIP from GitHub Actions, inventory the archive contents, record file hashes and identify the actual data schema. This first sample will not by itself establish historical point-in-time weights back to 2019.
+The next automated task is an offline inspection of separately authorised archives only. No further automated download from the NSE Indices website will run. The one-time sample's structure, file hashes and limitations are recorded in C1_INITIAL_SAMPLE_AUDIT.md. It does not establish a historic point-in-time weight series.
 
 ## 2. Source-by-source status
 
 | Data requirement | Preferred source | What is confirmed | What remains unverified | C1 status |
 |---|---|---|---|---|
 | NIFTY 50 methodology | NSE Indices | NSE describes NIFTY 50 as a 50-stock index and says free-float methodology applies from 26-Jun-2009 | Full historical constituent/weight observations and publication timestamp per report | PARTIAL |
-| Historical weight reports | NSE Indices monthly reports | Official page lists “Indices Market Capitalisation & Weightage (zip)” and “Market Capitalisation, Weightage, Beta (Zip)” | Archive coverage, report dates, raw ZIP schema, complete NIFTY50 stock columns, weight precision, availability date | PENDING_DOWNLOAD |
+| Historical weight reports | NSE Indices monthly reports | One-time September 2026 sample ZIP downloaded and its NIFTY50 CSV structurally parsed: 50 unique rows, displayed weight sum 100.0% | Historical coverage, report availability timestamp, permission for automated collection/reuse, point-in-time weights, and independent basket reconciliation | SAMPLE_FORMAT_PASS / RIGHTS_BLOCKED |
 | Historical daily index/stock reports | NSE India all-reports | Official archive lists historical index data, security-wise price/volume, daily and monthly equity/indices reports, UDiFF bhavcopy category | Exact downloadable coverage, raw schema and timestamp semantics need automated tests | PARTIAL |
 | Point-in-time membership | Original NSE Indices press releases and NSE circulars | Official pages link index reconstitution/calendar resources | Full change ledger, effective date vs announcement date, stable ISIN/security-ID links and missing circulars | PENDING |
 | Third-party historical membership reconstruction | BKKB20/nse-index-history | Public project supplies reconstruction scripts and current-member CSV; README describes 2004–2026 coverage | Original circular audit, parser correctness, effective-date semantics, alias/ISIN integrity | DIAGNOSTIC_ONLY |
@@ -98,4 +98,11 @@ Passed: official source families are identified; a plausible monthly all-constit
 
 Not passed: no official monthly ZIP payload has been parsed; historical point-in-time membership is not certified; numerical weights are not yet reconciled; no daily weight reconstruction has passed; no stock intraday coverage or inactive-security test has completed; no weighted constituent basket has been reconciled to official NIFTY.
 
-**Next action:** automated official report retrieval and schema audit, then exact historical membership/security mapping and a Dhan/free-source spot-price coverage audit. No stock model training is authorised before the C1 acceptance gates in RESEARCH_PLAN.md pass.
+**Next action:** confirm data-use rights for any source proposed for automated research; inspect only separately authorised inputs; audit historical membership/security IDs and corporate actions; then test Dhan's documented historical endpoints with the user's existing subscription without logging secrets. No stock model training is authorised before all C1 gates in RESEARCH_PLAN.md pass.
+
+
+## 9. Data-rights hard stop and correction
+
+The first automated source fetch was executed before the NSE Indices Terms of Use were reviewed. The source terms were subsequently checked and the automated website retrieval was disabled. The workflow is now an offline inventory tool for separately authorised, pre-provisioned archives; it does not crawl or download NSE files. The earlier Actions artifact ID 13033492871 (run 41177903446) contained raw sample ZIP files. An administrative deletion request is being raised because the available GitHub connector in this session exposes artifact listing/download but not artifact deletion. No new raw archives will be uploaded or committed.
+
+The legal status and permitted use of any data for this personal research / trading project should be confirmed with the source or appropriate counsel. This report does not interpret the terms as legal advice. Until this gate is cleared, the official archive is source-discovery evidence only and must not be used for ongoing automated extraction or redistributed.
