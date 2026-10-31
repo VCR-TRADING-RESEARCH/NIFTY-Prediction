@@ -124,3 +124,12 @@
 ## 2026-10-31 — BUP-01 membership validation automation
 - Added `bup01-c1-membership-tests.yml` with automatic push/path and pull-request triggers plus a manual Actions dispatch button. It runs only local membership integrity tests and does not call Dhan or scrape NSE.
 - Added an audit-JSON consistency test. The code and data files are committed on the C1 branch; workflow outcome must be inspected before labelling CI as passed.
+
+
+## 2026-10-31 — Conversation recovery and continuation
+- User shared a screenshot of a ChatGPT send/response failure while the prior conversation displayed repeated audit/provenance/validation update operations.
+- Assistant advised retrying safely and verifying GitHub state rather than assuming the displayed operations had committed.
+- User said “Ok Proceed”.
+- Recovery action: checked the main README, main research/error/conversation logs, available branches, BUP-01 C1 status and membership workflow definition. Verified Actions run 41185169548 directly; it completed successfully with six tests passing.
+- Decision: do not repeat completed membership work or trigger another Dhan token request. Membership sub-gate PASS WITH LIMITATIONS; overall C1 BLOCKED; C2 remains gated by licensed exact IWF, security identity/corporate actions and complete constituent price coverage.
+- Only visible conversation statements and auditable decisions are recorded; hidden private reasoning is not stored.
