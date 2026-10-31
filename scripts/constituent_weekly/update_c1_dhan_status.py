@@ -38,6 +38,10 @@ def main() -> int:
     historical_range_passed = data.get("historical_universe_90d_range_passed", 0)
     historical_range_expected = data.get("historical_universe_90d_range_expected", 0)
     historical_range_resolved = data.get("historical_universe_90d_range_resolved", 0)
+    edge_range_date = data.get("five_year_edge_90d_date", {})
+    edge_range_passed = data.get("five_year_edge_90d_passed", 0)
+    edge_range_expected = data.get("five_year_edge_90d_expected", 0)
+    edge_range_resolved = data.get("five_year_edge_90d_resolved", 0)
 
     lines = [
         START,
@@ -56,6 +60,7 @@ def main() -> int:
         f"- 90-day Dhan one-minute range: {range_passed}/{range_expected} symbols passed; date range {range_dates if range_dates else 'NOT_RUN'}; standard-session counts {range_sessions if range_sessions else 'NOT_RUN'}; non-standard session dates {nonstandard_dates if nonstandard_dates else 'none recorded'}",
         f"- Full-universe 90-day Dhan range: {full_range_passed}/{full_range_expected} passed; security IDs {full_range_resolved}/{full_range_expected}; dates {full_range_dates if full_range_dates else 'NOT_RUN'}",
         f"- Historical 2022 point-in-time 90-day range: {historical_range_passed}/{historical_range_expected} passed; security IDs {historical_range_resolved}/{historical_range_expected}; dates {historical_range_date if historical_range_date else 'NOT_RUN'}",
+        f"- Five-year edge 2021 90-day range: {edge_range_passed}/{edge_range_expected} passed; security IDs {edge_range_resolved}/{edge_range_expected}; dates {edge_range_date if edge_range_date else 'NOT_RUN'}",
         f"- Accepted expiry proxy: last returned one-minute candle at/before {data.get('expiry_proxy_cutoff_ist', '15:15:00')} IST; sample proxy timestamp(s): {', '.join(proxy_times) if proxy_times else 'NOT_RECORDED'}",
         f"- Historic HDFC Ltd legacy-security-ID probes: {legacy_passed}/{len(legacy)} passed",
         f"- Deep daily-history probe: {data.get('daily_history_probe', {}).get('status', 'NOT_RUN')}",

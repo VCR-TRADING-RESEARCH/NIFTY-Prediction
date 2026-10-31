@@ -566,6 +566,35 @@ def main() -> int:
         )
         result["historical_universe_90d_range_probe"] = historical_results
 
+        # Test the oldest edge of the documented five-year intraday history window.
+        edge_range_dates = ("2021-11-01", "2022-01-29")
+        edge_symbols, _ = membership_symbol_sets(edge_range_dates[0])
+        edge_resolved = resolve_ids(master, edge_symbols)
+        edge_alias_ids = resolve_ids(master, ["TMPV"])
+        edge_ids = apply_historical_security_aliases(edge_symbols, edge_resolved, edge_alias_ids)
+        edge_results = []
+        for symbol in edge_symbols:
+            security_id = edge_ids.get(symbol)
+            if not security_id:
+                edge_results.append({
+                    "symbol": symbol, "from_date": edge_range_dates[0],
+                    "to_date": edge_range_dates[1], "status": "MISSING_SECURITY_ID",
+                })
+                continue
+            edge_results.append(
+                request_intraday_range(
+                    headers, symbol, security_id, edge_range_dates[0], edge_range_dates[1]
+                )
+            )
+            time.sleep(0.25)
+        result["five_year_edge_90d_date"] = {
+            "from": edge_range_dates[0], "to": edge_range_dates[1]
+        }
+        result["five_year_edge_90d_expected"] = len(edge_symbols)
+        result["five_year_edge_90d_resolved"] = len(edge_ids)
+        result["five_year_edge_90d_passed"] = sum(item.get("status") == "PASS" for item in edge_results)
+        result["five_year_edge_90d_probe"] = edge_results
+
         if "RELIANCE" in probe_ids:
             daily = requests.post(
                 DAILY_URL,
@@ -660,7 +689,10 @@ def main() -> int:
         historical_range_expected = result.get("historical_universe_90d_range_expected", 0)
         historical_range_passed = result.get("historical_universe_90d_range_passed", 0)
         historical_range_complete = historical_range_expected == 50 and historical_range_passed == 50 and result.get("historical_universe_90d_range_resolved", 0) == 50
-        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected and full_complete and range_complete and full_range_complete and historical_range_complete else "PARTIAL_OR_BLOCKED"
+        edge_expected = result.get("five_year_edge_90d_expected", 0)
+        edge_passed = result.get("five_year_edge_90d_passed", 0)
+        edge_complete = edge_expected == 50 and edge_passed == 50 and result.get("five_year_edge_90d_resolved", 0) == 50
+        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected and full_complete and range_complete and full_range_complete and historical_range_complete and edge_complete else "PARTIAL_OR_BLOCKED"
         result["note"] = "Five-symbol/two-date data probe only. The final available candle by the 15:15 IST cutoff is accepted as the expiry proxy; this does not establish full-universe coverage, inactive-security history or official index weights."
     except PublicPredictionError as exc:
         result["status"] = "BLOCKED_DHAN_AUTH"
@@ -689,6 +721,7 @@ def main() -> int:
     print(f"90-day range probe: {result.get('ninety_day_range_probe_passed', 0)}/{result.get('ninety_day_range_probe_expected', 0)} passed")
     print(f"Full-universe 90-day range probe: {result.get('full_universe_90d_range_passed', 0)}/{result.get('full_universe_90d_range_expected', 0)} passed; resolved={result.get('full_universe_90d_range_resolved', 0)}")
     print(f"Historical point-in-time 2022 90-day range probe: {result.get('historical_universe_90d_range_passed', 0)}/{result.get('historical_universe_90d_range_expected', 0)} passed; resolved={result.get('historical_universe_90d_range_resolved', 0)}")
+    print(f"Five-year edge 2021 90-day range probe: {result.get('five_year_edge_90d_passed', 0)}/{result.get('five_year_edge_90d_expected', 0)} passed; resolved={result.get('five_year_edge_90d_resolved', 0)}")
     for probe in result.get("intraday_probe", []):
         print("PROBE", probe.get("symbol"), probe.get("date"), probe.get("status"),
               "bars=", probe.get("bar_count", 0),
