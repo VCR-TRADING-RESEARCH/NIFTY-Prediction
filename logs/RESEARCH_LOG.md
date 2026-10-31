@@ -244,3 +244,11 @@
 - NSE website terms restrict automated collection and copying/reuse of site content; automated NSE collection remains disabled pending an applicable permission/licence determination.
 - Dhan v2 documents up to five years of intraday history for active instruments and a maximum 90-day request window; inactive/delisted coverage is not guaranteed.
 - No additional token refresh or data request was made. C1 remains blocked; C2 remains gated. Only visible decisions are logged; no private reasoning or secrets are stored.
+
+## 2026-10-31 — BUP-01 point-in-time membership reconstruction
+- Reviewed CC BY 4.0 dataset `aditya-jha/nse-historical-membership`; extracted NIFTY 50 interval subset (83 rows; upstream blob `519a9232e125cc044580ec7b90ef5c18475b4f0f`). Added attribution/provenance file and project CSV. Dataset's numeric `weightage` column is blank.
+- Checked official NSE Indices press release dated 2026-02-23: no NIFTY 50 change effective 2026-03-30. Checked official 2026-08-10 release: WIPRO excluded and BSE included effective 2026-09-30 after 2026-09-29 close. Applied this correction to project interval data.
+- Local check using half-open validity intervals yielded 50 unique members for all 103 month-end snapshots 2018-04-30 through 2026-10-31. Added regression tests and machine-readable audit. This does not validate every historical event independently; source docs flag pre-2018 drift, so confirmatory use starts 2018-04.
+- Additional sources: Tipsheet says member-level monthly weights extend back to Jan 2008 but derive from NSE monthly weightage reports and preserve upstream terms; Hugging Face weights are CC BY-NC-SA non-commercial; other open GitHub files are binary/equal-weight approximations. No compliant free official IWF source established.
+- Identified official NSE Indices data subscription (historical constituent names, identifiers, market caps, weights and prices) as the clear permissioned route; licensing enquiry at indices@nse.co.in.
+- **Phase decision:** membership sub-gate PASS WITH LIMITATIONS; overall C1 BLOCKED on exact historical IWF, security IDs/corporate actions and full constituent intraday/close coverage. No model training.
