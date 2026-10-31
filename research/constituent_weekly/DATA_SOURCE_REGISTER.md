@@ -162,3 +162,18 @@ The filing-index manifests retain `broadcast_date`, `revised` and record IDs, bu
 ### AMFI ETF portfolio data — identified but not accepted
 
 AMFI's public monthly portal contains scheme portfolio Excel/PDF files from at least 2019 through 2026, including NIFTY 50 ETF/fund schemes. This could provide a cross-check of ETF-replicated holdings, not official index weights. AMFI Terms of Use grant only personal/non-commercial access and prohibit public display, publication, derivative works and electronic storage of significant portions. The files are therefore not used or automated in this public repository without express permission. SEBI's circulars require portfolio disclosures, but regulatory disclosure does not override AMFI's site-use terms. Source: https://www.amfiindia.com/research-information/amfi-monthly and https://www.amfiindia.com/terms-of-use.
+
+## Additional public weight-source sweep — 2026-10-31
+
+A further search across Hugging Face, GitHub and Figshare surfaced no clearly reusable, commercially permissive official historical IWF series:
+
+| Candidate | Coverage/content | Rights/quality finding | Decision |
+|---|---|---|---|
+| [AMP4010 Historical Nifty 50 Constituent Weights](https://huggingface.co/datasets/AMP4010/Historical_Nifty_50_Constituent_Weights_20Y) / [Figshare DOI](https://doi.org/10.6084/m9.figshare.30217915) | 216 monthly/event snapshots, 2008-01-31 to 2025-08-31; 100 ticker columns; rows normalised to 100% | CC BY-NC-SA 4.0 (non-commercial only); publisher documents static-between-snapshot assumptions and estimates/extrapolations for some gaps/events | NOT ACCEPTED for the trading research workflow without separate commercial permission and independent event/weight validation |
+| [vishalvx/nifty-indices-datasets](https://github.com/vishalvx/nifty-indices-datasets) | Reconstructed monthly membership/binary weights | Binary/equal-weight approximations, not numeric official free-float weights | Membership diagnostic only |
+| [BKKB20/nse-index-history](https://github.com/BKKB20/nse-index-history) | Reconstructed historical membership from circulars; current-member files dated March 2026 | No numeric IWF series; known scanned-circular and identity-mapping gaps | Membership diagnostic only |
+| [Auto-Index-Constituents-Tracker](https://github.com/floyds1995/Auto-Index-Constituents-Tracker) | Daily NSE equity EOD history and index composition change snapshots | Best-effort reconstructions; publisher explicitly notes NSE redistribution is subject to NSE terms | Do not ingest/redistribute pending rights review; potential source-discovery lead only |
+
+The HF dataset's exact row-sum validation is useful as a structural check, but it does not cure its non-commercial licence, its snapshot/static assumption, or the need to prove point-in-time availability for a weekly 10:00 IST forecast. Do not infer a daily IWF by carrying monthly weights forward without corporate-action and official-snapshot reconciliation.
+
+**Source sweep conclusion:** the best currently reusable open candidate remains the CC BY 4.0 membership/quarterly ownership repository already cached. It is not a numerical index-weight source. C1 therefore remains blocked; no model work is authorised.
