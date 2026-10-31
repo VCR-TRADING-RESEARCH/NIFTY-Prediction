@@ -261,12 +261,22 @@ def test_analyse_intraday_range_validates_anchor_and_expiry_for_all_sessions():
             epoch_ist("2022-10-03T15:14:00"),
             epoch_ist("2022-10-04T10:03:00"),
             epoch_ist("2022-10-04T15:13:00"),
+            # Special evening-only Muhurat session: should not count as a missing regular-session bar.
+            epoch_ist("2022-10-24T18:15:00"),
+            epoch_ist("2022-10-24T19:14:00"),
         ],
     }
-    result = analyse_intraday_range(body, "RELIANCE", "2022-10-03", "2022-10-04")
+    body["open"].extend([103.0, 103.5])
+    body["high"].extend([103.5, 104.0])
+    body["low"].extend([102.5, 103.0])
+    body["close"].extend([103.2, 103.7])
+    body["volume"].extend([140, 150])
+    result = analyse_intraday_range(body, "RELIANCE", "2022-10-03", "2022-10-24")
     assert result["status"] == "PASS"
-    assert result["bar_count"] == 4
+    assert result["bar_count"] == 6
+    assert result["response_calendar_date_count"] == 3
     assert result["session_count"] == 2
+    assert result["non_standard_session_dates"] == ["2022-10-24"]
     assert result["anchor_sessions_present"] == 2
     assert result["expiry_proxy_sessions_present"] == 2
     assert result["contains_raw_price_values"] is False

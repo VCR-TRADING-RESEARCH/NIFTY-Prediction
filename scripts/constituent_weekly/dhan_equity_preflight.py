@@ -288,8 +288,11 @@ def analyse_intraday_range(body: dict, symbol: str, start_date: str, end_date: s
     anchor_mask = clock.between("10:00", "10:03")
     expiry_mask = clock.between("15:00", "15:14")
     dates = sorted(day.unique().tolist())
-    anchor_days = int(day[anchor_mask].nunique())
-    expiry_days = int(day[expiry_mask].nunique())
+    regular_mask = clock.between("09:15", "15:30")
+    regular_dates = sorted(day[regular_mask].unique().tolist())
+    non_standard_dates = sorted(set(dates) - set(regular_dates))
+    anchor_days = int(day[anchor_mask & regular_mask].nunique())
+    expiry_days = int(day[expiry_mask & regular_mask].nunique())
     duplicated = int(frame["time_ist"].duplicated().sum())
     numeric = frame[["open", "high", "low", "close", "volume"]].apply(pd.to_numeric, errors="coerce")
     finite = bool(numeric.notna().all().all() and np.isfinite(numeric.to_numpy(dtype=float)).all())
@@ -305,7 +308,7 @@ def analyse_intraday_range(body: dict, symbol: str, start_date: str, end_date: s
         )
     passed = bool(
         finite and ohlc_ok and duplicated == 0 and
-        len(dates) > 0 and anchor_days == len(dates) and expiry_days == len(dates)
+        len(regular_dates) > 0 and anchor_days == len(regular_dates) and expiry_days == len(regular_dates)
     )
     return {
         "symbol": symbol,
@@ -313,11 +316,13 @@ def analyse_intraday_range(body: dict, symbol: str, start_date: str, end_date: s
         "to_date": end_date,
         "status": "PASS" if passed else "RANGE_COVERAGE_OR_OHLC_FAILED",
         "bar_count": int(len(frame)),
-        "session_count": int(len(dates)),
+        "response_calendar_date_count": int(len(dates)),
+        "session_count": int(len(regular_dates)),
+        "non_standard_session_dates": non_standard_dates,
         "anchor_sessions_present": anchor_days,
         "expiry_proxy_sessions_present": expiry_days,
-        "missing_anchor_sessions": int(len(dates) - anchor_days),
-        "missing_expiry_proxy_sessions": int(len(dates) - expiry_days),
+        "missing_anchor_sessions": int(len(regular_dates) - anchor_days),
+        "missing_expiry_proxy_sessions": int(len(regular_dates) - expiry_days),
         "duplicate_timestamps": duplicated,
         "ohlc_volume_invariants_pass": ohlc_ok,
         "first_timestamp_ist": ts.iloc[0].isoformat(),
