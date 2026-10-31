@@ -61,3 +61,14 @@
 - Added `?as_of_date=YYYY-MM-DD` support to the Pages predictor so a completed date-specific JSON result can be opened directly without generating another request. The Actions completion comment now links back to that exact result page.
 - Pages deployment for the deep-link JavaScript passed in run [40201836007](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201836007). A later documentation deployment was still running at latest inspection.
 - Direct historical result link: https://vcr-trading-research.github.io/NIFTY-Prediction/?as_of_date=2024-09-20. External browser verification of the rendered page was unavailable; the JSON record and deployment run are verified.
+
+
+## 2026-10-31 — New bottom-up constituent weekly-expiry research requested
+
+- **User request (visible):** “Start a new research to predict nifty by predicting the weekly expiry outcomes of all the underlying stocks, rather than trying to predict just with nifty values!”
+- **Assistant response (visible summary):** Start a separate bottom-up constituent forecast track, inspect repository governance and prior project decisions, then register a bounded plan and initiate the first reproducible step.
+- **Decision:** Create BUP-01 separately from the index-only model and current options backtest branches. Preserve the existing index-only ExtraTrees study as a benchmark, not as validated trading evidence.
+- **Aggregation decision:** Forecast continuous constituent returns and aggregate with point-in-time free-float weights. Do not use a simple 50-stock vote as the primary index forecast. Build index probability from a dependence-aware joint forecast; weighted stock UP probability is a breadth statistic, not P(NIFTY UP).
+- **Data and leakage controls:** Reconstruct point-in-time membership, security identity, corporate actions and numeric weights; never backfill today's constituents or today's weights into historical cycles. Validate stock anchor/expiry prices and reconcile the realised weighted basket with the official NIFTY index before model training.
+- **Scope and stop rule:** Register C0–C6 phases and stop at a failed C1 data gate rather than fabricate weights or search indefinitely. Strategy profitability remains a separate gate with dated Paytm Money costs, spread, slippage and fills.
+- **Logging boundary:** Record visible requests, decisions and auditable rationales. Hidden private chain-of-thought is not copied into repository files.
