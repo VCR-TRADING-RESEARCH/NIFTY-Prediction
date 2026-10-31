@@ -1,0 +1,51 @@
+name: BUP-01 C1 authorised-source audit
+
+on:
+  push:
+    branches:
+      - "phase/constituent-weekly-outcomes-c1-data"
+    paths:
+      - "research/constituent_weekly/**"
+      - "scripts/constituent_weekly/**"
+      - "tests/test_constituent_weekly_source_fetch.py"
+      - ".github/workflows/constituent-weekly-c1-data.yml"
+  pull_request:
+    branches:
+      - "phase/constituent-weekly-outcomes-c0"
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-source-audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout C1 branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run offline source-audit tests
+        run: python -m unittest discover -s tests -p "test_constituent_weekly_source_fetch.py" -v
+      - name: Inspect separately authorised local archives only
+        run: python scripts/constituent_weekly/fetch_official_weight_report.py --input-dir data/authorized/constituent_weekly
+      - name: Update local C1 phase-status file
+        if: always()
+        run: python scripts/constituent_weekly/update_c1_status.py
+      - name: Publish compact audit report to job summary
+        if: always()
+        run: |
+          if [ -f research/constituent_weekly/C1_SOURCE_FETCH_REPORT.md ]; then
+            cat research/constituent_weekly/C1_SOURCE_FETCH_REPORT.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f research/constituent_weekly/C1_OFFICIAL_WEIGHT_MANIFEST.json ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Machine-readable manifest generated. It contains no raw price bars or individual constituent weight values." >> "$GITHUB_STEP_SUMMARY"
+          fi

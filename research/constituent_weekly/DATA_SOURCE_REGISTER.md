@@ -56,3 +56,159 @@ Combine sources only after matching stable identifiers, timestamps and adjustmen
 - [ ] Realised weighted basket reconciles with official NIFTY within a tolerance frozen before modelling.
 - [ ] Data rights reviewed; no raw private/broker data committed.
 - [ ] Cache keys, hashes, provenance and exclusions retained.
+
+
+## C1 weight-report discovery (2026-10-31)
+
+The official [NSE Indices monthly reports page](https://niftyindices.com/reports/monthly-reports) lists “Indices Market Capitalisation & Weightage (zip)” and “Market Capitalisation, Weightage, Beta (Zip)”. The official [NSE India all-reports archive](https://www.nseindia.com/all-reports) separately lists “Market Capitalisation, Weightage, Beta for NIFTY 50 & NIFTY Next 50”, equity UDiFF bhavcopy, historical index data, security-wise price/volume and daily/monthly report archives. These are the preferred source paths. A page link alone does not establish historical file coverage or schema.
+
+A page extraction exposed a current-style file path using the mcwb_*.zip naming convention under the NSE Indices monthly report directory. The chat runtime could not fetch the ZIP payload, so no row counts, data columns or historical month coverage are asserted. The Actions workflow records the real retrieval status, URL, archive members, CSV headers, row counts and SHA-256 when available.
+
+## Third-party historic weights candidate — restricted and diagnostic only
+
+The Hugging Face dataset AMP4010/Historical_Nifty_50_Constituent_Weights_20Y describes 216 monthly/event observations from 2008-01 through 2025-08 with 100 ticker columns. The data card says it derives from NSE Indices reports but includes extrapolation for some event changes, static-between-snapshot assumptions and normalisation to 100%; it is licensed CC-BY-NC-SA 4.0. It is not accepted as primary data and must not be used for commercial deployment. A direct chat-runtime download attempt failed; no local raw data was retrieved. Use the data card only for discovery and, subject to licence, an optional non-commercial sanity check.
+
+## Daily point-in-time weight derivation
+
+Between official snapshots, a daily weight may be algebraically drifted only under the explicit fixed-universe, fixed-index-shares and fixed-IWF assumption:
+
+w_i(t) = [w_i(t0) × P_i(t) / P_i(t0)] / Σ_j [w_j(t0) × P_j(t) / P_j(t0)]
+
+This is a hypothesis to validate, not an approved input yet. A rebalance, IWF change, split, bonus, rights, merger, demerger, spin-off, divisor/index-share change or security-identity event resets the reconstruction or invalidates the affected cycle until the official treatment is applied. Check report publication time, not just as-of date; a report published after the 10:00 forecast is future information.
+
+The audit must compare reconstructed weights against the next official snapshot, report top-weight and total absolute deviations, and then compare the realised weighted constituent basket with the official NIFTY price-return index. Tolerance must be registered before model fitting.
+
+## Source-code review of the membership candidate
+
+The BKKB20 reconstruction uses circular-derived ticker snapshots and audit warnings, not numerical free-float weights. The reviewed query script has a hard-coded Windows path and derives snapshot keys from a parsed circular date; confirm that the date is the index effective date rather than publication/announcement date. Alias mappings that collapse predecessors and successors (for example HDFC/HDFCBANK and MINDTREE/LTIM) are not sufficient for point-in-time security identity. The current-member CSV has 50 symbols, but is not date-certified for the forecast history. Preserve distinct ISIN/security IDs and validity dates before reconstructing past membership.
+
+
+## Data rights and reuse boundaries (updated 2026-10-31)
+
+### NSE / NSE Indices
+
+The official NSE Indices Terms of Use (https://www.niftyindices.com/terms-of-use) state:
+- systematic or automated data collection, scraping, extraction or harvesting without express written consent is prohibited (clause 12);
+- copying, reproducing, republishing, uploading, transmitting or distributing site material without prior written permission is restricted (clause 7);
+- website use is described as personal, non-commercial use only, and clause 20 also prohibits aggregation/copy/duplication of site content.
+
+The initial report sample was retrieved before this terms review. The current BUP-01 workflow is offline-only and does not request NSE endpoints or upload raw archives. Any further use of NSE archive content needs the relevant use/redistribution permission or an independently licensed supply arrangement. Do not treat a public download link as an unrestricted market-data licence.
+
+### Licensed / user-entitled Dhan data
+
+Dhan v2 documentation specifies:
+- daily OHLCV is documented back to instrument inception (https://dhanhq.co/docs/v2/historical-data/, lines on daily historical data);
+- 1-minute intraday data is documented for the last five years for active instruments;
+- a maximum 90-day range can be polled per intraday request.
+
+This is a promising route for stock prices under the user's existing subscription, but it does not establish coverage for historical instruments that are now inactive, delisted or merged. C1 must test actual account entitlement, authentication, current security-master mappings and a representative sample of current/removed securities before bulk collection. Keep Dhan credentials in Actions/runtime secrets only.
+
+The parent repository already has a Dhan integration in scripts/fetch_dhan_recent.py and live_api/app.py. The former is an index-only cross-check and cannot be repurposed as a constituent downloader without extension. The latter refreshes a token and caches historical NIFTY index bars, but the parent logs record inconsistent token/TOTP renewal and a DH-905 response for a separate rolling-options request. That failure does not prove equity candle requests fail; it does mean the new stock-data preflight must be an isolated, non-secret, fail-closed test. Do not assume that Dhan access is currently working. Do not build a parallel auth/token implementation until the existing code has been audited.
+
+### Open-source code vs market data ownership
+
+- [floyds1995/Auto-Index-Constituents-Tracker](https://github.com/floyds1995/Auto-Index-Constituents-Tracker) publishes MIT-licensed software for automated historical index-constituent tracking and NSE reference/price archives. The software licence does not automatically licence underlying NSE market data; its README flags source-data ownership/redistribution conditions. Reuse code only after checking its current licence and dependencies; do not assume its bundled/downloaded market data can be republished.
+- [NikhilSuthar/indian-market-data](https://github.com/NikhilSuthar/indian-market-data) is MIT-licensed software that wraps NSE/BSE/MCX/MSCI archives and documents a NIFTY market-cap/weightage report dataset. This is a convenient API wrapper, not an independent data licence; the source exchange's use terms still apply.
+- [BKKB20/nse-index-history](https://github.com/BKKB20/nse-index-history) is a reconstruction candidate with circular/date/security alias limitations described above. Its current-members file differs from the official September 2026 sample (WIPRO only in the candidate; BSE only in the official sample), and is not a verified current or historical master.
+- [vishalvx/nifty-indices-datasets](https://github.com/vishalvx/nifty-indices-datasets) is binary membership only; it has no numerical free-float weights.
+- [AMP4010/Historical_Nifty_50_Constituent_Weights_20Y](https://huggingface.co/datasets/AMP4010/Historical_Nifty_50_Constituent_Weights_20Y) is CC-BY-NC-SA 4.0 according to its data card. It describes 216 monthly/event-date rows from 2008-01 to 2025-08, but also says it extrapolates some rebalance/event weights, assumes static weights between snapshots and normalises rows to 100%. It is not accepted as a confirmatory primary weight source. Use is conditional on the project's non-commercial purpose and full attribution/share-alike compliance; do not put its raw dataset into the public repository or a commercial workflow.
+
+## Current decision and C1 next step
+
+No source currently clears all of: legal rights for the intended use, exact point-in-time NIFTY 50 membership, numeric free-float weights, publication-time evidence, stable ISIN/security-ID history, corporate-action treatment, stock-level 10:00/expiry bars, and basket-to-index reconciliation.
+
+The next C1 step is to reuse and audit the parent Dhan token/data path, conduct a small current-stock daily/intraday endpoint preflight through Actions secrets, then explicitly test removed/inactive instrument coverage using lawful user-entitled inputs. The weight-source problem remains a separate gate; Dhan daily equity data alone does not provide historic NIFTY index weights.
+
+
+## Official index construction detail (verified 2026-10-31)
+
+NSE Indices states that NIFTY 50 uses free-float market-cap weighting from 26 June 2009. Its IWF description explains that free-float capitalisation is total shares outstanding × IWF × stock price, and that constituent IWFs are determined from public shareholding patterns reported to exchanges quarterly. See:
+- https://www.niftyindices.com/indices/equity/broad-based-indices/nifty--50
+- https://www.niftyindices.com/resources/investible-weight-factors
+- https://niftyindices.com/resources/tutorial/calculation-of-indices
+
+Implications for the C1 data audit:
+1. A dated constituent list is insufficient; historical point-in-time IWF and effective dates are required.
+2. Weight reconstruction between snapshots must not carry forward a stale float factor across a quarterly public-shareholding update or a corporate action.
+3. Publication/filing timestamps must be distinguished from the underlying shareholding quarter, because a later filing cannot be used as if it were available at the earlier 10:00 forecast.
+4. The exact free-float weight formula and index-divisor adjustments must be reconciled against the official index methodology before stock-level forecasts are aggregated.
+
+
+## Licensed point-in-time membership and shareholding source (reviewed 2026-10-31)
+
+**Candidate:** [aditya-jha/nse-historical-membership](https://github.com/aditya-jha/nse-historical-membership), source revision `cc6f89fd6699a92afa8d398896d0aac385eb9e8c`. Its data files carry CC BY 4.0 under the source repository's `LICENSE-DATA`; code is MIT. BUP-01 includes the NIFTY 50-only effective-dated subset at `data/derived/constituent_weekly/nifty50_membership_intervals.csv` and the attribution/caveats at `C1_MEMBERSHIP_DATA_ATTRIBUTION.md`.
+
+Audited membership subset:
+- 83 membership intervals, 82 distinct historical symbols.
+- 50 intervals are `snapshot_floor`; 33 are `press_release` sourced.
+- 93 sampled month-15 dates from 2018-01 through 2025-09 had 50 overlapping active intervals each.
+- The latest NIFTY 50 effective event in this data is 2025-09-30. This does not give us the October 2026 current universe.
+- The `weightage` field is empty for all NIFTY 50 intervals checked; the file supplies membership dates, not historical free-float weights.
+- The source's own 2026-05 validation report records 29/29 curated transition checks passing and 0/42 current-snapshot mismatches, but major pre-2018 G2/G4 cardinality and consistency failures. We restrict confirmatory use to candidate 2018+ intervals and retain the source confidence flag; a 50-row count at a sample date is not independent member-by-member validation.
+
+**Quarterly ownership dataset in the same CC BY 4.0 repository:** `shareholding_history/data/parsed/_flat.csv` contains 59,773 rows across the broader NSE universe. Matching symbols to NIFTY 50 membership intervals found 2,584 records for 78 historically matching tickers. Quarter-end coverage against the reconstructed 50-stock membership:
+- 2018-03: 37/50 (74%)
+- 2018-06: 47/50 (94%)
+- 2020-06: 41/50 (82%)
+- 2022-03: 43/50 (86%)
+- 2023-06: 49/50 (98%)
+- 2023-09 onward through 2025-09: 50/50 for each audited quarter.
+The ownership file includes promoter, FII, DII, public and non-institutional roll-ups, share count, filing date, submission date and XBRL filename. It does **not** contain the complete public-shareholding category detail needed to reproduce official IWF exclusions. The actual `_categories.csv.gz` file mentioned in older documentation is absent from the pinned source tree.
+
+The filing-index manifests retain `broadcast_date`, `revised` and record IDs, but `_flat.csv` does not. We inspected a RELIANCE manifest and verified that the broadcast timestamp is recorded separately from the quarter-end/report date. Before any ownership feature is used, BUP-01 must join each parsed row to its manifest by XBRL filename, use broadcast time as its availability timestamp, and exclude any ownership fact not broadcast before the weekly 10:00 IST forecast. Submission date alone is only day-resolution and is insufficient where a same-day 10:00 cutoff matters.
+
+**Critical mathematical warning:** `IWF ≠ 100% − promoter_pct`. Official NIFTY float methodology excludes multiple strategic/locked/controlled holdings beyond promoter ownership. The current five-roll-up public data cannot support official free-float weights, and the derived ownership roll-ups must not be used as a substitute.
+
+### AMFI ETF portfolio data — identified but not accepted
+
+AMFI's public monthly portal contains scheme portfolio Excel/PDF files from at least 2019 through 2026, including NIFTY 50 ETF/fund schemes. This could provide a cross-check of ETF-replicated holdings, not official index weights. AMFI Terms of Use grant only personal/non-commercial access and prohibit public display, publication, derivative works and electronic storage of significant portions. The files are therefore not used or automated in this public repository without express permission. SEBI's circulars require portfolio disclosures, but regulatory disclosure does not override AMFI's site-use terms. Source: https://www.amfiindia.com/research-information/amfi-monthly and https://www.amfiindia.com/terms-of-use.
+
+## Additional public weight-source sweep — 2026-10-31
+
+A further search across Hugging Face, GitHub and Figshare surfaced no clearly reusable, commercially permissive official historical IWF series:
+
+| Candidate | Coverage/content | Rights/quality finding | Decision |
+|---|---|---|---|
+| [AMP4010 Historical Nifty 50 Constituent Weights](https://huggingface.co/datasets/AMP4010/Historical_Nifty_50_Constituent_Weights_20Y) / [Figshare DOI](https://doi.org/10.6084/m9.figshare.30217915) | 216 monthly/event snapshots, 2008-01-31 to 2025-08-31; 100 ticker columns; rows normalised to 100% | CC BY-NC-SA 4.0 (non-commercial only); publisher documents static-between-snapshot assumptions and estimates/extrapolations for some gaps/events | NOT ACCEPTED for the trading research workflow without separate commercial permission and independent event/weight validation |
+| [vishalvx/nifty-indices-datasets](https://github.com/vishalvx/nifty-indices-datasets) | Reconstructed monthly membership/binary weights | Binary/equal-weight approximations, not numeric official free-float weights | Membership diagnostic only |
+| [BKKB20/nse-index-history](https://github.com/BKKB20/nse-index-history) | Reconstructed historical membership from circulars; current-member files dated March 2026 | No numeric IWF series; known scanned-circular and identity-mapping gaps | Membership diagnostic only |
+| [Auto-Index-Constituents-Tracker](https://github.com/floyds1995/Auto-Index-Constituents-Tracker) | Daily NSE equity EOD history and index composition change snapshots | Best-effort reconstructions; publisher explicitly notes NSE redistribution is subject to NSE terms | Do not ingest/redistribute pending rights review; potential source-discovery lead only |
+
+The HF dataset's exact row-sum validation is useful as a structural check, but it does not cure its non-commercial licence, its snapshot/static assumption, or the need to prove point-in-time availability for a weekly 10:00 IST forecast. Do not infer a daily IWF by carrying monthly weights forward without corporate-action and official-snapshot reconciliation.
+
+**Source sweep conclusion:** the best currently reusable open candidate remains the CC BY 4.0 membership/quarterly ownership repository already cached. It is not a numerical index-weight source. C1 therefore remains blocked; no model work is authorised.
+
+## 2026-10-31 — Official terms, IWF formula and Dhan coverage clarification
+
+- **NSE Indices methodology:** the official methodology confirms index market capitalisation is based on shares outstanding × IWF × capping factor × price; NIFTY 50 is free-float weighted. IWF excludes multiple strategic/public-category holdings (including promoter-related, government strategic, cross-holdings, FDI/private equity/sovereign wealth, lock-in and other specified categories). Quarterly shareholding filings alone therefore do not reproduce official IWF. Sources: https://archives.nseindia.com/content/indices/Method_NIFTY_Equity_Indices.pdf and https://www.niftyindices.com/resources/investible-weight-factors.
+- **Rights gate:** NSE website Terms of Use prohibit systematic/automated collection (including scraping/data extraction) and restrict copying, storage, redistribution and use of site content for gaming/virtual-trading/simulation absent applicable permission. Until a licence/permission is confirmed for this research use, no automated NSE website scraping, raw report caching or publication is authorised by this project. Source: https://www.nseindia.com/static/nse-terms-of-use (updated 2025-10-29). This is a conservative project control; it is not a legal opinion on separately licensed NSE Indices products.
+- **Dhan coverage:** current v2 documentation states intraday minute data is available for up to five years for active instruments, with a maximum 90-day request window. It does not promise history for inactive/delisted instruments. Sources: https://dhanhq.co/docs/v2/historical-data/ and https://dhan.co/support/platforms/dhanhq-api/what-timeframe-data-is-available-through-dhan-s-historical-data-apis/.
+- **Implication:** Dhan remains the preferred authorised data route for instruments covered by the user's subscription, but inactive constituents and the recent expiry-close gap still require empirical proof. Do not infer missing bars or interpolate them. No new token retry was made in this step.
+- **Gate:** C1 remains BLOCKED / RIGHTS-DEPENDENT. No panel/model/trading result is authorised until an explicit rights-compliant point-in-time weight/membership path and complete constituent bar coverage are demonstrated.
+
+## 2026-10-31 — Licensed point-in-time membership subset added; weight gate remains open
+
+- Added `data/constituent_weekly/nifty50_membership_intervals.csv`, a NIFTY 50-only subset of `aditya-jha/nse-historical-membership/index_history/data/index_membership_history.csv`. Upstream `LICENSE-DATA` states CC BY 4.0 for data; project provenance/attribution and the source blob SHA are recorded in [MEMBERSHIP_DATA_PROVENANCE.md](MEMBERSHIP_DATA_PROVENANCE.md). This is not the upstream code licence.
+- Upstream NIFTY 50 history contains 83 interval rows and ends at the 2025-09-30 rebalance; all weightage values are blank. Project copy adds a documented one-for-one update from the official 2026-08-10 press release: WIPRO out, BSE in, effective 2026-09-30 (after 2026-09-29 close): https://niftyindices.com/Press_Release/ind_prs10082026.pdf.
+- Official 2026-02-23 semi-annual review explicitly made no NIFTY 50 changes effective 2026-03-30: https://niftyindices.com/Press_Release/ind_prs23022026.pdf.
+- Local half-open interval/cardinality check: **103/103** month-end snapshots from 2018-04-30 through 2026-10-31 have exactly 50 unique constituents. Regression test: `tests/test_bup01_membership_intervals.py`. This is a membership/cardinality test, not independent verification of all transition rows.
+- Use only from 2018-04 onward for confirmatory work; upstream docs disclose pre-2018 drift. No weight values are generated or inferred. No official IWF file has been found with an open, commercially usable licence.
+- Additional weights source sweep: Tipsheet documents monthly per-member weight data going back to Jan 2008 but says holdings derive from NSE monthly weightage reports and upstream sources retain their terms; no independent permission to re-use NSE report data in automated simulation was established. HF candidate is CC BY-NC-SA (non-commercial), binary/equal-weight GitHub datasets are not IWF, and DataPointX says downloads are not open pending licensing.
+- Official NSE Indices data subscription product explicitly offers historical constituent names, identifiers, market capitalisation, weights and prices; licensing enquiry is available at indices@nse.co.in. This is the clearest official route if no permitted free exact-weight source is found: https://www.nse.in/static/nse-indices/index-data-subscription.
+- **Gate decision:** membership sub-gate PASS WITH LIMITATIONS; numerical IWF / IDs / corporate actions / equity coverage remain BLOCKED; overall C1 does not pass and C2 remains gated.
+
+## 2026-10-31 — Point-in-time corporate-action identity correction
+
+- NSE circular NSE/FAOP/70882 dated 2025-10-17 changes `TATAMOTORS` to `TMPV` effective 2025-10-24. The upstream membership dataset had used the new `TMPV` ticker back to 2014; that historical alias is not point-in-time correct. The project CSV now has `TATAMOTORS` until 2025-10-24 and `TMPV` from that date.
+- NSE Indices press release 2025-10-07 included temporary zero-price `DUMMYTATAM` in NIFTY 50 effective 2025-10-14 (close 2025-10-13): https://www.niftyindices.com/Press_Release/ind_prs07102025.pdf. Press release 2025-11-13 removed the demerged TMCV/dummy effective 2025-11-17 (close 2025-11-14): https://www.niftyindices.com/Press_Release/ind_prs13112025.pdf.
+- Membership CSV now marks this interval as `member_type=zero_price_dummy` and `market_data_required=FALSE`. It must remain in the index audit ledger but be excluded from any tradable stock feature/prediction panel.
+- Corrected the month-end cardinality expectation: 102 snapshots have 50 entries; 2025-10-31 has 51 because the zero-price placeholder remains active. The earlier statement that all 103 month-ends had 50 is superseded and logged as an error/correction.
+- Updated test suite has six tests; the new Actions run is still pending. Do not report it as passed until inspected.
+
+## Tata Motors security identity and index placeholder
+
+- NSE circular NSE/FAOP/70882 (2025-10-17) makes the `TATAMOTORS` -> `TMPV` ticker change effective 2025-10-24: https://nsearchives.nseindia.com/content/circulars/FAOP70882.pdf. Historical membership symbols must not be backfilled using the current alias.
+- NSE Indices press release 2025-10-07 includes temporary zero-price `DUMMYTATAM` in NIFTY 50 effective 2025-10-14 (close 2025-10-13): https://www.niftyindices.com/Press_Release/ind_prs07102025.pdf. Press release 2025-11-13 removes it effective 2025-11-17 (close 2025-11-14): https://www.niftyindices.com/Press_Release/ind_prs13112025.pdf.
+- The membership CSV stores the dummy as `zero_price_dummy` with `market_data_required=FALSE`. Retain it for historical index-ledger audit; exclude it from tradable constituent panel construction.
+- The corrected 103 month-end snapshots have 50 entries at 102 dates and 51 on 2025-10-31 due the temporary dummy. Earlier all-50 statement is superseded; see [membership provenance](MEMBERSHIP_DATA_PROVENANCE.md) and [machine audit](C1_MEMBERSHIP_AUDIT.json).
+- Validation: corrected Actions run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) succeeded with **6 tests passed**. Earlier failures (runs 41184902797 and 41184934278) were caused by CSV column shifting and an intermediate stale audit JSON; both are corrected and logged in E0030.

@@ -61,3 +61,81 @@
 - Added `?as_of_date=YYYY-MM-DD` support to the Pages predictor so a completed date-specific JSON result can be opened directly without generating another request. The Actions completion comment now links back to that exact result page.
 - Pages deployment for the deep-link JavaScript passed in run [40201836007](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201836007). A later documentation deployment was still running at latest inspection.
 - Direct historical result link: https://vcr-trading-research.github.io/NIFTY-Prediction/?as_of_date=2024-09-20. External browser verification of the rendered page was unavailable; the JSON record and deployment run are verified.
+
+
+## 2026-10-31 — User requested resume; BUP-01 C1 checkpoint
+- User asked to resume the ongoing BUP-01 constituent-level weekly-expiry research.
+- Reviewed existing C1 plan/status, source register, feasibility note, README, research/error logs, and the latest relevant GitHub Actions evidence.
+- Reported and recorded: offline source audit run 41181684637 passed; Dhan preflight run 41181684573 had 9/9 offline tests pass but live profile HTTP 401; token-refresh PR #28 checks pass but PR remains draft/open; licensed membership candidate is not a weight series and is stale after 2025-09.
+- Updated C1 status and README. No private reasoning or credentials are stored; this log records the visible decision and outcomes only.
+
+2026-10-31 — Dhan profile authentication diagnostic follow-up
+
+- Continued the BUP-01 C1 resume after the Dhan preflight returned HTTP 401.
+- Aligned the profile request with Dhan's documented access-token-only header and added a regression test.
+- Latest Actions run 41181948126 passed 10/10 offline tests; live token generation returned HTTP 200 without an accessToken field and the fallback token was rejected by profile with HTTP 401.
+- Updated STATUS.md, README.md, ERROR_LOG.md and RESEARCH_LOG.md. This is a visible-outcome summary only; credentials and private reasoning are not stored.
+
+2026-10-31 — PR #28 review state updated
+
+- After its mocked Actions checks passed, PR #28 was marked ready for review. GitHub reports `mergeable_state=dirty`, so it was not merged. No direct main-branch bypass was used.
+
+
+## 2026-10-31 — Dhan authentication retry after shared-helper correction
+
+- Corrected `scripts/refresh_dhan_token.py` on the C1 branch to use POST with query parameters, reject line breaks, mask the ephemeral token and export only through `GITHUB_ENV`. Added mocked regression tests and wired the helper/test paths into the C1 Dhan workflow.
+- The BUP-01 preflight already used POST; its request shape was retained. This avoids conflating the shared-helper defect with the independent live-account authentication failure.
+- Actions run [41182555655](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182555655): all steps passed, including 10/10 offline tests. Live token endpoint returned HTTP 200 but only `message` and `status` keys; no access token was returned. The fallback profile request returned HTTP 401. No security master, daily bars or intraday bars were queried.
+- Added safe provider-error categorisation (category only; no provider message text) and a regression test. A subsequent run is pending/in progress at the time of this log update; its result must be checked before closing this diagnostic.
+- C1 remains BLOCKED. The token endpoint's HTTP 200 is not authentication success. Do not infer the token secret values or expose them. Next gate is to classify Dhan's authentication response safely, then request user-owned secret correction only if the provider confirms an invalid/mismatched credential.
+
+
+## 2026-10-31 — Dhan authentication succeeded; constituent coverage partially verified
+
+- Follow-up Actions run [41182679514](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514) completed successfully. The fresh TOTP request returned a valid access token; the profile authenticated (HTTP 200); the Data API plan is active; all 5/5 current scrip-master probe symbols resolved.
+- Historical daily probe passed with 22 bars for 2018-01-01 to 2018-02-01. Historical one-minute probes passed for all 5 symbols on 2022-10-31 (374 bars each, including the 10:00 anchor and 15:25–15:29 close window).
+- Recent-session probe on 2026-10-30 returned 359 bars per symbol and 10:00 anchors, but no 15:25–15:29 bars; targeted close-window requests returned empty arrays (0/5). Overall status remains PARTIAL_OR_BLOCKED; do not treat the recent session as complete.
+- Offline Dhan tests: 11 passed. No credentials, token values, raw bars, prices or security IDs were stored.
+- A one-date follow-up probe for 2026-10-29 has been committed and its Actions run is pending/in progress; this will distinguish a date-specific gap from a recent-history limitation. C1 remains blocked pending point-in-time weights, current membership, identifier/corporate-action history and full coverage validation.
+
+
+## 2026-10-31 — Follow-up date probe inconclusive; Dhan workflow hardened
+
+- The 2026-10-30 preflight result remains the verified successful run: fresh TOTP token, profile HTTP 200, active Data API plan, 5/5 current symbols resolved, 22 historical daily bars, and 5/5 historical intraday windows on 2022-10-31. The 2026-10-30 recent-session sample had 10:00 anchors but no 15:25–15:29 close bars (0/5).
+- Follow-up run [41182764467](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182764467) attempted the 2026-10-29 probe but could not obtain a fresh token (HTTP 200 without accessToken); fallback profile returned HTTP 401. No price endpoints were called. This run is INCONCLUSIVE, not evidence that 2026-10-29 bars are unavailable.
+- Hardened workflow so pull-request checks run offline tests only, Dhan calls are serialized, and editing the workflow file alone does not consume another TOTP token. Offline tests passed 11/11 on the last live preflight.
+- Dhan official guidance states access tokens are valid for 24 hours, API-key/secret authentication is the intended automation route, and at most five active tokens may be retained simultaneously. Avoid repeated token-generation loops. Sources: https://dhanhq.co/docs/v2/authentication/ and https://dhan.co/support/platforms/dhanhq-api/how-many-access-tokens-can-i-generate-for-my-dhan-account/.
+- C1 remains BLOCKED: recent-session close coverage and point-in-time index data/rights gates remain unresolved. No constituent model or trading result exists.
+
+## 2026-10-31 — User approved continuation of BUP-01 C1
+- User said “Ok Proceed”.
+- Re-read the C1 status, Dhan preflight JSON, source register, research/error/conversation logs, operating rules, pre-registered research plan and relevant workflow on the C1 branch; checked the corresponding main README state.
+- New source review: official NIFTY methodology/IWF guidance, NSE website Terms of Use and Dhan v2 historical-data documentation. Confirmed IWF is more complex than ownership roll-ups; NSE website terms create a rights gate for automated scraping/simulation; Dhan intraday history is documented for active instruments only and is queried in 90-day windows.
+- Decision: do not repeat TOTP refresh without a meaningful reason; keep NSE scraping disabled; keep C1 BLOCKED and C2 gated. Record only visible decisions and outcomes, not hidden private reasoning or secrets.
+
+## 2026-10-31 — User approved continued BUP-01 C1 source audit
+- User said “Ok proceed”.
+- Re-read project instructions, phase plan, status, preflight JSON, source register and available branch logs before continuing.
+- Discovered CC BY 4.0 NIFTY 50 point-in-time membership data. Extracted 83 upstream NIFTY 50 intervals; the source ends at 2025-09-30 and has no numeric weights. Applied the official 2026-09-30 replacement (WIPRO out, BSE in) from the NSE Indices press release dated 2026-08-10.
+- Validated half-open intervals against 103 month-end snapshots from 2018-04 through 2026-10: all dates had 50 unique members. Added a provenance note, machine audit JSON and regression tests. This is a membership/cardinality check, not independent transition verification.
+- Identified the official NSE Indices historical data subscription as an exact-weight/identifier path but requiring licensing. Free public weights candidates were either non-commercial or subject to upstream terms; binary weights are not official IWF.
+- Decision: membership sub-gate PASS WITH LIMITATIONS; overall C1 remains BLOCKED; no model training. Only visible decisions/outcomes are recorded, not hidden reasoning or secrets.
+
+## 2026-10-31 — BUP-01 membership validation automation
+- Added `bup01-c1-membership-tests.yml` with automatic push/path and pull-request triggers plus a manual Actions dispatch button. It runs only local membership integrity tests and does not call Dhan or scrape NSE.
+- Added an audit-JSON consistency test. The code and data files are committed on the C1 branch; workflow outcome must be inspected before labelling CI as passed.
+
+## 2026-10-31 — BUP-01 Tata Motors identity correction
+- Further audit found that the historical membership dataset carried `TMPV` back to 2014, although NSE circular NSE/FAOP/70882 makes the TATAMOTORS -> TMPV symbol change effective 2025-10-24.
+- Official NSE Indices demerger releases also add zero-price `DUMMYTATAM` on 2025-10-14 and remove it effective 2025-11-17. Corrected the project membership CSV, provenance, machine audit and tests. The placeholder is explicitly flagged non-tradable and excluded from the stock panel.
+- Correct month-end cardinality: 50 entries at 102 of 103 snapshots and 51 on 2025-10-31 due the official temporary placeholder. Earlier 103/103 all-50 statement was corrected and logged.
+- Previous Actions run 41184751617 covered the earlier four-test revision only. A new six-test run is pending. Overall C1 remains blocked; no model training done.
+
+## 2026-10-31 — Membership CI correction attempt
+- The first post-Tata-correction Actions tests failed. Job-log review traced one failure to a comma in an unquoted dummy-member CSV note (column shift), and one to the older 84-row audit file being present in that intermediate commit.
+- Corrected CSV quoting, checked all 86 rows have 11 columns and no weightage values, and confirmed the corrected 103-month-end counts: 102×50, 1×51 (2025-10 dummy).
+- A fresh membership workflow run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) is queued; no success claim until completed.
+
+## 2026-10-31 — Corrected membership CI passed
+- The corrected CSV and audit triggered Actions run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548); job log confirms **6 passed in 0.02s**.
+- Marked E0030 closed for the CSV quoting / intermediate audit sequencing error. Membership sub-gate remains PASS WITH LIMITATIONS; overall C1 remains BLOCKED, so no stock model was trained.

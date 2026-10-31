@@ -1,0 +1,47 @@
+name: BUP-01 membership integrity tests
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c1-data
+    paths:
+      - "data/constituent_weekly/nifty50_membership_intervals.csv"
+      - "research/constituent_weekly/MEMBERSHIP_DATA_PROVENANCE.md"
+      - "research/constituent_weekly/C1_MEMBERSHIP_AUDIT.json"
+      - "tests/test_bup01_membership_intervals.py"
+      - ".github/workflows/bup01-c1-membership-tests.yml"
+  pull_request:
+    branches:
+      - phase/constituent-weekly-outcomes-c1-data
+    paths:
+      - "data/constituent_weekly/nifty50_membership_intervals.csv"
+      - "research/constituent_weekly/MEMBERSHIP_DATA_PROVENANCE.md"
+      - "research/constituent_weekly/C1_MEMBERSHIP_AUDIT.json"
+      - "tests/test_bup01_membership_intervals.py"
+      - ".github/workflows/bup01-c1-membership-tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bup01-c1-membership-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  membership-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout selected branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install test runner
+        run: python -m pip install --disable-pip-version-check pytest
+      - name: Validate point-in-time membership intervals
+        run: python -m pytest -q tests/test_bup01_membership_intervals.py

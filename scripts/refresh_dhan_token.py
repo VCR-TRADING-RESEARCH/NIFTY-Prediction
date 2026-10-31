@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import os
 import sys
-from urllib.parse import urlencode
 
 import pyotp
 import requests
@@ -32,9 +31,11 @@ def main() -> int:
 
     try:
         totp = pyotp.TOTP(totp_secret).now()
-        params = urlencode({"dhanClientId": client_id, "pin": pin, "totp": totp})
-        endpoint = "https://auth.dhan.co/app/generateAccessToken?" + params
-        response = requests.get(endpoint, timeout=30)
+        response = requests.post(
+            "https://auth.dhan.co/app/generateAccessToken",
+            params={"dhanClientId": client_id, "pin": pin, "totp": totp},
+            timeout=30,
+        )
         if not response.ok:
             print("DHAN_AUTH_ERROR: Token service returned HTTP", response.status_code, file=sys.stderr)
             return 2
@@ -44,8 +45,12 @@ def main() -> int:
             # Do not print the response body; it may contain sensitive values.
             print("DHAN_AUTH_ERROR: Response did not contain a valid access-token field.", file=sys.stderr)
             return 2
+        if "\n" in token or "\r" in token:
+            print("DHAN_AUTH_ERROR: Token contained unexpected line breaks; refusing to export it.", file=sys.stderr)
+            return 2
+        print(f"::add-mask::{token}")
         with open(github_env, "a", encoding="utf-8") as handle:
-            handle.write("DHAN_JOB_ACCESS_TOKEN=" + token.replace("\n", "") + "\n")
+            handle.write("DHAN_JOB_ACCESS_TOKEN=" + token + "\n")
         print("DHAN_AUTH_OK: Short-lived token generated and exported to this Actions job; token value withheld.")
         return 0
     except Exception as exc:

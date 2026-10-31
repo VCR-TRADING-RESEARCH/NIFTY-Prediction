@@ -1,0 +1,81 @@
+name: BUP-01 Dhan equity data preflight
+
+on:
+  push:
+    branches:
+      - "phase/constituent-weekly-outcomes-c1-data"
+    paths:
+      - "scripts/refresh_dhan_token.py"
+      - "tests/test_dhan_token_refresh_script.py"
+      - "scripts/constituent_weekly/dhan_equity_preflight.py"
+      - "scripts/constituent_weekly/update_c1_dhan_status.py"
+      - "tests/test_constituent_weekly_dhan_preflight.py"
+      - "live_api/app.py"
+  pull_request:
+    branches:
+      - "phase/constituent-weekly-outcomes-c0"
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bup01-c1-dhan-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  dhan-equity-preflight:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout C1 data branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install project and live API dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r live_api/requirements.txt pytest
+      - name: Run offline Dhan response-validation tests
+        run: python -m pytest -q tests/test_constituent_weekly_dhan_preflight.py
+      - name: Test current Dhan profile, security master and equity candles
+        if: github.event_name != 'pull_request'
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+        run: python scripts/constituent_weekly/dhan_equity_preflight.py
+      - name: Update sanitized C1 Dhan status
+        if: always() && github.event_name != 'pull_request'
+        run: python scripts/constituent_weekly/update_c1_dhan_status.py
+      - name: Publish sanitized result to job summary
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          if [ -f research/constituent_weekly/C1_DHAN_PREFLIGHT.json ]; then
+            cat research/constituent_weekly/C1_DHAN_PREFLIGHT.json >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f research/constituent_weekly/STATUS.md ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "The phase status was updated; no token, security ID or raw price values are included." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Commit compact Dhan diagnostics only
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/constituent_weekly/C1_DHAN_PREFLIGHT.json research/constituent_weekly/STATUS.md
+          if ! git diff --cached --quiet; then
+            target_branch="${{ github.head_ref || github.ref_name }}"
+            git pull --rebase --autostash origin "$target_branch"
+            git push origin "HEAD:$target_branch"
+          fi

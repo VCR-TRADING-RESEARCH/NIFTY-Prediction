@@ -1,0 +1,52 @@
+{
+  "track": "BUP-01",
+  "created_at_utc": "2026-10-31T07:58:57Z",
+  "finished_at_utc": "2026-10-31T07:59:07Z",
+  "status": "PARTIAL_OR_BLOCKED",
+  "credentials_or_tokens_recorded": false,
+  "raw_market_bars_saved": false,
+  "auth_method": "totp_refresh",
+  "token_refresh_status": "SUCCESS",
+  "profile_status": "HTTP_200",
+  "data_plan_active": true,
+  "resolved_probe_symbol_count": 5,
+  "missing_probe_symbol_count": 0,
+  "daily_history_probe": {
+    "status": "PASS",
+    "bar_count": 22,
+    "date_range_requested": [
+      "2018-01-01",
+      "2018-02-01"
+    ]
+  },
+  "historical_intraday": {
+    "date": "2022-10-31",
+    "passed": 5,
+    "expected": 5,
+    "bars_per_symbol": 374,
+    "anchor_window": "10:00–10:03",
+    "expiry_close_window": "15:25–15:29",
+    "status": "PASS"
+  },
+  "recent_intraday": {
+    "date": "2026-10-30",
+    "passed": 0,
+    "expected": 5,
+    "bars_per_symbol": 359,
+    "anchor_window": "present",
+    "expiry_close_window": "absent",
+    "targeted_close_requests": "EMPTY_OR_MISMATCHED_ARRAYS",
+    "status": "PARTIAL"
+  },
+  "follow_up_probe": {
+    "date": "2026-10-29",
+    "status": "INCONCLUSIVE_AUTH_RETRY_FAILED",
+    "actions_run": "41182764467",
+    "details": "TOTP endpoint returned HTTP 200 without accessToken; fallback profile returned HTTP 401. No price requests were made."
+  },
+  "offline_tests": {
+    "passed": 11,
+    "failed": 0
+  },
+  "note": "One fresh TOTP token was successfully generated and authenticated. Data API plan active. Current scrip master and historical data verified for probes only. No raw bars, prices, security IDs, credentials or tokens stored. C1 is not passed."
+}

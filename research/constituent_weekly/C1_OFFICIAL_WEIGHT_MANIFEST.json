@@ -1,0 +1,9 @@
+{
+  "audit_type": "OFFLINE_ARCHIVE_INVENTORY",
+  "retrieved_at_utc": "2026-10-31T06:57:43.403030+00:00",
+  "input_directory": "data/authorized/constituent_weekly",
+  "network_access_performed": false,
+  "status": "NO_AUTHORISED_ARCHIVE",
+  "archives": [],
+  "important_note": "This script does not fetch, scrape or redistribute market data. Only archives separately supplied with documented usage rights should be placed in the input directory."
+}
