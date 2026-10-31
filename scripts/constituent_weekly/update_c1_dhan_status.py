@@ -22,6 +22,12 @@ def main() -> int:
     legacy = data.get("legacy_identity_probe", [])
     legacy_passed = sum(1 for probe in legacy if probe.get("status") == "PASS")
     proxy_times = sorted({probe.get("expiry_proxy_bar_time_ist") for probe in probes if probe.get("expiry_proxy_bar_time_ist")})
+    range_probes = data.get("ninety_day_range_probe", [])
+    range_passed = sum(1 for probe in range_probes if probe.get("status") == "PASS")
+    range_expected = data.get("ninety_day_range_probe_expected", len(range_probes))
+    range_dates = sorted({(probe.get("from_date"), probe.get("to_date")) for probe in range_probes if probe.get("from_date") and probe.get("to_date")})
+    range_sessions = sorted({probe.get("session_count") for probe in range_probes if probe.get("session_count") is not None})
+    nonstandard_dates = sorted({date for probe in range_probes for date in probe.get("non_standard_session_dates", [])})
 
     lines = [
         START,
@@ -36,12 +42,13 @@ def main() -> int:
         f"- Historical membership symbol aliases matched in current Dhan master: {data.get('historical_membership_symbols_found_in_current_master_count', 'NOT_RUN')}/{data.get('historical_membership_symbol_count', 'NOT_RUN')}",
         f"- Five-symbol one-minute anchor/expiry-proxy checks: {passed}/{expected}",
         f"- Full point-in-time NIFTY 50 probe: {data.get('full_universe_probe_passed', 'NOT_RUN')}/{data.get('full_universe_probe_expected', 'NOT_RUN')} passed; resolved {data.get('full_universe_probe_resolved', 'NOT_RUN')}; date {data.get('full_universe_probe_date', 'NOT_RUN')}",
+        f"- 90-day Dhan one-minute range: {range_passed}/{range_expected} symbols passed; date range {range_dates if range_dates else 'NOT_RUN'}; standard-session counts {range_sessions if range_sessions else 'NOT_RUN'}; non-standard session dates {nonstandard_dates if nonstandard_dates else 'none recorded'}",
         f"- Accepted expiry proxy: last returned one-minute candle at/before {data.get('expiry_proxy_cutoff_ist', '15:15:00')} IST; sample proxy timestamp(s): {', '.join(proxy_times) if proxy_times else 'NOT_RECORDED'}",
         f"- Historic HDFC Ltd legacy-security-ID probes: {legacy_passed}/{len(legacy)} passed",
         f"- Deep daily-history probe: {data.get('daily_history_probe', {}).get('status', 'NOT_RUN')}",
         f"- Historical-weight candidate cache: {weight.get('status', 'NOT_RUN')}; {weight.get('rows', 'N/A')} rows, {weight.get('ticker_columns', 'N/A')} ticker columns, {weight.get('first_date', 'N/A')} to {weight.get('last_date', 'N/A')}",
         f"- Weight candidate licence: {weight.get('license', 'NOT_RECORDED')}; commercial use permitted: {weight.get('commercial_use_permitted', 'NOT_RECORDED')}",
-        "- This is a five-symbol/two-date market-data sample, not full-universe OHLCV certification.",
+        "- The one-day 50-stock probe and three-symbol 90-day batch probe are not a complete five-year point-in-time constituent panel.",
         "- Raw bars, prices, security IDs, credentials and tokens are not stored in this report.",
         "- C1 remains gated by official/authorised point-in-time weights, the 2025-09 onward weight gap, full historical security identity and coverage, and index-basket reconciliation.",
         END,
