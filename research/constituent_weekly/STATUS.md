@@ -223,3 +223,13 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Recent sample 2026-10-29: 359 bars per stock, valid 10:00 anchor, but feed stopped at 15:14 IST; expiry-close window missing for all five. Targeted 15:20–15:30 requests returned empty arrays (**0/5**).
 - No raw price bars, security IDs or credentials were committed. Sanitized output is in [C1_DHAN_PREFLIGHT.json](C1_DHAN_PREFLIGHT.json).
 - C1 remains BLOCKED: historical security mapping for five aliases, recent close-bar coverage, full constituent OHLCV history, official numerical IWF/weights and basket reconciliation remain open. C2 is not authorised.
+
+
+## Public minute-data source audit — 2026-11-01
+
+- Updated pre-registered plan to v1.1 to apply the user-approved 15:15 expiry proxy consistently to both constituent and NIFTY index outcomes; 15:30 official close is a separate sensitivity only.
+- Discovered historical public minute archive gsidhu/nse-intraday-data: 47/50 point-in-time NIFTY 50 member files on both 2022-11-03 and 2022-11-04. Missing: DIVISLAB, SBILIFE, APOLLOHOSP. Five sample stocks plus NIFTY had 10:00–10:03 anchor rows and 15:14 bars on 2022-11-03.
+- The archive README claims MIT but neither the fork nor upstream root had a LICENSE file. It is diagnostic only; no bars were imported. Another 2024–2026 stock dataset is limited to research/education and excludes commercial redistribution; a large HF candidate has no verified licence; DataPointX downloads are not open yet.
+- Dhan docs confirm five years of minute history for active instruments and 90-day query chunks, but no guarantee for inactive/delisted instruments. Daily history extends to instrument inception.
+- **C1 remains NOT PASSED / RIGHTS + COVERAGE BLOCKED.** We do not have licensed full-universe 1-minute history, point-in-time official weights or 98% basket coverage. C2 remains gated.
+- Details: [C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md](C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md).

@@ -130,3 +130,10 @@ The public repository `aditya-jha/nse-historical-membership` was audited at pinn
 **AMFI alternative:** public AMFI monthly holdings/Excel files exist for NIFTY 50 passive schemes, but AMFI's current Terms of Use restrict use to personal/non-commercial purposes and prohibit public display, publication, derivative works and storage of significant portions. We do not ingest or use AMFI portfolios in this public workflow absent written permission. Even if permitted, ETF holdings would be a proxy for index weights, not the official IWF series.
 
 **C1 decision:** licensed membership and ownership facts are now available as research inputs, but C1 remains BLOCKED because historical numeric official free-float weights/IWF are absent, current membership is stale past 2025-09-30, and stock-level intraday bars have not been validated. Do not advance to C2 or train a model yet.
+
+
+## Source audit update — 2026-11-01
+
+A separate public-minute-source review is recorded in [C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md](C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md). The GitHub archive has 47/50 point-in-time members present on 2022-11-03 and 2022-11-04; the three absent files are DIVISLAB, SBILIFE and APOLLOHOSP. Five sample stocks and the NIFTY file on 2022-11-03 contain 10:00–10:03 rows and a 15:14 row. The repo README asserts MIT, but neither the inspected fork nor upstream root contains a LICENSE file; it remains diagnostic only. Other discovered datasets are either research/education only, lack a verified licence, or are not downloadable pending licensing. No raw third-party price data was imported.
+
+Dhan documentation confirms daily history from instrument inception, minute history up to five years for active instruments, and a maximum 90-day request window. This does not establish minute coverage for inactive/delisted historical stocks. C1 remains NOT PASSED; no third-party source has cleared rights and full-universe QA.

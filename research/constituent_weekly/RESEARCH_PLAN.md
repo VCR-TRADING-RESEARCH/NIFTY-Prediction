@@ -1,7 +1,7 @@
 # Bottom-Up NIFTY 50 Weekly Expiry Prediction — Pre-Registered Plan
 
 **Track ID:** BUP-01  
-**Plan version:** 1.0  
+**Plan version:** 1.1  
 **Registered:** 2026-10-31  
 **Status:** Locked for the first bounded research cycle  
 **Research branch:** phase/constituent-weekly-outcomes-c0
@@ -60,7 +60,7 @@ Let E[t-1] and E[t] be consecutive **verified actual NIFTY 50 weekly option expi
 ### 4.1 Index target
 
 - A_N[t]: first valid NIFTY 50 one-minute candle open stamped at or after 10:00 IST and no later than 10:03 IST on D[t].
-- C_N[t]: official NIFTY 50 price-return index close on E[t].
+- C_N[t]: close of the latest valid one-minute NIFTY 50 index candle timestamped from 15:00 through 15:14 IST on E[t], interpreted as a 15:15 expiry proxy. This is not the official 15:30 close; the official daily close may be reported only as a separate sensitivity and must not be mixed with the stock 15:15-proxy target.
 - R_N[t] = C_N[t] / A_N[t] - 1.
 - Label UP if R_N[t] > 0; DOWN if R_N[t] < 0; exact ties are FLAT and reported separately. No arbitrary deadband is introduced in v1.0.
 
@@ -72,7 +72,7 @@ Let U[t] be the set of stocks officially included in NIFTY 50 and effective at t
 
 For each stock i in U[t]:
 - A[i,t]: first valid stock one-minute candle open at or after 10:00 IST and no later than 10:03 IST on D[t].
-- C[i,t]: last valid stock one-minute candle close in the 15:25–15:29 IST window on E[t].
+- C[i,t]: close of the latest valid stock one-minute candle timestamped from 15:00 through 15:14 IST on E[t], interpreted as a 15:15 expiry proxy. Record the actual timestamp; exclude later bars.
 - R[i,t] = C[i,t] / A[i,t] - 1 after documented mechanical continuity treatment for splits, bonuses, rights, mergers, demergers and security changes.
 - Stock label: UP if R[i,t] > 0, DOWN if R[i,t] < 0, exact tie FLAT.
 
@@ -248,3 +248,9 @@ Visible user conversations and decisions may be logged; hidden private chain-of-
 ## 14. Registration status
 
 At registration, C0 is active; C1–C6 are pending. No constituent panel has been built, no stock model has been trained and no bottom-up prediction result exists. The next empirical decision is the point-in-time data/weight feasibility audit, not model selection.
+
+
+## Version history and controlled amendment
+
+- **v1.0 — 2026-10-31:** Original pre-registered scope, targets, hypotheses, validation plan and acceptance gates.
+- **v1.1 — 2026-11-01:** User-directed expiry convention change. For both stock constituents and the NIFTY 50 index outcome, use the close of the latest valid one-minute candle whose timestamp is within 15:00–15:14 IST on the expiry session, label it the 15:15 expiry proxy, and store the actual timestamp. It is not the official 15:30 close. A 15:30 index close may be shown only as a separate sensitivity and cannot be mixed into the primary stock/index target. This replaces the earlier 15:25–15:29 stock-bar requirement. No other research question, hypothesis, entry time, feature policy, fold design or acceptance threshold is changed by this amendment.
