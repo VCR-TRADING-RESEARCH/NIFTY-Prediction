@@ -204,3 +204,11 @@ The HF dataset's exact row-sum validation is useful as a structural check, but i
 - Membership CSV now marks this interval as `member_type=zero_price_dummy` and `market_data_required=FALSE`. It must remain in the index audit ledger but be excluded from any tradable stock feature/prediction panel.
 - Corrected the month-end cardinality expectation: 102 snapshots have 50 entries; 2025-10-31 has 51 because the zero-price placeholder remains active. The earlier statement that all 103 month-ends had 50 is superseded and logged as an error/correction.
 - Updated test suite has six tests; the new Actions run is still pending. Do not report it as passed until inspected.
+
+## Tata Motors security identity and index placeholder
+
+- NSE circular NSE/FAOP/70882 (2025-10-17) makes the `TATAMOTORS` -> `TMPV` ticker change effective 2025-10-24: https://nsearchives.nseindia.com/content/circulars/FAOP70882.pdf. Historical membership symbols must not be backfilled using the current alias.
+- NSE Indices press release 2025-10-07 includes temporary zero-price `DUMMYTATAM` in NIFTY 50 effective 2025-10-14 (close 2025-10-13): https://www.niftyindices.com/Press_Release/ind_prs07102025.pdf. Press release 2025-11-13 removes it effective 2025-11-17 (close 2025-11-14): https://www.niftyindices.com/Press_Release/ind_prs13112025.pdf.
+- The membership CSV stores the dummy as `zero_price_dummy` with `market_data_required=FALSE`. Retain it for historical index-ledger audit; exclude it from tradable constituent panel construction.
+- The corrected 103 month-end snapshots have 50 entries at 102 dates and 51 on 2025-10-31 due the temporary dummy. Earlier all-50 statement is superseded; see [membership provenance](MEMBERSHIP_DATA_PROVENANCE.md) and [machine audit](C1_MEMBERSHIP_AUDIT.json).
+- Validation: corrected Actions run is pending after two failed test attempts (runs 41184902797 and 41184934278); inspect the latest run before marking the new test suite PASS.
