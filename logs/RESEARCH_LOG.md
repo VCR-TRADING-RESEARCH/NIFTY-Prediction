@@ -309,3 +309,10 @@
 - Reconstructed and committed the sanitized result from the successful run logs, explicitly recording that this was reconstructed because the earlier workflow revision failed to persist it. C1 status and report are updated in branch commits e2db6de9fafc6b7d986924f44688bbcc1322ada2 and ac7b63a9207a8ad04383d1a3594f7651c7042430.
 - C1 remains BLOCKED. No bulk 50-stock OHLCV download, point-in-time weight validation, panel, model, forecast, or strategy was produced. C2 remains gated.
 
+## 2026-10-31 — Successful Dhan rerun with diagnostics persistence verified
+
+- After correcting the workflow commit sequence, fresh-token run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41224048773) completed SUCCESS.
+- The live result again confirmed profile HTTP 200, active Data API plan, current-universe resolution 50/50 and historical aliases 79/84. The five-stock daily and 2022 intraday probes passed; the 2026-10-29 recent expiry-close probe remained 0/5.
+- The workflow committed the sanitized JSON and status successfully as commit d5a82d8, confirming the autostash persistence defect is corrected.
+- C1 status now points to run 41224048773. The previous auth-only failure is preserved separately in C1_DHAN_LAST_ATTEMPT.json and does not supersede this later successful run.
+
