@@ -169,3 +169,10 @@
 - Diagnosed and fixed the workflow's generated-report persistence bug. The first workflow revision's autostash/rebase sequence left generated files unstaged. The corrected workflow commits diagnostics before rebasing.
 - Preserved the successful run's sanitized results and the later failed auth-only attempt separately in the C1 branch. Current status remains C1 BLOCKED; C2 is not authorised until historic IDs, weights, corporate actions and full price/close coverage pass.
 
+## 2026-10-31 — Final Dhan run and persistence verification
+
+- A subsequent protected push run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41224048773) successfully authenticated with a fresh TOTP token, passed profile/data-plan checks, and completed all 13 offline tests.
+- It reconfirmed 50/50 current NIFTY 50 symbols and 79/84 historical aliases in the current Dhan master. The five-stock 2022 historical intraday sample passed, while the 2026-10-29 expiry-close bars remained missing for all five.
+- The corrected workflow committed the sanitized result and status as d5a82d8. Repository verification confirmed the latest successful report and the earlier auth-only failure are separately preserved.
+- Research decision unchanged: C1 BLOCKED; do not proceed to C2 or claim a model/strategy until remaining identity, weights and price-coverage gates pass.
+
