@@ -102,3 +102,11 @@
 - Its related shareholding data have useful quarterly coverage, reaching all 50 then-current reconstructed members from 2023-09 to 2025-09, but provide ownership roll-ups only. Broadcast timestamps must be joined from filing manifests before any ownership feature can be used. These are not index weights.
 - AMFI ETF portfolios were identified but not ingested because AMFI site terms restrict public redistribution/derivative works and significant electronic storage.
 - The research remains at C1; no panel, model or NIFTY prediction is available.
+
+
+## 2026-10-31 — C1 offline workflow passed; Dhan equity preflight staged
+
+- Reported offline C1 source-audit run 41180457400 as a successful workflow/code check, with no authorised local archives present.
+- Added a new Dhan equity preflight path and offline tests using the existing POST-based live API auth function. The script avoids printing or storing credentials, token values, security IDs and raw prices.
+- The Dhan workflow's execution is not yet visible; no live equity-data result is claimed.
+- C1 remains blocked on official point-in-time free-float weights, post-2025-09-30 membership and verified constituent minute bars.
