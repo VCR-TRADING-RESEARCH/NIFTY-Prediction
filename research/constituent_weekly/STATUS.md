@@ -49,7 +49,7 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_FETCH_STATUS_START -->
 ## Latest automated C1 source-fetch result
 
-- Recorded at (UTC): 2026-10-31T06:57:19.854455+00:00
+- Recorded at (UTC): 2026-10-31T06:57:24.005861+00:00
 - Official report retrieval status: NO_AUTHORISED_ARCHIVE
 - This result is source-fetch/inventory only; it is not a historical weight, membership, or trading-data validation.
 - C1 acceptance: NOT PASSED; historical reports, point-in-time availability, membership and basket reconciliation remain required.
