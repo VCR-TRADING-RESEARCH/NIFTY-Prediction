@@ -101,7 +101,7 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_DHAN_STATUS_START -->
 ## Latest Dhan equity preflight
 
-- Recorded at (UTC): 2026-10-31T07:31:29.719420+00:00
+- Recorded at (UTC): 2026-10-31T07:33:57.913128+00:00
 - Status: BLOCKED_DHAN_AUTH
 - Data plan active: None
 - Current symbols resolved: 0
@@ -111,3 +111,4 @@ No model training until point-in-time membership, numeric free-float weights, se
 - Raw bars, prices, security IDs, credentials and tokens are not stored in this report.
 - This probe does not establish inactive/delisted instrument history, point-in-time membership or index weights.
 <!-- C1_DHAN_STATUS_END -->
+
