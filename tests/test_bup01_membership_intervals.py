@@ -67,3 +67,13 @@ def test_membership_data_contains_no_fabricated_index_weights():
     assert all(row["index_id"] == "217" and row["index_name"] == "Nifty 50" for row in rows)
     assert all(row["weightage"] == "" for row in rows)
     assert len({(r["symbol"], r["valid_from"], r["valid_to"]) for r in rows}) == len(rows)
+
+def test_machine_audit_matches_membership_artifact():
+    import json
+    audit_path = ROOT / "research" / "constituent_weekly" / "C1_MEMBERSHIP_AUDIT.json"
+    audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    assert audit["membership_status"] == "PASS_WITH_LIMITATIONS"
+    assert audit["overall_c1_status"] == "BLOCKED"
+    assert audit["validation"]["month_end_dates_checked"] == 103
+    assert audit["validation"]["failures"] == 0
+    assert audit["source_weightage_values_present"] == 0
