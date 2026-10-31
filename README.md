@@ -421,3 +421,10 @@ The subsequent status/validator correction was also pushed and validated: [run 4
 - This includes HDFC Ltd legacy security ID 1330 and the period-specific TATAMOTORS→TMPV mapping. The later demerger/rename prices are not stitched.
 - Together with the 2026Q3 full-basket result [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795), two separated quarter-slices are now validated. This is not proof of continuous five-year coverage.
 - Details: [2022 historical validation report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_DHAN_HISTORICAL_2022_90D_VALIDATION.md). C1 remains NOT PASSED; official weight series, continuous coverage, corporate actions and NIFTY reconstruction remain open.
+
+
+## Five-year-edge validation — investigation in progress (2026-11-01)
+
+- The 2021-11-01–2022-01-29 Dhan check resolved all 50 security IDs and returned 1,233,597 bars, but strict QA initially failed due to one shared anchor-session gap and after-hours OHLCV flags.
+- NSE confirms 4 November 2021 was an evening-only Muhurat session (18:15–19:15). The validator also included rows after 15:30 in OHLCV checks. Both issues have been corrected and regression tests added.
+- Corrected run: [41252703953](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41252703953), pending final outcome. Do not treat the oldest edge as passed until the corrected report is published.

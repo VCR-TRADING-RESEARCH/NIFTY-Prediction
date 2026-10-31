@@ -245,3 +245,10 @@
 - Dhan full point-in-time universe test for 2022-10-03–2022-12-30 passed 50/50. All 61 regular sessions per stock had both the anchor and expiry-proxy bars; no duplicates or OHLCV errors; aggregate 1,146,180 rows.
 - Included HDFC Ltd legacy Dhan ID 1330 and the dated pre-demerger TATAMOTORS→TMPV security ID mapping. No cross-event stitching.
 - Workflow [41251808946](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251808946): 24 tests passed. Repo phase status, historical audit and README/logs updated. C1 remains NOT PASSED.
+
+
+## 2026-11-01 — Five-year edge test and QA correction
+- User: “Ok proceed”.
+- Full 2021Q4–2022Q1 point-in-time 50-stock Dhan request resolved all 50 IDs and returned 1,233,597 bars; the initial QA rejected all 50 due one common anchor-session gap and OHLCV flags on 48 stocks.
+- Found NSE circular confirming 2021-11-04 was an evening-only 18:15–19:15 Muhurat session. Found the QA also included returned post-market rows beyond 15:30.
+- Corrected regular-session rules, added counters for missing dates/invalid rows, and added tests. Corrective workflow 41252703953 is running; result pending.

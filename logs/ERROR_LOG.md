@@ -465,3 +465,12 @@ The double-escaped fallback-token newline guard was corrected in commit c8253e9.
 - Validation: HDFC Ltd legacy Dhan ID 1330 and dated TATAMOTORS→TMPV security-ID alias were tested within the pre-2025 demerger interval.
 - Result: 50/50 historic members resolved and passed all 61 regular sessions' anchor/expiry-proxy and OHLCV quality checks in run [41251808946](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251808946).
 - Limitation: alias success is limited to this date interval; no assumption of price continuity across the HDFC merger or Tata Motors demerger is made.
+
+
+## E0045 — 2026-11-01 — Five-year-edge checker included non-standard/after-hours bars
+- Severity: Medium / data-quality validator.
+- Run: [41252217019](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41252217019).
+- First 2021-11-01–2022-01-29 test resolved 50/50 IDs and returned bars, but rejected 50/50: all had one shared apparent missing anchor session; OHLCV invariants were false for 48/50.
+- Root cause found: the range validator included bars beyond the standard 09:15–15:30 session in OHLCV checks and did not explicitly exclude the NSE evening-only Muhurat session of 2021-11-04. NSE circular NSE/CMTR/50050 confirms 18:15–19:15 that date.
+- Correction: explicitly exclude 2021-11-04 and 2022-10-24 from normal-session anchor/expiry checks; apply OHLCV invariants to regular-session bars only; emit missing-date and invalid-row counters. Added two regression tests.
+- Corrected workflow [41252703953](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41252703953) is in progress; final pass/fail pending.

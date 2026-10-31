@@ -398,3 +398,10 @@
 - Window 2022-10-03–2022-12-30: 61 regular sessions per member; all 61/61 sessions contain the 10:00–10:03 anchor and 15:00–15:14 expiry-proxy bar; zero duplicate timestamps and all OHLCV invariants pass. Aggregate rows 1,146,180.
 - HDFC Ltd legacy ID 1330 and period-specific TATAMOTORS→TMPV security ID mapping were included. No stitching across the 2025 demerger.
 - This is the second full 90-day basket window alongside 2026Q3; it does not prove uninterrupted 5-year coverage. C1 remains NOT PASSED; no modeling.
+
+
+## 2026-11-01 — Five-year-edge QA investigation
+- First 2021-11-01–2022-01-29 full basket returned 50/50 security IDs and 1,233,597 bars, but all 50 failed strict QA because of one shared missing anchor and OHLCV invariant failures on 48 names.
+- Cross-checked NSE circular NSE/CMTR/50050: 2021-11-04 Muhurat normal-market session was 18:15–19:15, not daytime. The validator was also checking all bars, including bars after 15:30.
+- Corrected checker to exclude special Muhurat dates from regular-session coverage and validate OHLCV only on 09:15–15:30 rows, with per-date / invalid-row diagnostics. Added regression tests.
+- New push run 41252703953 is validating the corrected pipeline; no conclusion on oldest-edge pass until complete.
