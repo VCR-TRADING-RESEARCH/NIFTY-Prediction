@@ -94,3 +94,11 @@
 ## 2026-10-31 — BUP-01 literature review extended
 - Added peer-reviewed and recent literature on component-based aggregate-market prediction, five-minute constituent-to-market forecasts, Indian momentum/reversal/liquidity evidence, weekly short-term reversal and cross-sectional/time-series distinctions.
 - Explicitly distinguished literature motivation from NIFTY weekly-expiry empirical evidence; the locked plan v1.0 was not changed.
+
+
+## 2026-10-31 — BUP-01 membership/ownership source findings
+
+- Found and cached a CC BY 4.0 NIFTY 50 membership subset with attribution. It has monthly cardinality consistency from 2018-01 through 2025-09 but carries 50 snapshot_floor intervals, only 33 press-release intervals and no numeric free-float weights; its latest event is 2025-09-30.
+- Its related shareholding data have useful quarterly coverage, reaching all 50 then-current reconstructed members from 2023-09 to 2025-09, but provide ownership roll-ups only. Broadcast timestamps must be joined from filing manifests before any ownership feature can be used. These are not index weights.
+- AMFI ETF portfolios were identified but not ingested because AMFI site terms restrict public redistribution/derivative works and significant electronic storage.
+- The research remains at C1; no panel, model or NIFTY prediction is available.
