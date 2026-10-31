@@ -391,3 +391,10 @@
 - Per symbol: 23,414 bars, 64 regular sessions, 64/64 anchor sessions, 64/64 expiry-proxy sessions; 0 missing anchor or expiry sessions; 0 duplicate timestamps; OHLCV invariants passed. Aggregate count: 1,170,700 rows. No raw price data committed.
 - Added C1_DHAN_90D_RANGE_VALIDATION.md and updated phase status/source audit. E0041 (special session misclassification), E0042 (transient Dhan TOTP response) and E0043 (newline validation) are resolved with code/test fixes; latest run succeeded.
 - C1 remains NOT PASSED: only one recent quarter validated; full five-year point-in-time constituent coverage, inactive/legacy security identities, minute corporate-action basis, official weights and index reconstruction are still gated.
+
+
+## 2026-11-01 — Historical 2022 full-basket Dhan pass
+- Run [41251808946](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251808946) succeeded: 24 offline tests, fresh Dhan auth/profile, point-in-time 2022-10-03 member list, 50/50 security IDs, 50/50 bars QA.
+- Window 2022-10-03–2022-12-30: 61 regular sessions per member; all 61/61 sessions contain the 10:00–10:03 anchor and 15:00–15:14 expiry-proxy bar; zero duplicate timestamps and all OHLCV invariants pass. Aggregate rows 1,146,180.
+- HDFC Ltd legacy ID 1330 and period-specific TATAMOTORS→TMPV security ID mapping were included. No stitching across the 2025 demerger.
+- This is the second full 90-day basket window alongside 2026Q3; it does not prove uninterrupted 5-year coverage. C1 remains NOT PASSED; no modeling.

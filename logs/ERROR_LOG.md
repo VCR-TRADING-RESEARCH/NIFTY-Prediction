@@ -457,3 +457,11 @@ The transient TOTP no-token response and expired fallback-token failure from run
 
 ## E0043 — resolution (2026-11-01)
 The double-escaped fallback-token newline guard was corrected in commit c8253e9. Confirmed by run [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795): all 23 offline tests passed, including rejection of fallback tokens containing newline characters.
+
+
+## E0044 — 2026-11-01 — Historical point-in-time alias mapping validation
+- Severity: Low / historical identity QA.
+- Scope: 2022-10-03–2022-12-30 full point-in-time NIFTY 50 membership.
+- Validation: HDFC Ltd legacy Dhan ID 1330 and dated TATAMOTORS→TMPV security-ID alias were tested within the pre-2025 demerger interval.
+- Result: 50/50 historic members resolved and passed all 61 regular sessions' anchor/expiry-proxy and OHLCV quality checks in run [41251808946](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251808946).
+- Limitation: alias success is limited to this date interval; no assumption of price continuity across the HDFC merger or Tata Motors demerger is made.

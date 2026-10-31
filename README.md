@@ -412,3 +412,12 @@ The subsequent status/validator correction was also pushed and validated: [run 4
 - The three-stock older 2022 90-day sample passed 3/3 in [run 41250854958](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250854958); the one-day current universe passed 50/50 in [run 41249642409](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642409).
 - Full result: [C1 Dhan 90-day validation report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_DHAN_90D_RANGE_VALIDATION.md).
 - C1 remains NOT PASSED: this is one recent quarter, not a five-year panel. Legacy/inactive constituent history, corporate-action treatment for minute data, official authorised weights and basket-to-NIFTY reconstruction remain unresolved. No model or strategy has been trained or claimed.
+
+
+## C1 milestone — historical 2022 full-basket coverage passed (2026-11-01)
+
+- Run [41251808946](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251808946) passed the full point-in-time NIFTY 50 basket for 2022-10-03–2022-12-30: **50/50 security IDs resolved and 50/50 passed**.
+- Each member had 61 regular sessions, 61/61 10:00 anchor coverage and 61/61 15:14 expiry-proxy coverage. No duplicate timestamps or OHLCV invariant failures. Aggregate per-symbol bar count: **1,146,180**.
+- This includes HDFC Ltd legacy security ID 1330 and the period-specific TATAMOTORS→TMPV mapping. The later demerger/rename prices are not stitched.
+- Together with the 2026Q3 full-basket result [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795), two separated quarter-slices are now validated. This is not proof of continuous five-year coverage.
+- Details: [2022 historical validation report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_DHAN_HISTORICAL_2022_90D_VALIDATION.md). C1 remains NOT PASSED; official weight series, continuous coverage, corporate actions and NIFTY reconstruction remain open.

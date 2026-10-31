@@ -238,3 +238,10 @@
 - Result: 50/50 point-in-time active constituents passed for 2026-06-29–2026-09-26. Each symbol had 23,414 bars over 64 regular sessions, 64/64 anchor and expiry-proxy coverage, no missing bars, no duplicates and valid OHLCV; 1,170,700 aggregate rows.
 - The last-success JSON is now separately preserved. Raw prices and private credentials are not committed.
 - Phase status and full validation report updated. C1 remains NOT PASSED; no model/strategy yet.
+
+
+## 2026-11-01 — Historical 2022 50-stock coverage completed
+- User: “Ok proceed”.
+- Dhan full point-in-time universe test for 2022-10-03–2022-12-30 passed 50/50. All 61 regular sessions per stock had both the anchor and expiry-proxy bars; no duplicates or OHLCV errors; aggregate 1,146,180 rows.
+- Included HDFC Ltd legacy Dhan ID 1330 and the dated pre-demerger TATAMOTORS→TMPV security ID mapping. No cross-event stitching.
+- Workflow [41251808946](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251808946): 24 tests passed. Repo phase status, historical audit and README/logs updated. C1 remains NOT PASSED.
