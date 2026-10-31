@@ -257,3 +257,10 @@ The active research phase is [phase/constituent-weekly-outcomes-c1-data](https:/
 Latest Dhan preflight [run 41181948126](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181948126): 10/10 offline tests passed; live TOTP token endpoint returned HTTP 200 without an accessToken field and profile rejected the fallback token with HTTP 401. No stock-equity price request was reached. The user-held Dhan client ID/PIN/TOTP/token secrets need verification before further data calls. Dhan v2 docs: https://dhanhq.co/docs/v2/authentication/.
 
 The open weight-source sweep found no permissively reusable official historic IWF series. The HF candidate is CC BY-NC-SA 4.0 and not accepted for this trading workflow; other GitHub candidates are binary or best-effort membership reconstructions, not numeric official weights. No stock model training is authorised until C1 data/rights/identity/weight/basket gates pass.
+
+
+## BUP-01 Dhan authentication update — 2026-10-31
+
+- Shared token helper fix (POST, masked ephemeral token, newline validation) and regression tests have been copied to the C1 research branch. The BUP-01 preflight itself already used POST.
+- Verified Actions run [41182555655](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182555655): 10/10 offline tests passed; live token endpoint HTTP 200 returned no access-token field; fallback profile returned HTTP 401. No equity security-master or candle request was reached.
+- Safe provider-error category diagnostics and a regression test have been added; follow-up Actions run is pending/in progress. C1 remains blocked; no constituent prediction or trading strategy is claimed.
