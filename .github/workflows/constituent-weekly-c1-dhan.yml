@@ -78,6 +78,7 @@ jobs:
           git diff --cached --stat
           if ! git diff --cached --quiet; then
             target_branch="${{ github.head_ref || github.ref_name }}"
-            git pull --rebase --autostash origin "$target_branch"
+            git commit -m "Update sanitized Dhan C1 diagnostics"
+            git pull --rebase origin "$target_branch"
             git push origin "HEAD:$target_branch"
           fi
