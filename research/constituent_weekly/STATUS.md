@@ -101,14 +101,21 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_DHAN_STATUS_START -->
 ## Latest Dhan equity preflight
 
-- Recorded at (UTC): 2026-10-31T07:35:43.008453+00:00
-- Status: BLOCKED_PROFILE_HTTP_401
-- Data plan active: None
-- Current symbols resolved: 0
-- Missing symbols from current scrip master: 0
-- One-minute probe windows passing: 0/0
-- Deep daily-history probe: NOT_RUN
-- Raw bars, prices, security IDs, credentials and tokens are not stored in this report.
+- Recorded at (UTC): 2026-10-31T07:43:54Z (Actions run [41181684573](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181684573))
+- Status: **BLOCKED_PROFILE_HTTP_401**
+- Offline response-validation tests: **9 passed**
+- Live profile authentication: HTTP 401 after the TOTP refresh/fallback path; no data-plan status, security-master equity lookup, historical daily probe or minute-bar request was reached.
+- Resolved current symbols: 0; one-minute windows passed: 0/0; targeted expiry-close windows passed: 0/0.
+- This is a real credential/profile gate, not a failure of the OHLC/parser tests. No raw bars, prices, security IDs, credentials or tokens are stored in this report.
+- Next diagnostic: compare the freshly generated token's client binding and account/data-plan entitlement with Dhan's profile/authentication requirements; do not retry data endpoints until profile returns 200.
 - This probe does not establish inactive/delisted instrument history, point-in-time membership or index weights.
 <!-- C1_DHAN_STATUS_END -->
 
+
+## C1 resume checkpoint — 2026-10-31
+
+- Offline authorised-source audit workflow [41181684637](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181684637): SUCCESS; checkout, offline tests, local archive inventory and summary publication all passed. Result remains NO_AUTHORISED_ARCHIVE.
+- Dhan equity preflight workflow [41181684573](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181684573): workflow SUCCESS, offline tests 9/9 PASS, but live profile check returned HTTP 401. No equity price coverage was tested.
+- Shared token refresh PR [#28](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/28): mocked regression and Actions integration checks both SUCCESS. PR remains draft/open and is not merged; do not describe the parent scheduled helper as fixed on main.
+- Open data candidate audit: CC BY 4.0 membership interval subset has 83 NIFTY 50 intervals/82 symbols, with 93/93 monthly cardinality samples returning 50 through 2025-09; it has no numeric index weights and is not a certified October 2026 universe. Quarterly ownership disclosures are not official IWF.
+- C1 remains BLOCKED. C2 panel construction and model training remain prohibited until rights, point-in-time official/free-float weights, current membership, ISIN/security identity, corporate actions, Dhan profile/data entitlement, historical equity bars and weighted basket reconciliation all pass.
