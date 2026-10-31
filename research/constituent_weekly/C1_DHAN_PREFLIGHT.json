@@ -1,7 +1,7 @@
 {
   "track": "BUP-01",
-  "created_at_utc": "2026-10-31T23:01:35.521486+00:00",
-  "status": "PARTIAL_OR_BLOCKED",
+  "created_at_utc": "2026-10-31T23:03:42.656741+00:00",
+  "status": "PASS_ACTIVE_EQUITIES",
   "credentials_or_tokens_recorded": false,
   "raw_market_bars_saved": false,
   "daily_history_probe": {
@@ -968,13 +968,17 @@
       "symbol": "RELIANCE",
       "from_date": "2022-10-03",
       "to_date": "2022-12-30",
-      "status": "RANGE_COVERAGE_OR_OHLC_FAILED",
+      "status": "PASS",
       "bar_count": 22918,
-      "session_count": 62,
+      "response_calendar_date_count": 62,
+      "session_count": 61,
+      "non_standard_session_dates": [
+        "2022-10-24"
+      ],
       "anchor_sessions_present": 61,
       "expiry_proxy_sessions_present": 61,
-      "missing_anchor_sessions": 1,
-      "missing_expiry_proxy_sessions": 1,
+      "missing_anchor_sessions": 0,
+      "missing_expiry_proxy_sessions": 0,
       "duplicate_timestamps": 0,
       "ohlc_volume_invariants_pass": true,
       "first_timestamp_ist": "2022-10-03T09:16:00+05:30",
@@ -985,13 +989,17 @@
       "symbol": "TCS",
       "from_date": "2022-10-03",
       "to_date": "2022-12-30",
-      "status": "RANGE_COVERAGE_OR_OHLC_FAILED",
+      "status": "PASS",
       "bar_count": 22918,
-      "session_count": 62,
+      "response_calendar_date_count": 62,
+      "session_count": 61,
+      "non_standard_session_dates": [
+        "2022-10-24"
+      ],
       "anchor_sessions_present": 61,
       "expiry_proxy_sessions_present": 61,
-      "missing_anchor_sessions": 1,
-      "missing_expiry_proxy_sessions": 1,
+      "missing_anchor_sessions": 0,
+      "missing_expiry_proxy_sessions": 0,
       "duplicate_timestamps": 0,
       "ohlc_volume_invariants_pass": true,
       "first_timestamp_ist": "2022-10-03T09:16:00+05:30",
@@ -1002,13 +1010,17 @@
       "symbol": "INFY",
       "from_date": "2022-10-03",
       "to_date": "2022-12-30",
-      "status": "RANGE_COVERAGE_OR_OHLC_FAILED",
+      "status": "PASS",
       "bar_count": 22918,
-      "session_count": 62,
+      "response_calendar_date_count": 62,
+      "session_count": 61,
+      "non_standard_session_dates": [
+        "2022-10-24"
+      ],
       "anchor_sessions_present": 61,
       "expiry_proxy_sessions_present": 61,
-      "missing_anchor_sessions": 1,
-      "missing_expiry_proxy_sessions": 1,
+      "missing_anchor_sessions": 0,
+      "missing_expiry_proxy_sessions": 0,
       "duplicate_timestamps": 0,
       "ohlc_volume_invariants_pass": true,
       "first_timestamp_ist": "2022-10-03T09:16:00+05:30",
@@ -1017,7 +1029,7 @@
     }
   ],
   "ninety_day_range_probe_expected": 3,
-  "ninety_day_range_probe_passed": 0,
+  "ninety_day_range_probe_passed": 3,
   "legacy_identity_probe": [
     {
       "symbol": "HDFC",
@@ -1057,5 +1069,5 @@
   "expiry_proxy_cutoff_ist": "15:15:00",
   "expiry_proxy_definition": "Use the close of the latest available 1-minute candle timestamped between 15:00 and 15:14 IST; ignore later candles.",
   "note": "Five-symbol/two-date data probe only. The final available candle by the 15:15 IST cutoff is accepted as the expiry proxy; this does not establish full-universe coverage, inactive-security history or official index weights.",
-  "finished_at_utc": "2026-10-31T23:02:07.360264+00:00"
+  "finished_at_utc": "2026-10-31T23:04:10.339110+00:00"
 }
