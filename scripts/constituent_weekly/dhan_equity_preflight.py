@@ -58,9 +58,16 @@ def membership_symbol_sets(as_of_date: str) -> tuple[list[str], list[str]]:
     return active, historical
 
 
+LAST_SUCCESS_OUTPUT = ROOT / "research" / "constituent_weekly" / "C1_DHAN_LAST_SUCCESS.json"
+
+
 def write_result(data: dict) -> None:
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    payload = json.dumps(data, indent=2) + "\n"
+    OUTPUT.write_text(payload, encoding="utf-8")
+    # Preserve the last valid success separately so a transient auth failure cannot erase it.
+    if data.get("status") == "PASS_ACTIVE_EQUITIES":
+        LAST_SUCCESS_OUTPUT.write_text(payload, encoding="utf-8")
 
 
 
@@ -119,7 +126,7 @@ def auth_response_diagnostics(body: object) -> dict:
 
 
 def acquire_access_token() -> tuple[str, str, str, str, dict]:
-    """Prefer fresh TOTP generation; use the configured token only after safe validation."""
+    """Prefer a fresh TOTP token; retry once after the current 30-second TOTP window."""
     client_id = os.getenv("DHAN_CLIENT_ID", "").strip()
     pin = os.getenv("DHAN_PIN", "").strip()
     totp_secret = os.getenv("DHAN_TOTP_SECRET", "").strip()
@@ -128,33 +135,40 @@ def acquire_access_token() -> tuple[str, str, str, str, dict]:
     diagnostics: dict = {"status": "NOT_ATTEMPTED"}
 
     if client_id and pin and totp_secret:
-        try:
-            otp = pyotp.TOTP(totp_secret).now()
-            response = requests.post(
-                AUTH_URL,
-                params={"dhanClientId": client_id, "pin": pin, "totp": otp},
-                timeout=30,
-            )
-            diagnostics = auth_response_diagnostics(response.json())
-            diagnostics["http_status"] = int(response.status_code)
-            if response.ok:
+        for attempt in range(2):
+            try:
+                otp = pyotp.TOTP(totp_secret).now()
+                response = requests.post(
+                    AUTH_URL,
+                    params={"dhanClientId": client_id, "pin": pin, "totp": otp},
+                    timeout=30,
+                )
                 body = response.json()
-                candidate = body.get("accessToken") or body.get("access_token") if isinstance(body, dict) else None
-                if isinstance(body, dict) and not (isinstance(candidate, str) and len(candidate) >= 20):
-                    nested = body.get("data")
-                    if isinstance(nested, dict):
-                        candidate = nested.get("accessToken") or nested.get("access_token")
-                if isinstance(candidate, str) and len(candidate) >= 20 and "\n" not in candidate and "\r" not in candidate:
+                diagnostics = auth_response_diagnostics(body)
+                diagnostics["http_status"] = int(response.status_code)
+                diagnostics["refresh_attempts"] = attempt + 1
+                candidate = None
+                if isinstance(body, dict):
+                    candidate = body.get("accessToken") or body.get("access_token")
+                    if not (isinstance(candidate, str) and len(candidate) >= 20):
+                        nested = body.get("data")
+                        if isinstance(nested, dict):
+                            candidate = nested.get("accessToken") or nested.get("access_token")
+                if response.ok and isinstance(candidate, str) and len(candidate) >= 20 and "\\n" not in candidate and "\\r" not in candidate:
                     return candidate, client_id, "totp_refresh", "SUCCESS", diagnostics
-                refresh_error = "Token service returned HTTP success but no usable access token; response values withheld."
-            else:
-                refresh_error = f"Token service returned HTTP {response.status_code}; response values withheld."
-        except (requests.RequestException, ValueError) as exc:
-            refresh_error = f"Token refresh request/JSON failed ({type(exc).__name__}); response values withheld."
-        except Exception as exc:
-            refresh_error = f"Token refresh failed ({type(exc).__name__}); response values withheld."
+                if response.ok:
+                    refresh_error = "Token service returned HTTP success but no usable access token; response values withheld."
+                else:
+                    refresh_error = f"Token service returned HTTP {response.status_code}; response values withheld."
+            except (requests.RequestException, ValueError) as exc:
+                refresh_error = f"Token refresh request/JSON failed ({type(exc).__name__}); response values withheld."
+            except Exception as exc:
+                refresh_error = f"Token refresh failed ({type(exc).__name__}); response values withheld."
 
-    if fallback_token and client_id and "\n" not in fallback_token and "\r" not in fallback_token:
+            if attempt == 0:
+                time.sleep(31)
+
+    if fallback_token and client_id and "\\n" not in fallback_token and "\\r" not in fallback_token:
         diagnostics["fallback_available"] = True
         return fallback_token, client_id, "provided_token_fallback", "FAILED_FALLBACK_USED", diagnostics
 

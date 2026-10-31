@@ -119,6 +119,52 @@ def test_access_token_helper_prefers_fresh_totp_token(monkeypatch):
     assert "accessToken" not in str(diagnostics["token_container"])
 
 
+
+def test_access_token_helper_retries_once_with_next_totp_window(monkeypatch):
+    import scripts.constituent_weekly.dhan_equity_preflight as probe
+    from types import SimpleNamespace
+
+    monkeypatch.setenv("DHAN_CLIENT_ID", "client")
+    monkeypatch.setenv("DHAN_PIN", "123456")
+    monkeypatch.setenv("DHAN_TOTP_SECRET", "fake-secret")
+    monkeypatch.setenv("DHAN_ACCESS_TOKEN", "")
+    codes = iter(["111111", "222222"])
+    monkeypatch.setattr(probe.pyotp, "TOTP", lambda secret: SimpleNamespace(now=lambda: next(codes)))
+    sleeps = []
+    monkeypatch.setattr(probe.time, "sleep", lambda seconds: sleeps.append(seconds))
+    calls = []
+
+    class Response:
+        ok = True
+        status_code = 200
+
+        def __init__(self, body):
+            self.body = body
+
+        def json(self):
+            return self.body
+
+    responses = iter([
+        Response({"status": "error", "message": "temporary response without token"}),
+        Response({"accessToken": "fresh-token-value-that-is-long-enough"}),
+    ])
+
+    def fake_post(url, *, params, timeout):
+        calls.append(params["totp"])
+        return next(responses)
+
+    monkeypatch.setattr(probe.requests, "post", fake_post)
+    token, client_id, method, status, diagnostics = probe.acquire_access_token()
+
+    assert token == "fresh-token-value-that-is-long-enough"
+    assert client_id == "client"
+    assert method == "totp_refresh"
+    assert status == "SUCCESS"
+    assert calls == ["111111", "222222"]
+    assert sleeps == [31]
+    assert diagnostics["refresh_attempts"] == 2
+
+
 def test_access_token_helper_uses_fallback_only_after_refresh_failure(monkeypatch):
     import scripts.constituent_weekly.dhan_equity_preflight as probe
     from types import SimpleNamespace

@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 STATUS = ROOT / "research" / "constituent_weekly" / "STATUS.md"
 RESULT = ROOT / "research" / "constituent_weekly" / "C1_DHAN_PREFLIGHT.json"
+LAST_SUCCESS = ROOT / "research" / "constituent_weekly" / "C1_DHAN_LAST_SUCCESS.json"
 WEIGHT_AUDIT = ROOT / "research" / "constituent_weekly" / "C1_NIFTY50_WEIGHT_AUDIT.json"
 START = "<!-- C1_DHAN_STATUS_START -->"
 END = "<!-- C1_DHAN_STATUS_END -->"
@@ -14,6 +15,7 @@ END = "<!-- C1_DHAN_STATUS_END -->"
 
 def main() -> int:
     data = json.loads(RESULT.read_text(encoding="utf-8")) if RESULT.exists() else {"status": "NO_PREFLIGHT_RESULT"}
+    last_success = json.loads(LAST_SUCCESS.read_text(encoding="utf-8")) if LAST_SUCCESS.exists() else {}
     weight = json.loads(WEIGHT_AUDIT.read_text(encoding="utf-8")) if WEIGHT_AUDIT.exists() else {"status": "NOT_RUN"}
 
     probes = data.get("intraday_probe", [])
@@ -41,6 +43,7 @@ def main() -> int:
         f"- Dhan auth method/status: {data.get('auth_method', 'NOT_RECORDED')} / {data.get('token_refresh_status', 'NOT_RECORDED')}",
         f"- Profile HTTP status: {data.get('profile_status', 'NOT_RECORDED')}",
         f"- Status: {data.get('status')}",
+        f"- Last successful Dhan preflight: {last_success.get('status', 'NONE')} at {last_success.get('finished_at_utc', 'NOT_RECORDED')}; preserved separately from latest attempt.",
         f"- Data plan active: {data.get('data_plan_active')}",
         f"- Current NIFTY 50 universe resolved in current Dhan master: {data.get('current_universe_resolved_count', 'NOT_RUN')}/{data.get('current_universe_symbol_count', 'NOT_RUN')}",
         f"- Historical membership symbol aliases matched in current Dhan master: {data.get('historical_membership_symbols_found_in_current_master_count', 'NOT_RUN')}/{data.get('historical_membership_symbol_count', 'NOT_RUN')}",
