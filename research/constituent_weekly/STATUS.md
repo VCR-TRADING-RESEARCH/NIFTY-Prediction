@@ -144,3 +144,16 @@ No model training until point-in-time membership, numeric free-float weights, se
 - Dhan v2 documents five-year intraday coverage only for active instruments and a maximum 90-day request window. This does not establish coverage for delisted/inactive historic constituents. The successful five-symbol historical probe is a limited sample, not universe-wide evidence.
 - No additional TOTP attempt was made. Existing 2026-10-30 close-window gap and 2026-10-29 inconclusive auth retry remain unchanged.
 - **Decision:** C1 remains BLOCKED / RIGHTS-DEPENDENT. C2 remains prohibited. Next permitted work: review the exact Dhan subscription terms/covered inactive instruments and identify a licensed or explicitly authorised historical constituent-weight source; do not scrape NSE pages or ingest non-commercial weights into a trading workflow.
+
+## C1 membership sub-gate — 2026-10-31
+
+**MEMBERSHIP PASS WITH LIMITATIONS**
+
+- Added the NIFTY 50-only CC BY 4.0 point-in-time membership subset at `data/constituent_weekly/nifty50_membership_intervals.csv`, with attribution/provenance in [MEMBERSHIP_DATA_PROVENANCE.md](MEMBERSHIP_DATA_PROVENANCE.md).
+- Upstream data has 83 NIFTY 50 intervals, with no weights, and last reconstitution at 2025-09-30. The project snapshot adds the official 2026-09-30 one-for-one change WIPRO → BSE using the 2026-08-10 NSE Indices press release.
+- Regression/cardinality check: 103/103 month-end dates from 2018-04-30 through 2026-10-31 have exactly 50 unique NIFTY 50 members. This tests cardinality, not every member transition independently; pre-2018 data remains excluded from confirmatory modelling due known source drift.
+- Added [machine-readable audit](C1_MEMBERSHIP_AUDIT.json) and `tests/test_bup01_membership_intervals.py`.
+
+**Overall C1 remains BLOCKED.** The membership sub-gate is improved, but the dataset has no numerical free-float weights, ISIN/security-id history or corporate-action mapping. Dhan constituent-bar coverage still lacks a full-universe test and recent expiry-close completion. No C2 panel/model is permitted.
+
+**Best official exact-weight route identified:** NSE Indices data subscription includes historical constituent identifiers, market caps, weights and prices; licensing enquiry: `indices@nse.co.in`. Free alternatives reviewed are insufficient or carry upstream/non-commercial restrictions. Automated NSE web scraping remains disabled.
