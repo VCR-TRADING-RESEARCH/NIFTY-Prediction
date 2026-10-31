@@ -391,3 +391,12 @@ The protected live Dhan run is no longer awaiting manual dispatch. It was initia
 - Root cause: the plan was correctly amended to v1.1 after the user changed the expiry timestamp convention, but the governance validator had not been version-proofed.
 - Correction: parse the plan's declared version, require a matching version-history entry, validate the shared 15:15 stock/index expiry proxy and separate 15:30 sensitivity, and add a regression test. Re-run evidence is recorded in C1 status when available.
 - Research impact: no dataset, price, model or result was changed by this CI failure.
+
+
+## E0038 — 2026-11-01 — First plan-version parser fix was over-escaped
+- Severity: Low / CI correction.
+- Run: [41249450033](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249450033).
+- Symptom: the updated governance validator still rejected the valid v1.1 marker.
+- Root cause: the regex used in the first correction contained excessive escaping and never matched the Markdown header.
+- Correction: removed the regex and extracted the version from the exact plan header; validate numeric major/minor format and require matching history. No market data or modeling was touched.
+- Verification: pending the next workflow result.

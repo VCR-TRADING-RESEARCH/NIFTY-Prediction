@@ -351,3 +351,9 @@
 - The separate plan-governance workflow failed in run 41249370561 because `validate_plan.py` required a hard-coded plan version 1.0 after the registered protocol was amended to v1.1.
 - Corrected the validator to parse declared version/history and assert expiry-proxy consistency; added a regression test. No empirical C1 results or data were changed.
 - C1 remains blocked; C2 is gated.
+
+
+## 2026-11-01 — Second governance-validator correction
+- Actions run 41249450033 identified that the initial regex fix still had over-escaped metacharacters and failed to read the v1.1 plan header.
+- Replaced the regex with direct line extraction, numeric version validation and matching history check. No empirical data or model results were touched.
+- New workflow run must confirm C0 plan validation and regression tests before considering this CI defect closed.
