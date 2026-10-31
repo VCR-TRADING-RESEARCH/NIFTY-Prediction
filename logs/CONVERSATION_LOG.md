@@ -152,3 +152,10 @@
 - Commit 05b71dc111779ef40da748319f7d109a012c4451 was validated by Actions run [41223379333](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223379333): 13 tests passed. The run was a PR event, so the live Dhan step was skipped by the explicit credential-safety guard.
 - A follow-up contents commit 8c71118461b3a047ef258bd3345e109423ee8440 synchronized the push-trigger path; the observed run remained PR-triggered. No fresh TOTP, profile or price request was made in this step.
 - Decision: full-universe resolution is implemented but not yet measured. Manual workflow_dispatch on the C1 Dhan workflow is the remaining protected live action. Do not infer coverage from offline tests. C1 remains BLOCKED and C2 remains gated.
+
+## 2026-10-31 — User asked ChatGPT to run the protected Dhan workflow directly
+- Initiated the existing push-triggered, secret-backed Dhan preflight on the C1 data branch after the user requested that ChatGPT run it rather than asking the user to click Run workflow.
+- Latest successful run: [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41224048773). TOTP refresh/profile authentication succeeded; Dhan Data API plan active; offline tests 13/13.
+- Live findings: current active NIFTY 50 resolution 50/50; historical membership aliases 79/84 (missing current-master symbols HDFC, JPASSOCIAT, MCDOWELL-N, RANBAXY, TATAMOTORS); daily 2018 probe PASS; 2022-10-31 minute bars 5/5 PASS; 2026-10-29 minute bars stop at 15:14 and targeted expiry-close 0/5.
+- One preceding attempt failed because TOTP returned HTTP 200 without accessToken and fallback profile returned 401; later refresh succeeded. A workflow defect that staged but did not commit diagnostics was corrected; latest run committed sanitized JSON and phase status.
+- Decision: do not keep refreshing tokens unnecessarily. Next research task is resolve historical symbol aliases and investigate missing recent expiry-close bars using documented Dhan parameters/free alternative sources; no C2 model until complete universe labels/weights pass.
