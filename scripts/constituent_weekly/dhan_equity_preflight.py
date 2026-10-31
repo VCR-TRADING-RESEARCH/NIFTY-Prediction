@@ -369,6 +369,19 @@ def request_intraday_range(headers: dict, symbol: str, security_id: str, start_d
         }
     return analyse_intraday_range(response.json(), symbol, start_date, end_date)
 
+
+def apply_historical_security_aliases(symbols: list[str], resolved: dict, alias_ids: dict) -> dict:
+    """Add explicit dated legacy-security mappings without stitching price series."""
+    result = dict(resolved)
+    if "HDFC" in symbols and "HDFC" not in result:
+        result["HDFC"] = "1330"  # Dhan legacy HDFC Ltd security ID; previously sampled 2022/2023.
+    if "TATAMOTORS" in symbols and "TATAMOTORS" not in result:
+        tmpv_id = alias_ids.get("TMPV")
+        if tmpv_id:
+            result["TATAMOTORS"] = str(tmpv_id)  # same continuing listing before 2025-10-24 rename/demerger.
+    return result
+
+
 def request_profile(token: str):
     """Check token validity using the documented profile header only."""
     return requests.get(
@@ -521,6 +534,38 @@ def main() -> int:
         )
         result["full_universe_90d_range_probe"] = full_range_results
 
+        # Historical point-in-time universe and legacy security identities: 2022 Q4.
+        historical_range_dates = ("2022-10-03", "2022-12-30")
+        historical_symbols, _ = membership_symbol_sets(historical_range_dates[0])
+        historical_resolved = resolve_ids(master, historical_symbols)
+        alias_ids = resolve_ids(master, ["TMPV"])
+        historical_ids = apply_historical_security_aliases(historical_symbols, historical_resolved, alias_ids)
+        historical_results = []
+        for symbol in historical_symbols:
+            security_id = historical_ids.get(symbol)
+            if not security_id:
+                historical_results.append({
+                    "symbol": symbol, "from_date": historical_range_dates[0],
+                    "to_date": historical_range_dates[1], "status": "MISSING_SECURITY_ID",
+                })
+                continue
+            historical_results.append(
+                request_intraday_range(
+                    headers, symbol, security_id,
+                    historical_range_dates[0], historical_range_dates[1]
+                )
+            )
+            time.sleep(0.25)
+        result["historical_universe_90d_range_date"] = {
+            "from": historical_range_dates[0], "to": historical_range_dates[1]
+        }
+        result["historical_universe_90d_range_expected"] = len(historical_symbols)
+        result["historical_universe_90d_range_resolved"] = len(historical_ids)
+        result["historical_universe_90d_range_passed"] = sum(
+            item.get("status") == "PASS" for item in historical_results
+        )
+        result["historical_universe_90d_range_probe"] = historical_results
+
         if "RELIANCE" in probe_ids:
             daily = requests.post(
                 DAILY_URL,
@@ -612,7 +657,10 @@ def main() -> int:
         full_range_expected = result.get("full_universe_90d_range_expected", 0)
         full_range_passed = result.get("full_universe_90d_range_passed", 0)
         full_range_complete = full_range_expected == 50 and full_range_passed == 50 and result.get("full_universe_90d_range_resolved", 0) == 50
-        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected and full_complete and range_complete and full_range_complete else "PARTIAL_OR_BLOCKED"
+        historical_range_expected = result.get("historical_universe_90d_range_expected", 0)
+        historical_range_passed = result.get("historical_universe_90d_range_passed", 0)
+        historical_range_complete = historical_range_expected == 50 and historical_range_passed == 50 and result.get("historical_universe_90d_range_resolved", 0) == 50
+        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected and full_complete and range_complete and full_range_complete and historical_range_complete else "PARTIAL_OR_BLOCKED"
         result["note"] = "Five-symbol/two-date data probe only. The final available candle by the 15:15 IST cutoff is accepted as the expiry proxy; this does not establish full-universe coverage, inactive-security history or official index weights."
     except PublicPredictionError as exc:
         result["status"] = "BLOCKED_DHAN_AUTH"
@@ -640,6 +688,7 @@ def main() -> int:
     print(f"Full point-in-time NIFTY 50 probe: {result.get('full_universe_probe_passed', 0)}/{result.get('full_universe_probe_expected', 0)} passed; resolved={result.get('full_universe_probe_resolved', 0)}; date={result.get('full_universe_probe_date', 'NOT_RUN')}")
     print(f"90-day range probe: {result.get('ninety_day_range_probe_passed', 0)}/{result.get('ninety_day_range_probe_expected', 0)} passed")
     print(f"Full-universe 90-day range probe: {result.get('full_universe_90d_range_passed', 0)}/{result.get('full_universe_90d_range_expected', 0)} passed; resolved={result.get('full_universe_90d_range_resolved', 0)}")
+    print(f"Historical point-in-time 2022 90-day range probe: {result.get('historical_universe_90d_range_passed', 0)}/{result.get('historical_universe_90d_range_expected', 0)} passed; resolved={result.get('historical_universe_90d_range_resolved', 0)}")
     for probe in result.get("intraday_probe", []):
         print("PROBE", probe.get("symbol"), probe.get("date"), probe.get("status"),
               "bars=", probe.get("bar_count", 0),

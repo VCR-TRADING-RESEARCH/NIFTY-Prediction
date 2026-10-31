@@ -387,6 +387,21 @@ def test_request_intraday_range_sends_a_90_day_window_and_returns_no_prices(monk
     assert "secret" not in str(result)
 
 
+
+def test_apply_historical_security_aliases_uses_explicit_legacy_id_and_dated_tmpv_alias():
+    from scripts.constituent_weekly.dhan_equity_preflight import apply_historical_security_aliases
+
+    symbols = ["HDFC", "HDFCBANK", "TATAMOTORS"]
+    result = apply_historical_security_aliases(
+        symbols,
+        {"HDFCBANK": "1001"},
+        {"TMPV": "570"},
+    )
+    assert result["HDFC"] == "1330"
+    assert result["TATAMOTORS"] == "570"
+    assert result["HDFCBANK"] == "1001"
+
+
 def test_profile_request_uses_documented_access_token_header_only(monkeypatch):
     import scripts.constituent_weekly.dhan_equity_preflight as probe
 
