@@ -3,13 +3,16 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 import pandas as pd
 import requests
 
 from live_api.app import MASTER_URL, PublicPredictionError, refresh_dhan_token
-
-ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "research" / "constituent_weekly" / "C1_DHAN_PREFLIGHT.json"
 PROFILE_URL = "https://api.dhan.co/v2/profile"
 INTRADAY_URL = "https://api.dhan.co/v2/charts/intraday"
