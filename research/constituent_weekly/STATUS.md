@@ -2,13 +2,13 @@
 
 **Last updated:** 2026-10-31  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 registration active; empirical stock research not yet started  
+**Status:** C0 structural validation PASS; empirical stock research not yet started  
 **Prediction status:** No constituent panel, trained stock model or bottom-up forecast exists  
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
-| C0 — Registration/governance | IN PROGRESS | Commit protocol, source register, literature, workflow and tests; run structural validation |
+| C0 — Registration/governance | PASS | Actions workflow validated required files and plan structure; governance regression tests passed; report committed as 746d1b382e338e760b1cf4b3ee5ea6fa6b63bc85 |
 | C1 — Point-in-time universe/data audit | PENDING | Validate original NSE circulars, historical numeric weights/IWF, IDs, corporate actions, Dhan auth and stock price coverage |
 | C2 — Panel labels/features | PENDING | Build only after C1 passes; validate target construction and freeze source hashes/split |
 | C3 — Stock models/baselines | PENDING | Pooled stock panel and bounded benchmarks only after C2 passes |
@@ -28,3 +28,11 @@
 ## Gate decision
 
 No model training until point-in-time membership, numeric free-float weights, security mappings, corporate actions, stock anchor/close coverage and basket-to-index reconstruction all pass C1. If these inputs cannot be sourced reliably, stop at C1 and publish the exact data limitation rather than fabricate approximations.
+
+
+## C0 acceptance evidence
+
+- Automated Actions commit: [746d1b3](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/746d1b382e338e760b1cf4b3ee5ea6fa6b63bc85).
+- Validation artifact: C0_VALIDATION_REPORT.md — PASS.
+- Scope: structural governance validation and the BUP-01 plan regression tests only.
+- C1 remains PENDING: no stock data, historical weights, constituent membership or index reconstruction has yet passed an empirical audit.
