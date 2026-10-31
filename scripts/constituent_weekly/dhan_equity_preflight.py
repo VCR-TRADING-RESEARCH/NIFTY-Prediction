@@ -278,7 +278,12 @@ def request_intraday_probe(headers: dict, symbol: str, security_id: str, day: st
 
 
 def analyse_intraday_range(body: dict, symbol: str, start_date: str, end_date: str) -> dict:
-    """Return only aggregate coverage/quality metrics for a multi-session minute response."""
+    """Return sanitized regular-session coverage and OHLCV quality metrics.
+
+    Muhurat dates are explicit non-standard sessions: the regular-day expiry proxy
+    must not be inferred from any stale or mis-timestamped daytime rows on those dates.
+    Extended/post-market bars are excluded from regular-session OHLCV invariants.
+    """
     keys = ("open", "high", "low", "close", "volume", "timestamp")
     arrays = {key: body.get(key, []) for key in keys}
     lengths = {key: len(value) for key, value in arrays.items()}
@@ -300,30 +305,53 @@ def analyse_intraday_range(body: dict, symbol: str, start_date: str, end_date: s
     ts = frame["time_ist"]
     day = ts.dt.strftime("%Y-%m-%d")
     clock = ts.dt.strftime("%H:%M")
-    anchor_mask = clock.between("10:00", "10:03")
-    expiry_mask = clock.between("15:00", "15:14")
     dates = sorted(day.unique().tolist())
-    regular_mask = clock.between("09:15", "15:30")
-    regular_dates = sorted(day[regular_mask].unique().tolist())
+
+    # NSE circulars confirm evening-only Muhurat sessions on these dates.
+    # Exclude entire date from normal 10:00/15:15 expiry-proxy validation.
+    special_session_dates = {"2021-11-04", "2022-10-24"}
+    special_dates_in_response = sorted(set(dates).intersection(special_session_dates))
+    regular_mask = clock.between("09:15", "15:30") & ~day.isin(special_session_dates)
+    regular_frame = frame.loc[regular_mask].copy()
+    regular_day = day.loc[regular_mask]
+    regular_clock = clock.loc[regular_mask]
+    regular_dates = sorted(regular_day.unique().tolist())
     non_standard_dates = sorted(set(dates) - set(regular_dates))
-    anchor_days = int(day[anchor_mask & regular_mask].nunique())
-    expiry_days = int(day[expiry_mask & regular_mask].nunique())
-    duplicated = int(frame["time_ist"].duplicated().sum())
-    numeric = frame[["open", "high", "low", "close", "volume"]].apply(pd.to_numeric, errors="coerce")
-    finite = bool(numeric.notna().all().all() and np.isfinite(numeric.to_numpy(dtype=float)).all())
-    ohlc_ok = False
-    if finite:
+
+    anchor_dates = set(regular_day.loc[regular_clock.between("10:00", "10:03")].unique())
+    expiry_dates = set(regular_day.loc[regular_clock.between("15:00", "15:14")].unique())
+    missing_anchor_dates = sorted(set(regular_dates) - anchor_dates)
+    missing_expiry_dates = sorted(set(regular_dates) - expiry_dates)
+    duplicated = int(regular_frame["time_ist"].duplicated().sum())
+
+    numeric = regular_frame[["open", "high", "low", "close", "volume"]].apply(
+        pd.to_numeric, errors="coerce"
+    )
+    if numeric.empty:
+        finite_rows = pd.Series(dtype=bool, index=numeric.index)
+        ohlc_rows = pd.Series(dtype=bool, index=numeric.index)
+        volume_rows = pd.Series(dtype=bool, index=numeric.index)
+    else:
+        numeric_values = numeric.to_numpy(dtype=float)
+        finite_rows = numeric.notna().all(axis=1) & np.isfinite(numeric_values).all(axis=1)
         low = numeric["low"]
         high = numeric["high"]
-        ohlc_ok = bool(
-            ((low <= numeric[["open", "close"]].min(axis=1)) &
-             (high >= numeric[["open", "close"]].max(axis=1)) &
-             (numeric[["open", "high", "low", "close"]] > 0).all(axis=1) &
-             (numeric["volume"] >= 0)).all()
+        ohlc_rows = (
+            (low <= numeric[["open", "close"]].min(axis=1)) &
+            (high >= numeric[["open", "close"]].max(axis=1)) &
+            (numeric[["open", "high", "low", "close"]] > 0).all(axis=1)
         )
+        volume_rows = numeric["volume"] >= 0
+
+    invalid_numeric_rows = int((~finite_rows).sum())
+    invalid_ohlc_rows = int((finite_rows & ~ohlc_rows).sum())
+    invalid_volume_rows = int((finite_rows & ~volume_rows).sum())
+    ohlc_ok = bool(
+        len(regular_frame) > 0 and finite_rows.all() and ohlc_rows.all() and volume_rows.all()
+    )
     passed = bool(
-        finite and ohlc_ok and duplicated == 0 and
-        len(regular_dates) > 0 and anchor_days == len(regular_dates) and expiry_days == len(regular_dates)
+        ohlc_ok and duplicated == 0 and len(regular_dates) > 0 and
+        not missing_anchor_dates and not missing_expiry_dates
     )
     return {
         "symbol": symbol,
@@ -331,17 +359,27 @@ def analyse_intraday_range(body: dict, symbol: str, start_date: str, end_date: s
         "to_date": end_date,
         "status": "PASS" if passed else "RANGE_COVERAGE_OR_OHLC_FAILED",
         "bar_count": int(len(frame)),
+        "regular_bar_count": int(len(regular_frame)),
+        "outside_regular_hours_bar_count": int(len(frame) - len(regular_frame)),
         "response_calendar_date_count": int(len(dates)),
         "session_count": int(len(regular_dates)),
+        "special_session_dates_excluded": special_dates_in_response,
         "non_standard_session_dates": non_standard_dates,
-        "anchor_sessions_present": anchor_days,
-        "expiry_proxy_sessions_present": expiry_days,
-        "missing_anchor_sessions": int(len(regular_dates) - anchor_days),
-        "missing_expiry_proxy_sessions": int(len(regular_dates) - expiry_days),
+        "anchor_sessions_present": int(len(anchor_dates)),
+        "expiry_proxy_sessions_present": int(len(expiry_dates)),
+        "missing_anchor_sessions": len(missing_anchor_dates),
+        "missing_expiry_proxy_sessions": len(missing_expiry_dates),
+        "missing_anchor_dates": missing_anchor_dates,
+        "missing_expiry_proxy_dates": missing_expiry_dates,
         "duplicate_timestamps": duplicated,
+        "invalid_numeric_rows": invalid_numeric_rows,
+        "invalid_ohlc_rows": invalid_ohlc_rows,
+        "invalid_volume_rows": invalid_volume_rows,
         "ohlc_volume_invariants_pass": ohlc_ok,
         "first_timestamp_ist": ts.iloc[0].isoformat(),
         "last_timestamp_ist": ts.iloc[-1].isoformat(),
+        "first_regular_timestamp_ist": regular_frame["time_ist"].iloc[0].isoformat() if len(regular_frame) else None,
+        "last_regular_timestamp_ist": regular_frame["time_ist"].iloc[-1].isoformat() if len(regular_frame) else None,
         "contains_raw_price_values": False,
     }
 

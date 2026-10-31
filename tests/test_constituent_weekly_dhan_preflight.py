@@ -352,6 +352,62 @@ def test_analyse_intraday_range_fails_when_a_session_has_no_expiry_proxy():
 
 
 
+
+def test_analyse_intraday_range_excludes_2021_muhurat_date_and_postmarket_rows():
+    from scripts.constituent_weekly.dhan_equity_preflight import analyse_intraday_range
+
+    # 2021-11-04 was an evening-only NSE Muhurat session (18:15–19:15 IST).
+    # Deliberately include a daytime timestamp for that date to ensure the date
+    # is excluded as a special session, plus an after-hours bar on a normal date.
+    times = [
+        "2021-11-01T10:00:00",
+        "2021-11-01T15:14:00",
+        "2021-11-02T10:00:00",
+        "2021-11-02T15:14:00",
+        "2021-11-04T15:14:00",
+        "2021-11-05T10:00:00",
+        "2021-11-05T15:14:00",
+        "2021-11-05T15:45:00",
+    ]
+    body = {
+        "open": [100.0, 100.0, 101.0, 101.0, 102.0, 103.0, 103.0, 0.0],
+        "high": [101.0, 101.0, 102.0, 102.0, 103.0, 104.0, 104.0, 0.0],
+        "low": [99.0, 99.0, 100.0, 100.0, 101.0, 102.0, 102.0, 0.0],
+        "close": [100.5, 100.5, 101.5, 101.5, 102.5, 103.5, 103.5, 0.0],
+        "volume": [100, 100, 110, 110, 120, 130, 130, -1],
+        "timestamp": [epoch_ist(value) for value in times],
+    }
+    result = analyse_intraday_range(body, "RELIANCE", "2021-11-01", "2021-11-05")
+    assert result["status"] == "PASS"
+    assert result["session_count"] == 3
+    assert result["special_session_dates_excluded"] == ["2021-11-04"]
+    assert result["anchor_sessions_present"] == 3
+    assert result["expiry_proxy_sessions_present"] == 3
+    assert result["outside_regular_hours_bar_count"] == 1
+    assert result["invalid_numeric_rows"] == 0
+    assert result["invalid_ohlc_rows"] == 0
+    assert result["invalid_volume_rows"] == 0
+
+
+def test_analyse_intraday_range_reports_missing_regular_session_dates():
+    from scripts.constituent_weekly.dhan_equity_preflight import analyse_intraday_range
+
+    body = {
+        "open": [100.0, 100.5, 101.0],
+        "high": [101.0, 101.5, 102.0],
+        "low": [99.0, 99.5, 100.0],
+        "close": [100.5, 101.0, 101.5],
+        "volume": [100, 110, 120],
+        "timestamp": [
+            epoch_ist("2021-11-01T10:00:00"),
+            epoch_ist("2021-11-01T15:14:00"),
+            epoch_ist("2021-11-02T15:14:00"),
+        ],
+    }
+    result = analyse_intraday_range(body, "RELIANCE", "2021-11-01", "2021-11-02")
+    assert result["status"] == "RANGE_COVERAGE_OR_OHLC_FAILED"
+    assert result["missing_anchor_dates"] == ["2021-11-02"]
+
 def test_request_intraday_range_sends_a_90_day_window_and_returns_no_prices(monkeypatch):
     import scripts.constituent_weekly.dhan_equity_preflight as probe
 
