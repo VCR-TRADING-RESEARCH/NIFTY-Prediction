@@ -204,3 +204,9 @@
 2026-10-31 — PR #28 review state updated
 
 - After its mocked Actions checks passed, PR #28 was marked ready for review. GitHub reports `mergeable_state=dirty`, so it was not merged. No direct main-branch bypass was used.
+
+2026-10-31 — Additional public NIFTY weight-source sweep
+
+- Searched public Hugging Face, GitHub and Figshare candidates. The 216-snapshot HF weights dataset (2008-01 to 2025-08) is CC BY-NC-SA 4.0 and includes static-between-snapshot/estimated-gap assumptions; not accepted for the trading workflow without separate permission and validation.
+- GitHub alternatives surfaced were binary/equal-weight membership approximations or best-effort circular/EOD reconstructions, not official numeric IWF series; NSE redistribution terms remain a blocker.
+- Added the source-by-source decision to research/constituent_weekly/DATA_SOURCE_REGISTER.md. No dataset was ingested and no model work was performed.
