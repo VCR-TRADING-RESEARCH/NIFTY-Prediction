@@ -6,6 +6,7 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+# These checks are offline and deliberately independent of NSE/Dhan endpoints.
 DATA = ROOT / "data" / "constituent_weekly" / "nifty50_membership_intervals.csv"
 
 
