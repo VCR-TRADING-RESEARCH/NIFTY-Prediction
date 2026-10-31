@@ -414,3 +414,12 @@ The protected live Dhan run is no longer awaiting manual dispatch. It was initia
 - Impact: The official month-end constituent weight archive is technically discoverable, but permission for scheduled automated retrieval, caching and the intended personal-trading research workflow is not settled by public wording alone.
 - Containment: No monthly archive ZIP was downloaded, parsed or cached in this review. No scraping or endpoint reverse-engineering was performed. Keep automated retrieval disabled pending written permission or an applicable licence.
 - Evidence: research/constituent_weekly/C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md. C1 remains NOT PASSED; C2 remains gated.
+
+
+## E0040 — 2026-11-01 — Missing NumPy import in new range-QA helper
+- Severity: Low / test-code defect.
+- Runs: [41250624129](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250624129) and [41250629010](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250629010).
+- Symptom: two new 90-day range analysis tests failed with `NameError: np is not defined`; the PR run had 19 passing tests and 2 failing tests.
+- Root cause: the helper used `np.isfinite` without importing NumPy in the module.
+- Correction: added `import numpy as np` in commit 3a9545e. Corrective push run [41250690640](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250690640) is pending verification.
+- No market data were downloaded in the failed runs; no research data or outcome labels were changed.

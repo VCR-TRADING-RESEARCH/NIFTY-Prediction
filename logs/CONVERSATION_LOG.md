@@ -216,3 +216,8 @@
 - Assistant identified the official NSE Indices monthly constituent-weight ZIP archive and a public naming-pattern example. Independent documentation reports historical month-end coverage from June 2013.
 - Reviewed the NSE research-data policy and Nifty Indices site terms. Since automated collection requires express written consent under the site terms, no archive ZIP was requested or fetched.
 - Added the permission-gate report to the C1 branch and updated README plus research/error/conversation logs. C1 remains NOT PASSED; no model or strategy was generated.
+
+
+## 2026-11-01 — C1 90-day Dhan range test implementation
+- Assistant added a 90-day one-minute history QA probe for RELIANCE, TCS and INFY on 2022-10-03 through 2022-12-30; the probe stores only aggregate coverage/quality metadata.
+- Initial tests found a missing NumPy import (2 new tests failed, 19 passed). The import was corrected and the follow-up workflow was queued. No live data request ran in the failed test step.

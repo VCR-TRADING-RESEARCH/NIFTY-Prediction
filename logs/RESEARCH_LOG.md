@@ -371,3 +371,9 @@
 - Located the official NSE Indices monthly "Market Capitalisation, Weightage, Beta" ZIP family. Independent docs report 159 monthly files from June 2013 onward and independent public code documents the `mcwb_{mon}{yy}.zip` filename pattern.
 - Reviewed NSE research data sharing policy and Nifty Indices site terms. Historical reports/index data are listed in the research/analysis data basket, but automated extraction/collection requires express written consent under the site terms. The precise permissions for automated caching and research leading to personal trading are not resolved.
 - No monthly ZIP file was fetched, parsed or cached in this step. Added the official archive terms audit; C1 remains rights/coverage blocked and C2 gated.
+
+
+## 2026-11-01 — 90-day Dhan test regression and correction
+- Added a three-symbol 90-day Dhan intraday range probe to establish realistic historical response volume and coverage before bulk backfill.
+- Initial CI revealed a missing NumPy import in the new QA helper: 2 tests failed, 19 passed. Added the module import; correction is under validation in run 41250690640.
+- No live API requests were reached in the failing runs. The range-coverage result remains pending.
