@@ -35,6 +35,7 @@ def main() -> int:
         f"- Current NIFTY 50 universe resolved in current Dhan master: {data.get('current_universe_resolved_count', 'NOT_RUN')}/{data.get('current_universe_symbol_count', 'NOT_RUN')}",
         f"- Historical membership symbol aliases matched in current Dhan master: {data.get('historical_membership_symbols_found_in_current_master_count', 'NOT_RUN')}/{data.get('historical_membership_symbol_count', 'NOT_RUN')}",
         f"- Five-symbol one-minute anchor/expiry-proxy checks: {passed}/{expected}",
+        f"- Full point-in-time NIFTY 50 probe: {data.get('full_universe_probe_passed', 'NOT_RUN')}/{data.get('full_universe_probe_expected', 'NOT_RUN')} passed; resolved {data.get('full_universe_probe_resolved', 'NOT_RUN')}; date {data.get('full_universe_probe_date', 'NOT_RUN')}",
         f"- Accepted expiry proxy: last returned one-minute candle at/before {data.get('expiry_proxy_cutoff_ist', '15:15:00')} IST; sample proxy timestamp(s): {', '.join(proxy_times) if proxy_times else 'NOT_RECORDED'}",
         f"- Historic HDFC Ltd legacy-security-ID probes: {legacy_passed}/{len(legacy)} passed",
         f"- Deep daily-history probe: {data.get('daily_history_probe', {}).get('status', 'NOT_RUN')}",

@@ -206,6 +206,45 @@ def test_analyse_bars_never_uses_a_candle_after_the_1515_cutoff():
     assert result["status"] == "PASS"
     assert result["expiry_proxy_bar_time_ist"] == "2026-10-30T15:14:00+05:30"
 
+
+def test_request_intraday_probe_reports_only_sanitised_bar_quality(monkeypatch):
+    import scripts.constituent_weekly.dhan_equity_preflight as probe
+
+    captured = {}
+
+    class Response:
+        ok = True
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return {
+                "open": [100.0, 101.0],
+                "high": [101.0, 102.0],
+                "low": [99.0, 100.0],
+                "close": [100.5, 101.5],
+                "volume": [100, 200],
+                "timestamp": [
+                    epoch_ist("2026-10-29T10:00:00"),
+                    epoch_ist("2026-10-29T15:14:00"),
+                ],
+            }
+
+    def fake_post(url, *, headers, json, timeout):
+        captured.update(url=url, headers=headers, body=json, timeout=timeout)
+        return Response()
+
+    monkeypatch.setattr(probe.requests, "post", fake_post)
+    result = probe.request_intraday_probe({"access-token": "secret"}, "RELIANCE", "12345", "2026-10-29")
+
+    assert result["status"] == "PASS"
+    assert result["anchor_window_bars"] == 1
+    assert result["expiry_proxy_bar_time_ist"] == "2026-10-29T15:14:00+05:30"
+    assert "securityId" in captured["body"]
+    assert "close" not in result
+    assert "prices" not in result
+    assert "secret" not in str(result)
+
 def test_profile_request_uses_documented_access_token_header_only(monkeypatch):
     import scripts.constituent_weekly.dhan_equity_preflight as probe
 

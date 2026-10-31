@@ -239,6 +239,27 @@ def analyse_bars(body: dict, symbol: str, day: str, *, require_anchor: bool = Tr
 
 
 
+
+def request_intraday_probe(headers: dict, symbol: str, security_id: str, day: str) -> dict:
+    """Fetch one compact Dhan one-minute window and return only sanitised QA metadata."""
+    response = requests.post(
+        INTRADAY_URL,
+        headers=headers,
+        json={
+            "securityId": security_id,
+            "exchangeSegment": "NSE_EQ",
+            "instrument": "EQUITY",
+            "interval": "1",
+            "oi": False,
+            "fromDate": f"{day} 09:15:00",
+            "toDate": f"{day} 15:30:00",
+        },
+        timeout=60,
+    )
+    if not response.ok:
+        return {"symbol": symbol, "date": day, "status": f"HTTP_{response.status_code}"}
+    return analyse_bars(response.json(), symbol, day)
+
 def request_profile(token: str):
     """Check token validity using the documented profile header only."""
     return requests.get(
@@ -317,6 +338,28 @@ def main() -> int:
         result["security_master_scope_note"] = "Current scrip-master lookup only; does not prove historical security-ID validity for inactive/delisted instruments."
         result["resolved_probe_symbols"] = sorted(probe_ids)
         result["missing_probe_symbols"] = sorted(set(PROBE_SYMBOLS) - set(probe_ids))
+
+        # Full 50-stock cross-section check on a fixed recent historical session.
+        full_universe_date = "2026-10-29"
+        full_universe_symbols, _ = membership_symbol_sets(full_universe_date)
+        full_universe_ids = resolve_ids(master, full_universe_symbols)
+        full_universe_results = []
+        for symbol in full_universe_symbols:
+            security_id = full_universe_ids.get(symbol)
+            if not security_id:
+                full_universe_results.append({
+                    "symbol": symbol, "date": full_universe_date, "status": "MISSING_SECURITY_ID"
+                })
+                continue
+            full_universe_results.append(
+                request_intraday_probe(headers, symbol, security_id, full_universe_date)
+            )
+        full_passed = sum(item.get("status") == "PASS" for item in full_universe_results)
+        result["full_universe_probe_date"] = full_universe_date
+        result["full_universe_probe_expected"] = len(full_universe_symbols)
+        result["full_universe_probe_resolved"] = len(full_universe_ids)
+        result["full_universe_probe_passed"] = full_passed
+        result["full_universe_probe"] = full_universe_results
 
         if "RELIANCE" in probe_ids:
             daily = requests.post(
@@ -400,7 +443,10 @@ def main() -> int:
         result["intraday_probe_expected"] = expected
         result["expiry_proxy_cutoff_ist"] = "15:15:00"
         result["expiry_proxy_definition"] = "Use the close of the latest available 1-minute candle timestamped between 15:00 and 15:14 IST; ignore later candles."
-        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected else "PARTIAL_OR_BLOCKED"
+        full_expected = result.get("full_universe_probe_expected", 0)
+        full_passed = result.get("full_universe_probe_passed", 0)
+        full_complete = full_expected > 0 and full_passed == full_expected
+        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected and full_complete else "PARTIAL_OR_BLOCKED"
         result["note"] = "Five-symbol/two-date data probe only. The final available candle by the 15:15 IST cutoff is accepted as the expiry proxy; this does not establish full-universe coverage, inactive-security history or official index weights."
     except PublicPredictionError as exc:
         result["status"] = "BLOCKED_DHAN_AUTH"
@@ -425,6 +471,7 @@ def main() -> int:
     print(f"Daily history probe: {result.get('daily_history_probe', {}).get('status', 'NOT_RUN')}; bars={result.get('daily_history_probe', {}).get('bar_count', 0)}")
     print(f"Intraday windows passing: {result.get('intraday_probe_passed', 0)}/{result.get('intraday_probe_expected', 0)}")
     print(f"Expiry-proxy cutoff: {result.get('expiry_proxy_cutoff_ist', 'NOT_SET')}")
+    print(f"Full point-in-time NIFTY 50 probe: {result.get('full_universe_probe_passed', 0)}/{result.get('full_universe_probe_expected', 0)} passed; resolved={result.get('full_universe_probe_resolved', 0)}; date={result.get('full_universe_probe_date', 'NOT_RUN')}")
     for probe in result.get("intraday_probe", []):
         print("PROBE", probe.get("symbol"), probe.get("date"), probe.get("status"),
               "bars=", probe.get("bar_count", 0),
