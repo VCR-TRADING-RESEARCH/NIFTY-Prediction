@@ -9,6 +9,10 @@ on:
       - "scripts/constituent_weekly/**"
       - "tests/test_constituent_weekly_source_fetch.py"
       - ".github/workflows/constituent-weekly-c1-data.yml"
+  pull_request:
+    branches:
+      - "phase/constituent-weekly-outcomes-c0"
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 permissions:
@@ -21,7 +25,7 @@ jobs:
       - name: Checkout C1 branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.head_ref || github.ref_name }}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -59,5 +63,5 @@ jobs:
           git add -A research/constituent_weekly/
           if ! git diff --cached --quiet; then
             git commit -m "Record BUP-01 C1 official source audit"
-            git push
+            git push origin HEAD:${{ github.head_ref || github.ref_name }}
           fi
