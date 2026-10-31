@@ -237,6 +237,7 @@ def main() -> int:
             log_auth_diagnostics(result)
             print(result["status"])
             return 0
+        headers = {"access-token": token, "client-id": client_id, "Accept": "application/json", "Content-Type": "application/json"}
         profile_body = profile.json()
         data_plan = str(profile_body.get("dataPlan", "")).strip().casefold()
         result["data_plan_active"] = data_plan == "active"
