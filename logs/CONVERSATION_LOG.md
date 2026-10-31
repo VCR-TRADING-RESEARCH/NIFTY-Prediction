@@ -130,3 +130,8 @@
 - Official NSE Indices demerger releases also add zero-price `DUMMYTATAM` on 2025-10-14 and remove it effective 2025-11-17. Corrected the project membership CSV, provenance, machine audit and tests. The placeholder is explicitly flagged non-tradable and excluded from the stock panel.
 - Correct month-end cardinality: 50 entries at 102 of 103 snapshots and 51 on 2025-10-31 due the official temporary placeholder. Earlier 103/103 all-50 statement was corrected and logged.
 - Previous Actions run 41184751617 covered the earlier four-test revision only. A new six-test run is pending. Overall C1 remains blocked; no model training done.
+
+## 2026-10-31 — Membership CI correction attempt
+- The first post-Tata-correction Actions tests failed. Job-log review traced one failure to a comma in an unquoted dummy-member CSV note (column shift), and one to the older 84-row audit file being present in that intermediate commit.
+- Corrected CSV quoting, checked all 86 rows have 11 columns and no weightage values, and confirmed the corrected 103-month-end counts: 102×50, 1×51 (2025-10 dummy).
+- A fresh membership workflow run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) is queued; no success claim until completed.
