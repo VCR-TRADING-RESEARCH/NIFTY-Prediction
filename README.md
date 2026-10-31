@@ -196,7 +196,7 @@ A separate options strategy study is underway on [research branch](https://githu
 - [C1 source feasibility audit](research/constituent_weekly/C1_SOURCE_FEASIBILITY.md)
 - [One-time sample integrity audit](research/constituent_weekly/C1_INITIAL_SAMPLE_AUDIT.md)
 - [C1 source/rights register](research/constituent_weekly/DATA_SOURCE_REGISTER.md)
-- [C1 status](research/constituent_weekly/STATUS.md)
+- [C1 status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md)
 - [C1 draft PR #26](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/26)
 
 The September 2026 official weight-report sample was parsed once for file/schema integrity: 50 unique NIFTY50 rows and a displayed weight sum of 100.0%. The report publication timestamp, historical coverage and basket reconciliation were not validated. The October archive's PDF was inventoried but not analysed. A third-party March 2026 current-members file differs from the September sample (WIPRO appears only in the candidate, BSE only in the sample), so it is not accepted as the current or historical truth.
@@ -378,4 +378,4 @@ The subsequent status/validator correction was also pushed and validated: [run 4
 - Free-source minute-data search found a public 2012–2023 GitHub archive with 47/50 NIFTY 50 member files on 2022-11-03 and 2022-11-04; DIVISLAB, SBILIFE and APOLLOHOSP are absent. Five sampled stocks and the NIFTY index file had 10:00–10:03 anchor rows and a 15:14 bar on 2022-11-03.
 - The archive's README claims MIT but the fork and inspected upstream root have no LICENSE file; it is not imported. Other candidates are either non-commercial/research-only, lack verified licence, or are not downloadable yet.
 - Dhan's current documentation confirms minute history up to five years for active instruments and 90-day request windows, and daily history from inception; it does not guarantee intraday data for inactive/delisted symbols.
-- C1 is still NOT PASSED. No canonical constituent panel, bottom-up model, index forecast or strategy exists. [C1 source audit](research/constituent_weekly/C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md) · [Research plan v1.1](research/constituent_weekly/RESEARCH_PLAN.md) · [C1 status](research/constituent_weekly/STATUS.md)
+- C1 is still NOT PASSED. No canonical constituent panel, bottom-up model, index forecast or strategy exists. [C1 source audit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md) · [Research plan v1.1](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/RESEARCH_PLAN.md) · [C1 status](research/constituent_weekly/STATUS.md)

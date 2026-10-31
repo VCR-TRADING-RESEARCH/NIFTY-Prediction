@@ -344,3 +344,10 @@
 - The source README claims MIT but the fork and upstream root have no LICENSE file, so the data were not imported. The 2024–2026 F&O dataset limits use to research/education and excludes commercial redistribution; the large HF candidate has no licence verified; DataPointX downloads remain closed pending licensing.
 - Dhan documentation confirms five years of intraday history for active instruments, 90-day request windows and daily history from instrument inception; inactive/delisted-minute coverage remains unproven.
 - C1 remains NOT PASSED / rights-and-coverage blocked; C2 remains gated. No model or forecast was generated. See research/constituent_weekly/C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md.
+
+
+## 2026-11-01 — C1 workflow regression and correction
+- The source-audit workflow on the updated C1 branch passed in run 41249370606.
+- The separate plan-governance workflow failed in run 41249370561 because `validate_plan.py` required a hard-coded plan version 1.0 after the registered protocol was amended to v1.1.
+- Corrected the validator to parse declared version/history and assert expiry-proxy consistency; added a regression test. No empirical C1 results or data were changed.
+- C1 remains blocked; C2 is gated.

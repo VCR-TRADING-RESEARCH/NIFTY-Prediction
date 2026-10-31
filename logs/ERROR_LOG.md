@@ -382,3 +382,12 @@ The protected live Dhan run is no longer awaiting manual dispatch. It was initia
 - Coverage: Point-in-time constituent matching found only 47/50 expected NIFTY 50 files on 2022-11-03 and 2022-11-04; DIVISLAB, SBILIFE and APOLLOHOSP were missing.
 - Correction: No raw bars were copied into the NIFTY-Prediction repo and no training was performed. Keep the source diagnostic-only until the owner supplies a verifiable licence and source-rights statement; keep C1 blocked pending full coverage and weights.
 - Related evidence: research/constituent_weekly/C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md.
+
+
+## E0037 — 2026-11-01 — Plan governance check lagged a versioned amendment
+- Severity: Medium / CI validation.
+- Run: [41249370561](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249370561).
+- Symptom: `validate_plan.py` rejected the updated plan because it hard-coded the original 1.0 version marker.
+- Root cause: the plan was correctly amended to v1.1 after the user changed the expiry timestamp convention, but the governance validator had not been version-proofed.
+- Correction: parse the plan's declared version, require a matching version-history entry, validate the shared 15:15 stock/index expiry proxy and separate 15:30 sensitivity, and add a regression test. Re-run evidence is recorded in C1 status when available.
+- Research impact: no dataset, price, model or result was changed by this CI failure.
