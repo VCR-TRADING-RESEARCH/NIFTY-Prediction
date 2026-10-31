@@ -181,3 +181,10 @@ The revised six-test suite and machine audit are committed. **Post-correction Ac
 - No source found in this bounded pass clears rights + exact historical IWF + security/corporate-action identity + full constituent intraday/expiry-close coverage together.
 - **Gate decision unchanged:** membership sub-gate PASS WITH LIMITATIONS; overall C1 BLOCKED; C2 not authorised. Do not fabricate weights, scrape NSE without permission, or fit stock models on an incomplete universe.
 - References: https://www.nseindia.com/static/nse-indices/index-data-subscription ; https://www.nseindia.com/static/products-services/indices-nifty50-index ; https://dhanhq.co/docs/v2/historical-data/ ; https://huggingface.co/datasets/AMP4010/Historical_Nifty_50_Constituent_Weights_20Y ; https://github.com/vishalvx/nifty-indices-datasets.
+
+
+## User data-source direction — 2026-10-31
+
+User confirmed “Dhan” as the available data route. Treat the existing Dhan Data API subscription and GitHub Actions secrets as the primary permitted market-data source for constituent prices. Next C1 data work must use Dhan-first, cache-first acquisition: resolve the point-in-time constituent universe to Dhan security IDs, inventory historical daily/intraday coverage by symbol and date, test delisted/inactive coverage, and capture both forecast-time anchors and expiry-close bars. Reuse cached successful responses; make bounded date/security batches; serialize authentication and avoid unnecessary TOTP refresh loops. Never expose secrets or raw credentials.
+
+Dhan price data does not itself establish official historical NIFTY free-float IWF or index methodology membership. Keep those as separate gates and do not infer weights from equal weights, market cap, or promoter/FII/DII ownership. Overall C1 remains BLOCKED until weights/identity and full price coverage are verified. C2 remains gated.
