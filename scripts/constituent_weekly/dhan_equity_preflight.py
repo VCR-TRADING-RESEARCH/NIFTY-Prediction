@@ -185,6 +185,24 @@ def analyse_bars(body: dict, symbol: str, day: str, *, require_anchor: bool = Tr
     }
 
 
+
+def request_profile(token: str):
+    """Check token validity using the documented profile header only."""
+    return requests.get(
+        PROFILE_URL,
+        headers={"access-token": token, "Accept": "application/json"},
+        timeout=25,
+    )
+
+
+def log_auth_diagnostics(result: dict) -> None:
+    """Emit only status codes, response key names and token metadata; never values."""
+    diagnostics = result.get("token_refresh_diagnostics")
+    if diagnostics:
+        print("TOKEN_RESPONSE_SHAPE", json.dumps(diagnostics, sort_keys=True))
+
+
+
 def main() -> int:
     result = {
         "track": "BUP-01",
@@ -201,14 +219,11 @@ def main() -> int:
         result["auth_method"] = auth_method
         result["token_refresh_status"] = refresh_status
         result["token_refresh_diagnostics"] = auth_diagnostics
-        headers = {"access-token": token, "client-id": client_id, "Accept": "application/json", "Content-Type": "application/json"}
-
-        profile = requests.get(PROFILE_URL, headers=headers, timeout=25)
+        profile = request_profile(token)
         if not profile.ok and auth_method == "totp_refresh":
             fallback_token = os.getenv("DHAN_ACCESS_TOKEN", "").strip()
             if fallback_token and "\n" not in fallback_token and "\r" not in fallback_token:
-                headers["access-token"] = fallback_token
-                retry = requests.get(PROFILE_URL, headers=headers, timeout=25)
+                retry = request_profile(fallback_token)
                 if retry.ok:
                     profile = retry
                     result["auth_method"] = "provided_token_fallback"
@@ -219,6 +234,7 @@ def main() -> int:
         if not profile.ok:
             result["status"] = f"BLOCKED_PROFILE_HTTP_{profile.status_code}"
             write_result(result)
+            log_auth_diagnostics(result)
             print(result["status"])
             return 0
         profile_body = profile.json()
