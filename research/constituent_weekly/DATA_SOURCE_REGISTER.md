@@ -132,3 +132,33 @@ Implications for the C1 data audit:
 2. Weight reconstruction between snapshots must not carry forward a stale float factor across a quarterly public-shareholding update or a corporate action.
 3. Publication/filing timestamps must be distinguished from the underlying shareholding quarter, because a later filing cannot be used as if it were available at the earlier 10:00 forecast.
 4. The exact free-float weight formula and index-divisor adjustments must be reconciled against the official index methodology before stock-level forecasts are aggregated.
+
+
+## Licensed point-in-time membership and shareholding source (reviewed 2026-10-31)
+
+**Candidate:** [aditya-jha/nse-historical-membership](https://github.com/aditya-jha/nse-historical-membership), source revision `cc6f89fd6699a92afa8d398896d0aac385eb9e8c`. Its data files carry CC BY 4.0 under the source repository's `LICENSE-DATA`; code is MIT. BUP-01 includes the NIFTY 50-only effective-dated subset at `data/derived/constituent_weekly/nifty50_membership_intervals.csv` and the attribution/caveats at `C1_MEMBERSHIP_DATA_ATTRIBUTION.md`.
+
+Audited membership subset:
+- 83 membership intervals, 82 distinct historical symbols.
+- 50 intervals are `snapshot_floor`; 33 are `press_release` sourced.
+- 93 sampled month-15 dates from 2018-01 through 2025-09 had 50 overlapping active intervals each.
+- The latest NIFTY 50 effective event in this data is 2025-09-30. This does not give us the October 2026 current universe.
+- The `weightage` field is empty for all NIFTY 50 intervals checked; the file supplies membership dates, not historical free-float weights.
+- The source's own 2026-05 validation report records 29/29 curated transition checks passing and 0/42 current-snapshot mismatches, but major pre-2018 G2/G4 cardinality and consistency failures. We restrict confirmatory use to candidate 2018+ intervals and retain the source confidence flag; a 50-row count at a sample date is not independent member-by-member validation.
+
+**Quarterly ownership dataset in the same CC BY 4.0 repository:** `shareholding_history/data/parsed/_flat.csv` contains 59,773 rows across the broader NSE universe. Matching symbols to NIFTY 50 membership intervals found 2,584 records for 78 historically matching tickers. Quarter-end coverage against the reconstructed 50-stock membership:
+- 2018-03: 37/50 (74%)
+- 2018-06: 47/50 (94%)
+- 2020-06: 41/50 (82%)
+- 2022-03: 43/50 (86%)
+- 2023-06: 49/50 (98%)
+- 2023-09 onward through 2025-09: 50/50 for each audited quarter.
+The ownership file includes promoter, FII, DII, public and non-institutional roll-ups, share count, filing date, submission date and XBRL filename. It does **not** contain the complete public-shareholding category detail needed to reproduce official IWF exclusions. The actual `_categories.csv.gz` file mentioned in older documentation is absent from the pinned source tree.
+
+The filing-index manifests retain `broadcast_date`, `revised` and record IDs, but `_flat.csv` does not. We inspected a RELIANCE manifest and verified that the broadcast timestamp is recorded separately from the quarter-end/report date. Before any ownership feature is used, BUP-01 must join each parsed row to its manifest by XBRL filename, use broadcast time as its availability timestamp, and exclude any ownership fact not broadcast before the weekly 10:00 IST forecast. Submission date alone is only day-resolution and is insufficient where a same-day 10:00 cutoff matters.
+
+**Critical mathematical warning:** `IWF ≠ 100% − promoter_pct`. Official NIFTY float methodology excludes multiple strategic/locked/controlled holdings beyond promoter ownership. The current five-roll-up public data cannot support official free-float weights, and the derived ownership roll-ups must not be used as a substitute.
+
+### AMFI ETF portfolio data — identified but not accepted
+
+AMFI's public monthly portal contains scheme portfolio Excel/PDF files from at least 2019 through 2026, including NIFTY 50 ETF/fund schemes. This could provide a cross-check of ETF-replicated holdings, not official index weights. AMFI Terms of Use grant only personal/non-commercial access and prohibit public display, publication, derivative works and electronic storage of significant portions. The files are therefore not used or automated in this public repository without express permission. SEBI's circulars require portfolio disclosures, but regulatory disclosure does not override AMFI's site-use terms. Source: https://www.amfiindia.com/research-information/amfi-monthly and https://www.amfiindia.com/terms-of-use.
