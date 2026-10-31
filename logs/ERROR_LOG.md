@@ -283,3 +283,11 @@
 - **Resolution evidence:** Offline source-audit workflow run [41180457400](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41180457400) completed successfully. Checkout, the offline tests, archive inspection, status updater and summary steps all passed.
 - **Scope:** No authorised local archive was present, so the result is a validator/workflow pass only. No historical membership, official weights or stock bars were validated by this run.
 - **Outstanding:** Dhan equity preflight workflow is staged, but no execution is visible. C1 remains blocked on numeric IWF, current point-in-time members after 2025-09-30 and constituent 1-minute coverage.
+
+E0025 — 2026-10-31 — BUP-01 Dhan token/profile authentication blocked
+
+- **Evidence:** C1 Actions run [41181948126](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181948126). Ten offline tests passed. Live token-generation returned HTTP 200 but no accessToken field; fallback token was rejected by profile with HTTP 401.
+- **Impact:** No data-plan confirmation, security-master resolution, daily history or intraday stock bars were reached.
+- **Correction:** Profile request was aligned to Dhan's documented access-token-only header. Failure persists, so the issue is not an extra client-id profile header.
+- **Next:** Verify client ID, six-digit PIN, TOTP enablement/secret, and fresh fallback token belong to the same Dhan account. Retry only after profile returns HTTP 200.
+- **Security:** No secret, token, PIN, TOTP or raw provider message was recorded.
