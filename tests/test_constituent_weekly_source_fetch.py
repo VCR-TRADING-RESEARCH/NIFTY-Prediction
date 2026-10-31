@@ -44,6 +44,8 @@ class OfficialWeightFetcherTests(unittest.TestCase):
         self.assertEqual(result["file_count"], 1)
         self.assertEqual(result["files"][0]["header"], ["Symbol", "ISIN", "Weightage"])
         self.assertEqual(result["files"][0]["data_rows"], 2)
+        self.assertEqual(result["files"][0]["preview_rows"][0], ["Symbol", "ISIN", "Weightage"])
+        self.assertEqual(len(result["files"][0]["preview_rows"]), 3)
 
     def test_sha256_is_deterministic(self):
         self.assertEqual(
