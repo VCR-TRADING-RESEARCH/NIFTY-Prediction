@@ -233,3 +233,10 @@ The licensed CC BY 4.0 NIFTY 50 interval subset is now cached at [data/derived/c
 - C1 remains BLOCKED on authentication, authorised point-in-time numeric free-float weights, current membership, corporate-action/security identity history and basket reconciliation. No constituent model/forecast exists.
 
 - Additional public-source sweep: no permissively reusable official historical IWF series found. The HF 2008–2025 weights candidate is CC BY-NC-SA 4.0 and documents static/extrapolated intervals; GitHub alternatives are binary membership or best-effort reconstructions. See [C1 data-source register](research/constituent_weekly/DATA_SOURCE_REGISTER.md).
+
+
+## BUP-01 Dhan authentication checkpoint — 2026-10-31
+
+- Shared Dhan refresh helper corrected to POST on the C1 branch; token values are masked and exported only within the Actions job. BUP-01 preflight already used POST.
+- Run [41182555655](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182555655): 10/10 offline tests passed; live token endpoint returned HTTP 200 without an access-token field; fallback profile returned HTTP 401. No equity data calls were reached.
+- Safe error-category diagnostics and a regression test have been added; the follow-up run is pending/in progress. C1 remains blocked; no constituent model or strategy result exists.
