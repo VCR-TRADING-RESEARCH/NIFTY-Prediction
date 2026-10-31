@@ -311,3 +311,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 ### E0030 resolution — 2026-10-31
 - Corrective run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) succeeded; the dedicated membership workflow confirms **6 passed**. CSV column alignment and audit artifact sequencing issues are resolved.
 - E0030 is **CLOSED** for this test/data-format defect. Do not reopen unless a regression occurs. Broader C1 gates remain blocked independently.
+
+### E0029 resolution — 2026-10-31
+- The corrected 86-row membership ledger, Tata symbol boundaries and temporary zero-price placeholder are now validated by the six-test Actions run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548).
+- E0029 is **CLOSED** for this specific corporate-action/interval correction. This does not certify all historic transitions, IWF weights or security-ID mappings.
