@@ -10,7 +10,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from scripts.constituent_weekly.dhan_equity_preflight import analyse_bars, resolve_ids
+from scripts.constituent_weekly.dhan_equity_preflight import analyse_bars, membership_symbol_sets, resolve_ids
 
 
 def epoch_ist(value: str) -> int:
@@ -242,3 +242,28 @@ def test_auth_diagnostics_classify_totp_failure_without_retaining_message():
     assert result["provider_error_category"] == "TOTP_REJECTED_OR_INVALID"
     assert "Invalid TOTP" not in str(result)
     assert "do not persist this text" not in str(result)
+
+
+def test_membership_symbol_sets_respects_effective_dates_and_dummy_exclusion():
+    current, historical = membership_symbol_sets("2026-10-31")
+    assert len(current) == 50
+    assert "BSE" in current
+    assert "WIPRO" not in current
+    assert "DUMMYTATAM" not in current
+    assert "WIPRO" in historical
+    assert "TATAMOTORS" in historical
+    assert "TMPV" in historical
+
+
+def test_resolve_ids_accepts_full_membership_symbol_list():
+    master = pd.DataFrame({
+        "SEM_SMST_SECURITY_ID": ["101", "102", "103"],
+        "SEM_TRADING_SYMBOL": ["RELIANCE", "BSE", "WIPRO"],
+        "SEM_EXM_EXCH_ID": ["NSE", "NSE", "NSE"],
+        "SEM_SEGMENT": ["E", "E", "E"],
+        "SEM_SERIES": ["EQ", "EQ", "EQ"],
+        "SEM_INSTRUMENT_NAME": ["EQUITY", "EQUITY", "EQUITY"],
+    })
+    assert resolve_ids(master, ["RELIANCE", "BSE", "WIPRO"]) == {
+        "RELIANCE": "101", "BSE": "102", "WIPRO": "103"
+    }

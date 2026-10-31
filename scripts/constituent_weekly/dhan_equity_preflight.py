@@ -5,6 +5,7 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 import sys
+from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
@@ -16,6 +17,7 @@ import requests
 
 from live_api.app import MASTER_URL, PublicPredictionError
 OUTPUT = ROOT / "research" / "constituent_weekly" / "C1_DHAN_PREFLIGHT.json"
+MEMBERSHIP_CSV = ROOT / "data" / "constituent_weekly" / "nifty50_membership_intervals.csv"
 AUTH_URL = "https://auth.dhan.co/app/generateAccessToken"
 PROFILE_URL = "https://api.dhan.co/v2/profile"
 INTRADAY_URL = "https://api.dhan.co/v2/charts/intraday"
@@ -24,6 +26,30 @@ PROBE_SYMBOLS = ("RELIANCE", "TCS", "INFY", "HDFCBANK", "WIPRO")
 PROBE_DATES = ("2022-10-31", "2026-10-29")
 # Current scrip-master probes do not prove history for removed/delisted security IDs.
 IST = "Asia/Kolkata"
+
+
+def membership_symbol_sets(as_of_date: str) -> tuple[list[str], list[str]]:
+    """Return active tradable symbols and all historical tradable aliases from the licensed ledger."""
+    frame = pd.read_csv(MEMBERSHIP_CSV, low_memory=False)
+    required = {"symbol", "valid_from", "valid_to", "member_type", "market_data_required"}
+    missing = required - set(frame.columns)
+    if missing:
+        raise ValueError("Membership ledger missing required columns: " + ",".join(sorted(missing)))
+    symbols = frame["symbol"].astype("string").str.strip()
+    starts = pd.to_datetime(frame["valid_from"], errors="coerce")
+    ends = pd.to_datetime(frame["valid_to"], errors="coerce")
+    cutoff = pd.Timestamp(as_of_date)
+    tradable = (
+        frame["member_type"].astype(str).str.strip().str.casefold().eq("equity_security")
+        & frame["market_data_required"].astype(str).str.strip().str.upper().isin(("TRUE", "1", "YES"))
+        & symbols.notna()
+        & symbols.ne("")
+        & starts.notna()
+    )
+    historical = sorted(set(symbols[tradable].astype(str)))
+    active_mask = tradable & starts.le(cutoff) & (ends.isna() | ends.gt(cutoff))
+    active = sorted(set(symbols[active_mask].astype(str)))
+    return active, historical
 
 
 def write_result(data: dict) -> None:
@@ -129,7 +155,7 @@ def acquire_access_token() -> tuple[str, str, str, str, dict]:
     diagnostics["fallback_available"] = bool(fallback_token)
     raise PublicPredictionError(refresh_error)
 
-def resolve_ids(master: pd.DataFrame) -> dict[str, str]:
+def resolve_ids(master: pd.DataFrame, symbols: tuple[str, ...] | list[str] = PROBE_SYMBOLS) -> dict[str, str]:
     columns = {str(c).strip().upper(): c for c in master.columns}
     id_col = next((columns[k] for k in ("SEM_SMST_SECURITY_ID", "SECURITYID", "SECURITY_ID") if k in columns), None)
     symbol_col = next((columns[k] for k in ("SEM_TRADING_SYMBOL", "TRADING_SYMBOL", "SYMBOL") if k in columns), None)
@@ -155,7 +181,7 @@ def resolve_ids(master: pd.DataFrame) -> dict[str, str]:
             rows = eq_rows
 
     found: dict[str, str] = {}
-    for symbol in PROBE_SYMBOLS:
+    for symbol in symbols:
         matches = rows[rows[symbol_col].astype(str).str.upper().eq(symbol)]
         ids = sorted(set(matches[id_col].dropna().astype(str).str.strip()) - {""})
         if len(ids) == 1:
@@ -264,16 +290,28 @@ def main() -> int:
         master_response = requests.get(MASTER_URL, timeout=45)
         master_response.raise_for_status()
         master = pd.read_csv(pd.io.common.BytesIO(master_response.content), low_memory=False)
-        ids = resolve_ids(master)
-        result["resolved_probe_symbols"] = sorted(ids)
-        result["missing_probe_symbols"] = sorted(set(PROBE_SYMBOLS) - set(ids))
+        as_of_date = datetime.now(ZoneInfo(IST)).date().isoformat()
+        current_symbols, historical_symbols = membership_symbol_sets(as_of_date)
+        current_ids = resolve_ids(master, current_symbols)
+        historical_ids = resolve_ids(master, historical_symbols)
+        probe_ids = resolve_ids(master, PROBE_SYMBOLS)
+        result["membership_as_of_date_ist"] = as_of_date
+        result["current_universe_symbol_count"] = len(current_symbols)
+        result["current_universe_resolved_count"] = len(current_ids)
+        result["current_universe_missing_symbols"] = sorted(set(current_symbols) - set(current_ids))
+        result["historical_membership_symbol_count"] = len(historical_symbols)
+        result["historical_membership_symbols_found_in_current_master_count"] = len(historical_ids)
+        result["historical_membership_symbols_missing_from_current_master"] = sorted(set(historical_symbols) - set(historical_ids))
+        result["security_master_scope_note"] = "Current scrip-master lookup only; does not prove historical security-ID validity for inactive/delisted instruments."
+        result["resolved_probe_symbols"] = sorted(probe_ids)
+        result["missing_probe_symbols"] = sorted(set(PROBE_SYMBOLS) - set(probe_ids))
 
-        if "RELIANCE" in ids:
+        if "RELIANCE" in probe_ids:
             daily = requests.post(
                 DAILY_URL,
                 headers=headers,
                 json={
-                    "securityId": ids["RELIANCE"],
+                    "securityId": probe_ids["RELIANCE"],
                     "exchangeSegment": "NSE_EQ",
                     "instrument": "EQUITY",
                     "expiryCode": 0,
@@ -295,7 +333,7 @@ def main() -> int:
             else:
                 result["daily_history_probe"] = {"status": f"HTTP_{daily.status_code}", "bar_count": 0}
 
-        for symbol, security_id in ids.items():
+        for symbol, security_id in probe_ids.items():
             for day in PROBE_DATES:
                 response = requests.post(
                     INTRADAY_URL,
