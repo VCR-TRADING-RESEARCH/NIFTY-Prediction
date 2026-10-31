@@ -193,3 +193,10 @@
 - Confirmed shared token-refresh PR #28 has passing mocked Actions checks, but remains draft/open and unmerged. Main's scheduled helper is therefore not considered fixed.
 - Re-audited the CC BY 4.0 membership candidate: 83 NIFTY50 interval rows/82 symbols; 93 sampled month-15 membership cardinalities from 2018-01 to 2025-09 equal 50. Source ends 2025-09 and has no numerical index weights. Quarterly ownership disclosures do not equal official IWF.
 - C1 remains blocked; no panel, stock model, forecast or trading result has been generated. Next gate is Dhan profile/account entitlement plus separately authorised point-in-time numerical weights and current membership.
+
+2026-10-31 — Dhan profile request aligned with v2 docs; authentication remains blocked
+
+- Dhan v2 documentation confirms token generation uses POST with client ID, PIN and TOTP query parameters; profile validation is a GET using the access-token header only; profile returns dataPlan and tokenValidity. Data APIs require a separate subscription. Source: https://dhanhq.co/docs/v2/authentication/.
+- Updated BUP-01 profile preflight to use only the documented access-token header; retained client-id for market-data calls. Added regression test. Latest run [41181948126](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181948126): 10/10 offline tests pass.
+- Live token endpoint returned HTTP 200 but no accessToken field (only message/status keys); fallback token returned HTTP 401 on profile. No security master, daily history or intraday equity calls were reached.
+- C1 remains blocked on valid Dhan authentication and the independent official historical free-float weight/membership gates. No stock panel/model/forecast was built.
