@@ -294,3 +294,10 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** Membership intervals can reduce survivorship and membership-date errors, but cannot support index-weighted forecasts or exact basket reconstruction. Do not fill weights with equal weights, ownership percentages or market-cap proxies and call them NIFTY weights.
 - **Correction:** Import only the NIFTY 50 membership subset under its data licence with attribution, add the official 2026-09-30 WIPRO-to-BSE replacement and 103 month-end cardinality tests. Keep weights/IDs/corporate-actions and Dhan coverage as independent C1 blockers.
 - **Status:** Membership sub-gate PASS WITH LIMITATIONS; overall C1 OPEN/BLOCKED; no C2 model or strategy produced.
+
+## E0029 — 2026-10-31 — C1 membership audit under-specified Tata Motors corporate action
+- **Original issue:** Earlier 103/103 month-end assertion expected exactly 50 members on every date and did not account for the official temporary zero-price `DUMMYTATAM` index placeholder. The dataset also carried the new `TMPV` ticker backwards before its NSE effective date.
+- **Evidence:** NSE Indices 2025-10-07 release adds DUMMYTATAM at zero price effective 2025-10-14; 2025-11-13 release removes TMCV effective 2025-11-17. NSE circular NSE/FAOP/70882 changes TATAMOTORS -> TMPV effective 2025-10-24.
+- **Correction:** Replace historical TMPV alias with TATAMOTORS to 2025-10-23; start TMPV on 2025-10-24; add the dummy interval 2025-10-14 to 2025-11-17 with `market_data_required=FALSE`. Update count expectations to 50 for 102 month-ends and 51 only for 2025-10-31.
+- **Impact:** The earlier all-50 cardinality claim is superseded. Previous Actions run 41184751617 validated only the earlier four-test revision. New six-test workflow run is pending. No model or result used the flawed timeline.
+- **Status:** CORRECTED IN DATA; POST-CORRECTION CI PENDING. Other C1 IWF/security/bar-coverage gates remain blocked.
