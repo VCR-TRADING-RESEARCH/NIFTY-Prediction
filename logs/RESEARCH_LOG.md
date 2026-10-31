@@ -246,3 +246,12 @@
 - Added Dhan-equity preflight script and offline tests; it uses the existing correct POST token function in live_api.app, probes only five symbols/two days plus a small daily-history window, and stores counts/status only.
 - A manual/read-only Dhan workflow was added. No execution is visible yet; no Dhan equity bar success is claimed.
 - C1 remains BLOCKED on point-in-time IWF, membership update after 2025-09-30 and stock minute history.
+
+2026-10-31 — BUP-01 C1 resume and Dhan authentication result
+
+- Rechecked C1 phase plan, status, source register, feasibility report, README and prior error/research records.
+- Offline authorised-source audit run 41181684637 passed. No separately authorised official weight archive was present.
+- Dhan equity preflight run 41181948126: 10/10 offline tests passed; token endpoint returned HTTP 200 with no accessToken field; fallback token returned profile HTTP 401. No equity endpoints or raw bars were reached.
+- Dhan profile request now matches the official docs (access-token header only); Data APIs require an active separate plan and tokens have 24-hour validity. Documentation: https://dhanhq.co/docs/v2/authentication/.
+- Additional source sweep found no commercially permissive numeric historical IWF source; HF candidate is CC BY-NC-SA 4.0, while GitHub alternatives are binary/best-effort membership.
+- C1 remains blocked; no C2 panel or model is authorised.
