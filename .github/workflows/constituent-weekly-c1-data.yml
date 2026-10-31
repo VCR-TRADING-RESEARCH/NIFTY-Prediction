@@ -25,7 +25,7 @@ jobs:
       - name: Checkout C1 branch
         uses: actions/checkout@v4
         with:
-          ref: \${{ github.head_ref || github.ref_name }}
+          ref: ${{ github.head_ref || github.ref_name }}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -45,5 +45,5 @@ jobs:
           git add research/constituent_weekly/C1_OFFICIAL_WEIGHT_MANIFEST.json research/constituent_weekly/C1_SOURCE_FETCH_REPORT.md research/constituent_weekly/STATUS.md
           if ! git diff --cached --quiet; then
             git commit -m "Record BUP-01 C1 authorised-source audit"
-            git push origin HEAD:\${{ github.head_ref || github.ref_name }}
+            git push origin HEAD:${{ github.head_ref || github.ref_name }}
           fi
