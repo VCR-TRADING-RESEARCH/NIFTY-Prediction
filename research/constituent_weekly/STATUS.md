@@ -198,3 +198,14 @@ Dhan price data does not itself establish official historical NIFTY free-float I
 - PR validation run [41223379333](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223379333): SUCCESS; 13 offline tests passed. The live Dhan step was intentionally skipped because this was a pull-request event; workflow guard prevents exposing credentials to PR code.
 - Live data status unchanged: latest successful live Dhan evidence remains the five-symbol partial preflight [41182679514](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514). Full-universe security-ID resolution has not yet been run. Use the workflow's manual workflow_dispatch on the C1 branch for the live secret-backed step.
 - C1 remains BLOCKED; C2 remains gated. No constituent panel/model/forecast or strategy is claimed.
+
+## Live Dhan full-universe result — 2026-10-31
+
+Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41224048773) completed successfully. The Dhan TOTP refresh returned an access token, profile authentication succeeded, and the Data API plan was active.
+
+- Current active NIFTY 50: **50/50** symbols resolved against the current Dhan scrip master.
+- Historical tradable membership ledger: **79/84** distinct symbols/aliases found in the current scrip master. Five absent from the current master: HDFC, JPASSOCIAT, MCDOWELL-N, RANBAXY, TATAMOTORS. These require dated corporate-action/successor/security-ID mapping; absence from today's master does not prove historical data unavailable.
+- Five-stock candle sample: daily history returned 22 bars for Jan 2018. All five stocks passed the 2022-10-31 one-minute probe (374 bars each, including 10:00 anchor and 15:25–15:29 expiry close).
+- Recent sample 2026-10-29: 359 bars per stock, valid 10:00 anchor, but feed stopped at 15:14 IST; expiry-close window missing for all five. Targeted 15:20–15:30 requests returned empty arrays (**0/5**).
+- No raw price bars, security IDs or credentials were committed. Sanitized output is in [C1_DHAN_PREFLIGHT.json](C1_DHAN_PREFLIGHT.json).
+- C1 remains BLOCKED: historical security mapping for five aliases, recent close-bar coverage, full constituent OHLCV history, official numerical IWF/weights and basket reconciliation remain open. C2 is not authorised.
