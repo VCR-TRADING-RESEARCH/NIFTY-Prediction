@@ -51,7 +51,10 @@ def test_token_refresh_uses_post_and_exports_only_to_github_env(monkeypatch, tmp
     }
     assert captured["timeout"] == 30
     assert "DHAN_JOB_ACCESS_TOKEN=" + "x" * 48 in exported
-    assert "x" * 48 not in output
+    mask_lines = [line for line in output.splitlines() if line.startswith("::add-mask::")]
+    non_mask_lines = [line for line in output.splitlines() if not line.startswith("::add-mask::")]
+    assert mask_lines == ["::add-mask::" + "x" * 48]
+    assert "x" * 48 not in "\n".join(non_mask_lines)
     assert "TEST_TOTP_SECRET" not in output
     assert "123456" not in output
 
