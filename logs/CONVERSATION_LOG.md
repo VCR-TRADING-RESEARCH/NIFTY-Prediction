@@ -120,3 +120,7 @@
 - Validated half-open intervals against 103 month-end snapshots from 2018-04 through 2026-10: all dates had 50 unique members. Added a provenance note, machine audit JSON and regression tests. This is a membership/cardinality check, not independent transition verification.
 - Identified the official NSE Indices historical data subscription as an exact-weight/identifier path but requiring licensing. Free public weights candidates were either non-commercial or subject to upstream terms; binary weights are not official IWF.
 - Decision: membership sub-gate PASS WITH LIMITATIONS; overall C1 remains BLOCKED; no model training. Only visible decisions/outcomes are recorded, not hidden reasoning or secrets.
+
+## 2026-10-31 — BUP-01 membership validation automation
+- Added `bup01-c1-membership-tests.yml` with automatic push/path and pull-request triggers plus a manual Actions dispatch button. It runs only local membership integrity tests and does not call Dhan or scrape NSE.
+- Added an audit-JSON consistency test. The code and data files are committed on the C1 branch; workflow outcome must be inspected before labelling CI as passed.
