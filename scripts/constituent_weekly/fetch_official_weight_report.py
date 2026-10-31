@@ -102,8 +102,10 @@ def inspect_zip(blob: bytes) -> dict:
                 if text is not None:
                     reader = csv.reader(io.StringIO(text))
                     try:
-                        entry["header"] = next(reader, [])
-                        entry["data_rows"] = sum(1 for _ in reader)
+                        rows = list(reader)
+                        entry["header"] = rows[0] if rows else []
+                        entry["data_rows"] = max(0, len(rows) - 1)
+                        entry["preview_rows"] = rows[:12]
                     except csv.Error as exc:
                         entry["csv_parse_error"] = type(exc).__name__
             files.append(entry)
