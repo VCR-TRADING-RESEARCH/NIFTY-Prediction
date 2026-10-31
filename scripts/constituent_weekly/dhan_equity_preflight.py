@@ -16,6 +16,7 @@ INTRADAY_URL = "https://api.dhan.co/v2/charts/intraday"
 DAILY_URL = "https://api.dhan.co/v2/charts/historical"
 PROBE_SYMBOLS = ("RELIANCE", "TCS", "INFY", "HDFCBANK", "WIPRO")
 PROBE_DATES = ("2022-10-31", "2026-10-30")
+# Current scrip-master probes do not prove history for removed/delisted security IDs.
 IST = "Asia/Kolkata"
 
 
