@@ -106,3 +106,27 @@ Not passed: no official monthly ZIP payload has been parsed; historical point-in
 The first automated source fetch was executed before the NSE Indices Terms of Use were reviewed. The source terms were subsequently checked and the automated website retrieval was disabled. The workflow is now an offline inventory tool for separately authorised, pre-provisioned archives; it does not crawl or download NSE files. The earlier Actions artifact ID 13033492871 (run 41177903446) contained raw sample ZIP files. An administrative deletion request is being raised because the available GitHub connector in this session exposes artifact listing/download but not artifact deletion. No new raw archives will be uploaded or committed.
 
 The legal status and permitted use of any data for this personal research / trading project should be confirmed with the source or appropriate counsel. This report does not interpret the terms as legal advice. Until this gate is cleared, the official archive is source-discovery evidence only and must not be used for ongoing automated extraction or redistributed.
+
+
+## 10. CC BY 4.0 membership and quarterly ownership candidate — empirical audit
+
+The public repository `aditya-jha/nse-historical-membership` was audited at pinned commit `cc6f89fd6699a92afa8d398896d0aac385eb9e8c`. Its `LICENSE-DATA` applies CC BY 4.0 to the parsed data. The NIFTY 50-only interval subset has been copied into BUP-01 with attribution and the original source-confidence fields retained.
+
+**Membership results**
+- 83 NIFTY 50 interval rows and 82 unique symbols.
+- 50 rows marked `snapshot_floor` and 33 rows marked `press_release`.
+- 93/93 sampled month-15 dates from Jan-2018 to Sep-2025 had exactly 50 active intervals.
+- Latest NIFTY50 event date in the file: 2025-09-30.
+- No numeric weightage is present on any NIFTY50 history row.
+- This passes a basic schema/cardinality sanity check only, not the point-in-time membership gate. A majority of records retain source_floor provenance; the publisher's validation report flags pre-2018 drift and does not establish the 2026-10 current universe.
+
+**Quarterly shareholding coverage**
+- The pinned `_flat.csv` has 59,773 rows overall; filtering against historical NIFTY50 symbols yielded 2,584 rows across 78 distinct tickers.
+- As of quarterly report period end, ownership records covered 37/50 constituents in 2018-03, 47/50 in 2018-06, 41/50 in 2020-06, 43/50 in 2022-03, 49/50 in 2023-06, and 50/50 from 2023-09 through 2025-09.
+- These are issuer ownership disclosure rows, not index weights.
+- The flat table includes promoter/FII/DII/public/non-institutional roll-ups and share count, not the detailed strategic-holding exclusions needed to derive official IWF.
+- Filing-index JSON has separate `broadcast_date`, `revised` and XBRL filename fields. The flat table does not. A filename-based manifest join is required before PIT ownership features can be used; use broadcast timestamp, not quarter-end date, as feature availability time.
+
+**AMFI alternative:** public AMFI monthly holdings/Excel files exist for NIFTY 50 passive schemes, but AMFI's current Terms of Use restrict use to personal/non-commercial purposes and prohibit public display, publication, derivative works and storage of significant portions. We do not ingest or use AMFI portfolios in this public workflow absent written permission. Even if permitted, ETF holdings would be a proxy for index weights, not the official IWF series.
+
+**C1 decision:** licensed membership and ownership facts are now available as research inputs, but C1 remains BLOCKED because historical numeric official free-float weights/IWF are absent, current membership is stale past 2025-09-30, and stock-level intraday bars have not been validated. Do not advance to C2 or train a model yet.
