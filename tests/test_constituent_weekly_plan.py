@@ -25,6 +25,15 @@ class ConstituentWeeklyPlanTests(unittest.TestCase):
         self.assertIn("Today's membership must never be applied", plan)
         self.assertIn("weighted breadth", plan)
 
+
+    def test_versioned_expiry_proxy_amendment_matches_version_history(self):
+        plan = (ROOT / "research" / "constituent_weekly" / "RESEARCH_PLAN.md").read_text(encoding="utf-8")
+        self.assertIn("**Plan version:** 1.1", plan)
+        self.assertIn("- **v1.1 — 2026-11-01:**", plan)
+        self.assertIn("15:00 through 15:14 IST", plan)
+        self.assertIn("15:15 expiry proxy", plan)
+        self.assertIn("official 15:30 close", plan)
+
     def test_plan_separates_prediction_and_trading_gates(self):
         plan = (ROOT / "research" / "constituent_weekly" / "RESEARCH_PLAN.md").read_text(encoding="utf-8")
         self.assertIn("Forecast quality is not trading P&L", plan)

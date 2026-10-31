@@ -233,3 +233,11 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Dhan docs confirm five years of minute history for active instruments and 90-day query chunks, but no guarantee for inactive/delisted instruments. Daily history extends to instrument inception.
 - **C1 remains NOT PASSED / RIGHTS + COVERAGE BLOCKED.** We do not have licensed full-universe 1-minute history, point-in-time official weights or 98% basket coverage. C2 remains gated.
 - Details: [C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md](C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md).
+
+
+## Workflow mistake and correction — 2026-11-01
+
+- Push run [41249370561](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249370561) failed at `validate_plan.py` because its registration check hard-coded plan version 1.0 after the user-approved plan amendment to v1.1.
+- This was a validator defect, not a research-data failure. The separate C1 authorised-source audit passed in run [41249370606](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249370606).
+- Corrective change: validator now parses the declared plan version, requires the same version in the version history, and verifies the 15:15-proxy definition and separate 15:30 sensitivity. A regression test covers the v1.1 amendment.
+- Re-run status will be added after the next Actions result is observed. C1 remains NOT PASSED; C2 stays gated.
