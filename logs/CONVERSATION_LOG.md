@@ -89,3 +89,8 @@
 - Corrected a literal escape in the C1 checkout branch ref after Actions run #28 failed before tests; failure and fix recorded in E0022.
 - The follow-up run #35 entered `action_required` without any job steps. The workflow now uses read-only permissions and only offline authorised-archive inspection, but its tests have not yet passed in Actions.
 - C1 remains RIGHTS-BLOCKED while source permission, historical point-in-time weights/membership and stock equity bars are unresolved. No constituent model or forecast was generated.
+
+
+## 2026-10-31 — BUP-01 literature review extended
+- Added peer-reviewed and recent literature on component-based aggregate-market prediction, five-minute constituent-to-market forecasts, Indian momentum/reversal/liquidity evidence, weekly short-term reversal and cross-sectional/time-series distinctions.
+- Explicitly distinguished literature motivation from NIFTY weekly-expiry empirical evidence; the locked plan v1.0 was not changed.
