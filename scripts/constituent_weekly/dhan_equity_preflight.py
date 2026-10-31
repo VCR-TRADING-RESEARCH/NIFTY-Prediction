@@ -149,7 +149,7 @@ def resolve_ids(master: pd.DataFrame) -> dict[str, str]:
     return found
 
 
-def analyse_bars(body: dict, symbol: str, day: str) -> dict:
+def analyse_bars(body: dict, symbol: str, day: str, *, require_anchor: bool = True, require_expiry: bool = True) -> dict:
     arrays = {k: body.get(k, []) for k in ("open", "high", "low", "close", "volume", "timestamp")}
     lengths = {k: len(v) for k, v in arrays.items()}
     n = lengths["timestamp"]
@@ -171,7 +171,7 @@ def analyse_bars(body: dict, symbol: str, day: str) -> dict:
          (frame[["open", "high", "low", "close"]] > 0).all(axis=1) &
          (frame["volume"] >= 0)).all()
     )
-    passed = not anchors.empty and not expiry.empty and ohlc_ok
+    passed = (not require_anchor or not anchors.empty) and (not require_expiry or not expiry.empty) and ohlc_ok
     return {
         "symbol": symbol,
         "date": day,
@@ -194,6 +194,7 @@ def main() -> int:
         "raw_market_bars_saved": False,
         "daily_history_probe": {},
         "intraday_probe": [],
+        "targeted_expiry_close_probe": [],
     }
     try:
         token, client_id, auth_method, refresh_status, auth_diagnostics = acquire_access_token()
@@ -285,11 +286,42 @@ def main() -> int:
                 body = response.json()
                 result["intraday_probe"].append(analyse_bars(body, symbol, day))
 
+                # Dhan's large day response may be truncated; probe only the final 10-minute window separately.
+                if day == "2026-10-30":
+                    close_response = requests.post(
+                        INTRADAY_URL,
+                        headers=headers,
+                        json={
+                            "securityId": security_id,
+                            "exchangeSegment": "NSE_EQ",
+                            "instrument": "EQUITY",
+                            "interval": "1",
+                            "oi": False,
+                            "fromDate": f"{day} 15:20:00",
+                            "toDate": f"{day} 15:30:00",
+                        },
+                        timeout=60,
+                    )
+                    if not close_response.ok:
+                        result["targeted_expiry_close_probe"].append({
+                            "symbol": symbol, "date": day, "status": f"HTTP_{close_response.status_code}"
+                        })
+                    else:
+                        close_body = close_response.json()
+                        close_result = analyse_bars(
+                            close_body, symbol, day, require_anchor=False, require_expiry=True
+                        )
+                        close_result["probe_type"] = "targeted_expiry_close"
+                        result["targeted_expiry_close_probe"].append(close_result)
+
         expected = len(PROBE_SYMBOLS) * len(PROBE_DATES)
         passed = sum(x.get("status") == "PASS" for x in result["intraday_probe"])
         result["intraday_probe_passed"] = passed
         result["intraday_probe_expected"] = expected
-        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected else "PARTIAL_OR_BLOCKED"
+        targeted_passed = sum(x.get("status") == "PASS" for x in result["targeted_expiry_close_probe"])
+        result["targeted_expiry_close_passed"] = targeted_passed
+        result["targeted_expiry_close_expected"] = len(result["targeted_expiry_close_probe"])
+        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected and targeted_passed == len(PROBE_SYMBOLS) else "PARTIAL_OR_BLOCKED"
         result["note"] = "This tests only five current master symbols on two dates; it does not establish history for delisted/inactive securities or index membership/weights."
     except PublicPredictionError as exc:
         result["status"] = "BLOCKED_DHAN_AUTH"
@@ -310,6 +342,12 @@ def main() -> int:
     print(f"Current symbols resolved: {len(result.get('resolved_probe_symbols', []))}; unresolved: {len(result.get('missing_probe_symbols', []))}")
     print(f"Daily history probe: {result.get('daily_history_probe', {}).get('status', 'NOT_RUN')}; bars={result.get('daily_history_probe', {}).get('bar_count', 0)}")
     print(f"Intraday windows passing: {result.get('intraday_probe_passed', 0)}/{result.get('intraday_probe_expected', 0)}")
+    print(f"Targeted 2026 expiry-close windows passing: {result.get('targeted_expiry_close_passed', 0)}/{result.get('targeted_expiry_close_expected', 0)}")
+    for probe in result.get("targeted_expiry_close_probe", []):
+        print("TARGETED_CLOSE", probe.get("symbol"), probe.get("date"), probe.get("status"),
+              "bars=", probe.get("bar_count", 0),
+              "expiry_close=", probe.get("expiry_close_window_bars", 0),
+              "ohlc_ok=", probe.get("ohlc_volume_invariants_pass"))
     for probe in result.get("intraday_probe", []):
         print("PROBE", probe.get("symbol"), probe.get("date"), probe.get("status"),
               "bars=", probe.get("bar_count", 0),
