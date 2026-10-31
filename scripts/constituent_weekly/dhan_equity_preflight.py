@@ -41,6 +41,19 @@ def auth_response_diagnostics(body: object) -> dict:
     keys = sorted(str(key) for key in body.keys())
     data = body.get("data")
     data_keys = sorted(str(key) for key in data.keys()) if isinstance(data, dict) else []
+    # Classify known auth failure families without retaining provider text.
+    message = " ".join(str(body.get(k, "")) for k in ("message", "error", "errorDescription")).casefold()
+    category = "UNCLASSIFIED_PROVIDER_RESPONSE"
+    if any(term in message for term in ("totp", "one-time password", "otp")):
+        category = "TOTP_REJECTED_OR_INVALID"
+    elif any(term in message for term in ("pin", "password")):
+        category = "PIN_REJECTED_OR_INVALID"
+    elif any(term in message for term in ("client id", "clientid", "account id")):
+        category = "CLIENT_ID_REJECTED_OR_INVALID"
+    elif any(term in message for term in ("expired", "validity")):
+        category = "CREDENTIAL_OR_TOKEN_EXPIRED"
+    elif any(term in message for term in ("unauthor", "not allowed", "permission")):
+        category = "AUTHORIZATION_OR_PERMISSION_FAILURE"
     containers = [("top_level", body)]
     if isinstance(data, dict):
         containers.append(("data", data))
@@ -66,6 +79,7 @@ def auth_response_diagnostics(body: object) -> dict:
         "body_type": "dict",
         "response_keys": keys,
         "data_keys": data_keys,
+        "provider_error_category": category,
         "access_token_field_type": candidate_type,
         "access_token_length": candidate_length,
         "token_container": candidate_container,
