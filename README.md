@@ -276,3 +276,15 @@ The open weight-source sweep found no permissively reusable official historic IW
 
 
 - **BUP-01 constituent research detail:** [C1 status and Dhan preflight report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md) · [sanitised Dhan preflight JSON](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_DHAN_PREFLIGHT.json) · [latest verified successful Dhan run](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514).
+
+## BUP-01 constituent-level weekly expiry research
+
+**Current status (2026-10-31): C0 PASS; C1 BLOCKED / RIGHTS-DEPENDENT.** No constituent panel, stock model, bottom-up forecast or trading strategy has been validated. C2 model work remains gated until point-in-time membership, official numerical free-float weights, security/corporate-action mappings and full stock-bar coverage pass.
+
+- [BUP-01 status](research/constituent_weekly/STATUS.md)
+- [BUP-01 source register](research/constituent_weekly/DATA_SOURCE_REGISTER.md)
+- [BUP-01 research log](logs/RESEARCH_LOG.md)
+- [BUP-01 error log](logs/ERROR_LOG.md)
+- [BUP-01 visible conversation log](logs/CONVERSATION_LOG.md)
+
+Official methodology requires free-float IWF and specified strategic-holding exclusions. NSE website terms restrict automated collection and reuse, so automated website scraping remains disabled pending permission/licence confirmation. Dhan intraday documentation covers active instruments only; inactive/delisted coverage still requires proof. No additional Dhan token refresh was attempted during this update.
