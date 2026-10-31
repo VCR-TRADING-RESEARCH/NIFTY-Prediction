@@ -42,6 +42,17 @@ No live orders or automated trading are in scope. Prediction quality and trading
 9. Quantify calibration, uncertainty, stability, cross-sectional ranking skill and missing-data sensitivity.
 10. Publish a complete manuscript, data dictionary, reproducibility artifacts and independent audit decision.
 
+### Pre-registered hypotheses (v1.0)
+
+- **H0-1:** On matched eligible expiry cycles, the bottom-up free-float-weighted forecast does not improve a pre-registered primary index metric over the best simple baseline and matched index-only model by a practically meaningful amount.
+- **H1-1:** At least one bounded bottom-up candidate improves that primary metric on the untouched chronological holdout, with uncertainty bounds that support a real incremental effect and no material calibration or robustness failure.
+- **H0-2:** Any apparent stock-level predictive skill does not translate into better aggregate NIFTY forecasts after point-in-time weighting and cross-stock dependence are handled.
+- **H1-2:** Stock-level forecasts contain incremental cross-sectional information that survives weighting, dependence-aware aggregation and the matched-cycle test.
+- **H0-3:** Any directional forecast edge does not survive realistic instrument-specific trading costs, spreads, slippage and fills.
+- **H1-3:** A fully specified and independently audited strategy remains net positive after all date-effective costs and conservative execution assumptions.
+
+H1-1/H1-2 are prediction hypotheses. H1-3 is an independent economic hypothesis; prediction success does not imply trading profitability.
+
 ## 4. Frozen target and mathematical construction
 
 Let E[t-1] and E[t] be consecutive **verified actual NIFTY 50 weekly option expiry trade dates**. Let D[t] be the first official NSE trading session after E[t-1]. The forecast timestamp is 10:00 IST on D[t].
