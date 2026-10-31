@@ -81,3 +81,40 @@ The audit must compare reconstructed weights against the next official snapshot,
 ## Source-code review of the membership candidate
 
 The BKKB20 reconstruction uses circular-derived ticker snapshots and audit warnings, not numerical free-float weights. The reviewed query script has a hard-coded Windows path and derives snapshot keys from a parsed circular date; confirm that the date is the index effective date rather than publication/announcement date. Alias mappings that collapse predecessors and successors (for example HDFC/HDFCBANK and MINDTREE/LTIM) are not sufficient for point-in-time security identity. The current-member CSV has 50 symbols, but is not date-certified for the forecast history. Preserve distinct ISIN/security IDs and validity dates before reconstructing past membership.
+
+
+## Data rights and reuse boundaries (updated 2026-10-31)
+
+### NSE / NSE Indices
+
+The official NSE Indices Terms of Use (https://www.niftyindices.com/terms-of-use) state:
+- systematic or automated data collection, scraping, extraction or harvesting without express written consent is prohibited (clause 12);
+- copying, reproducing, republishing, uploading, transmitting or distributing site material without prior written permission is restricted (clause 7);
+- website use is described as personal, non-commercial use only, and clause 20 also prohibits aggregation/copy/duplication of site content.
+
+The initial report sample was retrieved before this terms review. The current BUP-01 workflow is offline-only and does not request NSE endpoints or upload raw archives. Any further use of NSE archive content needs the relevant use/redistribution permission or an independently licensed supply arrangement. Do not treat a public download link as an unrestricted market-data licence.
+
+### Licensed / user-entitled Dhan data
+
+Dhan v2 documentation specifies:
+- daily OHLCV is documented back to instrument inception (https://dhanhq.co/docs/v2/historical-data/, lines on daily historical data);
+- 1-minute intraday data is documented for the last five years for active instruments;
+- a maximum 90-day range can be polled per intraday request.
+
+This is a promising route for stock prices under the user's existing subscription, but it does not establish coverage for historical instruments that are now inactive, delisted or merged. C1 must test actual account entitlement, authentication, current security-master mappings and a representative sample of current/removed securities before bulk collection. Keep Dhan credentials in Actions/runtime secrets only.
+
+The parent repository already has a Dhan integration in scripts/fetch_dhan_recent.py and live_api/app.py. The former is an index-only cross-check and cannot be repurposed as a constituent downloader without extension. The latter refreshes a token and caches historical NIFTY index bars, but the parent logs record inconsistent token/TOTP renewal and a DH-905 response for a separate rolling-options request. That failure does not prove equity candle requests fail; it does mean the new stock-data preflight must be an isolated, non-secret, fail-closed test. Do not assume that Dhan access is currently working. Do not build a parallel auth/token implementation until the existing code has been audited.
+
+### Open-source code vs market data ownership
+
+- [floyds1995/Auto-Index-Constituents-Tracker](https://github.com/floyds1995/Auto-Index-Constituents-Tracker) publishes MIT-licensed software for automated historical index-constituent tracking and NSE reference/price archives. The software licence does not automatically licence underlying NSE market data; its README flags source-data ownership/redistribution conditions. Reuse code only after checking its current licence and dependencies; do not assume its bundled/downloaded market data can be republished.
+- [NikhilSuthar/indian-market-data](https://github.com/NikhilSuthar/indian-market-data) is MIT-licensed software that wraps NSE/BSE/MCX/MSCI archives and documents a NIFTY market-cap/weightage report dataset. This is a convenient API wrapper, not an independent data licence; the source exchange's use terms still apply.
+- [BKKB20/nse-index-history](https://github.com/BKKB20/nse-index-history) is a reconstruction candidate with circular/date/security alias limitations described above. Its current-members file differs from the official September 2026 sample (WIPRO only in the candidate; BSE only in the official sample), and is not a verified current or historical master.
+- [vishalvx/nifty-indices-datasets](https://github.com/vishalvx/nifty-indices-datasets) is binary membership only; it has no numerical free-float weights.
+- [AMP4010/Historical_Nifty_50_Constituent_Weights_20Y](https://huggingface.co/datasets/AMP4010/Historical_Nifty_50_Constituent_Weights_20Y) is CC-BY-NC-SA 4.0 according to its data card. It describes 216 monthly/event-date rows from 2008-01 to 2025-08, but also says it extrapolates some rebalance/event weights, assumes static weights between snapshots and normalises rows to 100%. It is not accepted as a confirmatory primary weight source. Use is conditional on the project's non-commercial purpose and full attribution/share-alike compliance; do not put its raw dataset into the public repository or a commercial workflow.
+
+## Current decision and C1 next step
+
+No source currently clears all of: legal rights for the intended use, exact point-in-time NIFTY 50 membership, numeric free-float weights, publication-time evidence, stable ISIN/security-ID history, corporate-action treatment, stock-level 10:00/expiry bars, and basket-to-index reconciliation.
+
+The next C1 step is to reuse and audit the parent Dhan token/data path, conduct a small current-stock daily/intraday endpoint preflight through Actions secrets, then explicitly test removed/inactive instrument coverage using lawful user-entitled inputs. The weight-source problem remains a separate gate; Dhan daily equity data alone does not provide historic NIFTY index weights.
