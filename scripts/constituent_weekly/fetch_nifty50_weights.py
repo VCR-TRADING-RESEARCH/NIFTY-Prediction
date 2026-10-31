@@ -7,6 +7,7 @@ from pathlib import Path
 import sys
 from datetime import datetime, timezone
 
+import numpy as np
 import pandas as pd
 import requests
 
@@ -34,7 +35,8 @@ def validate_weights_payload(payload: bytes) -> dict:
     weights = frame.drop(columns=["DATE"]).apply(pd.to_numeric, errors="coerce")
     if weights.isna().any().any():
         raise ValueError("Weight matrix contains missing or non-numeric values.")
-    if not weights.applymap(lambda x: pd.notna(x) and float(x) >= 0.0 and float(x) <= 100.0).all().all():
+    values = weights.to_numpy(dtype=float)
+    if not np.isfinite(values).all() or (values < 0.0).any() or (values > 100.0).any():
         raise ValueError("Weight values must be finite and in [0, 100].")
     row_sums = weights.sum(axis=1)
     deviations = (row_sums - 100.0).abs()

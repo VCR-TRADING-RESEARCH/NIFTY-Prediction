@@ -55,3 +55,15 @@ def test_weight_payload_rejects_missing_values():
     )
     with pytest.raises(ValueError, match="missing or non-numeric"):
         validate_weights_payload(frame.to_csv(index=False).encode("utf-8"))
+
+
+def test_weight_payload_rejects_non_finite_or_out_of_range_values():
+    columns = ["TICKER" + str(i) for i in range(50)]
+    for invalid in (float("inf"), -0.1, 100.1):
+        frame = pd.DataFrame(
+            [["2025-01-31", *([2.0] * 49), invalid]],
+            columns=["DATE", *columns],
+        )
+        payload = frame.to_csv(index=False).encode("utf-8")
+        with pytest.raises(ValueError, match="finite and in \\[0, 100\\]"):
+            validate_weights_payload(payload)
