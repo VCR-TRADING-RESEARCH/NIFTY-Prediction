@@ -347,3 +347,7 @@ The first workflow revision did not persist generated diagnostics after an autos
 
 **Gate decision:** C1 remains BLOCKED. No constituent price panel, stock model, NIFTY aggregation, or trading strategy is approved. The remaining blockers include five unresolved historical aliases, actual historic IDs for inactive/delisted securities, recent expiry-close coverage, point-in-time numerical free-float weights, and basket-to-index reconstruction.
 
+### BUP-01 correction — successful persistence run
+
+A subsequent fresh-token live run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41224048773) also passed the protected workflow and successfully committed its sanitized result as branch commit d5a82d8. It reproduced the 50/50 current-universe and 79/84 historical-alias counts, plus the same bounded price-coverage findings. This is the latest successful live Dhan report; the earlier auth-only failure was transient and is retained separately for audit. C1 remains BLOCKED by missing recent expiry-close bars and the unresolved historical/weight gates.
+
