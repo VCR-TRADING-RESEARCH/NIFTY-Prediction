@@ -208,21 +208,30 @@ def analyse_bars(body: dict, symbol: str, day: str, *, require_anchor: bool = Tr
 
     ts = frame["time_ist"]
     anchors = frame[(ts.dt.strftime("%Y-%m-%d") == day) & (ts.dt.strftime("%H:%M") >= "10:00") & (ts.dt.strftime("%H:%M") <= "10:03")]
-    expiry = frame[(ts.dt.strftime("%Y-%m-%d") == day) & (ts.dt.strftime("%H:%M") >= "15:25") & (ts.dt.strftime("%H:%M") <= "15:29")]
+    expiry_candidates = frame[
+        (ts.dt.strftime("%Y-%m-%d") == day)
+        & (ts.dt.strftime("%H:%M") >= "15:00")
+        & (ts.dt.strftime("%H:%M") <= "15:14")
+    ]
+    expiry_proxy = expiry_candidates.tail(1)
     ohlc_ok = bool(
         ((frame["low"] <= frame[["open", "close"]].min(axis=1)) &
          (frame["high"] >= frame[["open", "close"]].max(axis=1)) &
          (frame[["open", "high", "low", "close"]] > 0).all(axis=1) &
          (frame["volume"] >= 0)).all()
     )
-    passed = (not require_anchor or not anchors.empty) and (not require_expiry or not expiry.empty) and ohlc_ok
+    passed = (not require_anchor or not anchors.empty) and (not require_expiry or not expiry_proxy.empty) and ohlc_ok
     return {
         "symbol": symbol,
         "date": day,
         "status": "PASS" if passed else "REQUIRED_BAR_OR_OHLC_CHECK_FAILED",
         "bar_count": int(len(frame)),
         "anchor_window_bars": int(len(anchors)),
-        "expiry_close_window_bars": int(len(expiry)),
+        "expiry_proxy_bar_count": int(len(expiry_proxy)),
+        "expiry_proxy_bar_time_ist": expiry_proxy["time_ist"].iloc[-1].isoformat() if not expiry_proxy.empty else None,
+        "expiry_proxy_cutoff_ist": "15:15:00",
+        "expiry_proxy_price_field": "close",
+        "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00–15:14 IST; later bars are excluded.",
         "first_bar_ist": ts.iloc[0].isoformat(),
         "last_bar_ist": ts.iloc[-1].isoformat(),
         "ohlc_volume_invariants_pass": ohlc_ok,
@@ -256,7 +265,6 @@ def main() -> int:
         "raw_market_bars_saved": False,
         "daily_history_probe": {},
         "intraday_probe": [],
-        "targeted_expiry_close_probe": [],
     }
     try:
         token, client_id, auth_method, refresh_status, auth_diagnostics = acquire_access_token()
@@ -337,6 +345,33 @@ def main() -> int:
             else:
                 result["daily_history_probe"] = {"status": f"HTTP_{daily.status_code}", "bar_count": 0}
 
+        legacy_probe_ids = {"HDFC": "1330"}
+        result["legacy_identity_probe"] = []
+        for legacy_symbol, legacy_security_id in legacy_probe_ids.items():
+            for day in ("2022-10-31", "2023-06-30"):
+                legacy_response = requests.post(
+                    INTRADAY_URL,
+                    headers=headers,
+                    json={
+                        "securityId": legacy_security_id,
+                        "exchangeSegment": "NSE_EQ",
+                        "instrument": "EQUITY",
+                        "interval": "1",
+                        "oi": False,
+                        "fromDate": f"{day} 09:15:00",
+                        "toDate": f"{day} 15:15:00",
+                    },
+                    timeout=60,
+                )
+                if not legacy_response.ok:
+                    result["legacy_identity_probe"].append({
+                        "symbol": legacy_symbol, "date": day, "status": f"HTTP_{legacy_response.status_code}"
+                    })
+                    continue
+                legacy_result = analyse_bars(legacy_response.json(), legacy_symbol, day)
+                legacy_result["probe_type"] = "documented_legacy_security_id"
+                result["legacy_identity_probe"].append(legacy_result)
+
         for symbol, security_id in probe_ids.items():
             for day in PROBE_DATES:
                 response = requests.post(
@@ -359,43 +394,14 @@ def main() -> int:
                 body = response.json()
                 result["intraday_probe"].append(analyse_bars(body, symbol, day))
 
-                # Dhan's large day response may be truncated; probe only the final 10-minute window separately.
-                if day == "2026-10-29":
-                    close_response = requests.post(
-                        INTRADAY_URL,
-                        headers=headers,
-                        json={
-                            "securityId": security_id,
-                            "exchangeSegment": "NSE_EQ",
-                            "instrument": "EQUITY",
-                            "interval": "1",
-                            "oi": False,
-                            "fromDate": f"{day} 15:20:00",
-                            "toDate": f"{day} 15:30:00",
-                        },
-                        timeout=60,
-                    )
-                    if not close_response.ok:
-                        result["targeted_expiry_close_probe"].append({
-                            "symbol": symbol, "date": day, "status": f"HTTP_{close_response.status_code}"
-                        })
-                    else:
-                        close_body = close_response.json()
-                        close_result = analyse_bars(
-                            close_body, symbol, day, require_anchor=False, require_expiry=True
-                        )
-                        close_result["probe_type"] = "targeted_expiry_close"
-                        result["targeted_expiry_close_probe"].append(close_result)
-
         expected = len(PROBE_SYMBOLS) * len(PROBE_DATES)
         passed = sum(x.get("status") == "PASS" for x in result["intraday_probe"])
         result["intraday_probe_passed"] = passed
         result["intraday_probe_expected"] = expected
-        targeted_passed = sum(x.get("status") == "PASS" for x in result["targeted_expiry_close_probe"])
-        result["targeted_expiry_close_passed"] = targeted_passed
-        result["targeted_expiry_close_expected"] = len(result["targeted_expiry_close_probe"])
-        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected and targeted_passed == len(PROBE_SYMBOLS) else "PARTIAL_OR_BLOCKED"
-        result["note"] = "This tests only five current master symbols on two dates; it does not establish history for delisted/inactive securities or index membership/weights."
+        result["expiry_proxy_cutoff_ist"] = "15:15:00"
+        result["expiry_proxy_definition"] = "Use the close of the latest available 1-minute candle timestamped between 15:00 and 15:14 IST; ignore later candles."
+        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected else "PARTIAL_OR_BLOCKED"
+        result["note"] = "Five-symbol/two-date data probe only. The final available candle by the 15:15 IST cutoff is accepted as the expiry proxy; this does not establish full-universe coverage, inactive-security history or official index weights."
     except PublicPredictionError as exc:
         result["status"] = "BLOCKED_DHAN_AUTH"
         result["sanitised_error"] = str(exc)[:200]
@@ -418,17 +424,12 @@ def main() -> int:
     print(f"Five-symbol price probe IDs resolved: {len(result.get('resolved_probe_symbols', []))}; unresolved: {len(result.get('missing_probe_symbols', []))}")
     print(f"Daily history probe: {result.get('daily_history_probe', {}).get('status', 'NOT_RUN')}; bars={result.get('daily_history_probe', {}).get('bar_count', 0)}")
     print(f"Intraday windows passing: {result.get('intraday_probe_passed', 0)}/{result.get('intraday_probe_expected', 0)}")
-    print(f"Targeted 2026 expiry-close windows passing: {result.get('targeted_expiry_close_passed', 0)}/{result.get('targeted_expiry_close_expected', 0)}")
-    for probe in result.get("targeted_expiry_close_probe", []):
-        print("TARGETED_CLOSE", probe.get("symbol"), probe.get("date"), probe.get("status"),
-              "bars=", probe.get("bar_count", 0),
-              "expiry_close=", probe.get("expiry_close_window_bars", 0),
-              "ohlc_ok=", probe.get("ohlc_volume_invariants_pass"))
+    print(f"Expiry-proxy cutoff: {result.get('expiry_proxy_cutoff_ist', 'NOT_SET')}")
     for probe in result.get("intraday_probe", []):
         print("PROBE", probe.get("symbol"), probe.get("date"), probe.get("status"),
               "bars=", probe.get("bar_count", 0),
               "anchor=", probe.get("anchor_window_bars", 0),
-              "expiry_close=", probe.get("expiry_close_window_bars", 0),
+              "expiry_proxy_time=", probe.get("expiry_proxy_bar_time_ist"),
               "ohlc_ok=", probe.get("ohlc_volume_invariants_pass"))
     print("No raw bars, prices, security IDs, tokens, PINs or TOTP values were saved or logged.")
     return 0

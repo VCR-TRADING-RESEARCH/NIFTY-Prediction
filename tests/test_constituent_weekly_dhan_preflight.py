@@ -29,23 +29,26 @@ def test_resolve_ids_selects_nse_equity_eq_series_only():
     assert resolve_ids(master) == {"RELIANCE": "101", "TCS": "103"}
 
 
-def test_analyse_bars_checks_10am_anchor_and_expiry_close_windows():
+def test_analyse_bars_accepts_1514_close_as_1515_expiry_proxy():
     body = {
-        "open": [100.0, 101.0],
-        "high": [101.0, 102.0],
-        "low": [99.0, 100.0],
-        "close": [100.5, 101.5],
-        "volume": [1000, 1200],
+        "open": [100.0, 101.0, 102.0],
+        "high": [101.0, 102.0, 103.0],
+        "low": [99.0, 100.0, 101.0],
+        "close": [100.5, 101.5, 102.5],
+        "volume": [1000, 1200, 900],
         "timestamp": [
             epoch_ist("2026-10-30T10:00:00"),
+            epoch_ist("2026-10-30T15:14:00"),
             epoch_ist("2026-10-30T15:29:00"),
         ],
     }
     result = analyse_bars(body, "RELIANCE", "2026-10-30")
     assert result["status"] == "PASS"
-    assert result["bar_count"] == 2
+    assert result["bar_count"] == 3
     assert result["anchor_window_bars"] == 1
-    assert result["expiry_close_window_bars"] == 1
+    assert result["expiry_proxy_bar_count"] == 1
+    assert result["expiry_proxy_bar_time_ist"] == "2026-10-30T15:14:00+05:30"
+    assert result["expiry_proxy_cutoff_ist"] == "15:15:00"
     assert result["ohlc_volume_invariants_pass"] is True
 
 
@@ -61,7 +64,8 @@ def test_analyse_bars_fails_closed_on_bad_ohlc_or_missing_expiry_bar():
     result = analyse_bars(body, "RELIANCE", "2026-10-30")
     assert result["status"] == "REQUIRED_BAR_OR_OHLC_CHECK_FAILED"
     assert result["anchor_window_bars"] == 1
-    assert result["expiry_close_window_bars"] == 0
+    assert result["expiry_proxy_bar_count"] == 0
+    assert result["expiry_proxy_bar_time_ist"] is None
     assert result["ohlc_volume_invariants_pass"] is False
 
 
@@ -185,26 +189,22 @@ def test_auth_response_diagnostics_never_return_response_values():
 
 
 
-def test_analyse_bars_supports_targeted_expiry_close_without_anchor():
+def test_analyse_bars_never_uses_a_candle_after_the_1515_cutoff():
     body = {
-        "open": [100.0, 100.5],
-        "high": [100.5, 101.0],
-        "low": [99.5, 100.0],
-        "close": [100.2, 100.8],
-        "volume": [500, 600],
+        "open": [100.0, 100.5, 101.0],
+        "high": [100.5, 101.0, 101.5],
+        "low": [99.5, 100.0, 100.5],
+        "close": [100.2, 100.8, 101.2],
+        "volume": [500, 600, 700],
         "timestamp": [
-            epoch_ist("2026-10-30T15:25:00"),
-            epoch_ist("2026-10-30T15:29:00"),
+            epoch_ist("2026-10-30T15:13:00"),
+            epoch_ist("2026-10-30T15:14:00"),
+            epoch_ist("2026-10-30T15:15:00"),
         ],
     }
-    result = analyse_bars(
-        body, "RELIANCE", "2026-10-30",
-        require_anchor=False, require_expiry=True,
-    )
+    result = analyse_bars(body, "RELIANCE", "2026-10-30", require_anchor=False)
     assert result["status"] == "PASS"
-    assert result["anchor_window_bars"] == 0
-    assert result["expiry_close_window_bars"] == 2
-    assert result["ohlc_volume_invariants_pass"] is True
+    assert result["expiry_proxy_bar_time_ist"] == "2026-10-30T15:14:00+05:30"
 
 def test_profile_request_uses_documented_access_token_header_only(monkeypatch):
     import scripts.constituent_weekly.dhan_equity_preflight as probe

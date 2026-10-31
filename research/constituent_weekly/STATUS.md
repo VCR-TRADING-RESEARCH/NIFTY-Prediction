@@ -99,6 +99,17 @@ No model training until point-in-time membership, numeric free-float weights, se
 **Phase decision:** C0 PASS. C1 offline workflow PASS. C1 market-data/weights gate remains BLOCKED. Do not create C2 panel or fit stock models until numeric point-in-time free-float weights, the post-2025-09-30 current membership, security identity/corporate actions, and constituent 1-minute price coverage are validated.
 
 <!-- C1_DHAN_STATUS_START -->
+
+## User-approved expiry proxy and weight-source discovery — 2026-11-01
+
+- Expiry is now defined as the close of the latest available 1-minute candle timestamped from 15:00 through 15:14 IST (15:15 cutoff). Candles timestamped after 15:14 are ignored. This reflects the user's explicit acceptance of the final available observation; it is not represented as an official 15:30 exchange close.
+- The prior requirement for 15:25–15:29 bars and targeted late-close requests is removed from the C1 acceptance rule. Live validation under the new code is pending the next push-triggered Action.
+- New live preflight tests HDFC Ltd using the legacy Dhan security ID 1330 shown in Dhan's v2 holdings documentation. The ID is not persisted in the sanitized diagnostics; this checks whether historical one-minute data for HDFC remains queryable.
+- A public historical weight dataset has been identified: 216 dates from 2008-01-31 to 2025-08-31, 100 ticker columns, monthly plus event-driven observations. Its author reports normalized 100% weight rows and documents official Nifty Indices reports as source material, with extrapolation and corporate-action adjustments in the compilation.
+- The dataset is licensed CC BY-NC-SA 4.0. Cache-first download and independent numeric validation have been added. It is explicitly provisional and non-commercial; the latest 15 months (2025-09 onward) are not covered. Official NSE archive reports include monthly NIFTY 50 constituent market-cap/weightage reports, but any bulk automated retrieval must respect applicable NSE terms/licensing.
+- C1 remains NOT PASSED pending live revalidation, point-in-time weight-source reconciliation and the 2025-09 onward weight gap, plus full-universe price coverage.
+
+
 ## Latest successful Dhan universe/data preflight
 
 - Successful live data run: [Actions run 41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41224048773), 2026-10-31 17:20:24–17:21:18 UTC; workflow conclusion SUCCESS.
@@ -107,12 +118,12 @@ No model training until point-in-time membership, numeric free-float weights, se
 - Current NIFTY 50 symbols resolved in current Dhan scrip master: **50/50**.
 - Historical membership aliases found in current scrip master: **79/84**. Five aliases were not resolved; current-master lookup does not prove historical security-ID continuity for delisted/inactive securities.
 - Five-symbol daily-history probe: **PASS**, 22 bars for 2018-01-01 to 2018-02-01.
-- Five-symbol one-minute probe: **5/5 PASS** on 2022-10-31; 374 bars per symbol, including 10:00 anchors and 15:25–15:29 expiry-close bars.
-- Recent 2026-10-29 intraday probe: 10:00 anchors present for all five, but 15:25–15:29 expiry-close bars absent for all five; full-day checks **0/5 PASS**. Targeted close-window requests were empty (**0/5**).
+- Five-symbol one-minute probe: **5/5 PASS** on 2022-10-31; 374 bars per symbol. The current acceptance rule uses the last available 1-minute candle at or before 15:15 IST, not the later 15:25–15:29 window.
+- Recent 2026-10-29 intraday probe: all five symbols had a last available candle at 15:14 IST (close treated as the 15:15 expiry proxy). The old report did not compute the new proxy metric; updated live CI will revalidate it.
 - Earlier auth-only retry [41223923790](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223923790) returned HTTP 200 without an access-token field; fallback profile authentication returned HTTP 401 and made no data calls. A later fresh TOTP run 41224048773 succeeded. The failed attempt is preserved in [C1_DHAN_LAST_ATTEMPT.json](C1_DHAN_LAST_ATTEMPT.json).
 - Corrected workflow persistence: generated diagnostics are now committed before rebasing. Successful report commit: **d5a82d8**; the commit step completed and pushed the report.
 - The report contains no raw bars, prices, security IDs, credentials or tokens.
-- C1 remains **NOT PASSED**: expiry-close coverage, five unresolved historical aliases, inactive/delisted security history, official point-in-time numerical free-float weights and basket reconciliation remain open.
+- C1 remains **NOT PASSED**: full-universe expiry-proxy coverage, historical identity checks, official point-in-time numerical free-float weights/weight reconciliation and basket reconstruction remain open.
 <!-- C1_DHAN_STATUS_END -->
 
 ## C1 resume checkpoint — 2026-10-31
