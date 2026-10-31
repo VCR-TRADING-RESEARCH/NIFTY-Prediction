@@ -59,3 +59,11 @@ Intervals are half-open: a row is active on date (d) when `valid_from <= d < val
 ## Usage restrictions
 
 Use this copied subset with the CC BY 4.0 attribution above. Do not fetch/cache/re-publish further NSE website content automatically; the project's existing rights gate stays in force. The manual corrections above are based on specific official press releases/circulars cited above, not on a bulk report download.
+
+## Audit correction — Tata Motors demerger identity timeline
+
+A subsequent corporate-action review found that the source had assigned the post-demerger `TMPV` ticker to historical records back to 2014. That alias was not point-in-time correct. The project CSV is corrected using NSE circular NSE/FAOP/70882: `TATAMOTORS` is retained through 2025-10-23 and `TMPV` starts 2025-10-24.
+
+The project also now records the official temporary zero-price placeholder `DUMMYTATAM` from 2025-10-14 through 2025-11-16, with `member_type=zero_price_dummy` and `market_data_required=FALSE`. NSE Indices stated that the dummy was added at zero price from 2025-10-14 (close 2025-10-13) and excluded effective 2025-11-17 (close 2025-11-14). This placeholder is retained for index-membership audit, never treated as a tradable equity or assigned a stock price.
+
+The corrected 103-month-end test expects 50 unique constituents for 102 dates and 51 entries at 2025-10-31 because the official zero-price dummy remained active then. The earlier claim that all 103 dates should contain exactly 50 members is superseded. The updated six-test suite has been committed; the post-correction Actions run is pending and must be checked before the revised test suite is called CI-passed.
