@@ -257,3 +257,11 @@
 - Added an offline-only GitHub Actions workflow for the CC BY 4.0 NIFTY50 membership subset. It runs on membership/test changes and supports manual `workflow_dispatch`; no network market-data or Dhan auth calls are included.
 - Added a test asserting machine-audit consistency and kept the overall C1 state BLOCKED pending licensed numerical IWF, security identity/corporate actions and full stock-bar coverage.
 - The workflow was committed to the phase branch. Its Actions execution result is not yet independently confirmed in this log update; do not report the GitHub Actions tests as passed until the run is inspected.
+
+
+## 2026-10-31 — Recovery audit after ChatGPT conversation transport failure
+- Reconciled the interrupted conversation against GitHub rather than replaying prior updates. The latest main-branch README and BUP-01 C1 branch status were inspected; no assumption was made that the visible repeated “Updating … JSON” messages represented committed writes.
+- Verified membership workflow run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) directly: completed / success; all six membership integrity tests passed.
+- Resolved stale log wording: the earlier note saying workflow execution was unconfirmed is superseded by the verified successful run. Membership sub-gate = PASS WITH LIMITATIONS; overall C1 = BLOCKED; C2 remains gated.
+- No new Dhan authentication, market-data request, model fit, strategy test or duplicated membership update was initiated during recovery.
+- Next permitted work is a bounded evidence audit for exact licensed historical IWF, security-ID/ISIN and corporate-action mappings, and full-universe constituent intraday plus expiry-close coverage. Do not fabricate weights, scrape NSE without permission, or build C2 before these gates pass.
