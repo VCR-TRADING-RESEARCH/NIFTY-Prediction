@@ -139,3 +139,9 @@
 - After verifying membership CI success, performed a bounded search of official NSE Indices, Dhan documentation, Hugging Face and public GitHub datasets for exact historical IWF, identifiers and constituent price coverage.
 - Found official historical weights/identifiers are a licensed NSE Indices subscription product; the HF dataset is CC BY-NC-SA 4.0; the GitHub alternative explicitly uses equal-weighted/binary approximations; Dhan minute history is documented for active instruments, not guaranteed inactive/delisted constituents.
 - Updated main README, research log and error log with the source audit and retained C1 BLOCKED / C2 gated. No Dhan token refresh, market-data call, panel build or model fit was initiated.
+
+
+## 2026-10-31 — User confirmed Dhan as the data source
+- User replied “Dhan” to the question about available historical data access. Interpreted as confirmation to use the existing Dhan Data API subscription as the primary constituent price-data route, not as confirmation that Dhan supplies official historical NIFTY IWF.
+- Decision: Dhan-first, cache-first constituent security-ID and historical OHLCV coverage audit; include active and delisted/inactive symbols, anchor bars and expiry-close bars. Use bounded/serialized calls and avoid unnecessary TOTP refreshes. Keep credentials in Actions secrets.
+- Exact official point-in-time IWF, index membership/identity history and full coverage remain separate acceptance gates. No approximate weights and no C2 model until gates pass.
