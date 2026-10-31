@@ -410,6 +410,7 @@ def main() -> int:
     if result.get("token_refresh_diagnostics"):
         print("TOKEN_RESPONSE_SHAPE", json.dumps(result["token_refresh_diagnostics"], sort_keys=True))
     print(f"Data API plan active: {result.get('data_plan_active')}")
+    # Print full-universe counts so live workflow logs are independently auditable.
     print(f"Current NIFTY 50 security-master resolution: {result.get('current_universe_resolved_count', 0)}/{result.get('current_universe_symbol_count', 0)}")
     print(f"Historical membership aliases found in current scrip master: {result.get('historical_membership_symbols_found_in_current_master_count', 0)}/{result.get('historical_membership_symbol_count', 0)}")
     print(f"Five-symbol price probe IDs resolved: {len(result.get('resolved_probe_symbols', []))}; unresolved: {len(result.get('missing_probe_symbols', []))}")
