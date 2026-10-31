@@ -1,7 +1,7 @@
 {
   "track": "BUP-01",
-  "created_at_utc": "2026-10-31T17:21:05.066434+00:00",
-  "status": "PARTIAL_OR_BLOCKED",
+  "created_at_utc": "2026-10-31T22:18:09.292633+00:00",
+  "status": "PASS_ACTIVE_EQUITIES",
   "credentials_or_tokens_recorded": false,
   "raw_market_bars_saved": false,
   "daily_history_probe": {
@@ -20,7 +20,11 @@
       "status": "PASS",
       "bar_count": 374,
       "anchor_window_bars": 4,
-      "expiry_close_window_bars": 5,
+      "expiry_proxy_bar_count": 1,
+      "expiry_proxy_bar_time_ist": "2022-10-31T15:14:00+05:30",
+      "expiry_proxy_cutoff_ist": "15:15:00",
+      "expiry_proxy_price_field": "close",
+      "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00\u201315:14 IST; later bars are excluded.",
       "first_bar_ist": "2022-10-31T09:16:00+05:30",
       "last_bar_ist": "2022-10-31T15:29:00+05:30",
       "ohlc_volume_invariants_pass": true
@@ -28,10 +32,14 @@
     {
       "symbol": "RELIANCE",
       "date": "2026-10-29",
-      "status": "REQUIRED_BAR_OR_OHLC_CHECK_FAILED",
+      "status": "PASS",
       "bar_count": 359,
       "anchor_window_bars": 4,
-      "expiry_close_window_bars": 0,
+      "expiry_proxy_bar_count": 1,
+      "expiry_proxy_bar_time_ist": "2026-10-29T15:14:00+05:30",
+      "expiry_proxy_cutoff_ist": "15:15:00",
+      "expiry_proxy_price_field": "close",
+      "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00\u201315:14 IST; later bars are excluded.",
       "first_bar_ist": "2026-10-29T09:16:00+05:30",
       "last_bar_ist": "2026-10-29T15:14:00+05:30",
       "ohlc_volume_invariants_pass": true
@@ -42,7 +50,11 @@
       "status": "PASS",
       "bar_count": 374,
       "anchor_window_bars": 4,
-      "expiry_close_window_bars": 5,
+      "expiry_proxy_bar_count": 1,
+      "expiry_proxy_bar_time_ist": "2022-10-31T15:14:00+05:30",
+      "expiry_proxy_cutoff_ist": "15:15:00",
+      "expiry_proxy_price_field": "close",
+      "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00\u201315:14 IST; later bars are excluded.",
       "first_bar_ist": "2022-10-31T09:16:00+05:30",
       "last_bar_ist": "2022-10-31T15:29:00+05:30",
       "ohlc_volume_invariants_pass": true
@@ -50,10 +62,14 @@
     {
       "symbol": "TCS",
       "date": "2026-10-29",
-      "status": "REQUIRED_BAR_OR_OHLC_CHECK_FAILED",
+      "status": "PASS",
       "bar_count": 359,
       "anchor_window_bars": 4,
-      "expiry_close_window_bars": 0,
+      "expiry_proxy_bar_count": 1,
+      "expiry_proxy_bar_time_ist": "2026-10-29T15:14:00+05:30",
+      "expiry_proxy_cutoff_ist": "15:15:00",
+      "expiry_proxy_price_field": "close",
+      "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00\u201315:14 IST; later bars are excluded.",
       "first_bar_ist": "2026-10-29T09:16:00+05:30",
       "last_bar_ist": "2026-10-29T15:14:00+05:30",
       "ohlc_volume_invariants_pass": true
@@ -64,7 +80,11 @@
       "status": "PASS",
       "bar_count": 374,
       "anchor_window_bars": 4,
-      "expiry_close_window_bars": 5,
+      "expiry_proxy_bar_count": 1,
+      "expiry_proxy_bar_time_ist": "2022-10-31T15:14:00+05:30",
+      "expiry_proxy_cutoff_ist": "15:15:00",
+      "expiry_proxy_price_field": "close",
+      "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00\u201315:14 IST; later bars are excluded.",
       "first_bar_ist": "2022-10-31T09:16:00+05:30",
       "last_bar_ist": "2022-10-31T15:29:00+05:30",
       "ohlc_volume_invariants_pass": true
@@ -72,10 +92,14 @@
     {
       "symbol": "INFY",
       "date": "2026-10-29",
-      "status": "REQUIRED_BAR_OR_OHLC_CHECK_FAILED",
+      "status": "PASS",
       "bar_count": 359,
       "anchor_window_bars": 4,
-      "expiry_close_window_bars": 0,
+      "expiry_proxy_bar_count": 1,
+      "expiry_proxy_bar_time_ist": "2026-10-29T15:14:00+05:30",
+      "expiry_proxy_cutoff_ist": "15:15:00",
+      "expiry_proxy_price_field": "close",
+      "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00\u201315:14 IST; later bars are excluded.",
       "first_bar_ist": "2026-10-29T09:16:00+05:30",
       "last_bar_ist": "2026-10-29T15:14:00+05:30",
       "ohlc_volume_invariants_pass": true
@@ -86,7 +110,11 @@
       "status": "PASS",
       "bar_count": 374,
       "anchor_window_bars": 4,
-      "expiry_close_window_bars": 5,
+      "expiry_proxy_bar_count": 1,
+      "expiry_proxy_bar_time_ist": "2022-10-31T15:14:00+05:30",
+      "expiry_proxy_cutoff_ist": "15:15:00",
+      "expiry_proxy_price_field": "close",
+      "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00\u201315:14 IST; later bars are excluded.",
       "first_bar_ist": "2022-10-31T09:16:00+05:30",
       "last_bar_ist": "2022-10-31T15:29:00+05:30",
       "ohlc_volume_invariants_pass": true
@@ -94,10 +122,14 @@
     {
       "symbol": "HDFCBANK",
       "date": "2026-10-29",
-      "status": "REQUIRED_BAR_OR_OHLC_CHECK_FAILED",
+      "status": "PASS",
       "bar_count": 359,
       "anchor_window_bars": 4,
-      "expiry_close_window_bars": 0,
+      "expiry_proxy_bar_count": 1,
+      "expiry_proxy_bar_time_ist": "2026-10-29T15:14:00+05:30",
+      "expiry_proxy_cutoff_ist": "15:15:00",
+      "expiry_proxy_price_field": "close",
+      "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00\u201315:14 IST; later bars are excluded.",
       "first_bar_ist": "2026-10-29T09:16:00+05:30",
       "last_bar_ist": "2026-10-29T15:14:00+05:30",
       "ohlc_volume_invariants_pass": true
@@ -108,7 +140,11 @@
       "status": "PASS",
       "bar_count": 374,
       "anchor_window_bars": 4,
-      "expiry_close_window_bars": 5,
+      "expiry_proxy_bar_count": 1,
+      "expiry_proxy_bar_time_ist": "2022-10-31T15:14:00+05:30",
+      "expiry_proxy_cutoff_ist": "15:15:00",
+      "expiry_proxy_price_field": "close",
+      "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00\u201315:14 IST; later bars are excluded.",
       "first_bar_ist": "2022-10-31T09:16:00+05:30",
       "last_bar_ist": "2022-10-31T15:29:00+05:30",
       "ohlc_volume_invariants_pass": true
@@ -116,85 +152,17 @@
     {
       "symbol": "WIPRO",
       "date": "2026-10-29",
-      "status": "REQUIRED_BAR_OR_OHLC_CHECK_FAILED",
+      "status": "PASS",
       "bar_count": 359,
       "anchor_window_bars": 4,
-      "expiry_close_window_bars": 0,
+      "expiry_proxy_bar_count": 1,
+      "expiry_proxy_bar_time_ist": "2026-10-29T15:14:00+05:30",
+      "expiry_proxy_cutoff_ist": "15:15:00",
+      "expiry_proxy_price_field": "close",
+      "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00\u201315:14 IST; later bars are excluded.",
       "first_bar_ist": "2026-10-29T09:16:00+05:30",
       "last_bar_ist": "2026-10-29T15:14:00+05:30",
       "ohlc_volume_invariants_pass": true
-    }
-  ],
-  "targeted_expiry_close_probe": [
-    {
-      "symbol": "RELIANCE",
-      "date": "2026-10-29",
-      "status": "EMPTY_OR_MISMATCHED_ARRAYS",
-      "array_lengths": {
-        "open": 0,
-        "high": 0,
-        "low": 0,
-        "close": 0,
-        "volume": 0,
-        "timestamp": 0
-      },
-      "probe_type": "targeted_expiry_close"
-    },
-    {
-      "symbol": "TCS",
-      "date": "2026-10-29",
-      "status": "EMPTY_OR_MISMATCHED_ARRAYS",
-      "array_lengths": {
-        "open": 0,
-        "high": 0,
-        "low": 0,
-        "close": 0,
-        "volume": 0,
-        "timestamp": 0
-      },
-      "probe_type": "targeted_expiry_close"
-    },
-    {
-      "symbol": "INFY",
-      "date": "2026-10-29",
-      "status": "EMPTY_OR_MISMATCHED_ARRAYS",
-      "array_lengths": {
-        "open": 0,
-        "high": 0,
-        "low": 0,
-        "close": 0,
-        "volume": 0,
-        "timestamp": 0
-      },
-      "probe_type": "targeted_expiry_close"
-    },
-    {
-      "symbol": "HDFCBANK",
-      "date": "2026-10-29",
-      "status": "EMPTY_OR_MISMATCHED_ARRAYS",
-      "array_lengths": {
-        "open": 0,
-        "high": 0,
-        "low": 0,
-        "close": 0,
-        "volume": 0,
-        "timestamp": 0
-      },
-      "probe_type": "targeted_expiry_close"
-    },
-    {
-      "symbol": "WIPRO",
-      "date": "2026-10-29",
-      "status": "EMPTY_OR_MISMATCHED_ARRAYS",
-      "array_lengths": {
-        "open": 0,
-        "high": 0,
-        "low": 0,
-        "close": 0,
-        "volume": 0,
-        "timestamp": 0
-      },
-      "probe_type": "targeted_expiry_close"
     }
   ],
   "auth_method": "totp_refresh",
@@ -217,7 +185,7 @@
     "http_status": 200
   },
   "data_plan_active": true,
-  "membership_as_of_date_ist": "2026-10-31",
+  "membership_as_of_date_ist": "2026-11-01",
   "current_universe_symbol_count": 50,
   "current_universe_resolved_count": 50,
   "current_universe_missing_symbols": [],
@@ -239,31 +207,44 @@
     "WIPRO"
   ],
   "missing_probe_symbols": [],
-  "intraday_probe_passed": 5,
+  "legacy_identity_probe": [
+    {
+      "symbol": "HDFC",
+      "date": "2022-10-31",
+      "status": "PASS",
+      "bar_count": 359,
+      "anchor_window_bars": 4,
+      "expiry_proxy_bar_count": 1,
+      "expiry_proxy_bar_time_ist": "2022-10-31T15:14:00+05:30",
+      "expiry_proxy_cutoff_ist": "15:15:00",
+      "expiry_proxy_price_field": "close",
+      "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00\u201315:14 IST; later bars are excluded.",
+      "first_bar_ist": "2022-10-31T09:16:00+05:30",
+      "last_bar_ist": "2022-10-31T15:14:00+05:30",
+      "ohlc_volume_invariants_pass": true,
+      "probe_type": "documented_legacy_security_id"
+    },
+    {
+      "symbol": "HDFC",
+      "date": "2023-06-30",
+      "status": "PASS",
+      "bar_count": 359,
+      "anchor_window_bars": 4,
+      "expiry_proxy_bar_count": 1,
+      "expiry_proxy_bar_time_ist": "2023-06-30T15:14:00+05:30",
+      "expiry_proxy_cutoff_ist": "15:15:00",
+      "expiry_proxy_price_field": "close",
+      "expiry_proxy_method": "Close of the most recent available 1-minute candle timestamped 15:00\u201315:14 IST; later bars are excluded.",
+      "first_bar_ist": "2023-06-30T09:16:00+05:30",
+      "last_bar_ist": "2023-06-30T15:14:00+05:30",
+      "ohlc_volume_invariants_pass": true,
+      "probe_type": "documented_legacy_security_id"
+    }
+  ],
+  "intraday_probe_passed": 10,
   "intraday_probe_expected": 10,
-  "targeted_expiry_close_passed": 0,
-  "targeted_expiry_close_expected": 5,
-  "note": "User-approved expiry proxy: last available 1-minute close at or before 15:15 IST. Previous 15:25–15:29 requirement is superseded. Current report remains historical evidence pending live revalidation under the updated rule.",
-  "finished_at_utc": "2026-10-31T17:21:14.429027+00:00",
-  "source_run_id": 41224048773,
-  "source_run_url": "https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41224048773",
-  "run_conclusion": "success",
-  "evidence_note": "Full sanitized report generated by the live Dhan workflow and persisted by the corrected diagnostics commit step.",
-  "offline_tests": {
-    "passed": 13,
-    "failed": 0
-  },
-  "latest_auth_retry": {
-    "run_id": 41223923790,
-    "url": "https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223923790",
-    "status": "BLOCKED_PROFILE_HTTP_401",
-    "note": "Earlier retry returned HTTP 200 without accessToken; fallback profile returned HTTP 401. No market-data calls were made. A later live run 41224048773 authenticated successfully."
-  },
-  "expiry_proxy_rule": {
-    "cutoff_ist": "15:15:00",
-    "observation_method": "Use the close of the latest available 1-minute candle timestamped 15:00–15:14 IST.",
-    "later_candles_excluded": true,
-    "user_approved": true,
-    "validation_status": "CODE_UPDATED_LIVE_REVALIDATION_PENDING"
-  }
+  "expiry_proxy_cutoff_ist": "15:15:00",
+  "expiry_proxy_definition": "Use the close of the latest available 1-minute candle timestamped between 15:00 and 15:14 IST; ignore later candles.",
+  "note": "Five-symbol/two-date data probe only. The final available candle by the 15:15 IST cutoff is accepted as the expiry proxy; this does not establish full-universe coverage, inactive-security history or official index weights.",
+  "finished_at_utc": "2026-10-31T22:18:18.324597+00:00"
 }
