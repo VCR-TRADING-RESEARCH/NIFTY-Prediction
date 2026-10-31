@@ -1,6 +1,6 @@
 # C1 Offline Source Archive Audit
 
-Audit time (UTC): 2026-10-31T06:57:40.236730+00:00
+Audit time (UTC): 2026-10-31T06:57:43.403030+00:00
 Status: **NO_AUTHORISED_ARCHIVE**
 - Network collection: **not performed**
 - Raw archive contents and individual constituent values are not written to this report.

@@ -49,7 +49,7 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_FETCH_STATUS_START -->
 ## Latest automated C1 offline-source audit
 
-- Recorded at (UTC): 2026-10-31T06:57:40.274926+00:00
+- Recorded at (UTC): 2026-10-31T06:57:43.460536+00:00
 - Audit status: NO_AUTHORISED_ARCHIVE
 - Network collection performed: False
 - This is file-integrity/schema evidence only; it is not point-in-time membership, source permission, weight validity or trading-data validation.
