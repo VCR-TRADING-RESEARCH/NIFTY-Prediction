@@ -2,14 +2,14 @@
 
 **Last updated:** 2026-10-31  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 source feasibility audit IN PROGRESS  
+**Status:** C0 PASS; C1 data feasibility IN PROGRESS / RIGHTS-BLOCKED  
 **Prediction status:** No constituent panel, trained stock model or bottom-up forecast exists  
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Actions workflow validated required files and plan structure; governance regression tests passed; report committed as 746d1b382e338e760b1cf4b3ee5ea6fa6b63bc85 |
-| C1 — Point-in-time universe/data audit | IN PROGRESS | Fetch official monthly weight-report sample; audit historical membership, point-in-time weights, IDs, corporate actions and stock intraday coverage |
+| C1 — Point-in-time universe/data audit | IN PROGRESS / BLOCKED | One-time report sample structurally parsed; automated NSE collection stopped pending permission; audit licensed/authorised weights, historical membership, security IDs, corporate actions and Dhan stock price coverage |
 | C2 — Panel labels/features | PENDING | Build only after C1 passes; validate target construction and freeze source hashes/split |
 | C3 — Stock models/baselines | PENDING | Pooled stock panel and bounded benchmarks only after C2 passes |
 | C4 — Index aggregation/uncertainty | PENDING | Weighted expected return and dependence-aware probability; compare on matched cycles |
@@ -19,7 +19,7 @@
 ## Initial source findings (document review only)
 
 - NIFTY 50 methodology uses free-float market-cap weights; a majority vote of stock directions is not the primary index aggregation rule.
-- NSE Indices' monthly report page publishes two official ZIP families: Indices Market Capitalisation & Weightage, and Market Capitalisation, Weightage, Beta. Raw files, coverage dates and publication timestamps still require ingestion and audit.
+- One-time September 2026 report sample: NIFTY50 table parsed as 50 unique constituents with displayed weights summing to 100.0%; this is schema integrity only, not permission or historical point-in-time validation.
 - BKKB20/nse-index-history is a promising historical membership reconstruction candidate, but its README discloses unprocessed scanned circulars and pre-2010 mapping limitations.
 - vishalvx/nifty-indices-datasets provides binary membership rather than numerical free-float weights; it cannot be used as a primary weight series.
 - Dhan v2 documentation describes up to five years of intraday history for active instruments and 90-day request windows; historical inactive constituents remain unverified.
@@ -41,10 +41,10 @@ No model training until point-in-time membership, numeric free-float weights, se
 ## C1 source-audit work started
 
 - Official report discovery: identified the NSE Indices monthly weightage ZIP families and the corresponding NSE India all-reports category.
-- Automated retrieval: added an Actions-side link discovery, ZIP validation, archive inventory and SHA-256 manifest workflow; raw archives are intended for Actions cache/artifacts, not automatic raw-data commits.
+- Automated retrieval: initial one-time Actions test downloaded a sample before terms review. All subsequent remote retrieval and raw artifact uploads have been disabled; the workflow now inspects only separately authorised local archives.
 - Third-party data: the HF historical weight dataset is restricted to CC-BY-NC-SA non-commercial use and documents extrapolation/static-between-snapshot assumptions; not accepted as primary weights.
 - Membership: the public circular reconstruction is only a candidate. Ticker-only aliases can collapse distinct predecessor/successor securities; ISIN and effective-date reconstruction is required.
-- C1 acceptance remains BLOCKED until raw official archives are parsed, historic weights and membership are validated, stock price coverage is measured, and the realised basket reconciles to NIFTY.
+- NSE Indices Terms of Use were reviewed; automated collection without express written consent and redistribution/copying without prior written permission are restricted. Issue #27 requests deletion of the earlier raw Actions artifact and associated cache if possible.
 
 <!-- C1_FETCH_STATUS_START -->
 ## Latest automated C1 source-fetch result
@@ -55,3 +55,14 @@ No model training until point-in-time membership, numeric free-float weights, se
 - C1 acceptance: NOT PASSED; historical reports, point-in-time availability, membership and basket reconciliation remain required.
 <!-- C1_FETCH_STATUS_END -->
 
+
+
+## C1 decision update — 2026-10-31
+
+- Technical sample result: September 2026 NIFTY50 CSV has a title preamble, table header at row index 2, 50 unique symbol rows and displayed weight total 100.0%. No individual symbol/weight values are reproduced.
+- A third-party current-members CSV (project README dates it March 2026) differs from the September sample by one name each: candidate-only WIPRO, report-only BSE. Treat it as stale/date-mismatched, not ground truth.
+- The official October report archive includes a NIFTY50 PDF; it has not been analysed.
+- Rights correction: remote NSE scraping and raw archive artifact publication have been disabled. C1 workflow is now offline-only for separately authorised input files.
+- Cleanup issue: [#27 remove the prior raw NSE sample artifact/cache](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/issues/27).
+- The existing Dhan auth path and data pipeline are under audit. Prior parent logs report inconsistent TOTP renewal and a separate options DH-905 error; no stock-equity API call has yet been verified.
+- C1 is NOT PASSED. No panel, feature table, stock prediction or trading result exists.
