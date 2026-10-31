@@ -293,3 +293,13 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Combined full-basket 90-day coverage windows now pass for 2022Q4 (historic) and 2026Q3 (recent). This is not a continuous five-year backfill.
 - Details: [C1_DHAN_HISTORICAL_2022_90D_VALIDATION.md](C1_DHAN_HISTORICAL_2022_90D_VALIDATION.md).
 - **C1 remains NOT PASSED**: continuous 2021–2026 coverage, earlier inactive IDs, corporate-action minute treatment, authorised official weight time series and basket-to-index reconstruction remain outstanding. C2 remains gated.
+
+
+## Five-year edge data-quality investigation — 2026-11-01
+
+- First live 2021-11-01–2022-01-29 check resolved all 50 security IDs and returned 1,233,597 bars, but strict QA failed for 50/50 due one common missing anchor and OHLCV invariant flags on 48 symbols.
+- Investigation found the range checker included post-market rows through 15:59 in OHLCV invariants and did not explicitly exclude the NSE evening-only Muhurat date 2021-11-04.
+- NSE circular NSE/CMTR/50050 dated 2021-10-21 sets the 2021-11-04 normal Muhurat session at 18:15–19:15. This date is not a standard daytime 10:00/15:15 expiry session.
+- Corrective code now excludes 2021-11-04 and 2022-10-24 from standard-session coverage, validates OHLCV only within 09:15–15:30, and records missing-session dates plus invalid-row counts. Regression tests added.
+- Corrected validation run: [push 41252703953](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41252703953); final metrics pending.
+- C1 remains NOT PASSED until corrected edge QA and all other data rights / weights / reconstruction gates are resolved.
