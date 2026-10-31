@@ -230,3 +230,15 @@ def test_profile_request_uses_documented_access_token_header_only(monkeypatch):
     }
     assert "client-id" not in captured["headers"]
 
+
+
+def test_auth_diagnostics_classify_totp_failure_without_retaining_message():
+    from scripts.constituent_weekly.dhan_equity_preflight import auth_response_diagnostics
+
+    result = auth_response_diagnostics({
+        "status": "error",
+        "message": "Invalid TOTP code; do not persist this text",
+    })
+    assert result["provider_error_category"] == "TOTP_REJECTED_OR_INVALID"
+    assert "Invalid TOTP" not in str(result)
+    assert "do not persist this text" not in str(result)
