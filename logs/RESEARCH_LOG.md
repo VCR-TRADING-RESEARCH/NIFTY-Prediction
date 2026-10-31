@@ -226,3 +226,14 @@
 - Extended the BUP-01 literature review with recent component-based aggregate-market forecasting and cross-sectional return-prediction studies: Ellington, Pybis & Zheng (2026); Huddleston, Liu & Stentoft (2023); Chui et al. (2023); Chen et al. (2025); Goyal & Jegadeesh (2018); Han et al. (2024).
 - Key design implication: separate cross-sectional stock-ranking skill from aggregate NIFTY direction. Component forecasts may contribute to aggregate forecasts, but performance depends on the aggregation design, cross-stock dependence and forecast horizon. Evidence from U.S. monthly or intraday markets and broad Indian BSE samples is motivation only, not a NIFTY weekly result.
 - Plan v1.0 remains locked; no model-family expansion or empirical claims were introduced.
+
+
+## 2026-10-31 — BUP-01 licensed membership and ownership audit
+
+- Identified and audited [aditya-jha/nse-historical-membership](https://github.com/aditya-jha/nse-historical-membership) at pinned commit cc6f89fd6699a92afa8d398896d0aac385eb9e8c. Its parsed data are CC BY 4.0; a NIFTY 50-only subset is cached on BUP-01 C1 with attribution.
+- Membership: 83 intervals, 82 symbols, 50 snapshot_floor / 33 press_release. All 93 sampled month-15 cardinality checks Jan-2018 to Sep-2025 returned 50 active intervals. Latest NIFTY50 event 2025-09-30; no historical numeric weights.
+- Source validator reports 29/29 curated famous transitions pass and current snapshot match 0/42, but pre-2018 cardinality and internal consistency failures; the BUP-01 input remains confidence-coded candidate data, not certified membership.
+- Shareholding dataset: 59,773 broader-universe rows, 2,584 rows for 78 historical NIFTY50-related symbols; coverage 37/50 (2018-03), 47/50 (2018-06), 41/50 (2020-06), 43/50 (2022-03), 49/50 (2023-06) and 50/50 for each quarter from 2023-09 to 2025-09.
+- Parsed ownership roll-ups do not include detailed strategic holdings required to reconstruct official IWF. The flat parsed file omits broadcast timestamp; the source manifest includes broadcast_date and must be joined by XBRL filename before any feature is made available. No ownership field is used yet.
+- AMFI ETF scheme portfolio history was identified as a possible external cross-check, but AMFI's Terms of Use restrict personal/non-commercial use and derivative/public redistribution; no AMFI data was ingested or cached.
+- C1 remains BLOCKED on exact numeric IWF/weights, 2025-10 onward NIFTY50 membership update and Dhan constituent intraday data.
