@@ -184,3 +184,16 @@
 - Calendar gate: OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL — The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.
 - Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
 - Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.
+
+
+## 2026-10-31 — Registered BUP-01 bottom-up constituent weekly-expiry research
+
+- **Track:** BUP-01, forecast each point-in-time NIFTY 50 constituent's weekly expiry return and aggregate stock forecasts into a NIFTY 50 return/direction forecast.
+- **Branch:** phase/constituent-weekly-outcomes-c0, created from main.
+- **Registration:** Pre-registered plan v1.0, literature review, data-source register, status and manuscript outline added under research/constituent_weekly/.
+- **Primary aggregation:** point-in-time free-float weights applied to stock expected returns. A simple majority is only a benchmark; the aggregate UP probability must account for cross-stock dependence.
+- **Data gate:** C1 must validate effective-dated membership, numeric free-float weights/IWF, stable security identifiers, corporate actions, intraday anchor/expiry coverage and realised basket-to-official-index reconciliation before fitting models.
+- **Research scope:** bounded C0–C6 phase plan with separate branches, chronological weekly-cycle splits, locked final holdout, candidate registry, block-bootstrap uncertainty and a separate cost/execution gate.
+- **Prior-work controls:** retained the index-only ExtraTrees study as a separate benchmark; prior daily-close discrepancies, provisional 10:00 anchor, stale cache risks and no-strategy status were reviewed and documented as known constraints.
+- **Current result:** no constituent panel, stock model, bottom-up forecast or strategy result exists at registration. This step is plan/source registration only.
+- **Next action:** C0 structural workflow validation; then C1 free-source and Dhan data/weight feasibility audit.
