@@ -282,3 +282,14 @@ Official methodology requires free-float IWF and specified strategic-holding exc
 - [Automatic/manual GitHub Actions workflow](.github/workflows/bup01-c1-membership-tests.yml)
 
 The corrected 86-row project ledger contains 85 distinct symbols. It validates 50 unique entries on 102/103 month-end snapshots and 51 on 2025-10-31 because the official temporary zero-price DUMMYTATAM placeholder was active. Tata Motors is mapped as TATAMOTORS through 2025-10-23 and TMPV from 2025-10-24; DUMMYTATAM is explicitly flagged non-tradable. The 2026 WIPRO-to-BSE reconstitution is also applied. The source contains no numerical weights. Exact historical free-float IWF, legacy ISIN/security identity, remaining corporate actions and full constituent intraday/expiry-close coverage remain open; Phase C2 stays gated. The membership workflow uses offline tests only and makes no market-data or authentication calls. The final corrected workflow run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) succeeded with 6 tests passed.
+
+
+## 2026-10-31 — Conversation recovery checkpoint
+
+The ChatGPT conversation encountered a send/response transport error during a sequence of audit/provenance update messages. Repository state was independently checked before continuing; no duplicate data run or Dhan token refresh was triggered.
+
+- Membership integrity Actions run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548): **SUCCESS; six tests passed** (verified from job status).
+- Membership sub-gate: **PASS WITH LIMITATIONS**.
+- Overall constituent research gate C1: **BLOCKED** pending licensed exact historical free-float IWF, security identity/ISIN and corporate-action mapping, and complete constituent intraday/expiry-close coverage.
+- C2 model construction remains prohibited until all C1 gates pass. No bottom-up prediction or trading strategy is validated.
+- See [research log](logs/RESEARCH_LOG.md), [error log](logs/ERROR_LOG.md), [conversation log](logs/CONVERSATION_LOG.md), and [BUP-01 status](research/constituent_weekly/STATUS.md).
