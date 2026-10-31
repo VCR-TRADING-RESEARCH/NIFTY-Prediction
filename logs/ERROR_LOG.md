@@ -346,3 +346,6 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** Recent expiry-close coverage is not established. The five-stock panel gate cannot pass on these data.
 - **Next diagnostic:** Inspect Dhan's intraday response pagination/range semantics and compare the requested final window with a separately validated free/official source where permitted. Do not infer the missing close or synthesize prices.
 
+
+## E0031 resolution — 2026-10-31
+The protected live Dhan run is no longer awaiting manual dispatch. It was initiated automatically by a controlled push to the C1 data branch and completed in [Actions run 41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41224048773). Full-universe current-master resolution is now measured at 50/50 and historical-symbol lookup at 79/84. The remaining blockers are recorded under E0032 and in the C1 status; C1 remains BLOCKED.
