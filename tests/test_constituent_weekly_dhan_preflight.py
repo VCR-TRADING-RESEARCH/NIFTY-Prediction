@@ -109,7 +109,7 @@ def test_access_token_helper_rejects_invalid_fallback_line_breaks(monkeypatch):
     import scripts.constituent_weekly.dhan_equity_preflight as probe
     from live_api.app import PublicPredictionError
     monkeypatch.setenv("DHAN_CLIENT_ID", "client")
-    monkeypatch.setenv("DHAN_ACCESS_TOKEN", "token-value\\nBAD_ENV=1")
+    monkeypatch.setenv("DHAN_ACCESS_TOKEN", "token-value\nBAD_ENV=1")
 
     def fail_refresh():
         raise PublicPredictionError("refresh failed")
