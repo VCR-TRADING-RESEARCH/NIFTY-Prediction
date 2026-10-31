@@ -73,6 +73,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add research/constituent_weekly/C1_DHAN_PREFLIGHT.json research/constituent_weekly/STATUS.md
           if ! git diff --cached --quiet; then
-            git commit -m "Record BUP-01 sanitized Dhan equity preflight"
-            git push origin HEAD:${{ github.head_ref || github.ref_name }}
+            target_branch="${{ github.head_ref || github.ref_name }}"
+            git pull --rebase --autostash origin "$target_branch"
+            git push origin "HEAD:$target_branch"
           fi
