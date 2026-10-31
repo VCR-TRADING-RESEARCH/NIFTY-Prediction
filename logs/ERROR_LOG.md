@@ -294,3 +294,10 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** Membership intervals can reduce survivorship and membership-date errors, but cannot support index-weighted forecasts or exact basket reconstruction. Do not fill weights with equal weights, ownership percentages or market-cap proxies and call them NIFTY weights.
 - **Correction:** Import only the NIFTY 50 membership subset under its data licence with attribution, add the official 2026-09-30 WIPRO-to-BSE replacement and 103 month-end cardinality tests. Keep weights/IDs/corporate-actions and Dhan coverage as independent C1 blockers.
 - **Status:** Membership sub-gate PASS WITH LIMITATIONS; overall C1 OPEN/BLOCKED; no C2 model or strategy produced.
+
+
+## E0029 — 2026-10-31 — ChatGPT conversation transport failure (not a research workflow failure)
+- **Observed:** User supplied a screenshot showing “Unable to send” / “something seems to have gone wrong” during repeated audit/provenance/validation update messages in the ChatGPT conversation.
+- **Repository check:** Latest main commit and branch state were readable. BUP-01 membership workflow run 41185169548 completed successfully; six tests passed. The conversation transport error is not evidence that GitHub Actions or a repository commit failed.
+- **Recovery:** Reconcile GitHub state before retrying; do not replay successful writes or regenerate Dhan tokens without a concrete need. Record this separately from market-data/model errors.
+- **Research impact:** No change to empirical findings or acceptance gates. Membership sub-gate PASS WITH LIMITATIONS; overall C1 BLOCKED; no C2 model or strategy exists.
