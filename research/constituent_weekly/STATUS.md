@@ -110,10 +110,10 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_DHAN_STATUS_START -->
 ## Latest Dhan equity preflight
 
-- Recorded at (UTC): 2026-10-31T22:47:05.285286+00:00
+- Recorded at (UTC): 2026-10-31T23:02:07.360264+00:00
 - Dhan auth method/status: totp_refresh / SUCCESS
 - Profile HTTP status: NOT_RECORDED
-- Status: PASS_ACTIVE_EQUITIES
+- Status: PARTIAL_OR_BLOCKED
 - Data plan active: True
 - Current NIFTY 50 universe resolved in current Dhan master: 50/50
 - Historical membership symbol aliases matched in current Dhan master: 79/84
