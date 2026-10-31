@@ -260,6 +260,94 @@ def request_intraday_probe(headers: dict, symbol: str, security_id: str, day: st
         return {"symbol": symbol, "date": day, "status": f"HTTP_{response.status_code}"}
     return analyse_bars(response.json(), symbol, day)
 
+
+def analyse_intraday_range(body: dict, symbol: str, start_date: str, end_date: str) -> dict:
+    """Return only aggregate coverage/quality metrics for a multi-session minute response."""
+    keys = ("open", "high", "low", "close", "volume", "timestamp")
+    arrays = {key: body.get(key, []) for key in keys}
+    lengths = {key: len(value) for key, value in arrays.items()}
+    n = lengths["timestamp"]
+    if n == 0 or any(length != n for length in lengths.values()):
+        return {
+            "symbol": symbol, "from_date": start_date, "to_date": end_date,
+            "status": "EMPTY_OR_MISMATCHED_ARRAYS", "array_lengths": lengths,
+        }
+
+    frame = pd.DataFrame(arrays)
+    frame["time_ist"] = pd.to_datetime(
+        frame["timestamp"], unit="s", utc=True, errors="coerce"
+    ).dt.tz_convert(IST)
+    frame = frame.dropna(subset=["time_ist"]).sort_values("time_ist")
+    if frame.empty:
+        return {"symbol": symbol, "from_date": start_date, "to_date": end_date, "status": "NO_VALID_TIMESTAMPS"}
+
+    ts = frame["time_ist"]
+    day = ts.dt.strftime("%Y-%m-%d")
+    clock = ts.dt.strftime("%H:%M")
+    anchor_mask = clock.between("10:00", "10:03")
+    expiry_mask = clock.between("15:00", "15:14")
+    dates = sorted(day.unique().tolist())
+    anchor_days = int(day[anchor_mask].nunique())
+    expiry_days = int(day[expiry_mask].nunique())
+    duplicated = int(frame["time_ist"].duplicated().sum())
+    numeric = frame[["open", "high", "low", "close", "volume"]].apply(pd.to_numeric, errors="coerce")
+    finite = bool(numeric.notna().all().all() and np.isfinite(numeric.to_numpy(dtype=float)).all())
+    ohlc_ok = False
+    if finite:
+        low = numeric["low"]
+        high = numeric["high"]
+        ohlc_ok = bool(
+            ((low <= numeric[["open", "close"]].min(axis=1)) &
+             (high >= numeric[["open", "close"]].max(axis=1)) &
+             (numeric[["open", "high", "low", "close"]] > 0).all(axis=1) &
+             (numeric["volume"] >= 0)).all()
+        )
+    passed = bool(
+        finite and ohlc_ok and duplicated == 0 and
+        len(dates) > 0 and anchor_days == len(dates) and expiry_days == len(dates)
+    )
+    return {
+        "symbol": symbol,
+        "from_date": start_date,
+        "to_date": end_date,
+        "status": "PASS" if passed else "RANGE_COVERAGE_OR_OHLC_FAILED",
+        "bar_count": int(len(frame)),
+        "session_count": int(len(dates)),
+        "anchor_sessions_present": anchor_days,
+        "expiry_proxy_sessions_present": expiry_days,
+        "missing_anchor_sessions": int(len(dates) - anchor_days),
+        "missing_expiry_proxy_sessions": int(len(dates) - expiry_days),
+        "duplicate_timestamps": duplicated,
+        "ohlc_volume_invariants_pass": ohlc_ok,
+        "first_timestamp_ist": ts.iloc[0].isoformat(),
+        "last_timestamp_ist": ts.iloc[-1].isoformat(),
+        "contains_raw_price_values": False,
+    }
+
+
+def request_intraday_range(headers: dict, symbol: str, security_id: str, start_date: str, end_date: str) -> dict:
+    """Fetch one <=90-day Dhan minute window and retain only sanitised QA metadata."""
+    response = requests.post(
+        INTRADAY_URL,
+        headers=headers,
+        json={
+            "securityId": security_id,
+            "exchangeSegment": "NSE_EQ",
+            "instrument": "EQUITY",
+            "interval": "1",
+            "oi": False,
+            "fromDate": f"{start_date} 09:15:00",
+            "toDate": f"{end_date} 15:15:00",
+        },
+        timeout=120,
+    )
+    if not response.ok:
+        return {
+            "symbol": symbol, "from_date": start_date, "to_date": end_date,
+            "status": f"HTTP_{response.status_code}",
+        }
+    return analyse_intraday_range(response.json(), symbol, start_date, end_date)
+
 def request_profile(token: str):
     """Check token validity using the documented profile header only."""
     return requests.get(
@@ -361,6 +449,27 @@ def main() -> int:
         result["full_universe_probe_passed"] = full_passed
         result["full_universe_probe"] = full_universe_results
 
+        # A <90-day range request tests the actual historical batch size/shape before any bulk backfill.
+        range_probe_dates = ("2022-10-03", "2022-12-30")
+        range_probe_symbols = ("RELIANCE", "TCS", "INFY")
+        range_results = []
+        for symbol in range_probe_symbols:
+            security_id = probe_ids.get(symbol) or historical_ids.get(symbol)
+            if not security_id:
+                range_results.append({
+                    "symbol": symbol, "from_date": range_probe_dates[0],
+                    "to_date": range_probe_dates[1], "status": "MISSING_SECURITY_ID",
+                })
+                continue
+            range_results.append(
+                request_intraday_range(
+                    headers, symbol, security_id, range_probe_dates[0], range_probe_dates[1]
+                )
+            )
+        result["ninety_day_range_probe"] = range_results
+        result["ninety_day_range_probe_expected"] = len(range_probe_symbols)
+        result["ninety_day_range_probe_passed"] = sum(item.get("status") == "PASS" for item in range_results)
+
         if "RELIANCE" in probe_ids:
             daily = requests.post(
                 DAILY_URL,
@@ -446,7 +555,10 @@ def main() -> int:
         full_expected = result.get("full_universe_probe_expected", 0)
         full_passed = result.get("full_universe_probe_passed", 0)
         full_complete = full_expected > 0 and full_passed == full_expected
-        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected and full_complete else "PARTIAL_OR_BLOCKED"
+        range_expected = result.get("ninety_day_range_probe_expected", 0)
+        range_passed = result.get("ninety_day_range_probe_passed", 0)
+        range_complete = range_expected > 0 and range_passed == range_expected
+        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected and full_complete and range_complete else "PARTIAL_OR_BLOCKED"
         result["note"] = "Five-symbol/two-date data probe only. The final available candle by the 15:15 IST cutoff is accepted as the expiry proxy; this does not establish full-universe coverage, inactive-security history or official index weights."
     except PublicPredictionError as exc:
         result["status"] = "BLOCKED_DHAN_AUTH"
@@ -472,6 +584,7 @@ def main() -> int:
     print(f"Intraday windows passing: {result.get('intraday_probe_passed', 0)}/{result.get('intraday_probe_expected', 0)}")
     print(f"Expiry-proxy cutoff: {result.get('expiry_proxy_cutoff_ist', 'NOT_SET')}")
     print(f"Full point-in-time NIFTY 50 probe: {result.get('full_universe_probe_passed', 0)}/{result.get('full_universe_probe_expected', 0)} passed; resolved={result.get('full_universe_probe_resolved', 0)}; date={result.get('full_universe_probe_date', 'NOT_RUN')}")
+    print(f"90-day range probe: {result.get('ninety_day_range_probe_passed', 0)}/{result.get('ninety_day_range_probe_expected', 0)} passed")
     for probe in result.get("intraday_probe", []):
         print("PROBE", probe.get("symbol"), probe.get("date"), probe.get("status"),
               "bars=", probe.get("bar_count", 0),

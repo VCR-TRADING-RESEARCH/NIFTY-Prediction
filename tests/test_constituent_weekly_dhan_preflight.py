@@ -245,6 +245,54 @@ def test_request_intraday_probe_reports_only_sanitised_bar_quality(monkeypatch):
     assert "prices" not in result
     assert "secret" not in str(result)
 
+
+def test_analyse_intraday_range_validates_anchor_and_expiry_for_all_sessions():
+    import numpy as np
+    from scripts.constituent_weekly.dhan_equity_preflight import analyse_intraday_range
+
+    body = {
+        "open": [100.0, 100.5, 101.0, 101.5],
+        "high": [101.0, 101.5, 102.0, 102.5],
+        "low": [99.0, 99.5, 100.0, 100.5],
+        "close": [100.5, 101.0, 101.5, 102.0],
+        "volume": [100, 110, 120, 130],
+        "timestamp": [
+            epoch_ist("2022-10-03T10:00:00"),
+            epoch_ist("2022-10-03T15:14:00"),
+            epoch_ist("2022-10-04T10:03:00"),
+            epoch_ist("2022-10-04T15:13:00"),
+        ],
+    }
+    result = analyse_intraday_range(body, "RELIANCE", "2022-10-03", "2022-10-04")
+    assert result["status"] == "PASS"
+    assert result["bar_count"] == 4
+    assert result["session_count"] == 2
+    assert result["anchor_sessions_present"] == 2
+    assert result["expiry_proxy_sessions_present"] == 2
+    assert result["contains_raw_price_values"] is False
+    assert "close" not in result
+
+
+def test_analyse_intraday_range_fails_when_a_session_has_no_expiry_proxy():
+    from scripts.constituent_weekly.dhan_equity_preflight import analyse_intraday_range
+
+    body = {
+        "open": [100.0, 100.5, 101.0],
+        "high": [101.0, 101.5, 102.0],
+        "low": [99.0, 99.5, 100.0],
+        "close": [100.5, 101.0, 101.5],
+        "volume": [100, 110, 120],
+        "timestamp": [
+            epoch_ist("2022-10-03T10:00:00"),
+            epoch_ist("2022-10-03T15:14:00"),
+            epoch_ist("2022-10-04T10:00:00"),
+        ],
+    }
+    result = analyse_intraday_range(body, "RELIANCE", "2022-10-03", "2022-10-04")
+    assert result["status"] == "RANGE_COVERAGE_OR_OHLC_FAILED"
+    assert result["missing_expiry_proxy_sessions"] == 1
+
+
 def test_profile_request_uses_documented_access_token_header_only(monkeypatch):
     import scripts.constituent_weekly.dhan_equity_preflight as probe
 
