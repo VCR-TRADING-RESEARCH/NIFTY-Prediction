@@ -221,3 +221,12 @@
 ## 2026-11-01 — C1 90-day Dhan range test implementation
 - Assistant added a 90-day one-minute history QA probe for RELIANCE, TCS and INFY on 2022-10-03 through 2022-12-30; the probe stores only aggregate coverage/quality metadata.
 - Initial tests found a missing NumPy import (2 new tests failed, 19 passed). The import was corrected and the follow-up workflow was queued. No live data request ran in the failed test step.
+
+
+## 2026-11-01 — Dhan 90-day/full-universe validation continuation
+- User: “Ok proceed”.
+- The three-symbol historical range test passed for RELIANCE, TCS and INFY over 2022-10-03–2022-12-30: 61 normal sessions per stock, all 61 had both anchor and 15:14 expiry-proxy coverage, no duplicate timestamps or OHLCV errors. The Diwali Muhurat evening-only date was separated from daytime sessions.
+- Full 50-stock one-session preflight passed 50/50 on 2026-10-29.
+- A subsequent full 50-stock 90-day run did not reach data requests because token refresh returned no usable access token and the stored fallback returned HTTP 401. A bounded retry and last-success preservation were added; current validation run 41251346795 was pending at this update.
+- Logged E0041 (special-session QA), E0042 (transient Dhan auth) and E0043 (initial retry newline guard).
+- Only visible outcomes and decisions are logged, not private reasoning or secrets.

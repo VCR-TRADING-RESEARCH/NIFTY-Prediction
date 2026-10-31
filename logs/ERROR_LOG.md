@@ -423,3 +423,27 @@ The protected live Dhan run is no longer awaiting manual dispatch. It was initia
 - Root cause: the helper used `np.isfinite` without importing NumPy in the module.
 - Correction: added `import numpy as np` in commit 3a9545e. Corrective push run [41250690640](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250690640) is pending verification.
 - No market data were downloaded in the failed runs; no research data or outcome labels were changed.
+
+
+## E0041 — 2026-11-01 — Special-session dates misclassified as missing regular-session bars
+- Severity: Low / data-quality validator issue.
+- First range check on 2022-10-03 through 2022-12-30 for RELIANCE, TCS and INFY flagged 24 October 2022 as missing 10:00 and 15:14 candles.
+- Root cause: Diwali Muhurat on 2022-10-24 was an evening-only special session (18:15–19:15 IST), not a normal daytime session.
+- Correction: Range QA now counts regular sessions only when returned bars fall within 09:15–15:30 IST, separately records non-standard session dates, and validates 10:00/15:14 coverage only on regular sessions.
+- Verified: Dhan range probe [https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250854958] succeeded for all 3 stocks, each covering 61 regular sessions with 61/61 anchor and expiry-proxy sessions, no duplicate timestamps and OHLCV invariants passing.
+- The initial false negative did not represent missing regular-session market data.
+
+## E0042 — 2026-11-01 — Dhan TOTP refresh returned no usable token; fallback token rejected
+- Severity: Medium / transient external API authentication.
+- Run: [https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251079084].
+- Symptom: TOTP auth endpoint returned HTTP 200 but no access-token field; the configured fallback token then received HTTP 401 at the profile endpoint. As a result the full 50-stock, 90-day probe was not executed in that run.
+- Evidence: An immediately preceding Dhan run [https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251003359] successfully generated a fresh token, passed 50/50 one-day coverage, and passed the 3/3 three-symbol 90-day coverage test.
+- Correction in progress: one bounded TOTP retry after the next 30-second code window; preserve last successful preflight separately from latest attempt. The later validation run [https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795] is the current push run; final result not yet verified.
+- No raw prices or credentials were stored.
+
+## E0043 — 2026-11-01 — TOTP retry implementation initially failed fallback newline guard
+- Severity: Low / auth input validation regression.
+- Run: [https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251304520].
+- Symptom: 22 tests passed and one test failed because a fallback token containing a newline was not rejected.
+- Root cause: the first retry implementation used a double-escaped newline check.
+- Correction: restored direct newline/carriage-return checks and reran the suite in [https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795]; result pending at time of log entry.

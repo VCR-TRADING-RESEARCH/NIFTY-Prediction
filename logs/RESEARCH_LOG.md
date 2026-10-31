@@ -377,3 +377,10 @@
 - Added a three-symbol 90-day Dhan intraday range probe to establish realistic historical response volume and coverage before bulk backfill.
 - Initial CI revealed a missing NumPy import in the new QA helper: 2 tests failed, 19 passed. Added the module import; correction is under validation in run 41250690640.
 - No live API requests were reached in the failing runs. The range-coverage result remains pending.
+
+
+## 2026-11-01 — Dhan historical-window validation and auth handling
+- Confirmed Dhan's 90-day request cap by running a 90-day intraday history sample from 2022-10-03 through 2022-12-30 for RELIANCE, TCS and INFY. The final validated result in Actions run 41250854958 was 3/3 PASS, each with 22,918 bars, 61 regular sessions, 61/61 sessions with the 10:00–10:03 anchor and 15:00–15:14 expiry proxy, zero duplicate timestamps and valid OHLCV. Diwali Muhurat 2022-10-24 is correctly excluded from daytime coverage because it was an evening-only special session.
+- A later full 50-stock 90-day request did not execute because a TOTP auth response contained no access token and the fallback token was rejected with HTTP 401 (run 41251079084). The preceding fresh-token run 41251003359 passed 50/50 one-day coverage and 3/3 sample 90-day checks.
+- Added one bounded TOTP retry after the next code window, fixed newline validation, and created C1_DHAN_LAST_SUCCESS.json to preserve the prior passing diagnostics separately from the latest attempt. Live re-validation run 41251346795 is pending at this log timestamp.
+- No raw prices are stored in the public GitHub repo. The full 50-stock/90-day test is one bounded coverage probe, not a five-year panel.

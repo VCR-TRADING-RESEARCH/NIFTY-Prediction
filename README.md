@@ -395,3 +395,11 @@ The subsequent status/validator correction was also pushed and validated: [run 4
 - The NSE research-data policy lists historical reports/index data for research/analysis, but Nifty Indices site terms separately restrict systematic/automated collection without express written consent. Permission for automated recurring retrieval, caching and this research-to-personal-trading workflow is not unambiguous.
 - Automated retrieval stays disabled until written permission or a suitable licence is confirmed. No scrape or ZIP download was performed. [C1 archive terms audit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md).
 - Current evidence remains: Dhan full-universe 50/50 one-session pass [run 41249642409](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642409); C0 validator pass [run 41249521876](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249521876); C1 offline source audit pass [run 41249967298](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249967298). C1 is NOT PASSED; C2 remains gated.
+
+
+## Latest C1 Dhan evidence (2026-11-01)
+
+- One-day full-universe Dhan preflight: **50/50** current NIFTY 50 symbols passed bar QA on 2026-10-29 in run [41249642409](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642409).
+- 90-day sample: **3/3** (RELIANCE, TCS, INFY) passed on 2022-10-03–2022-12-30 in run [41250854958](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250854958), with 61 normal sessions, valid anchor/expiry-proxy coverage, no duplicate timestamps and OHLCV invariants passing. The evening-only Diwali Muhurat session is tracked separately.
+- A larger 50-stock/90-day run was attempted but blocked by a transient Dhan token-refresh response and expired fallback token in run [41251079084](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251079084). A bounded retry and last-success preservation were added; current validation is run [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795).
+- No full five-year panel or point-in-time weights series is yet validated. C1 remains NOT PASSED; C2/model training remains gated.
