@@ -202,3 +202,21 @@ A separate options strategy study is underway on [research branch](https://githu
 **Aggregation rule:** forecast continuous return for each historically eligible constituent and aggregate with point-in-time NIFTY free-float weights. A simple majority vote is only a baseline. The index-level UP probability must model cross-stock dependence; a weighted average of stock UP probabilities is weighted breadth, not the probability that NIFTY rises.
 
 **Stop condition:** no model fitting until the C1 audit validates point-in-time membership, numerical free-float weights, corporate-action treatment, stock anchor/expiry coverage and reconciliation with the official NIFTY price-return index. The existing index-only research remains a separate benchmark and retains its current data-quality/trading-readiness warnings. Any eventual trading simulation must include date-effective Paytm Money costs, spreads, slippage and realistic fills.
+
+
+### BUP-01 C1 data-feasibility update (2026-10-31)
+
+**C0 governance:** PASS — the registered plan and structural regression tests passed.  
+**C1 data gate:** IN PROGRESS / BLOCKED — no point-in-time constituent panel or stock model exists.
+
+- [C1 source feasibility audit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_SOURCE_FEASIBILITY.md)
+- [One-time sample integrity audit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_INITIAL_SAMPLE_AUDIT.md)
+- [C1 source/rights register](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/DATA_SOURCE_REGISTER.md)
+- [C1 status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md)
+- [C1 draft PR #26](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/26)
+
+The September 2026 official weight-report sample was parsed once for file/schema integrity: 50 unique NIFTY50 rows and a displayed weight sum of 100.0%. The report publication timestamp, historical coverage and basket reconciliation were not validated. The October archive's PDF was inventoried but not analysed. A third-party March 2026 current-members file differs from the September sample (WIPRO appears only in the candidate, BSE only in the sample), so it is not accepted as the current or historical truth.
+
+**Data-rights safeguard:** NSE Indices Terms of Use restrict systematic/automated collection without express written consent and copying/distribution without prior written permission. Repeated NSE scraping and raw artifact uploads have been disabled. [Issue #27](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/issues/27) asks the repository maintainer to delete the earlier raw sample Actions artifact/cache. The C1 workflow is now offline-only for separately authorised archives.
+
+The existing Dhan implementation refreshes a 24-hour access token and retrieves NIFTY index intraday bars; it does not yet prove stock-equity coverage. Dhan's published documentation states daily data are available from instrument inception, while intraday history is limited to five years for active instruments and requests to 90-day windows. A constituent-level API preflight and point-in-time weight/identity audit remain pending. **No constituent model, index prediction or strategy result is available.**
