@@ -1,0 +1,11 @@
+{
+  "track": "BUP-01",
+  "created_at_utc": "2026-10-31T07:31:28.642622+00:00",
+  "status": "BLOCKED_DHAN_AUTH",
+  "credentials_or_tokens_recorded": false,
+  "raw_market_bars_saved": false,
+  "daily_history_probe": {},
+  "intraday_probe": [],
+  "sanitised_error": "Dhan token service did not return a usable access token.",
+  "finished_at_utc": "2026-10-31T07:31:29.472782+00:00"
+}

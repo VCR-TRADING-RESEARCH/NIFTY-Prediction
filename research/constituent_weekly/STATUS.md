@@ -97,3 +97,17 @@ No model training until point-in-time membership, numeric free-float weights, se
 - Current C1 workflow source revisions: offline audit workflow has read-only permissions; Dhan preflight workflow is read-only and only runs for same-repository C1 PRs/push/manual runs. No raw report scraping or artifact upload is configured.
 
 **Phase decision:** C0 PASS. C1 offline workflow PASS. C1 market-data/weights gate remains BLOCKED. Do not create C2 panel or fit stock models until numeric point-in-time free-float weights, the post-2025-09-30 current membership, security identity/corporate actions, and constituent 1-minute price coverage are validated.
+
+<!-- C1_DHAN_STATUS_START -->
+## Latest Dhan equity preflight
+
+- Recorded at (UTC): 2026-10-31T07:31:29.719420+00:00
+- Status: BLOCKED_DHAN_AUTH
+- Data plan active: None
+- Current symbols resolved: 0
+- Missing symbols from current scrip master: 0
+- One-minute probe windows passing: 0/0
+- Deep daily-history probe: NOT_RUN
+- Raw bars, prices, security IDs, credentials and tokens are not stored in this report.
+- This probe does not establish inactive/delisted instrument history, point-in-time membership or index weights.
+<!-- C1_DHAN_STATUS_END -->
