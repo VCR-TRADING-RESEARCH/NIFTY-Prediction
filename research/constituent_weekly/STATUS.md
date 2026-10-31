@@ -151,7 +151,7 @@ No model training until point-in-time membership, numeric free-float weights, se
 
 - Added the NIFTY 50-only CC BY 4.0 point-in-time membership subset at `data/constituent_weekly/nifty50_membership_intervals.csv`, with attribution/provenance in [MEMBERSHIP_DATA_PROVENANCE.md](MEMBERSHIP_DATA_PROVENANCE.md).
 - Upstream data has 83 NIFTY 50 intervals, with no weights, and last reconstitution at 2025-09-30. The project snapshot adds the official 2026-09-30 one-for-one change WIPRO → BSE using the 2026-08-10 NSE Indices press release.
-- Regression/cardinality check: 103/103 month-end dates from 2018-04-30 through 2026-10-31 have exactly 50 unique NIFTY 50 members. This tests cardinality, not every member transition independently; pre-2018 data remains excluded from confirmatory modelling due known source drift.
+- Corrected regression/cardinality check: 103/103 month-end dates from 2018-04-30 through 2026-10-31 match expected counts: 102 dates have 50 entries and 2025-10-31 has 51 because DUMMYTATAM was temporarily included at zero price. This tests cardinality, not every member transition independently; pre-2018 data remains excluded from confirmatory modelling due known source drift.
 - Added [machine-readable audit](C1_MEMBERSHIP_AUDIT.json) and `tests/test_bup01_membership_intervals.py`.
 
 **Overall C1 remains BLOCKED.** The membership sub-gate is improved, but the dataset has no numerical free-float weights, ISIN/security-id history or corporate-action mapping. Dhan constituent-bar coverage still lacks a full-universe test and recent expiry-close completion. No C2 panel/model is permitted.
