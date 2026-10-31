@@ -72,3 +72,14 @@
 - **Data and leakage controls:** Reconstruct point-in-time membership, security identity, corporate actions and numeric weights; never backfill today's constituents or today's weights into historical cycles. Validate stock anchor/expiry prices and reconcile the realised weighted basket with the official NIFTY index before model training.
 - **Scope and stop rule:** Register C0–C6 phases and stop at a failed C1 data gate rather than fabricate weights or search indefinitely. Strategy profitability remains a separate gate with dated Paytm Money costs, spread, slippage and fills.
 - **Logging boundary:** Record visible requests, decisions and auditable rationales. Hidden private chain-of-thought is not copied into repository files.
+
+
+## 2026-10-31 — BUP-01 C1 findings and source-rights correction
+
+- **User-visible progress:** Reported that the initial official monthly archive was reachable via Actions, then clarified that the sample was only a technical integrity check.
+- **One-time sample finding:** The September 2026 NIFTY50 CSV has 50 unique constituent rows and displayed weights summing to 100.0%. No individual weights or raw rows were copied into the repository summary. The October archive PDF was only inventoried, not analysed.
+- **Membership cross-check:** A third-party March 2026 membership file has WIPRO where the September 2026 official sample has BSE. The third-party file is not accepted as a current/historical source.
+- **Rights decision:** After reviewing the NSE Indices Terms of Use, disabled further automated NSE retrieval and public raw archive uploads. Created a local/offline-only archive inspector for separately authorised inputs. Raised issue #27 to remove the earlier raw Actions artifact/cache.
+- **Dhan code review:** Existing Dhan refresh logic and NIFTY-index intraday pipeline were examined. They do not yet establish constituent-level equity data; parent auth logs show unresolved TOTP/auth problems. No stock API call is claimed as successful.
+- **Research status:** C0 PASS, C1 IN PROGRESS / RIGHTS-BLOCKED. No constituent panel, trained model, bottom-up index prediction, or strategy result exists.
+- **Logging boundary:** Visible conversation updates and auditable decisions are recorded. Hidden private reasoning is not stored.
