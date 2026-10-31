@@ -112,3 +112,11 @@
 - Re-read the C1 status, Dhan preflight JSON, source register, research/error/conversation logs, operating rules, pre-registered research plan and relevant workflow on the C1 branch; checked the corresponding main README state.
 - New source review: official NIFTY methodology/IWF guidance, NSE website Terms of Use and Dhan v2 historical-data documentation. Confirmed IWF is more complex than ownership roll-ups; NSE website terms create a rights gate for automated scraping/simulation; Dhan intraday history is documented for active instruments only and is queried in 90-day windows.
 - Decision: do not repeat TOTP refresh without a meaningful reason; keep NSE scraping disabled; keep C1 BLOCKED and C2 gated. Record only visible decisions and outcomes, not hidden private reasoning or secrets.
+
+## 2026-10-31 — User approved continued BUP-01 C1 source audit
+- User said “Ok proceed”.
+- Re-read project instructions, phase plan, status, preflight JSON, source register and available branch logs before continuing.
+- Discovered CC BY 4.0 NIFTY 50 point-in-time membership data. Extracted 83 upstream NIFTY 50 intervals; the source ends at 2025-09-30 and has no numeric weights. Applied the official 2026-09-30 replacement (WIPRO out, BSE in) from the NSE Indices press release dated 2026-08-10.
+- Validated half-open intervals against 103 month-end snapshots from 2018-04 through 2026-10: all dates had 50 unique members. Added a provenance note, machine audit JSON and regression tests. This is a membership/cardinality check, not independent transition verification.
+- Identified the official NSE Indices historical data subscription as an exact-weight/identifier path but requiring licensing. Free public weights candidates were either non-commercial or subject to upstream terms; binary weights are not official IWF.
+- Decision: membership sub-gate PASS WITH LIMITATIONS; overall C1 remains BLOCKED; no model training. Only visible decisions/outcomes are recorded, not hidden reasoning or secrets.
