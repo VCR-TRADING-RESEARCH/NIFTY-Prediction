@@ -145,3 +145,10 @@
 - User replied “Dhan” to the question about available historical data access. Interpreted as confirmation to use the existing Dhan Data API subscription as the primary constituent price-data route, not as confirmation that Dhan supplies official historical NIFTY IWF.
 - Decision: Dhan-first, cache-first constituent security-ID and historical OHLCV coverage audit; include active and delisted/inactive symbols, anchor bars and expiry-close bars. Use bounded/serialized calls and avoid unnecessary TOTP refreshes. Keep credentials in Actions secrets.
 - Exact official point-in-time IWF, index membership/identity history and full coverage remain separate acceptance gates. No approximate weights and no C2 model until gates pass.
+
+## 2026-10-31 — User said “Proceed”: Dhan full-universe security master audit
+- Re-read the C1 status, source register, Dhan preflight code/workflow, membership ledger, research/error/conversation logs and README before continuing.
+- Added full current-universe and historical-symbol resolution against the Dhan current scrip master; added tests for the 50-member effective-date universe, BSE/WIPRO transition, DUMMYTATAM exclusion and generic multi-symbol resolution. Updated status reporting.
+- Commit 05b71dc111779ef40da748319f7d109a012c4451 was validated by Actions run [41223379333](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223379333): 13 tests passed. The run was a PR event, so the live Dhan step was skipped by the explicit credential-safety guard.
+- A follow-up contents commit 8c71118461b3a047ef258bd3345e109423ee8440 synchronized the push-trigger path; the observed run remained PR-triggered. No fresh TOTP, profile or price request was made in this step.
+- Decision: full-universe resolution is implemented but not yet measured. Manual workflow_dispatch on the C1 Dhan workflow is the remaining protected live action. Do not infer coverage from offline tests. C1 remains BLOCKED and C2 remains gated.
