@@ -13,14 +13,13 @@
   "source_weightage_values_present": 0,
   "confirmatory_coverage_start": "2018-04-01",
   "source_last_nifty50_reconstitution": "2025-09-30",
-  "manual_official_updates": [
+  "official_membership_updates": [
     {
       "effective_date": "2026-09-30",
       "effective_after_close": "2026-09-29",
       "excluded_symbol": "WIPRO",
       "included_symbol": "BSE",
-      "source": "https://niftyindices.com/Press_Release/ind_prs10082026.pdf",
-      "rationale": "Official NSE Indices press release dated 2026-08-10."
+      "source": "https://niftyindices.com/Press_Release/ind_prs10082026.pdf"
     },
     {
       "effective_date": "2026-03-30",
@@ -42,28 +41,8 @@
       "member_type": "zero_price_dummy",
       "market_data_required": false,
       "inclusion_source": "https://www.niftyindices.com/Press_Release/ind_prs07102025.pdf",
-      "exclusion_source": "https://www.niftyindices.com/Press_Release/ind_prs13112025.pdf",
-      "note": "This is a temporary index placeholder. It is not a normal tradable constituent security and must not be put in the stock prediction panel."
+      "exclusion_source": "https://www.niftyindices.com/Press_Release/ind_prs13112025.pdf"
     }
-  },
-  "validation": {
-    "month_end_dates_checked": 103,
-    "period": [
-      "2018-04-30",
-      "2026-10-31"
-    ],
-    "dates_with_expected_cardinality": 103,
-    "dates_with_exactly_50_rows": 102,
-    "dates_with_exactly_51_rows_due_temporary_dummy": 1,
-    "october_2025_expected_dummy_exception_count": 51,
-    "failures": 0,
-    "interval_semantics": "valid_from <= date < valid_to; blank valid_to means active",
-    "month_end_exception_reason": "Official NSE Indices demerger adjustment added DUMMYTATAM at zero price effective 2025-10-14; it remained through 2025-11-16 and was excluded effective 2025-11-17.",
-    "regression_test_file": "tests/test_bup01_membership_intervals.py",
-    "ci_workflow": ".github/workflows/bup01-c1-membership-tests.yml",
-    "ci_run_id": 41184751617,
-    "ci_result": "SUCCESS",
-    "ci_pytest_summary": "6 passed"
   },
   "schema": {
     "columns": [
@@ -80,15 +59,38 @@
       "market_data_required"
     ],
     "normal_member_type": "equity_security",
-    "temporary_placeholder_member_type": "zero_price_dummy"
+    "placeholder_member_type": "zero_price_dummy"
+  },
+  "validation": {
+    "month_end_dates_checked": 103,
+    "period": [
+      "2018-04-30",
+      "2026-10-31"
+    ],
+    "dates_with_expected_cardinality": 103,
+    "dates_with_exactly_50_rows": 102,
+    "dates_with_exactly_51_rows_due_temporary_dummy": 1,
+    "october_2025_expected_dummy_exception_count": 51,
+    "failures": 0,
+    "interval_semantics": "valid_from <= date < valid_to; blank valid_to means active",
+    "october_2025_exception_reason": "DUMMYTATAM is an official temporary zero-price NIFTY 50 placeholder from 2025-10-14 through 2025-11-16.",
+    "test_file": "tests/test_bup01_membership_intervals.py",
+    "workflow": ".github/workflows/bup01-c1-membership-tests.yml",
+    "previous_pre_correction_ci_run": {
+      "run_id": 41184751617,
+      "result": "SUCCESS",
+      "pytest_summary": "4 passed",
+      "scope": "Earlier four-test version before the Tata identity/dummy correction; does not validate this updated file."
+    },
+    "updated_suite_ci_status": "PENDING"
   },
   "limitations": [
     "Membership is not numerical free-float weighting; all 86 weightage fields are blank.",
     "Upstream source documents pre-2018 walk-back/cardinality drift; exclude pre-2018 membership from confirmatory use without independent repair.",
-    "Month-end cardinality tests do not independently prove every historical membership transition.",
-    "Tata Motors demerger placeholder is represented in the index membership ledger but excluded from the tradable-equity stock panel.",
-    "No ISIN/security-id history or complete corporate-action mapping is included.",
+    "Month-end cardinality tests do not independently prove every historical transition.",
+    "Temporary DUMMYTATAM is included for index-methodology audit only and must be excluded from tradable-equity modelling.",
+    "No complete ISIN/security-id history or corporate-action mapping is included.",
     "No constituent OHLCV/10:00 anchor/expiry-close coverage is included.",
-    "C1 remains blocked pending licensed point-in-time numerical IWF, security identity/corporate-action mappings and full constituent price coverage."
+    "Overall C1 remains blocked pending licensed point-in-time IWF, security mappings/corporate actions and full constituent price coverage."
   ]
 }
