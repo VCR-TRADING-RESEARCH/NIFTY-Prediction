@@ -41,3 +41,15 @@ Dhan's current v2 documentation states that daily candles are available back to 
 - Public archive file examples: `2022/NOV/03NOV/03NOV/{RELIANCE,HDFCBANK,ICICIBANK,INFY,TCS,NIFTY}.txt`
 
 **Important:** This report records file discovery and sampled values/row counts only; it does not assert that third-party data are officially sourced, complete, licensed for redistribution, price-adjusted correctly, or suitable for trading.
+
+## Additional Hugging Face minute-data candidate
+
+The original dataset [xxparthparekhxx/indian-stock-market-minute-data](https://huggingface.co/datasets/xxparthparekhxx/indian-stock-market-minute-data) declares MIT in its dataset card and README and reports about 715 million one-minute rows in an approximately 10.5 GB compressed Parquet collection. It describes minute data from 2022–2026 and daily data from 2000–2026, timestamped in UTC, grouped into Parquet shards by symbol. Its README says it is for research, education and backtesting only, is not a live feed, and should not be used as the primary basis for live financial trading. The dataset carries an Upstox tag, but the documentation reviewed here does not explicitly identify the actual upstream feed, collection method or data source. The MIT declaration covers the dataset as published but does not independently establish that the uploader had rights to redistribute the underlying market feed.
+
+Decision: **exploratory candidate only; not admitted to the canonical C1 dataset yet.** A full 10.5 GB bulk download was not run in this step because source provenance and feed rights remain unclear. HF token availability does not remove this data-governance gate. A limited exploratory sample may be considered only after the source owner confirms the data origin and permissions, and it must be reconciled against Dhan and official NSE data before use.
+
+## Official single-date weight snapshot found — 2026-02-27
+
+NSE Indices' March 2026 NIFTY 50 white paper, Exhibit 26, publishes all 50 constituent weights as of 2026-02-27. The 50 published two-decimal values were transcribed to [nifty50_official_weights_2026-02-27.csv](../../data/constituent_weekly/nifty50_official_weights_2026-02-27.csv). Their rounded sum is 100.02%, so values are kept exactly as published, without normalisation.
+
+This materially improves the official cross-check evidence: we now have a licensed-authority source for a single complete date. It does **not** supply the missing 2025-09 onward continuous historical series, the daily publication timestamps, or the earlier 2018–2025 exact weights. It is a reference snapshot, not a substitute for the official monthly/daily IWF history. Full source limitations and the PDF rendering limitation are recorded in [NIFTY50_OFFICIAL_WEIGHT_SNAPSHOT_NOTE.md](../../data/constituent_weekly/NIFTY50_OFFICIAL_WEIGHT_SNAPSHOT_NOTE.md).

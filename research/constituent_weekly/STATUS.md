@@ -249,3 +249,11 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Retry run [41249450033](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249450033) exposed an escaping error in the first regex-based fix to `validate_plan.py`; the plan-version expression did not match the Markdown marker.
 - Replaced regex parsing with direct extraction and numeric validation of the `**Plan version:**` line. The existing v1.1 regression test covers the version-history and expiry-proxy markers.
 - No market data, labels or models were modified. A new workflow run is required to confirm the correction.
+
+
+## CI validation closure — 2026-11-01
+
+- Plan validator correction is confirmed by push run [41249521876](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249521876): C0 plan structure passed and all 4 governance tests passed. The C1 offline source-audit push run [41249642494](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642494) also passed. E0037 and E0038 are resolved.
+- Protected Dhan run [41249642409](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642409) succeeded with **50/50** point-in-time current-universe security IDs resolved and **50/50** one-minute data QA checks passing for 2026-10-29. Each passing sample had four 10:00–10:03 bars, one 15:14 expiry-proxy bar, 359 bars for the session and OHLCV invariants passing. This is a one-session coverage probe only, not full historical data or an expiry-return panel.
+- New public source candidates: HF original dataset declares MIT but source feed provenance is unverified and its README limits intended use to research/education/backtesting; it is not admitted. NSE Indices March 2026 whitepaper Exhibit 26 gives a full 50-name 2026-02-27 weight snapshot; 2dp rounded weights sum to 100.02%, preserved as published in a separate reference CSV. It does not close the historical monthly/daily weight gap.
+- C1 remains **NOT PASSED**: full historical point-in-time minute panel, official time-series weights, corporate-action security mapping and reconstructed-index tolerance remain outstanding. C2/model training remains gated.
