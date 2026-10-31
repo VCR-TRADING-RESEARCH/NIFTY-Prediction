@@ -101,16 +101,16 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_DHAN_STATUS_START -->
 ## Latest Dhan equity preflight
 
-- Recorded at (UTC): 2026-10-31T07:43:54Z (Actions run [41181684573](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181684573))
+- Recorded at (UTC): 2026-10-31T07:48:06Z (Actions run [41181948126](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181948126))
 - Status: **BLOCKED_PROFILE_HTTP_401**
-- Offline response-validation tests: **9 passed**
-- Live profile authentication: HTTP 401 after the TOTP refresh/fallback path; no data-plan status, security-master equity lookup, historical daily probe or minute-bar request was reached.
-- Resolved current symbols: 0; one-minute windows passed: 0/0; targeted expiry-close windows passed: 0/0.
-- This is a real credential/profile gate, not a failure of the OHLC/parser tests. No raw bars, prices, security IDs, credentials or tokens are stored in this report.
-- Next diagnostic: compare the freshly generated token's client binding and account/data-plan entitlement with Dhan's profile/authentication requirements; do not retry data endpoints until profile returns 200.
+- Offline response-validation tests: **10 passed**
+- TOTP token-generation endpoint: HTTP 200, but response contained only `message` and `status` keys and no `accessToken`; the supplied-token fallback was attempted.
+- Profile endpoint: HTTP 401. The code now follows Dhan's documented profile request shape (access-token header only); the issue is not an extra client-id header.
+- Data-plan status: unknown; profile did not authenticate. Equity security-master resolution, daily history and minute bars were not reached (0/0).
+- No raw bars, prices, security IDs, credentials, tokens or provider message values are stored.
+- Next gate: validate the organisation secrets against the correct Dhan account: client ID, 6-digit PIN, TOTP secret (TOTP enabled on that account), and the fallback access token. Regenerate/replace the token after confirming the TOTP configuration; then rerun preflight. Dhan's profile endpoint must return 200 before any price endpoint is queried.
 - This probe does not establish inactive/delisted instrument history, point-in-time membership or index weights.
 <!-- C1_DHAN_STATUS_END -->
-
 
 ## C1 resume checkpoint — 2026-10-31
 
@@ -119,3 +119,9 @@ No model training until point-in-time membership, numeric free-float weights, se
 - Shared token refresh PR [#28](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/28): mocked regression and Actions integration checks both SUCCESS. PR remains draft/open and is not merged; do not describe the parent scheduled helper as fixed on main.
 - Open data candidate audit: CC BY 4.0 membership interval subset has 83 NIFTY 50 intervals/82 symbols, with 93/93 monthly cardinality samples returning 50 through 2025-09; it has no numeric index weights and is not a certified October 2026 universe. Quarterly ownership disclosures are not official IWF.
 - C1 remains BLOCKED. C2 panel construction and model training remain prohibited until rights, point-in-time official/free-float weights, current membership, ISIN/security identity, corporate actions, Dhan profile/data entitlement, historical equity bars and weighted basket reconciliation all pass.
+
+
+## Dhan API documentation reconciliation — 2026-10-31
+
+- Dhan v2 documentation specifies POST to `/app/generateAccessToken` with `dhanClientId`, `pin`, and `totp`; tokens are valid for 24 hours. The profile endpoint example sends only the `access-token` header and returns token validity plus `dataPlan` status. Data APIs require a separately subscribed plan. Source: https://dhanhq.co/docs/v2/authentication/.
+- The preflight now tests the profile endpoint with only the documented access-token header, while retaining client-id for subsequent market-data requests. Regression tests pass 10/10. The latest live run still receives HTTP 200 without an accessToken from token generation and HTTP 401 from profile; account secret validation is now the blocking dependency.
