@@ -1,6 +1,6 @@
 {
   "track": "BUP-01",
-  "created_at_utc": "2026-10-31T22:18:09.292633+00:00",
+  "created_at_utc": "2026-10-31T22:20:16.287244+00:00",
   "status": "PASS_ACTIVE_EQUITIES",
   "credentials_or_tokens_recorded": false,
   "raw_market_bars_saved": false,
@@ -246,5 +246,5 @@
   "expiry_proxy_cutoff_ist": "15:15:00",
   "expiry_proxy_definition": "Use the close of the latest available 1-minute candle timestamped between 15:00 and 15:14 IST; ignore later candles.",
   "note": "Five-symbol/two-date data probe only. The final available candle by the 15:15 IST cutoff is accepted as the expiry proxy; this does not establish full-universe coverage, inactive-security history or official index weights.",
-  "finished_at_utc": "2026-10-31T22:18:18.324597+00:00"
+  "finished_at_utc": "2026-10-31T22:20:24.242099+00:00"
 }

@@ -1,6 +1,6 @@
 {
   "track": "BUP-01",
-  "checked_at_utc": "2026-10-31T22:18:07.324994+00:00",
+  "checked_at_utc": "2026-10-31T22:20:14.625847+00:00",
   "source": "AMP4010 Historical Nifty 50 Constituent Weights (Rolling 20-Year Window)",
   "creator": "Sukrit Bera",
   "citation": "Bera, S. (2025), Figshare DOI 10.6084/m9.figshare.30217915",
@@ -15,7 +15,7 @@
     "Corporate-action handling and normalization are performed by the dataset author.",
     "The dataset card reports coverage through 2025-08-31; it does not cover 2025-09 onward."
   ],
-  "status": "DOWNLOADED_AND_VALIDATED",
+  "status": "CACHE_VALIDATED",
   "rows": 216,
   "ticker_columns": 100,
   "first_date": "2008-01-31",
