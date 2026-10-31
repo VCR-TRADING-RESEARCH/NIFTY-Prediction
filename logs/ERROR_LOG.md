@@ -269,3 +269,11 @@
 - **Correction:** Rewrote the workflow YAML with a plain `${{ github.head_ref || github.ref_name }}` expression and removed the unwanted escape. Later tightened validation to `contents: read`, removed raw artifact upload and writeback, and made the workflow publish only a compact job summary.
 - **Follow-up:** [41178676032](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41178676032) was reported as `action_required` with no job steps, so the corrected offline tests are not yet verified by Actions.
 - **Status:** Workflow wiring corrected in source; CI execution remains unverified. C1 still rights/data blocked. No stock panel/model/results were affected.
+
+
+## E0023 — 2026-10-31 — Scheduled Dhan token helper still used GET
+- **Observed:** The shared script `scripts/refresh_dhan_token.py`, called by `.github/workflows/nifty-research.yml`, used `requests.get()` for `/app/generateAccessToken`. The separate `live_api.app.refresh_dhan_token()` already used POST, so the repository contained inconsistent authentication paths.
+- **Source of truth:** Current DhanHQ authentication documentation specifies POST with query parameters `dhanClientId`, `pin` and `totp`: https://dhanhq.co/docs/v2/authentication/.
+- **Correction staged:** Shared helper now uses POST, marks the ephemeral token for GitHub Actions masking, rejects line breaks, exports only through `GITHUB_ENV`, and does not print credentials/provider bodies.
+- **Regression coverage:** Added mocked POST, HTTP-failure and token-line-break tests; no live credentials are used in tests. Read-only workflow added on `fix/dhan-token-refresh-post`.
+- **Status:** Awaiting Actions execution / PR review. No stock-equity request has yet been verified; this fix only repairs the token helper.
