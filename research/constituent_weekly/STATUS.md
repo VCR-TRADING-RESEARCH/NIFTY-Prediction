@@ -157,3 +157,11 @@ No model training until point-in-time membership, numeric free-float weights, se
 **Overall C1 remains BLOCKED.** The membership sub-gate is improved, but the dataset has no numerical free-float weights, ISIN/security-id history or corporate-action mapping. Dhan constituent-bar coverage still lacks a full-universe test and recent expiry-close completion. No C2 panel/model is permitted.
 
 **Best official exact-weight route identified:** NSE Indices data subscription includes historical constituent identifiers, market caps, weights and prices; licensing enquiry: `indices@nse.co.in`. Free alternatives reviewed are insufficient or carry upstream/non-commercial restrictions. Automated NSE web scraping remains disabled.
+
+## C1 membership identity correction — 2026-10-31
+
+A second corporate-action audit refined the membership ledger. The upstream file's `TMPV` symbol was incorrectly carried backwards into dates before the NSE symbol change. It is now corrected to `TATAMOTORS` through 2025-10-23 and `TMPV` from 2025-10-24, as per NSE circular NSE/FAOP/70882.
+
+The ledger also now captures the temporary `DUMMYTATAM` zero-price placeholder from 2025-10-14 through 2025-11-16, explicitly flagged `market_data_required=FALSE`. Thus the corrected 103 month-end snapshots contain 50 unique entries on 102 dates and 51 entries on 2025-10-31. The earlier all-50 count is superseded. The placeholder is for index-ledger completeness only; it is never a stock prediction input.
+
+The revised six-test suite and machine audit are committed. **Post-correction Actions validation is pending.** Overall C1 remains BLOCKED on exact licensed IWF, ISIN/security identity history, other corporate actions and constituent price coverage; no C2 panel/model may be built yet.
