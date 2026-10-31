@@ -226,3 +226,12 @@
 - Extended the BUP-01 literature review with recent component-based aggregate-market forecasting and cross-sectional return-prediction studies: Ellington, Pybis & Zheng (2026); Huddleston, Liu & Stentoft (2023); Chui et al. (2023); Chen et al. (2025); Goyal & Jegadeesh (2018); Han et al. (2024).
 - Key design implication: separate cross-sectional stock-ranking skill from aggregate NIFTY direction. Component forecasts may contribute to aggregate forecasts, but performance depends on the aggregation design, cross-stock dependence and forecast horizon. Evidence from U.S. monthly or intraday markets and broad Indian BSE samples is motivation only, not a NIFTY weekly result.
 - Plan v1.0 remains locked; no model-family expansion or empirical claims were introduced.
+
+
+## 2026-10-31 — Shared Dhan TOTP token-refresh helper corrected
+
+- Audit found that `scripts/refresh_dhan_token.py`, invoked by the scheduled NIFTY research workflow, still used GET against `/app/generateAccessToken`. Dhan's current v2 documentation requires POST with client ID, PIN and TOTP query parameters.
+- Staged correction in PR #28: POST method, ephemeral `GITHUB_ENV` export, GitHub Actions masking command, control-character rejection and safe diagnostics.
+- Added mocked tests for POST parameters, HTTP errors, and token-line-break rejection. Tests use fake values only.
+- Validation status: Actions checks have not yet executed / no status is returned for the PR head. No live Dhan API request or constituent-equity data access is claimed.
+- This is a shared authentication fix, separate from BUP-01 model research.
