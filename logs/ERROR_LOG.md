@@ -309,3 +309,10 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** C1 cannot pass on current evidence. This is a data-rights and coverage gate, not a modelling or compute failure.
 - **Correction:** Keep approximate/non-commercial weights out of the trading research pipeline; do not scrape NSE without permission; do not proceed to C2 until exact weights, identities/corporate actions and full constituent price coverage are independently verified.
 - Sources: https://www.nseindia.com/static/nse-indices/index-data-subscription ; https://dhanhq.co/docs/v2/historical-data/ ; https://huggingface.co/datasets/AMP4010/Historical_Nifty_50_Constituent_Weights_20Y ; https://github.com/vishalvx/nifty-indices-datasets.
+
+## E0031 — 2026-10-31 — Full-universe Dhan preflight live step not yet executed
+- Observed: New Dhan scrip-master audit code was validated by PR workflow run [41223379333](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223379333): 13 offline tests passed. The live Dhan step, status publication and diagnostic commit steps were skipped because the run event was pull_request.
+- Reason: The workflow intentionally excludes live secret-backed requests from pull-request events to prevent unreviewed PR code from accessing Dhan credentials. The workflow already exposes a manual workflow_dispatch trigger.
+- Impact: Full-universe current/historical symbol resolution is not yet empirically measured. Do not claim 50/50 resolution or historical ID coverage from the offline tests.
+- Next step: Run the existing C1 Dhan workflow manually on phase/constituent-weekly-outcomes-c1-data. The ChatGPT GitHub connection used here exposes repository reads and content writes but no Actions workflow-dispatch write action; a repository maintainer must initiate this one protected live run from the Actions UI. No secrets need to be shared in chat.
+- Research gate: C1 remains BLOCKED; C2 remains gated. Latest successful live Dhan evidence remains five-symbol sample only.
