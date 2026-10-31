@@ -1,0 +1,46 @@
+{
+  "track": "BUP-01",
+  "recorded_at": "2026-10-31",
+  "membership_status": "PASS_WITH_LIMITATIONS",
+  "overall_c1_status": "BLOCKED",
+  "source_repository": "aditya-jha/nse-historical-membership",
+  "source_file": "index_history/data/index_membership_history.csv",
+  "source_data_license": "CC BY 4.0",
+  "source_data_blob_sha": "519a9232e125cc044580ec7b90ef5c18475b4f0f",
+  "source_nifty50_interval_rows": 83,
+  "project_nifty50_interval_rows": 84,
+  "unique_symbols_across_history": 83,
+  "source_weightage_values_present": 0,
+  "confirmatory_coverage_start": "2018-04-01",
+  "source_last_nifty50_reconstitution": "2025-09-30",
+  "manual_official_update": {
+    "effective_date": "2026-09-30",
+    "effective_after_close": "2026-09-29",
+    "excluded_symbol": "WIPRO",
+    "included_symbol": "BSE",
+    "source": "https://niftyindices.com/Press_Release/ind_prs10082026.pdf",
+    "rationale": "Official NSE Indices press release dated 2026-08-10."
+  },
+  "checked_2026_march_review": {
+    "effective_date": "2026-03-30",
+    "result": "NO_CHANGES_TO_NIFTY_50",
+    "source": "https://niftyindices.com/Press_Release/ind_prs23022026.pdf"
+  },
+  "validation": {
+    "month_end_dates_checked": 103,
+    "period": ["2018-04-30", "2026-10-31"],
+    "dates_with_exactly_50_rows": 103,
+    "dates_with_exactly_50_unique_symbols": 103,
+    "failures": 0,
+    "interval_semantics": "valid_from <= date < valid_to; blank valid_to means active",
+    "test_file": "tests/test_bup01_membership_intervals.py"
+  },
+  "limitations": [
+    "Membership is not numerical free-float weighting; every weightage field is blank.",
+    "The upstream source documents pre-2018 walk-back/cardinality drift; exclude pre-2018 membership from confirmatory use without independent repair.",
+    "Cardinality checks do not independently prove every membership transition.",
+    "No ISIN/security-id history or corporate-action mapping is included.",
+    "No constituent OHLCV/10:00 anchor/expiry-close coverage is included.",
+    "C1 remains blocked pending licensed point-in-time numerical IWF, security identity/corporate-action mappings and full constituent price coverage."
+  ]
+}
