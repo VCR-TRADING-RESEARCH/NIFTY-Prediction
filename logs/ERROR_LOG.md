@@ -307,3 +307,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** An unquoted comma inside the DUMMYTATAM `notes` field was parsed as an extra CSV column, shifting `member_type` / `market_data_required`. The second assertion saw the earlier 84-row machine audit because the test revision triggered before the updated audit JSON had landed.
 - **Correction:** Re-serialized the dummy row with valid CSV quoting and a comma-free note; verified 86 data rows × 11 columns, 85 unique symbols and no nonblank weightage. Ensured the updated audit JSON was committed before the next path-triggered test run.
 - **Status:** Corrected in branch. Post-fix run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) is queued; keep this item open until it succeeds. No market/model data was changed or used.
+
+### E0030 resolution — 2026-10-31
+- Corrective run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) succeeded; the dedicated membership workflow confirms **6 passed**. CSV column alignment and audit artifact sequencing issues are resolved.
+- E0030 is **CLOSED** for this test/data-format defect. Do not reopen unless a regression occurs. Broader C1 gates remain blocked independently.
