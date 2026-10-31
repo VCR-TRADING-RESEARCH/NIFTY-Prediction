@@ -55,3 +55,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+# Operational trigger: user-requested live Dhan preflight rerun on 2026-10-31.
