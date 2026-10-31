@@ -241,3 +241,6 @@ The same CC BY 4.0 source has quarterly shareholding roll-ups. Matching historic
 **C1 remains BLOCKED:** point-in-time numeric free-float weights, the 2025-10 to 2026-10 constituent update, exact corporate-action/security identity and Dhan constituent-equity bars are not yet validated. The ownership data is a feature candidate, not a replacement for the weights gate.
 
 **Shared Dhan auth fix:** [Draft PR #28](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/28) corrects the scheduled token-refresh helper from GET to POST and adds mocked tests. Its GitHub Actions execution has not yet been observed.
+
+
+**BUP-01 latest CI note (2026-10-31):** the C1 offline source-audit workflow passed in [run 41180457400](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41180457400). This confirms the offline validator and report handling only; no licensed local weight archive or historical IWF was present. The new Dhan equity preflight is staged but no execution is yet visible. A separate shared authentication correction is in [draft PR #28](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/28). C1 remains blocked on exact weights, current membership after 2025-09-30 and verified stock 1-minute coverage.
