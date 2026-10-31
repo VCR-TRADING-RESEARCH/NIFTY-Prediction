@@ -94,3 +94,10 @@
 ## 2026-10-31 — BUP-01 literature review extended
 - Added peer-reviewed and recent literature on component-based aggregate-market prediction, five-minute constituent-to-market forecasts, Indian momentum/reversal/liquidity evidence, weekly short-term reversal and cross-sectional/time-series distinctions.
 - Explicitly distinguished literature motivation from NIFTY weekly-expiry empirical evidence; the locked plan v1.0 was not changed.
+
+
+## 2026-10-31 — Dhan token refresh defect identified and corrected in PR #28
+
+- Visible finding: the shared scheduled helper still used GET even though the current Dhan v2 endpoint requires POST; the separate live API helper was already POST.
+- Staged a shared helper fix, masked ephemeral token export, and isolated regression tests.
+- No credentials or live requests were used during code tests. Action execution remains unverified.
