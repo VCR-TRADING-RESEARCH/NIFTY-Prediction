@@ -49,6 +49,7 @@ jobs:
       - name: Test current Dhan profile, security master and equity candles
         env:
           DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
           DHAN_PIN: ${{ secrets.DHAN_PIN }}
           DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
         run: python scripts/constituent_weekly/dhan_equity_preflight.py
