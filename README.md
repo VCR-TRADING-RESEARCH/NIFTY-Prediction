@@ -188,31 +188,15 @@ A separate options strategy study is underway on [research branch](https://githu
 **Current gate:** the public archive audit scanned 124,458,249 one-minute NIFTY option rows from 2024-10-01 to 2026-07-21. OHLC/timestamps and OI/volume completeness passed; 52.84% of rows have zero volume and 35 have negative volume. Only positive-volume bars are eligible for fills. The archive has no IV or bid/ask and does not cover 2021–2024. Dhan authenticated collection remains blocked. NIFTY spot has no traded volume, so the original VWAP condition needs verified NIFTY futures volume. The first B1 positional credit-spread exploratory simulator, unit tests and cached Actions workflow are now implemented on the research branch. Its automated run is pending. The proxy directional filter, reconstructed delta and no-VWAP treatment are explicitly exploratory; no profitability or risk metrics are claimed until execution completes.
 
 
-## New research track: bottom-up NIFTY constituent weekly outcomes (BUP-01)
-
-**Status (2026-10-31):** C0 registration active on the dedicated branch [phase/constituent-weekly-outcomes-c0](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c0). No constituent panel, stock model or bottom-up prediction has been produced yet. The immediate gate is point-in-time membership, historical free-float weights/IWF, security identifiers, corporate actions and stock price coverage.
-
-- [Pre-registered research plan v1.0](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/RESEARCH_PLAN.md)
-- [Literature review](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/LITERATURE_REVIEW.md)
-- [Data source register](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/DATA_SOURCE_REGISTER.md)
-- [Phase status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/STATUS.md)
-- [Manuscript outline](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/MANUSCRIPT_OUTLINE.md)
-- [Automated/manual research workflow](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/.github/workflows/constituent-weekly-research.yml)
-
-**Aggregation rule:** forecast continuous return for each historically eligible constituent and aggregate with point-in-time NIFTY free-float weights. A simple majority vote is only a baseline. The index-level UP probability must model cross-stock dependence; a weighted average of stock UP probabilities is weighted breadth, not the probability that NIFTY rises.
-
-**Stop condition:** no model fitting until the C1 audit validates point-in-time membership, numerical free-float weights, corporate-action treatment, stock anchor/expiry coverage and reconciliation with the official NIFTY price-return index. The existing index-only research remains a separate benchmark and retains its current data-quality/trading-readiness warnings. Any eventual trading simulation must include date-effective Paytm Money costs, spreads, slippage and realistic fills.
-
-
 ### BUP-01 C1 data-feasibility update (2026-10-31)
 
 **C0 governance:** PASS — the registered plan and structural regression tests passed.  
 **C1 data gate:** IN PROGRESS / BLOCKED — no point-in-time constituent panel or stock model exists.
 
-- [C1 source feasibility audit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_SOURCE_FEASIBILITY.md)
-- [One-time sample integrity audit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_INITIAL_SAMPLE_AUDIT.md)
-- [C1 source/rights register](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/DATA_SOURCE_REGISTER.md)
-- [C1 status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md)
+- [C1 source feasibility audit](research/constituent_weekly/C1_SOURCE_FEASIBILITY.md)
+- [One-time sample integrity audit](research/constituent_weekly/C1_INITIAL_SAMPLE_AUDIT.md)
+- [C1 source/rights register](research/constituent_weekly/DATA_SOURCE_REGISTER.md)
+- [C1 status](research/constituent_weekly/STATUS.md)
 - [C1 draft PR #26](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/26)
 
 The September 2026 official weight-report sample was parsed once for file/schema integrity: 50 unique NIFTY50 rows and a displayed weight sum of 100.0%. The report publication timestamp, historical coverage and basket reconciliation were not validated. The October archive's PDF was inventoried but not analysed. A third-party March 2026 current-members file differs from the September sample (WIPRO appears only in the candidate, BSE only in the sample), so it is not accepted as the current or historical truth.
@@ -222,48 +206,49 @@ The September 2026 official weight-report sample was parsed once for file/schema
 The existing Dhan implementation refreshes a 24-hour access token and retrieves NIFTY index intraday bars; it does not yet prove stock-equity coverage. Dhan's published documentation states daily data are available from instrument inception, while intraday history is limited to five years for active instruments and requests to 90-day windows. A constituent-level API preflight and point-in-time weight/identity audit remain pending. **No constituent model, index prediction or strategy result is available.**
 
 
-**BUP-01 C1 workflow note (2026-10-31):** the automated NSE fetch was disabled after source-rights review. The offline-only workflow has a corrected checkout ref, but the latest run is `action_required` with no test steps; C1 test execution is not yet verified. Historical weights, membership rights and stock-level Dhan coverage remain unresolved. Cleanup of the earlier raw Actions artifact is tracked in [issue #27](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/issues/27). No constituent model or bottom-up forecast is available.
+## C1 candidate source addition
+
+The licensed CC BY 4.0 NIFTY 50 interval subset is now cached at [data/derived/constituent_weekly/nifty50_membership_intervals.csv](data/derived/constituent_weekly/nifty50_membership_intervals.csv); full attribution, coverage and quality caveats are in [C1_MEMBERSHIP_DATA_ATTRIBUTION.md](research/constituent_weekly/C1_MEMBERSHIP_DATA_ATTRIBUTION.md). The related ownership facts are a possible causal feature source after manifest broadcast-time joining, but they do not establish the official NIFTY free-float IWF. C1 remains blocked on exact weights, the post-Sep-2025 universe and Dhan stock intraday bars.
 
 
-BUP-01 literature review has been extended to include recent component-based aggregate-market research, intraday constituent-to-index prediction, Indian momentum/reversal/liquidity evidence, and cross-sectional forecasting methodology. These are research precedents only; the bottom-up NIFTY weekly-expiry hypothesis remains untested. See the linked [BUP-01 literature review](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/LITERATURE_REVIEW.md).
+### Latest C1 execution note
+
+- Offline C1 source-audit workflow: [run 41180457400](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41180457400) — SUCCESS, including offline parser tests. No authorised local weight archive was present; this is not a historical IWF pass.
+- Dhan equity preflight workflow and mocked response tests are staged; no Dhan preflight run/result is visible yet. No stock bars or access-token data are claimed.
+- The cached CC BY 4.0 membership subset and attribution are now linked above. It does not contain numeric weights and stops at 2025-09-30.
+
+### Latest BUP-01 C1 checkpoint — 2026-10-31
+
+- [Offline authorised-source audit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181684637): SUCCESS; no authorised local official-weight archive was present.
+- [Dhan equity preflight](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181684573): workflow SUCCESS and offline tests 9/9 PASS, but live Dhan profile authentication returned HTTP 401. No equity security IDs, 2018 daily bars or 1-minute stock bars were tested.
+- [Dhan token-refresh PR #28](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/28): mocked regression and integration Actions checks passed; PR #28 is ready for review with passing checks, but GitHub reports merge conflicts (`dirty`); it remains open/unmerged, so the main scheduled helper is not yet updated.
+- C1 remains **BLOCKED** on Dhan profile/data entitlement, authorised point-in-time numerical free-float weights, post-2025-09 membership, security identity/corporate actions and basket reconciliation. No stock panel/model/forecast exists.
+- Detailed gate record: [BUP-01 STATUS](research/constituent_weekly/STATUS.md), [C1 source feasibility](research/constituent_weekly/C1_SOURCE_FEASIBILITY.md), [data source register](research/constituent_weekly/DATA_SOURCE_REGISTER.md), [error log](logs/ERROR_LOG.md).
+
+### Latest C1 Dhan diagnostic — 31 October 2026
+
+- [Latest preflight run 41181948126](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181948126): workflow passed; 10/10 offline tests passed. Live token-generation endpoint returned HTTP 200 but no `accessToken`; fallback token then failed profile authentication with HTTP 401.
+- The profile request now matches Dhan's documented header shape (access-token only). No stock equity endpoint was reached and no bars were collected.
+- **Actionable blocker:** verify the Dhan client ID, six-digit PIN, TOTP secret/TOTP enablement, and fallback token in organisation secrets. Dhan token validity is 24 hours and Data APIs require an active plan. See [Dhan authentication docs](https://dhanhq.co/docs/v2/authentication/).
+- C1 remains BLOCKED on authentication, authorised point-in-time numeric free-float weights, current membership, corporate-action/security identity history and basket reconciliation. No constituent model/forecast exists.
+
+- Additional public-source sweep: no permissively reusable official historical IWF series found. The HF 2008–2025 weights candidate is CC BY-NC-SA 4.0 and documents static/extrapolated intervals; GitHub alternatives are binary membership or best-effort reconstructions. See [C1 data-source register](research/constituent_weekly/DATA_SOURCE_REGISTER.md).
 
 
-### BUP-01 C1 licensed historical-membership / ownership audit (2026-10-31)
+## BUP-01 Dhan authentication checkpoint — 2026-10-31
 
-A CC BY 4.0 point-in-time membership dataset has now been reviewed and its NIFTY 50-only interval subset is cached on the C1 branch:
-- [Cached membership intervals (83 rows)](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/data/derived/constituent_weekly/nifty50_membership_intervals.csv)
-- [Attribution and detailed audit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_MEMBERSHIP_DATA_ATTRIBUTION.md)
-
-The source has 83 intervals / 82 distinct symbols, with 50 records marked as snapshot-floor reconstructions and 33 backed by press-release events. There were 93/93 monthly 15th-day cardinality checks of 50 active intervals from Jan-2018 to Sep-2025. Its latest NIFTY 50 event is **30-Sep-2025**, and it has no numeric historical weights. The publisher's own validation report flags major pre-2018 reconstruction drift. This is a candidate point-in-time universe, not a certified October-2026 universe.
-
-The same CC BY 4.0 source has quarterly shareholding roll-ups. Matching historical NIFTY50 constituents yields 2,584 records across 78 symbols; quarter-end coverage ranges from 37/50 in Mar-2018 to full 50/50 from Sep-2023 through Sep-2025. Filings have a separate broadcast timestamp in their manifest, which must be joined before any ownership feature is used. The parsed fields do not contain the detailed strategic holdings required for official IWF; **do not use 100% minus promoter percentage as an index weight**.
-
-**C1 remains BLOCKED:** point-in-time numeric free-float weights, the 2025-10 to 2026-10 constituent update, exact corporate-action/security identity and Dhan constituent-equity bars are not yet validated. The ownership data is a feature candidate, not a replacement for the weights gate.
-
-**Shared Dhan auth fix:** [Draft PR #28](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/28) corrects the scheduled token-refresh helper from GET to POST and adds mocked tests. Its GitHub Actions execution has not yet been observed.
+- Shared Dhan refresh helper corrected to POST on the C1 branch; token values are masked and exported only within the Actions job. BUP-01 preflight already used POST.
+- Run [41182555655](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182555655): 10/10 offline tests passed; live token endpoint returned HTTP 200 without an access-token field; fallback profile returned HTTP 401. No equity data calls were reached.
+- Safe error-category diagnostics and a regression test have been added; the follow-up run is pending/in progress. C1 remains blocked; no constituent model or strategy result exists.
 
 
-**BUP-01 latest CI note (2026-10-31):** the C1 offline source-audit workflow passed in [run 41180457400](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41180457400). This confirms the offline validator and report handling only; no licensed local weight archive or historical IWF was present. The new Dhan equity preflight is staged but no execution is yet visible. A separate shared authentication correction is in [draft PR #28](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/28). C1 remains blocked on exact weights, current membership after 2025-09-30 and verified stock 1-minute coverage.
+## 2026-10-31 — Dhan authentication succeeded; constituent coverage partially verified
 
-## BUP-01 constituent weekly-expiry research — latest phase status (2026-10-31)
-
-The active research phase is [phase/constituent-weekly-outcomes-c1-data](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c1-data). C0 governance is PASS. C1 remains **BLOCKED**; no bottom-up stock panel, constituent model, index forecast or trading strategy has been validated.
-
-- [C1 status and gates](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md)
-- [C1 source register](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/DATA_SOURCE_REGISTER.md)
-- [C1 source feasibility](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_SOURCE_FEASIBILITY.md)
-- [C1 error log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/ERROR_LOG.md)
-
-Latest Dhan preflight [run 41181948126](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181948126): 10/10 offline tests passed; live TOTP token endpoint returned HTTP 200 without an accessToken field and profile rejected the fallback token with HTTP 401. No stock-equity price request was reached. The user-held Dhan client ID/PIN/TOTP/token secrets need verification before further data calls. Dhan v2 docs: https://dhanhq.co/docs/v2/authentication/.
-
-The open weight-source sweep found no permissively reusable official historic IWF series. The HF candidate is CC BY-NC-SA 4.0 and not accepted for this trading workflow; other GitHub candidates are binary or best-effort membership reconstructions, not numeric official weights. No stock model training is authorised until C1 data/rights/identity/weight/basket gates pass.
-
-
-## BUP-01 Dhan authentication update — 2026-10-31
-
-- Shared token helper fix (POST, masked ephemeral token, newline validation) and regression tests have been copied to the C1 research branch. The BUP-01 preflight itself already used POST.
-- Verified Actions run [41182555655](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182555655): 10/10 offline tests passed; live token endpoint HTTP 200 returned no access-token field; fallback profile returned HTTP 401. No equity security-master or candle request was reached.
-- Safe provider-error category diagnostics and a regression test have been added; follow-up Actions run is pending/in progress. C1 remains blocked; no constituent prediction or trading strategy is claimed.
+- Follow-up Actions run [41182679514](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514) completed successfully. The fresh TOTP request returned a valid access token; the profile authenticated (HTTP 200); the Data API plan is active; all 5/5 current scrip-master probe symbols resolved.
+- Historical daily probe passed with 22 bars for 2018-01-01 to 2018-02-01. Historical one-minute probes passed for all 5 symbols on 2022-10-31 (374 bars each, including the 10:00 anchor and 15:25–15:29 close window).
+- Recent-session probe on 2026-10-30 returned 359 bars per symbol and 10:00 anchors, but no 15:25–15:29 bars; targeted close-window requests returned empty arrays (0/5). Overall status remains PARTIAL_OR_BLOCKED; do not treat the recent session as complete.
+- Offline Dhan tests: 11 passed. No credentials, token values, raw bars, prices or security IDs were stored.
+- A one-date follow-up probe for 2026-10-29 has been committed and its Actions run is pending/in progress; this will distinguish a date-specific gap from a recent-history limitation. C1 remains blocked pending point-in-time weights, current membership, identifier/corporate-action history and full coverage validation.
 
 
 ## 2026-10-31 — Follow-up date probe inconclusive; Dhan workflow hardened
@@ -273,9 +258,6 @@ The open weight-source sweep found no permissively reusable official historic IW
 - Hardened workflow so pull-request checks run offline tests only, Dhan calls are serialized, and editing the workflow file alone does not consume another TOTP token. Offline tests passed 11/11 on the last live preflight.
 - Dhan official guidance states access tokens are valid for 24 hours, API-key/secret authentication is the intended automation route, and at most five active tokens may be retained simultaneously. Avoid repeated token-generation loops. Sources: https://dhanhq.co/docs/v2/authentication/ and https://dhan.co/support/platforms/dhanhq-api/how-many-access-tokens-can-i-generate-for-my-dhan-account/.
 - C1 remains BLOCKED: recent-session close coverage and point-in-time index data/rights gates remain unresolved. No constituent model or trading result exists.
-
-
-- **BUP-01 constituent research detail:** [C1 status and Dhan preflight report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md) · [sanitised Dhan preflight JSON](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_DHAN_PREFLIGHT.json) · [latest verified successful Dhan run](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514).
 
 ## BUP-01 constituent-level weekly expiry research
 
@@ -288,3 +270,15 @@ The open weight-source sweep found no permissively reusable official historic IW
 - [BUP-01 visible conversation log](logs/CONVERSATION_LOG.md)
 
 Official methodology requires free-float IWF and specified strategic-holding exclusions. NSE website terms restrict automated collection and reuse, so automated website scraping remains disabled pending permission/licence confirmation. Dhan intraday documentation covers active instruments only; inactive/delisted coverage still requires proof. No additional Dhan token refresh was attempted during this update.
+
+## BUP-01 constituent-level weekly expiry research — membership audit update (2026-10-31)
+
+**Membership sub-gate:** PASS WITH LIMITATIONS. **Overall C1:** BLOCKED. No bottom-up model or trading strategy is authorised yet.
+
+- [Point-in-time NIFTY 50 membership intervals (CC BY 4.0)](data/constituent_weekly/nifty50_membership_intervals.csv)
+- [Membership data provenance and attribution](research/constituent_weekly/MEMBERSHIP_DATA_PROVENANCE.md)
+- [Machine-readable membership audit](research/constituent_weekly/C1_MEMBERSHIP_AUDIT.json)
+- [Membership integrity regression tests](tests/test_bup01_membership_intervals.py)
+- [Automatic/manual GitHub Actions workflow](.github/workflows/bup01-c1-membership-tests.yml)
+
+The 84-row project subset validates 50 unique members on 103/103 month-end dates from April 2018 through October 2026. The September 2026 official WIPRO-to-BSE reconstitution is applied. The source contains no numerical weights. Exact historical free-float IWF, legacy ISIN/security identity, corporate actions and full constituent intraday/expiry-close coverage remain open; Phase C2 stays gated. The membership workflow uses offline tests only and makes no market-data or authentication calls.
