@@ -261,3 +261,11 @@
 - **Observed:** BKKB20/nse-index-history labels its current-members file as March 2026. Compared with the September 2026 NIFTY50 sample, the candidate has WIPRO only and the later report has BSE only.
 - **Correction:** Reject that CSV as an authoritative current universe or historic point-in-time master. Retain only as a third-party candidate after full circular/effective-date/ISIN audit.
 - **Impact:** Confirms a membership-source quality gate; no historical labels or model training used it.
+
+
+## E0022 — 2026-10-31 — C1 offline Actions checkout ref escaped
+- **Run:** [41178553686](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41178553686), run #28.
+- **Observed:** `actions/checkout` received a literal leading backslash in the branch ref and failed with `fatal: invalid refspec`. Offline tests and audit steps were skipped; no empirical data result was produced.
+- **Correction:** Rewrote the workflow YAML with a plain `${{ github.head_ref || github.ref_name }}` expression and removed the unwanted escape. Later tightened validation to `contents: read`, removed raw artifact upload and writeback, and made the workflow publish only a compact job summary.
+- **Follow-up:** [41178676032](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41178676032) was reported as `action_required` with no job steps, so the corrected offline tests are not yet verified by Actions.
+- **Status:** Workflow wiring corrected in source; CI execution remains unverified. C1 still rights/data blocked. No stock panel/model/results were affected.
