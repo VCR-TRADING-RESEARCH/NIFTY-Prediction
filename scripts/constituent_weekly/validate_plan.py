@@ -43,8 +43,10 @@ def validate() -> list[str]:
         if "Plan version:** 1.0" not in plan:
             errors.append("Plan version 1.0 registration marker missing")
         for phase in REQUIRED_PHASES:
-            if f"Phase {phase}" not in plan:
+            if f"| {phase} —" not in plan:
                 errors.append(f"Missing phase definition: {phase}")
+        if "Pre-registered hypotheses" not in plan:
+            errors.append("Pre-registered hypotheses section missing")
         for token in ("98%", "104", "20261031", "Paytm Money", "free-float"):
             if token not in plan:
                 errors.append(f"Missing mandatory protocol item: {token}")
