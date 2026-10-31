@@ -6,7 +6,6 @@ import hashlib
 import io
 import json
 import re
-import sys
 import zipfile
 from datetime import datetime, timezone
 from html.parser import HTMLParser
@@ -26,7 +25,7 @@ FAMILIES = {
         "indices_data",
     ),
 }
-MONTH_RE = re.compile(r"mcwb_([a-z]{3})(\\d{2})\\.zip$", re.IGNORECASE)
+MONTH_RE = re.compile(r"mcwb_([a-z]{3})(\d{2})\.zip$", re.IGNORECASE)
 
 
 class AnchorCollector(HTMLParser):
@@ -127,13 +126,19 @@ def fetch_bytes(url: str, timeout: int) -> bytes:
         data = response.read()
         if response.status < 200 or response.status >= 300:
             raise RuntimeError(f"HTTP status {response.status}")
-        if not data.startswith(b"PK\\x03\\x04"):
+        if not data.startswith(b"PK\x03\x04"):
             raise RuntimeError("Response is not a ZIP payload")
         return data
 
 
+def fetch_page(url: str, timeout: int) -> str:
+    request = Request(url, headers={"User-Agent": "NIFTY-Prediction-BUP-01-Research/1.0"})
+    with urlopen(request, timeout=timeout) as response:
+        return response.read().decode("utf-8", errors="replace")
+
+
 def month_from_filename(url: str) -> str | None:
-    match = MONTH_RE.search(url.split("/")[-1])
+    match = MONTH_RE.search(url.split("/")[-1].split("?")[0])
     if not match:
         return None
     month = match.group(1).lower()
@@ -197,7 +202,7 @@ def main() -> int:
         manifest["page_error_type"] = type(exc).__name__
         manifest["page_error"] = str(exc)[:300]
 
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\\n", encoding="utf-8")
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
     lines = [
         "# C1 Official Weight Report Retrieval",
@@ -231,17 +236,11 @@ def main() -> int:
         "C1 remains BLOCKED until historical monthly reports are collected, schemas and publication timestamps are confirmed, numeric weights are validated, and point-in-time membership/price reconstruction passes the registered checks.",
         "",
     ])
-    report_path.write_text("\\n".join(lines), encoding="utf-8")
+    report_path.write_text("\n".join(lines), encoding="utf-8")
     print(f"Official weight report audit status: {manifest['status']}")
     print(f"Manifest: {manifest_path}")
     print(f"Report: {report_path}")
     return 0
-
-
-def fetch_page(url: str, timeout: int) -> str:
-    request = Request(url, headers={"User-Agent": "NIFTY-Prediction-BUP-01-Research/1.0"})
-    with urlopen(request, timeout=timeout) as response:
-        return response.read().decode("utf-8", errors="replace")
 
 
 if __name__ == "__main__":
