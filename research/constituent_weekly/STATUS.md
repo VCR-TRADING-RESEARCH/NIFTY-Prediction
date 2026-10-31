@@ -35,7 +35,7 @@ No model training until point-in-time membership, numeric free-float weights, se
 - Automated Actions commit: [746d1b3](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/746d1b382e338e760b1cf4b3ee5ea6fa6b63bc85).
 - Validation artifact: C0_VALIDATION_REPORT.md — PASS.
 - Scope: structural governance validation and the BUP-01 plan regression tests only.
-- C1 remains PENDING: no stock data, historical weights, constituent membership or index reconstruction has yet passed an empirical audit.
+- C1 remains IN PROGRESS / RIGHTS-BLOCKED: the one-time September 2026 CSV passed only a structural check; no licensed historic weights, certified membership history, constituent stock data or basket reconstruction has passed empirical validation.
 
 
 ## C1 source-audit work started
