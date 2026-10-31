@@ -47,12 +47,13 @@ No model training until point-in-time membership, numeric free-float weights, se
 - NSE Indices Terms of Use were reviewed; automated collection without express written consent and redistribution/copying without prior written permission are restricted. Issue #27 requests deletion of the earlier raw Actions artifact and associated cache if possible.
 
 <!-- C1_FETCH_STATUS_START -->
-## Latest automated C1 source-fetch result
+## Latest automated C1 offline-source audit
 
-- Recorded at (UTC): 2026-10-31T06:57:24.005861+00:00
-- Official report retrieval status: NO_AUTHORISED_ARCHIVE
-- This result is source-fetch/inventory only; it is not a historical weight, membership, or trading-data validation.
-- C1 acceptance: NOT PASSED; historical reports, point-in-time availability, membership and basket reconciliation remain required.
+- Recorded at (UTC): 2026-10-31T06:57:40.274926+00:00
+- Audit status: NO_AUTHORISED_ARCHIVE
+- Network collection performed: False
+- This is file-integrity/schema evidence only; it is not point-in-time membership, source permission, weight validity or trading-data validation.
+- C1 acceptance: NOT PASSED until licensed/authorised point-in-time weights, membership, identifiers, corporate actions, equity bar coverage and basket reconciliation pass.
 <!-- C1_FETCH_STATUS_END -->
 
 ## C1 decision update — 2026-10-31

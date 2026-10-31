@@ -1,6 +1,6 @@
 {
   "audit_type": "OFFLINE_ARCHIVE_INVENTORY",
-  "retrieved_at_utc": "2026-10-31T06:57:23.960314+00:00",
+  "retrieved_at_utc": "2026-10-31T06:57:40.236730+00:00",
   "input_directory": "data/authorized/constituent_weekly",
   "network_access_performed": false,
   "status": "NO_AUTHORISED_ARCHIVE",
