@@ -221,7 +221,7 @@ The licensed CC BY 4.0 NIFTY 50 interval subset is now cached at [data/derived/c
 
 - [Offline authorised-source audit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181684637): SUCCESS; no authorised local official-weight archive was present.
 - [Dhan equity preflight](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181684573): workflow SUCCESS and offline tests 9/9 PASS, but live Dhan profile authentication returned HTTP 401. No equity security IDs, 2018 daily bars or 1-minute stock bars were tested.
-- [Dhan token-refresh PR #28](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/28): mocked regression and integration Actions checks passed; PR remains draft/open, so the main scheduled helper is not yet updated.
+- [Dhan token-refresh PR #28](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/28): mocked regression and integration Actions checks passed; PR #28 is ready for review with passing checks, but GitHub reports merge conflicts (`dirty`); it remains open/unmerged, so the main scheduled helper is not yet updated.
 - C1 remains **BLOCKED** on Dhan profile/data entitlement, authorised point-in-time numerical free-float weights, post-2025-09 membership, security identity/corporate actions and basket reconciliation. No stock panel/model/forecast exists.
 - Detailed gate record: [BUP-01 STATUS](research/constituent_weekly/STATUS.md), [C1 source feasibility](research/constituent_weekly/C1_SOURCE_FEASIBILITY.md), [data source register](research/constituent_weekly/DATA_SOURCE_REGISTER.md), [error log](logs/ERROR_LOG.md).
 
