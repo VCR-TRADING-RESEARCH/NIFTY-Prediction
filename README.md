@@ -231,3 +231,5 @@ The licensed CC BY 4.0 NIFTY 50 interval subset is now cached at [data/derived/c
 - The profile request now matches Dhan's documented header shape (access-token only). No stock equity endpoint was reached and no bars were collected.
 - **Actionable blocker:** verify the Dhan client ID, six-digit PIN, TOTP secret/TOTP enablement, and fallback token in organisation secrets. Dhan token validity is 24 hours and Data APIs require an active plan. See [Dhan authentication docs](https://dhanhq.co/docs/v2/authentication/).
 - C1 remains BLOCKED on authentication, authorised point-in-time numeric free-float weights, current membership, corporate-action/security identity history and basket reconciliation. No constituent model/forecast exists.
+
+- Additional public-source sweep: no permissively reusable official historical IWF series found. The HF 2008–2025 weights candidate is CC BY-NC-SA 4.0 and documents static/extrapolated intervals; GitHub alternatives are binary membership or best-effort reconstructions. See [C1 data-source register](research/constituent_weekly/DATA_SOURCE_REGISTER.md).
