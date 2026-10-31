@@ -9,20 +9,6 @@
   "token_refresh_status": "SUCCESS",
   "profile_status": "HTTP_200",
   "data_plan_active": true,
-  "token_refresh_diagnostics": {
-    "http_status": 200,
-    "response_keys": [
-      "accessToken",
-      "dhanClientId",
-      "dhanClientName",
-      "dhanClientUcc",
-      "expiryTime",
-      "givenPowerOfAttorney"
-    ],
-    "access_token_field_type": "str",
-    "access_token_length": 304,
-    "token_container": "top_level"
-  },
   "resolved_probe_symbol_count": 5,
   "missing_probe_symbol_count": 0,
   "daily_history_probe": {
@@ -33,12 +19,34 @@
       "2018-02-01"
     ]
   },
-  "intraday_probe_passed": 5,
-  "intraday_probe_expected": 10,
-  "historical_intraday_windows": "5/5 PASS (2022-10-31; 374 bars each; 10:00 and 15:25-15:29 windows present)",
-  "recent_intraday_windows": "0/5 PASS (2026-10-30; 10:00 anchors present but 15:25-15:29 close windows absent)",
-  "targeted_expiry_close_passed": 0,
-  "targeted_expiry_close_expected": 5,
-  "targeted_expiry_close_status": "EMPTY_OR_MISMATCHED_ARRAYS",
-  "note": "Token generation, profile authentication, active data plan, current security-master mapping, one historical daily range and historical intraday bars are verified. Current-session expiry-close coverage is not verified. No raw bars, prices, security IDs, credentials or tokens are stored."
+  "historical_intraday": {
+    "date": "2022-10-31",
+    "passed": 5,
+    "expected": 5,
+    "bars_per_symbol": 374,
+    "anchor_window": "10:00–10:03",
+    "expiry_close_window": "15:25–15:29",
+    "status": "PASS"
+  },
+  "recent_intraday": {
+    "date": "2026-10-30",
+    "passed": 0,
+    "expected": 5,
+    "bars_per_symbol": 359,
+    "anchor_window": "present",
+    "expiry_close_window": "absent",
+    "targeted_close_requests": "EMPTY_OR_MISMATCHED_ARRAYS",
+    "status": "PARTIAL"
+  },
+  "follow_up_probe": {
+    "date": "2026-10-29",
+    "status": "INCONCLUSIVE_AUTH_RETRY_FAILED",
+    "actions_run": "41182764467",
+    "details": "TOTP endpoint returned HTTP 200 without accessToken; fallback profile returned HTTP 401. No price requests were made."
+  },
+  "offline_tests": {
+    "passed": 11,
+    "failed": 0
+  },
+  "note": "One fresh TOTP token was successfully generated and authenticated. Data API plan active. Current scrip master and historical data verified for probes only. No raw bars, prices, security IDs, credentials or tokens stored. C1 is not passed."
 }
