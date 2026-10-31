@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 import pyotp
 import requests
+import time
 
 from live_api.app import MASTER_URL, PublicPredictionError
 OUTPUT = ROOT / "research" / "constituent_weekly" / "C1_DHAN_PREFLIGHT.json"
@@ -476,6 +477,36 @@ def main() -> int:
         result["ninety_day_range_probe_expected"] = len(range_probe_symbols)
         result["ninety_day_range_probe_passed"] = sum(item.get("status") == "PASS" for item in range_results)
 
+        # Full point-in-time 50-name basket over one recent <=90-day range.
+        full_range_dates = ("2026-06-29", "2026-09-26")
+        full_range_symbols, _ = membership_symbol_sets(full_range_dates[0])
+        full_range_ids = resolve_ids(master, full_range_symbols)
+        full_range_results = []
+        for symbol in full_range_symbols:
+            security_id = full_range_ids.get(symbol)
+            if not security_id:
+                full_range_results.append({
+                    "symbol": symbol, "from_date": full_range_dates[0],
+                    "to_date": full_range_dates[1], "status": "MISSING_SECURITY_ID",
+                })
+                continue
+            full_range_results.append(
+                request_intraday_range(
+                    headers, symbol, security_id, full_range_dates[0], full_range_dates[1]
+                )
+            )
+            # Stay comfortably below the published per-second API request limit.
+            time.sleep(0.25)
+        result["full_universe_90d_range_date"] = {
+            "from": full_range_dates[0], "to": full_range_dates[1]
+        }
+        result["full_universe_90d_range_expected"] = len(full_range_symbols)
+        result["full_universe_90d_range_resolved"] = len(full_range_ids)
+        result["full_universe_90d_range_passed"] = sum(
+            item.get("status") == "PASS" for item in full_range_results
+        )
+        result["full_universe_90d_range_probe"] = full_range_results
+
         if "RELIANCE" in probe_ids:
             daily = requests.post(
                 DAILY_URL,
@@ -564,7 +595,10 @@ def main() -> int:
         range_expected = result.get("ninety_day_range_probe_expected", 0)
         range_passed = result.get("ninety_day_range_probe_passed", 0)
         range_complete = range_expected > 0 and range_passed == range_expected
-        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected and full_complete and range_complete else "PARTIAL_OR_BLOCKED"
+        full_range_expected = result.get("full_universe_90d_range_expected", 0)
+        full_range_passed = result.get("full_universe_90d_range_passed", 0)
+        full_range_complete = full_range_expected == 50 and full_range_passed == 50 and result.get("full_universe_90d_range_resolved", 0) == 50
+        result["status"] = "PASS_ACTIVE_EQUITIES" if passed == expected and full_complete and range_complete and full_range_complete else "PARTIAL_OR_BLOCKED"
         result["note"] = "Five-symbol/two-date data probe only. The final available candle by the 15:15 IST cutoff is accepted as the expiry proxy; this does not establish full-universe coverage, inactive-security history or official index weights."
     except PublicPredictionError as exc:
         result["status"] = "BLOCKED_DHAN_AUTH"
@@ -591,6 +625,7 @@ def main() -> int:
     print(f"Expiry-proxy cutoff: {result.get('expiry_proxy_cutoff_ist', 'NOT_SET')}")
     print(f"Full point-in-time NIFTY 50 probe: {result.get('full_universe_probe_passed', 0)}/{result.get('full_universe_probe_expected', 0)} passed; resolved={result.get('full_universe_probe_resolved', 0)}; date={result.get('full_universe_probe_date', 'NOT_RUN')}")
     print(f"90-day range probe: {result.get('ninety_day_range_probe_passed', 0)}/{result.get('ninety_day_range_probe_expected', 0)} passed")
+    print(f"Full-universe 90-day range probe: {result.get('full_universe_90d_range_passed', 0)}/{result.get('full_universe_90d_range_expected', 0)} passed; resolved={result.get('full_universe_90d_range_resolved', 0)}")
     for probe in result.get("intraday_probe", []):
         print("PROBE", probe.get("symbol"), probe.get("date"), probe.get("status"),
               "bars=", probe.get("bar_count", 0),

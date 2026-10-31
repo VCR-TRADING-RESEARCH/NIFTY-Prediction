@@ -303,6 +303,42 @@ def test_analyse_intraday_range_fails_when_a_session_has_no_expiry_proxy():
     assert result["missing_expiry_proxy_sessions"] == 1
 
 
+
+def test_request_intraday_range_sends_a_90_day_window_and_returns_no_prices(monkeypatch):
+    import scripts.constituent_weekly.dhan_equity_preflight as probe
+
+    captured = {}
+
+    class Response:
+        ok = True
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return {
+                "open": [100.0, 100.5],
+                "high": [101.0, 101.5],
+                "low": [99.0, 99.5],
+                "close": [100.5, 101.0],
+                "volume": [100, 120],
+                "timestamp": [epoch_ist("2022-10-03T10:00:00"), epoch_ist("2022-10-03T15:14:00")],
+            }
+
+    def fake_post(url, *, headers, json, timeout):
+        captured.update(url=url, headers=headers, body=json, timeout=timeout)
+        return Response()
+
+    monkeypatch.setattr(probe.requests, "post", fake_post)
+    result = probe.request_intraday_range(
+        {"access-token": "secret"}, "RELIANCE", "1333", "2022-10-03", "2022-12-30"
+    )
+    assert result["status"] == "PASS"
+    assert captured["body"]["fromDate"] == "2022-10-03 09:15:00"
+    assert captured["body"]["toDate"] == "2022-12-30 15:15:00"
+    assert "close" not in result
+    assert "secret" not in str(result)
+
+
 def test_profile_request_uses_documented_access_token_header_only(monkeypatch):
     import scripts.constituent_weekly.dhan_equity_preflight as probe
 
