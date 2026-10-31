@@ -21,7 +21,7 @@ PROFILE_URL = "https://api.dhan.co/v2/profile"
 INTRADAY_URL = "https://api.dhan.co/v2/charts/intraday"
 DAILY_URL = "https://api.dhan.co/v2/charts/historical"
 PROBE_SYMBOLS = ("RELIANCE", "TCS", "INFY", "HDFCBANK", "WIPRO")
-PROBE_DATES = ("2022-10-31", "2026-10-30")
+PROBE_DATES = ("2022-10-31", "2026-10-29")
 # Current scrip-master probes do not prove history for removed/delisted security IDs.
 IST = "Asia/Kolkata"
 
@@ -318,7 +318,7 @@ def main() -> int:
                 result["intraday_probe"].append(analyse_bars(body, symbol, day))
 
                 # Dhan's large day response may be truncated; probe only the final 10-minute window separately.
-                if day == "2026-10-30":
+                if day == "2026-10-29":
                     close_response = requests.post(
                         INTRADAY_URL,
                         headers=headers,
