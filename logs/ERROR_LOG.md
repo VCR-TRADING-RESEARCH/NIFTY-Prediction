@@ -276,3 +276,10 @@
 - **Observed:** The dataset has no numeric historic NIFTY50 weights. Its related shareholding file contains broad promoter/FII/DII/public/non-inst roll-ups, not the complete strategic-holding categories needed to derive IWF.
 - **Correction/guardrail:** Store the membership as a confidence-coded candidate only; no current member extrapolation, no equal-weight substitution, and no IWF = 100% - promoter formula. C1 remains blocked pending exact weights and security/membership updates.
 - **Impact:** No stock panel/model has been built; the plan's C1 gate prevents confirmatory modeling on this data alone.
+
+
+## E0025 — 2026-10-31 — C1 offline workflow failure resolved; Dhan preflight remains unverified
+- **Earlier issue:** E0022 described the escaped branch-ref checkout failure and a follow-up action_required run.
+- **Resolution evidence:** Offline source-audit workflow run [41180457400](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41180457400) completed successfully. Checkout, the offline tests, archive inspection, status updater and summary steps all passed.
+- **Scope:** No authorised local archive was present, so the result is a validator/workflow pass only. No historical membership, official weights or stock bars were validated by this run.
+- **Outstanding:** Dhan equity preflight workflow is staged, but no execution is visible. C1 remains blocked on numeric IWF, current point-in-time members after 2025-09-30 and constituent 1-minute coverage.
