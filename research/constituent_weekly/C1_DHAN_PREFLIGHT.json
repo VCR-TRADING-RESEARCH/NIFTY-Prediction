@@ -1,26 +1,248 @@
 {
   "track": "BUP-01",
-  "created_at_utc": "2026-10-31T17:19:41.448239+00:00",
-  "status": "BLOCKED_PROFILE_HTTP_401",
+  "created_at_utc": "2026-10-31T17:21:05.066434+00:00",
+  "status": "PARTIAL_OR_BLOCKED",
   "credentials_or_tokens_recorded": false,
   "raw_market_bars_saved": false,
-  "daily_history_probe": {},
-  "intraday_probe": [],
-  "targeted_expiry_close_probe": [],
-  "auth_method": "provided_token_fallback",
-  "token_refresh_status": "FAILED_FALLBACK_USED",
+  "daily_history_probe": {
+    "status": "PASS",
+    "bar_count": 22,
+    "date_range_requested": [
+      "2018-01-01",
+      "2018-02-01"
+    ],
+    "old_daily_history_available": true
+  },
+  "intraday_probe": [
+    {
+      "symbol": "RELIANCE",
+      "date": "2022-10-31",
+      "status": "PASS",
+      "bar_count": 374,
+      "anchor_window_bars": 4,
+      "expiry_close_window_bars": 5,
+      "first_bar_ist": "2022-10-31T09:16:00+05:30",
+      "last_bar_ist": "2022-10-31T15:29:00+05:30",
+      "ohlc_volume_invariants_pass": true
+    },
+    {
+      "symbol": "RELIANCE",
+      "date": "2026-10-29",
+      "status": "REQUIRED_BAR_OR_OHLC_CHECK_FAILED",
+      "bar_count": 359,
+      "anchor_window_bars": 4,
+      "expiry_close_window_bars": 0,
+      "first_bar_ist": "2026-10-29T09:16:00+05:30",
+      "last_bar_ist": "2026-10-29T15:14:00+05:30",
+      "ohlc_volume_invariants_pass": true
+    },
+    {
+      "symbol": "TCS",
+      "date": "2022-10-31",
+      "status": "PASS",
+      "bar_count": 374,
+      "anchor_window_bars": 4,
+      "expiry_close_window_bars": 5,
+      "first_bar_ist": "2022-10-31T09:16:00+05:30",
+      "last_bar_ist": "2022-10-31T15:29:00+05:30",
+      "ohlc_volume_invariants_pass": true
+    },
+    {
+      "symbol": "TCS",
+      "date": "2026-10-29",
+      "status": "REQUIRED_BAR_OR_OHLC_CHECK_FAILED",
+      "bar_count": 359,
+      "anchor_window_bars": 4,
+      "expiry_close_window_bars": 0,
+      "first_bar_ist": "2026-10-29T09:16:00+05:30",
+      "last_bar_ist": "2026-10-29T15:14:00+05:30",
+      "ohlc_volume_invariants_pass": true
+    },
+    {
+      "symbol": "INFY",
+      "date": "2022-10-31",
+      "status": "PASS",
+      "bar_count": 374,
+      "anchor_window_bars": 4,
+      "expiry_close_window_bars": 5,
+      "first_bar_ist": "2022-10-31T09:16:00+05:30",
+      "last_bar_ist": "2022-10-31T15:29:00+05:30",
+      "ohlc_volume_invariants_pass": true
+    },
+    {
+      "symbol": "INFY",
+      "date": "2026-10-29",
+      "status": "REQUIRED_BAR_OR_OHLC_CHECK_FAILED",
+      "bar_count": 359,
+      "anchor_window_bars": 4,
+      "expiry_close_window_bars": 0,
+      "first_bar_ist": "2026-10-29T09:16:00+05:30",
+      "last_bar_ist": "2026-10-29T15:14:00+05:30",
+      "ohlc_volume_invariants_pass": true
+    },
+    {
+      "symbol": "HDFCBANK",
+      "date": "2022-10-31",
+      "status": "PASS",
+      "bar_count": 374,
+      "anchor_window_bars": 4,
+      "expiry_close_window_bars": 5,
+      "first_bar_ist": "2022-10-31T09:16:00+05:30",
+      "last_bar_ist": "2022-10-31T15:29:00+05:30",
+      "ohlc_volume_invariants_pass": true
+    },
+    {
+      "symbol": "HDFCBANK",
+      "date": "2026-10-29",
+      "status": "REQUIRED_BAR_OR_OHLC_CHECK_FAILED",
+      "bar_count": 359,
+      "anchor_window_bars": 4,
+      "expiry_close_window_bars": 0,
+      "first_bar_ist": "2026-10-29T09:16:00+05:30",
+      "last_bar_ist": "2026-10-29T15:14:00+05:30",
+      "ohlc_volume_invariants_pass": true
+    },
+    {
+      "symbol": "WIPRO",
+      "date": "2022-10-31",
+      "status": "PASS",
+      "bar_count": 374,
+      "anchor_window_bars": 4,
+      "expiry_close_window_bars": 5,
+      "first_bar_ist": "2022-10-31T09:16:00+05:30",
+      "last_bar_ist": "2022-10-31T15:29:00+05:30",
+      "ohlc_volume_invariants_pass": true
+    },
+    {
+      "symbol": "WIPRO",
+      "date": "2026-10-29",
+      "status": "REQUIRED_BAR_OR_OHLC_CHECK_FAILED",
+      "bar_count": 359,
+      "anchor_window_bars": 4,
+      "expiry_close_window_bars": 0,
+      "first_bar_ist": "2026-10-29T09:16:00+05:30",
+      "last_bar_ist": "2026-10-29T15:14:00+05:30",
+      "ohlc_volume_invariants_pass": true
+    }
+  ],
+  "targeted_expiry_close_probe": [
+    {
+      "symbol": "RELIANCE",
+      "date": "2026-10-29",
+      "status": "EMPTY_OR_MISMATCHED_ARRAYS",
+      "array_lengths": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "timestamp": 0
+      },
+      "probe_type": "targeted_expiry_close"
+    },
+    {
+      "symbol": "TCS",
+      "date": "2026-10-29",
+      "status": "EMPTY_OR_MISMATCHED_ARRAYS",
+      "array_lengths": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "timestamp": 0
+      },
+      "probe_type": "targeted_expiry_close"
+    },
+    {
+      "symbol": "INFY",
+      "date": "2026-10-29",
+      "status": "EMPTY_OR_MISMATCHED_ARRAYS",
+      "array_lengths": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "timestamp": 0
+      },
+      "probe_type": "targeted_expiry_close"
+    },
+    {
+      "symbol": "HDFCBANK",
+      "date": "2026-10-29",
+      "status": "EMPTY_OR_MISMATCHED_ARRAYS",
+      "array_lengths": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "timestamp": 0
+      },
+      "probe_type": "targeted_expiry_close"
+    },
+    {
+      "symbol": "WIPRO",
+      "date": "2026-10-29",
+      "status": "EMPTY_OR_MISMATCHED_ARRAYS",
+      "array_lengths": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "timestamp": 0
+      },
+      "probe_type": "targeted_expiry_close"
+    }
+  ],
+  "auth_method": "totp_refresh",
+  "token_refresh_status": "SUCCESS",
   "token_refresh_diagnostics": {
     "body_type": "dict",
     "response_keys": [
-      "message",
-      "status"
+      "accessToken",
+      "dhanClientId",
+      "dhanClientName",
+      "dhanClientUcc",
+      "expiryTime",
+      "givenPowerOfAttorney"
     ],
     "data_keys": [],
     "provider_error_category": "UNCLASSIFIED_PROVIDER_RESPONSE",
-    "access_token_field_type": "missing",
-    "access_token_length": 0,
-    "token_container": null,
-    "http_status": 200,
-    "fallback_available": true
-  }
+    "access_token_field_type": "str",
+    "access_token_length": 304,
+    "token_container": "top_level",
+    "http_status": 200
+  },
+  "data_plan_active": true,
+  "membership_as_of_date_ist": "2026-10-31",
+  "current_universe_symbol_count": 50,
+  "current_universe_resolved_count": 50,
+  "current_universe_missing_symbols": [],
+  "historical_membership_symbol_count": 84,
+  "historical_membership_symbols_found_in_current_master_count": 79,
+  "historical_membership_symbols_missing_from_current_master": [
+    "HDFC",
+    "JPASSOCIAT",
+    "MCDOWELL-N",
+    "RANBAXY",
+    "TATAMOTORS"
+  ],
+  "security_master_scope_note": "Current scrip-master lookup only; does not prove historical security-ID validity for inactive/delisted instruments.",
+  "resolved_probe_symbols": [
+    "HDFCBANK",
+    "INFY",
+    "RELIANCE",
+    "TCS",
+    "WIPRO"
+  ],
+  "missing_probe_symbols": [],
+  "intraday_probe_passed": 5,
+  "intraday_probe_expected": 10,
+  "targeted_expiry_close_passed": 0,
+  "targeted_expiry_close_expected": 5,
+  "note": "This tests only five current master symbols on two dates; it does not establish history for delisted/inactive securities or index membership/weights.",
+  "finished_at_utc": "2026-10-31T17:21:14.429027+00:00"
 }

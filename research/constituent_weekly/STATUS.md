@@ -101,18 +101,18 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_DHAN_STATUS_START -->
 ## Latest Dhan equity preflight
 
-- Recorded at (UTC): 2026-10-31T17:19:42.798231+00:00
-- Dhan auth method/status: provided_token_fallback / FAILED_FALLBACK_USED
+- Recorded at (UTC): 2026-10-31T17:21:14.429027+00:00
+- Dhan auth method/status: totp_refresh / SUCCESS
 - Profile HTTP status: NOT_RECORDED
-- Status: BLOCKED_PROFILE_HTTP_401
-- Data plan active: None
-- Current universe security IDs resolved: NOT_RUN/NOT_RUN
-- Historical membership symbols found in current scrip master: NOT_RUN/NOT_RUN
-- Five-symbol price probe IDs resolved: 0
+- Status: PARTIAL_OR_BLOCKED
+- Data plan active: True
+- Current universe security IDs resolved: 50/50
+- Historical membership symbols found in current scrip master: 79/84
+- Five-symbol price probe IDs resolved: 5
 - Missing symbols from current scrip master: 0
-- One-minute probe windows passing: 0/0
-- Targeted 2026 expiry-close windows passing: 0/0
-- Deep daily-history probe: NOT_RUN
+- One-minute probe windows passing: 5/10
+- Targeted 2026 expiry-close windows passing: 0/5
+- Deep daily-history probe: PASS
 - Raw bars, prices, security IDs, credentials and tokens are not stored in this report.
 - This probe does not establish inactive/delisted instrument history, point-in-time membership or index weights.
 <!-- C1_DHAN_STATUS_END -->
