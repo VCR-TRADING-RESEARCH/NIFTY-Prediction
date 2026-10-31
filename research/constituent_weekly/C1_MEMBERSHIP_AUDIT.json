@@ -82,7 +82,21 @@
       "pytest_summary": "4 passed",
       "scope": "Earlier four-test version before the Tata identity/dummy correction; does not validate this updated file."
     },
-    "updated_suite_ci_status": "PENDING"
+    "updated_suite_ci_status": "SUCCESS",
+    "updated_suite_ci_run_id": 41185169548,
+    "updated_suite_pytest_summary": "6 passed in 0.02s",
+    "previous_failed_attempts": [
+      {
+        "run_id": 41184902797,
+        "conclusion": "failure",
+        "cause": "unquoted comma shifted CSV columns; audit JSON was from an earlier intermediate revision"
+      },
+      {
+        "run_id": 41184934278,
+        "conclusion": "failure",
+        "cause": "unquoted comma shifted CSV columns"
+      }
+    ]
   },
   "limitations": [
     "Membership is not numerical free-float weighting; all 86 weightage fields are blank.",
