@@ -1,0 +1,111 @@
+{
+  "source_page": "https://niftyindices.com/reports/monthly-reports",
+  "retrieved_at_utc": "2026-10-31T06:43:24.550320+00:00",
+  "status": "SAMPLE_ARCHIVE_DOWNLOADED",
+  "families": {
+    "nifty50_weights_beta": {
+      "url": "https://niftyindices.com/Market_Capitalisation_Weightage_Beta_for_NIFTY_50_And_NIFTY_Next_50/mcwb_sep26.zip",
+      "status": "DOWNLOADED_AND_INVENTORIED",
+      "filename": "mcwb_sep26.zip",
+      "snapshot_month_hint": "2026-sep",
+      "bytes": 6761,
+      "sha256": "eb6336b8e0c55a0b2cfd1a29d0c79e2b962e091d8d3a3d724e2245320ec0799b",
+      "inventory": {
+        "zip_test_error": null,
+        "file_count": 2,
+        "files": [
+          {
+            "name": "nifty50_mcwb.csv",
+            "bytes": 6447,
+            "extension": ".csv",
+            "header": [
+              "Annexure II-  Nifty 50 Index : September 2026",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ],
+            "data_rows": 67
+          },
+          {
+            "name": "niftynext50_mcwb.csv",
+            "bytes": 6565,
+            "extension": ".csv",
+            "header": [
+              "Annexure II-  Nifty Next 50 Index : September 2026",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ],
+            "data_rows": 67
+          }
+        ]
+      }
+    },
+    "indices_market_cap_weightage": {
+      "url": "https://niftyindices.com/Indices_-_Market_Capitalisation_and_Weightage/indices_dataOct2026.zip",
+      "status": "DOWNLOADED_AND_INVENTORIED",
+      "filename": "indices_dataOct2026.zip",
+      "snapshot_month_hint": null,
+      "bytes": 920200,
+      "sha256": "7f1ba20b04ef45f0e061a00b4a8937145d8e9f8f277891ab20fe935826fe995f",
+      "inventory": {
+        "zip_test_error": null,
+        "file_count": 7,
+        "files": [
+          {
+            "name": "NIFTY_50_Oct2026.pdf",
+            "bytes": 133578,
+            "extension": ".pdf"
+          },
+          {
+            "name": "NIFTY_Bank_Oct2026.pdf",
+            "bytes": 127677,
+            "extension": ".pdf"
+          },
+          {
+            "name": "NIFTY_Financial_Services_Oct2026.pdf",
+            "bytes": 128461,
+            "extension": ".pdf"
+          },
+          {
+            "name": "NIFTY_Midcap_Select_Oct2026.pdf",
+            "bytes": 129192,
+            "extension": ".pdf"
+          },
+          {
+            "name": "NIFTY_IT_Oct2026.pdf",
+            "bytes": 127227,
+            "extension": ".pdf"
+          },
+          {
+            "name": "NIFTY_Next_50_Oct2026.pdf",
+            "bytes": 133643,
+            "extension": ".pdf"
+          },
+          {
+            "name": "NIFTY_India_FPI_150_Oct2026.pdf",
+            "bytes": 150974,
+            "extension": ".pdf"
+          }
+        ]
+      }
+    }
+  },
+  "important_note": "Archive inventory is not proof of point-in-time historic weights or index reconciliation."
+}

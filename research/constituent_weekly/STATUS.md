@@ -45,3 +45,14 @@ No model training until point-in-time membership, numeric free-float weights, se
 - Third-party data: the HF historical weight dataset is restricted to CC-BY-NC-SA non-commercial use and documents extrapolation/static-between-snapshot assumptions; not accepted as primary weights.
 - Membership: the public circular reconstruction is only a candidate. Ticker-only aliases can collapse distinct predecessor/successor securities; ISIN and effective-date reconstruction is required.
 - C1 acceptance remains BLOCKED until raw official archives are parsed, historic weights and membership are validated, stock price coverage is measured, and the realised basket reconciles to NIFTY.
+
+<!-- C1_FETCH_STATUS_START -->
+## Latest automated C1 source-fetch result
+
+- Recorded at (UTC): 2026-10-31T06:43:25.304581+00:00
+- Official report retrieval status: SAMPLE_ARCHIVE_DOWNLOADED
+- This result is source-fetch/inventory only; it is not a historical weight, membership, or trading-data validation.
+- nifty50_weights_beta: DOWNLOADED_AND_INVENTORIED; file=mcwb_sep26.zip; sha256=eb6336b8e0c55a0b2cfd1a29d0c79e2b962e091d8d3a3d724e2245320ec0799b; error=None
+- indices_market_cap_weightage: DOWNLOADED_AND_INVENTORIED; file=indices_dataOct2026.zip; sha256=7f1ba20b04ef45f0e061a00b4a8937145d8e9f8f277891ab20fe935826fe995f; error=None
+- C1 acceptance: NOT PASSED; historical reports, point-in-time availability, membership and basket reconciliation remain required.
+<!-- C1_FETCH_STATUS_END -->
