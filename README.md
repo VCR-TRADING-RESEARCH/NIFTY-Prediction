@@ -293,3 +293,10 @@ The ChatGPT conversation encountered a send/response transport error during a se
 - Overall constituent research gate C1: **BLOCKED** pending licensed exact historical free-float IWF, security identity/ISIN and corporate-action mapping, and complete constituent intraday/expiry-close coverage.
 - C2 model construction remains prohibited until all C1 gates pass. No bottom-up prediction or trading strategy is validated.
 - See [research log](logs/RESEARCH_LOG.md), [error log](logs/ERROR_LOG.md), [conversation log](logs/CONVERSATION_LOG.md), and [BUP-01 status](research/constituent_weekly/STATUS.md).
+
+
+## C1 source audit — recovery continuation (2026-10-31)
+
+The bounded free-source review did not clear the remaining C1 gates. Official NSE Indices historical constituent identifiers, market capitalisation, weights and prices are offered through a licensing/subscription route ([NSE Indices data subscription](https://www.nseindia.com/static/nse-indices/index-data-subscription)). The discovered Hugging Face historical-weight series is CC BY-NC-SA 4.0 and the public GitHub alternative uses equal-weighted/binary approximations; neither is accepted as an exact, rights-cleared trading input. [Dhan's v2 documentation](https://dhanhq.co/docs/v2/historical-data/) describes five-year minute history for active instruments with 90-day request windows, not guaranteed inactive/delisted coverage.
+
+**Decision unchanged:** membership integrity sub-gate PASS WITH LIMITATIONS; overall C1 BLOCKED; C2 remains gated. No bottom-up model or strategy is claimed. See [research log](logs/RESEARCH_LOG.md) and [error log](logs/ERROR_LOG.md).
