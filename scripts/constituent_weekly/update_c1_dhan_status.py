@@ -19,6 +19,9 @@ def main() -> int:
     probes = data.get("intraday_probe", [])
     passed = sum(1 for p in probes if p.get("status") == "PASS")
     expected = data.get("intraday_probe_expected", 0)
+    close_probes = data.get("targeted_expiry_close_probe", [])
+    close_passed = sum(1 for p in close_probes if p.get("status") == "PASS")
+    close_expected = data.get("targeted_expiry_close_expected", len(close_probes))
     lines = [
         START,
         "## Latest Dhan equity preflight",
@@ -29,6 +32,7 @@ def main() -> int:
         f"- Current symbols resolved: {len(data.get('resolved_probe_symbols', []))}",
         f"- Missing symbols from current scrip master: {len(data.get('missing_probe_symbols', []))}",
         f"- One-minute probe windows passing: {passed}/{expected}",
+        f"- Targeted 2026 expiry-close windows passing: {close_passed}/{close_expected}",
         f"- Deep daily-history probe: {data.get('daily_history_probe', {}).get('status', 'NOT_RUN')}",
         "- Raw bars, prices, security IDs, credentials and tokens are not stored in this report.",
         "- This probe does not establish inactive/delisted instrument history, point-in-time membership or index weights.",
