@@ -171,3 +171,13 @@ The revised six-test suite and machine audit are committed. **Post-correction Ac
 - Corrected membership integrity workflow [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548): **SUCCESS; 6 tests passed**.
 - The passing suite checks half-open effective-date intervals, the 2025-10-24 TATAMOTORS/TMPV symbol transition, DUMMYTATAM zero-price placeholder inclusion/removal and its non-tradable flag, corrected 103 month-end cardinality (102×50, 1×51), no fabricated index weights, and machine-audit consistency.
 - This passes the membership-file integrity sub-gate only. It does not certify every upstream membership event, official IWF, ISIN mapping, corporate actions other than those explicitly patched, stock OHLCV coverage or basket/index reconstruction.
+
+
+## Recovery continuation — bounded public-source audit (2026-10-31)
+
+- Verified the membership Actions run 41185169548 as SUCCESS (six tests passed); corrected stale log wording on main.
+- Rechecked official NSE Indices data subscription, NSE free-float methodology page, Dhan v2 historical-data documentation, a CC BY-NC-SA Hugging Face weights dataset and a GitHub approximate-weight dataset.
+- The official exact-weight/identifier data route is licensed/subscription. The Hugging Face dataset is non-commercial; the GitHub dataset explicitly uses equal-weighted/binary approximations. Dhan documents five-year minute history for active instruments and 90-day request windows, not guaranteed inactive/delisted history.
+- No source found in this bounded pass clears rights + exact historical IWF + security/corporate-action identity + full constituent intraday/expiry-close coverage together.
+- **Gate decision unchanged:** membership sub-gate PASS WITH LIMITATIONS; overall C1 BLOCKED; C2 not authorised. Do not fabricate weights, scrape NSE without permission, or fit stock models on an incomplete universe.
+- References: https://www.nseindia.com/static/nse-indices/index-data-subscription ; https://www.nseindia.com/static/products-services/indices-nifty50-index ; https://dhanhq.co/docs/v2/historical-data/ ; https://huggingface.co/datasets/AMP4010/Historical_Nifty_50_Constituent_Weights_20Y ; https://github.com/vishalvx/nifty-indices-datasets.
