@@ -21,7 +21,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: bup01-c1-dhan-${{ github.repository }}
+  group: bup01-c1-dhan-${{ github.repository }}-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
