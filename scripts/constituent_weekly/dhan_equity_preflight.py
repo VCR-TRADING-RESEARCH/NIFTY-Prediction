@@ -28,6 +28,7 @@ PROBE_DATES = ("2022-10-31", "2026-10-29")
 IST = "Asia/Kolkata"
 
 
+# The current scrip master is checked against both the active universe and historical membership aliases.
 def membership_symbol_sets(as_of_date: str) -> tuple[list[str], list[str]]:
     """Return active tradable symbols and all historical tradable aliases from the licensed ledger."""
     frame = pd.read_csv(MEMBERSHIP_CSV, low_memory=False)
