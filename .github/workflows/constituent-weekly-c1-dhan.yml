@@ -10,7 +10,6 @@ on:
       - "scripts/constituent_weekly/dhan_equity_preflight.py"
       - "scripts/constituent_weekly/update_c1_dhan_status.py"
       - "tests/test_constituent_weekly_dhan_preflight.py"
-      - ".github/workflows/constituent-weekly-c1-dhan.yml"
       - "live_api/app.py"
   pull_request:
     branches:
