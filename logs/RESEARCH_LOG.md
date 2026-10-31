@@ -280,3 +280,11 @@
 - User confirmed “Dhan” as the available data route. Updated C1 direction to use the existing Dhan Data API subscription as primary source for constituent price data.
 - Next work is a cache-first, bounded Dhan security-ID and historical coverage inventory for the point-in-time constituent universe, explicitly testing delisted/inactive instruments, forecast-time anchors and expiry-close windows. Authentication calls must be serialized; avoid repeated TOTP refreshes.
 - Clarification preserved: Dhan price access does not prove availability of official historical free-float IWF. We keep exact weights and security/corporate-action mapping as independent gates; C1 remains blocked and C2 remains gated.
+
+## 2026-10-31 — Full-universe Dhan security-master audit code and offline validation
+- Extended scripts/constituent_weekly/dhan_equity_preflight.py to derive active current constituents and all historical tradable aliases from the CC BY 4.0 membership ledger, then resolve them against the current Dhan scrip master without persisting security IDs.
+- Added checks for the 2026-10-31 current universe (50 tradable names; BSE included, WIPRO excluded) and historical aliases (including TATAMOTORS/TMPV); DUMMYTATAM remains excluded from tradable resolution. Current-master presence is explicitly not represented as proof of historic/delisted security-ID coverage.
+- Updated the status renderer to report current-universe and historical-symbol resolution counts separately from the five-symbol price probe.
+- PR validation run [41223379333](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223379333) completed SUCCESS; test log confirms 13 passed in 2.37s. Live Dhan step was skipped by the PR safety guard. No new market-data calls were made.
+- Next live gate: manually dispatch .github/workflows/constituent-weekly-c1-dhan.yml on phase/constituent-weekly-outcomes-c1-data; this is the existing secret-backed workflow and should run only after the code review test passed. Latest successful live probe remains 41182679514 (five symbols only, partial recent expiry-close coverage).
+- Overall C1 remains BLOCKED; no C2 panel/model or trading strategy is authorised.
