@@ -270,3 +270,15 @@ The licensed CC BY 4.0 NIFTY 50 interval subset is now cached at [data/derived/c
 - [BUP-01 visible conversation log](logs/CONVERSATION_LOG.md)
 
 Official methodology requires free-float IWF and specified strategic-holding exclusions. NSE website terms restrict automated collection and reuse, so automated website scraping remains disabled pending permission/licence confirmation. Dhan intraday documentation covers active instruments only; inactive/delisted coverage still requires proof. No additional Dhan token refresh was attempted during this update.
+
+## BUP-01 constituent-level weekly expiry research — membership audit update (2026-10-31)
+
+**Membership sub-gate:** PASS WITH LIMITATIONS. **Overall C1:** BLOCKED. No bottom-up model or trading strategy is authorised yet.
+
+- [Point-in-time NIFTY 50 membership intervals (CC BY 4.0)](data/constituent_weekly/nifty50_membership_intervals.csv)
+- [Membership data provenance and attribution](research/constituent_weekly/MEMBERSHIP_DATA_PROVENANCE.md)
+- [Machine-readable membership audit](research/constituent_weekly/C1_MEMBERSHIP_AUDIT.json)
+- [Membership integrity regression tests](tests/test_bup01_membership_intervals.py)
+- [Automatic/manual GitHub Actions workflow](.github/workflows/bup01-c1-membership-tests.yml)
+
+The 84-row project subset validates 50 unique members on 103/103 month-end dates from April 2018 through October 2026. The September 2026 official WIPRO-to-BSE reconstitution is applied. The source contains no numerical weights. Exact historical free-float IWF, legacy ISIN/security identity, corporate actions and full constituent intraday/expiry-close coverage remain open; Phase C2 stays gated. The membership workflow uses offline tests only and makes no market-data or authentication calls.
