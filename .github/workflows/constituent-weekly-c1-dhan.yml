@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: bup01-c1-dhan-${{ github.ref }}
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
-      contents: read
+      contents: write
     steps:
       - name: Checkout C1 data branch
         uses: actions/checkout@v4
@@ -63,5 +63,15 @@ jobs:
           fi
           if [ -f research/constituent_weekly/STATUS.md ]; then
             echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "The local phase status has been updated; no token, security ID or raw price values are included." >> "$GITHUB_STEP_SUMMARY"
+            echo "The phase status was updated; no token, security ID or raw price values are included." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Commit compact Dhan diagnostics only
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/constituent_weekly/C1_DHAN_PREFLIGHT.json research/constituent_weekly/STATUS.md
+          if ! git diff --cached --quiet; then
+            git commit -m "Record BUP-01 sanitized Dhan equity preflight"
+            git push origin HEAD:${{ github.head_ref || github.ref_name }}
           fi
