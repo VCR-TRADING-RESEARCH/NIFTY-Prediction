@@ -101,18 +101,17 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_DHAN_STATUS_START -->
 ## Latest Dhan equity preflight
 
-- Recorded at (UTC): 2026-10-31T07:59:07Z (Actions run [41182679514](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514))
-- Status: **PARTIAL_OR_BLOCKED** — authentication and historical equity data succeeded; recent-session close coverage remains incomplete.
+- Successful authentication/data probe: Actions run [41182679514](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514).
 - Offline response-validation tests: **11 passed**.
-- TOTP token generation: HTTP 200; a valid access-token field was returned. Token value withheld.
-- Profile: HTTP 200; Data API plan active.
-- Current security master: **5/5** probe symbols resolved.
-- Historical daily history: **PASS**, 22 bars for 2018-01-01 through 2018-02-01.
-- Historical intraday: **5/5 PASS** for 2022-10-31; each returned 374 bars including the 10:00 anchor and 15:25–15:29 close window.
-- Recent intraday: 2026-10-30 returned 359 bars per symbol and 10:00 anchors, but no 15:25–15:29 close bars; targeted close-window requests returned empty arrays (**0/5**).
+- Fresh TOTP token: generated successfully; profile HTTP 200; Data API plan active.
+- Current scrip master: **5/5** probe symbols resolved.
+- Historical daily: **PASS**, 22 bars for 2018-01-01 to 2018-02-01.
+- Historical one-minute: **5/5 PASS** on 2022-10-31; 374 bars per symbol, including the 10:00 anchor and 15:25–15:29 close window.
+- Recent one-minute: 2026-10-30 returned 359 bars per symbol and valid 10:00 anchors, but no 15:25–15:29 bars; targeted close-window requests returned empty arrays (**0/5**).
+- Follow-up 2026-10-29 probe: inconclusive because a subsequent TOTP call returned HTTP 200 without an access-token field; the fallback token failed profile authentication (HTTP 401). No price requests were made in that retry: [run 41182764467](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182764467).
+- Workflow hardened: pull-request checks now run offline tests only; live Dhan authentication is serialized and not triggered by workflow-file-only edits. This avoids needless TOTP requests during code review.
 - No raw bars, prices, security IDs, credentials, tokens or provider message text are stored.
-- Next gate: probe the latest completed trading session (2026-10-29) for complete session and expiry-close windows; verify whether the 2026-10-30 close gap is date-specific or a Dhan recent-history limitation.
-- This does not establish inactive/delisted instrument history, point-in-time membership or index weights.
+- C1 remains **NOT PASSED**: recent close coverage, inactive/delisted security history, point-in-time membership, official numerical free-float weights and basket reconciliation remain open.
 <!-- C1_DHAN_STATUS_END -->
 
 ## C1 resume checkpoint — 2026-10-31
