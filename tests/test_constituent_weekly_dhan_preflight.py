@@ -167,6 +167,7 @@ def test_access_token_helper_retries_once_with_next_totp_window(monkeypatch):
 
 def test_access_token_helper_uses_fallback_only_after_refresh_failure(monkeypatch):
     import scripts.constituent_weekly.dhan_equity_preflight as probe
+    monkeypatch.setattr(probe.time, "sleep", lambda seconds: None)
     from types import SimpleNamespace
 
     monkeypatch.setenv("DHAN_CLIENT_ID", "client")
@@ -196,6 +197,7 @@ def test_access_token_helper_uses_fallback_only_after_refresh_failure(monkeypatc
 def test_access_token_helper_rejects_invalid_fallback_line_breaks(monkeypatch):
     import pytest
     import scripts.constituent_weekly.dhan_equity_preflight as probe
+    monkeypatch.setattr(probe.time, "sleep", lambda seconds: None)
     from types import SimpleNamespace
 
     monkeypatch.setenv("DHAN_CLIENT_ID", "client")

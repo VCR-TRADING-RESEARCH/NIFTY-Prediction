@@ -154,7 +154,7 @@ def acquire_access_token() -> tuple[str, str, str, str, dict]:
                         nested = body.get("data")
                         if isinstance(nested, dict):
                             candidate = nested.get("accessToken") or nested.get("access_token")
-                if response.ok and isinstance(candidate, str) and len(candidate) >= 20 and "\\n" not in candidate and "\\r" not in candidate:
+                if response.ok and isinstance(candidate, str) and len(candidate) >= 20 and "\n" not in candidate and "\r" not in candidate:
                     return candidate, client_id, "totp_refresh", "SUCCESS", diagnostics
                 if response.ok:
                     refresh_error = "Token service returned HTTP success but no usable access token; response values withheld."
@@ -168,7 +168,7 @@ def acquire_access_token() -> tuple[str, str, str, str, dict]:
             if attempt == 0:
                 time.sleep(31)
 
-    if fallback_token and client_id and "\\n" not in fallback_token and "\\r" not in fallback_token:
+    if fallback_token and client_id and "\n" not in fallback_token and "\r" not in fallback_token:
         diagnostics["fallback_available"] = True
         return fallback_token, client_id, "provided_token_fallback", "FAILED_FALLBACK_USED", diagnostics
 
