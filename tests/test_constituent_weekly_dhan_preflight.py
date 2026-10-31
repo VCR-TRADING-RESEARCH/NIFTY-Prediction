@@ -205,3 +205,28 @@ def test_analyse_bars_supports_targeted_expiry_close_without_anchor():
     assert result["anchor_window_bars"] == 0
     assert result["expiry_close_window_bars"] == 2
     assert result["ohlc_volume_invariants_pass"] is True
+
+def test_profile_request_uses_documented_access_token_header_only(monkeypatch):
+    import scripts.constituent_weekly.dhan_equity_preflight as probe
+
+    captured = {}
+
+    class Response:
+        status_code = 200
+        ok = True
+
+    def fake_get(url, *, headers, timeout):
+        captured.update(url=url, headers=headers, timeout=timeout)
+        return Response()
+
+    monkeypatch.setattr(probe.requests, "get", fake_get)
+    response = probe.request_profile("fake-jwt-token")
+
+    assert response.status_code == 200
+    assert captured["url"] == probe.PROFILE_URL
+    assert captured["headers"] == {
+        "access-token": "fake-jwt-token",
+        "Accept": "application/json",
+    }
+    assert "client-id" not in captured["headers"]
+
