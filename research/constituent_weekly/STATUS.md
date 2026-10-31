@@ -101,17 +101,20 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_DHAN_STATUS_START -->
 ## Latest Dhan equity preflight
 
-- Successful authentication/data probe: Actions run [41182679514](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514).
-- Offline response-validation tests: **11 passed**.
-- Fresh TOTP token: generated successfully; profile HTTP 200; Data API plan active.
-- Current scrip master: **5/5** probe symbols resolved.
-- Historical daily: **PASS**, 22 bars for 2018-01-01 to 2018-02-01.
-- Historical one-minute: **5/5 PASS** on 2022-10-31; 374 bars per symbol, including the 10:00 anchor and 15:25–15:29 close window.
-- Recent one-minute: 2026-10-30 returned 359 bars per symbol and valid 10:00 anchors, but no 15:25–15:29 bars; targeted close-window requests returned empty arrays (**0/5**).
-- Follow-up 2026-10-29 probe: inconclusive because a subsequent TOTP call returned HTTP 200 without an access-token field; the fallback token failed profile authentication (HTTP 401). No price requests were made in that retry: [run 41182764467](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182764467).
-- Workflow hardened: pull-request checks now run offline tests only; live Dhan authentication is serialized and not triggered by workflow-file-only edits. This avoids needless TOTP requests during code review.
-- No raw bars, prices, security IDs, credentials, tokens or provider message text are stored.
-- C1 remains **NOT PASSED**: recent close coverage, inactive/delisted security history, point-in-time membership, official numerical free-float weights and basket reconciliation remain open.
+- Recorded at (UTC): 2026-10-31T17:19:42.798231+00:00
+- Dhan auth method/status: provided_token_fallback / FAILED_FALLBACK_USED
+- Profile HTTP status: NOT_RECORDED
+- Status: BLOCKED_PROFILE_HTTP_401
+- Data plan active: None
+- Current universe security IDs resolved: NOT_RUN/NOT_RUN
+- Historical membership symbols found in current scrip master: NOT_RUN/NOT_RUN
+- Five-symbol price probe IDs resolved: 0
+- Missing symbols from current scrip master: 0
+- One-minute probe windows passing: 0/0
+- Targeted 2026 expiry-close windows passing: 0/0
+- Deep daily-history probe: NOT_RUN
+- Raw bars, prices, security IDs, credentials and tokens are not stored in this report.
+- This probe does not establish inactive/delisted instrument history, point-in-time membership or index weights.
 <!-- C1_DHAN_STATUS_END -->
 
 ## C1 resume checkpoint — 2026-10-31
