@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 import sys
@@ -27,6 +28,24 @@ def write_result(data: dict) -> None:
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
+
+
+
+def acquire_access_token() -> tuple[str, str, str, str]:
+    """Prefer a fresh TOTP token; fall back to a supplied token only after refresh failure."""
+    client_id = os.getenv("DHAN_CLIENT_ID", "").strip()
+    fallback_token = os.getenv("DHAN_ACCESS_TOKEN", "").strip()
+    refresh_error = ""
+    try:
+        token, refreshed_client_id = refresh_dhan_token()
+        if not token or "\n" in token or "\r" in token:
+            raise PublicPredictionError("TOTP refresh returned an unusable access token.")
+        return token, refreshed_client_id, "totp_refresh", "SUCCESS"
+    except PublicPredictionError as exc:
+        refresh_error = str(exc)[:180]
+        if fallback_token and client_id and "\n" not in fallback_token and "\r" not in fallback_token:
+            return fallback_token, client_id, "provided_token_fallback", "FAILED_FALLBACK_USED"
+        raise PublicPredictionError(refresh_error or "Dhan token refresh failed and no fallback token is configured.") from None
 
 def resolve_ids(master: pd.DataFrame) -> dict[str, str]:
     columns = {str(c).strip().upper(): c for c in master.columns}
@@ -109,10 +128,21 @@ def main() -> int:
         "intraday_probe": [],
     }
     try:
-        token, client_id = refresh_dhan_token()
+        token, client_id, auth_method, refresh_status = acquire_access_token()
+        result["auth_method"] = auth_method
+        result["token_refresh_status"] = refresh_status
         headers = {"access-token": token, "client-id": client_id, "Accept": "application/json", "Content-Type": "application/json"}
 
         profile = requests.get(PROFILE_URL, headers=headers, timeout=25)
+        if not profile.ok and auth_method == "totp_refresh":
+            fallback_token = os.getenv("DHAN_ACCESS_TOKEN", "").strip()
+            if fallback_token and "\n" not in fallback_token and "\r" not in fallback_token:
+                headers["access-token"] = fallback_token
+                retry = requests.get(PROFILE_URL, headers=headers, timeout=25)
+                if retry.ok:
+                    profile = retry
+                    result["auth_method"] = "provided_token_fallback"
+                    result["token_refresh_status"] = "FRESH_TOKEN_PROFILE_FAILED_FALLBACK_USED"
         if not profile.ok:
             result["status"] = f"BLOCKED_PROFILE_HTTP_{profile.status_code}"
             write_result(result)
