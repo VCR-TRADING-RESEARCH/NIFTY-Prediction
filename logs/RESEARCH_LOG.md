@@ -255,3 +255,10 @@
 - Dhan profile request now matches the official docs (access-token header only); Data APIs require an active separate plan and tokens have 24-hour validity. Documentation: https://dhanhq.co/docs/v2/authentication/.
 - Additional source sweep found no commercially permissive numeric historical IWF source; HF candidate is CC BY-NC-SA 4.0, while GitHub alternatives are binary/best-effort membership.
 - C1 remains blocked; no C2 panel or model is authorised.
+
+
+## BUP-01 Dhan authentication update — 2026-10-31
+
+- Shared token helper fix (POST, masked ephemeral token, newline validation) and regression tests have been copied to the C1 research branch. The BUP-01 preflight itself already used POST.
+- Verified Actions run [41182555655](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182555655): 10/10 offline tests passed; live token endpoint HTTP 200 returned no access-token field; fallback profile returned HTTP 401. No equity security-master or candle request was reached.
+- Safe provider-error category diagnostics and a regression test have been added; follow-up Actions run is pending/in progress. C1 remains blocked; no constituent prediction or trading strategy is claimed.
