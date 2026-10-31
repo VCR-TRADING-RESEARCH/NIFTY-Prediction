@@ -374,3 +374,11 @@ The protected live Dhan run is no longer awaiting manual dispatch. It was initia
 ## Historical alias scope clarification — 2026-11-01
 
 - The 79/84 count is a current-master symbol match, not a complete historical-data count. HDFC is separately resolved to its legacy Dhan security identifier for two successful samples. JPASSOCIAT, RANBAXY and MCDOWELL-N occur only in 2014 membership intervals and are outside the project's 2018-04 onward confirmatory period. TATAMOTORS/TMPV remains a corporate-action boundary that must be adjusted/mapped; don't blindly equate two price histories.
+
+
+## E0036 — 2026-11-01 — Public minute archive licence not verified
+- Severity: Medium / data-governance gate.
+- Finding: A candidate GitHub repository README states that the archive is MIT-licensed, but no LICENSE file exists at the inspected fork root or upstream root. The data's original vendor/source rights were not independently established.
+- Coverage: Point-in-time constituent matching found only 47/50 expected NIFTY 50 files on 2022-11-03 and 2022-11-04; DIVISLAB, SBILIFE and APOLLOHOSP were missing.
+- Correction: No raw bars were copied into the NIFTY-Prediction repo and no training was performed. Keep the source diagnostic-only until the owner supplies a verifiable licence and source-rights statement; keep C1 blocked pending full coverage and weights.
+- Related evidence: research/constituent_weekly/C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md.

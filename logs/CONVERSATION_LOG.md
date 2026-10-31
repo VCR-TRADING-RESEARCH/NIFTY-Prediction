@@ -192,3 +192,11 @@
 - Corrected the automatically rendered C1 status block so it describes the 15:15 expiry proxy, latest 15:14 observations, HDFC legacy probes and weight cache rather than the obsolete 15:25–15:29 condition.
 - Replaced a deprecated pandas validation call and added finite/range tests. Follow-up workflow [41247674443](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41247674443) succeeded with 18 passing tests. Cached weights revalidated.
 - Updated the C1 phase status with the latest gate summary. The main README and research/error/conversation logs link the relevant phase artifacts. C1 remains NOT PASSED; no C2/model/strategy was created.
+
+
+## 2026-11-01 — BUP-01 C1 continuation
+- User: “Ok proceed”.
+- Assistant continued the BUP-01 C1 source audit after re-checking the current phase plan/status and main repository logs.
+- Visible outcome: amended the frozen expiry target to use the user-approved 15:15 proxy consistently for stock and index outcomes; found a public minute archive with 47/50 member-file presence on a 2022 expiry/next-session pair; sampled five equities plus NIFTY at 10:00–10:03 and 15:14.
+- Licence finding: README-only MIT assertion was not accepted because no LICENSE file was present in the inspected fork or upstream root. No bars were imported. Other public candidates were not admitted because their rights/availability were unresolved or restrictive.
+- C1 remains NOT PASSED; no model/strategy result exists. Only visible messages, decisions and outcomes are logged; private reasoning and secrets are not stored.

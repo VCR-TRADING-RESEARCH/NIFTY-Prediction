@@ -334,3 +334,13 @@
 - Follow-up Actions run [41247674443](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41247674443) completed SUCCESS: **18 tests passed in 1.87s**. It revalidated the cached 216-row weight file and committed updated diagnostics/status.
 - Official NSE search also found the historical weightage report selector in the All Reports archive. An NSE Market Pulse October 2025 publication shows sector aggregates for September 2025; that is not a substitute for individual constituent weights. No direct licensed daily constituent-weight extract beyond August 2025 is accepted yet.
 - C1 remains NOT PASSED: 50/50 active current symbols and 79/84 historical aliases matched; HDFC legacy sample 2/2; 10/10 expiry proxy sample checks; historical weight cache valid through 2025-08-31 only. Full stock OHLCV and index reconciliation remain outstanding.
+
+
+## 2026-11-01 — C1 free-source intraday coverage audit
+- User said “Ok proceed” to resume BUP-01 C1.
+- Reviewed the current C1 branch status/plan, prior data-source and rights decisions, Dhan preflight evidence and the main README/research/error/conversation logs.
+- Updated the pre-registered plan to v1.1 so both constituent and NIFTY index targets use the user-approved 15:15 proxy (latest 1-minute bar timestamped 15:00–15:14); the official 15:30 close is a separate sensitivity.
+- Searched additional free sources. The gsidhu public GitHub minute archive had files for 47/50 NIFTY 50 members on 2022-11-03 and 2022-11-04; DIVISLAB, SBILIFE and APOLLOHOSP were missing. For five sampled stocks and the NIFTY index on 2022-11-03, 10:00–10:03 anchor rows and the 15:14 bar were present.
+- The source README claims MIT but the fork and upstream root have no LICENSE file, so the data were not imported. The 2024–2026 F&O dataset limits use to research/education and excludes commercial redistribution; the large HF candidate has no licence verified; DataPointX downloads remain closed pending licensing.
+- Dhan documentation confirms five years of intraday history for active instruments, 90-day request windows and daily history from instrument inception; inactive/delisted-minute coverage remains unproven.
+- C1 remains NOT PASSED / rights-and-coverage blocked; C2 remains gated. No model or forecast was generated. See research/constituent_weekly/C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md.

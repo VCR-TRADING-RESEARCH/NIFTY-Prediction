@@ -370,3 +370,12 @@ Research artifacts: [phase status](https://github.com/VCR-TRADING-RESEARCH/NIFTY
 ### Follow-up validation — 2026-11-01
 
 The subsequent status/validator correction was also pushed and validated: [run 41247674443](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41247674443) completed SUCCESS with **18 tests passed**. The report renderer now records 10/10 expiry-proxy checks, HDFC legacy samples 2/2, 216-row historical weights cache and the CC BY-NC-SA non-commercial restriction. The warning from the first validator version was removed using NumPy finite/range checks. Current phase report: [C1 status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md). Overall C1 remains NOT PASSED; no C2 model or trading strategy is claimed.
+
+
+## BUP-01 latest C1 source-audit update — 2026-11-01
+
+- Plan v1.1 now applies the user's 15:15 expiry proxy consistently to both constituent and index targets; the 15:30 official close is a separate sensitivity.
+- Free-source minute-data search found a public 2012–2023 GitHub archive with 47/50 NIFTY 50 member files on 2022-11-03 and 2022-11-04; DIVISLAB, SBILIFE and APOLLOHOSP are absent. Five sampled stocks and the NIFTY index file had 10:00–10:03 anchor rows and a 15:14 bar on 2022-11-03.
+- The archive's README claims MIT but the fork and inspected upstream root have no LICENSE file; it is not imported. Other candidates are either non-commercial/research-only, lack verified licence, or are not downloadable yet.
+- Dhan's current documentation confirms minute history up to five years for active instruments and 90-day request windows, and daily history from inception; it does not guarantee intraday data for inactive/delisted symbols.
+- C1 is still NOT PASSED. No canonical constituent panel, bottom-up model, index forecast or strategy exists. [C1 source audit](research/constituent_weekly/C1_PUBLIC_INTRADAY_SOURCE_AUDIT.md) · [Research plan v1.1](research/constituent_weekly/RESEARCH_PLAN.md) · [C1 status](research/constituent_weekly/STATUS.md)
