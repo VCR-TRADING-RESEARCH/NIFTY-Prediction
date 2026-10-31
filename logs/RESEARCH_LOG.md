@@ -269,3 +269,8 @@
 - Updated membership CI runs [41184902797](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41184902797) and [41184934278](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41184934278) both failed in the membership test step. Inspection showed an unquoted comma in the DUMMYTATAM notes field shifted CSV columns; the first run also checked a prior audit JSON revision (84 rows) before the 86-row audit correction landed.
 - Corrected CSV serialization using valid quote escaping, kept the dummy note comma-free, and independently parsed the CSV: 86 rows, 11 columns, 85 unique symbols, all weightage fields blank, all member types/market-data flags present, and 103/103 month-end expected cardinalities pass (102×50 and 1×51).
 - The post-fix membership workflow is queued as run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548). Do not report CI PASS until this run completes and logs are checked.
+
+## 2026-10-31 — Corrected membership integrity workflow passed
+- Post-correction GitHub Actions run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) completed SUCCESS; job log confirms **6 passed in 0.02s**.
+- The run checked the final 86-row / 85-symbol dataset and updated audit file. It validates membership-file integrity only; it does not pass numerical IWF, full security identity/corporate-action coverage, constituent historical data or basket reconstruction.
+- E0030 is resolved for the membership CSV/test sequencing defect. Overall C1 remains BLOCKED and C2 stays gated.
