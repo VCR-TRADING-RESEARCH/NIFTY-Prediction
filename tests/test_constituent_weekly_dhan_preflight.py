@@ -76,3 +76,44 @@ def test_analyse_bars_rejects_mismatched_response_arrays():
     }
     result = analyse_bars(body, "RELIANCE", "2026-10-30")
     assert result["status"] == "EMPTY_OR_MISMATCHED_ARRAYS"
+
+
+def test_access_token_helper_prefers_fresh_totp_token(monkeypatch):
+    import scripts.constituent_weekly.dhan_equity_preflight as probe
+    monkeypatch.setenv("DHAN_CLIENT_ID", "client")
+    monkeypatch.setenv("DHAN_ACCESS_TOKEN", "fallback-token-value")
+    monkeypatch.setattr(probe, "refresh_dhan_token", lambda: ("fresh-token-value", "client"))
+    assert probe.acquire_access_token() == (
+        "fresh-token-value", "client", "totp_refresh", "SUCCESS"
+    )
+
+
+def test_access_token_helper_uses_fallback_only_after_refresh_failure(monkeypatch):
+    import scripts.constituent_weekly.dhan_equity_preflight as probe
+    from live_api.app import PublicPredictionError
+    monkeypatch.setenv("DHAN_CLIENT_ID", "client")
+    monkeypatch.setenv("DHAN_ACCESS_TOKEN", "fallback-token-value")
+
+    def fail_refresh():
+        raise PublicPredictionError("sanitized refresh failure")
+
+    monkeypatch.setattr(probe, "refresh_dhan_token", fail_refresh)
+    assert probe.acquire_access_token() == (
+        "fallback-token-value", "client", "provided_token_fallback",
+        "FAILED_FALLBACK_USED"
+    )
+
+
+def test_access_token_helper_rejects_invalid_fallback_line_breaks(monkeypatch):
+    import pytest
+    import scripts.constituent_weekly.dhan_equity_preflight as probe
+    from live_api.app import PublicPredictionError
+    monkeypatch.setenv("DHAN_CLIENT_ID", "client")
+    monkeypatch.setenv("DHAN_ACCESS_TOKEN", "token-value\\nBAD_ENV=1")
+
+    def fail_refresh():
+        raise PublicPredictionError("refresh failed")
+
+    monkeypatch.setattr(probe, "refresh_dhan_token", fail_refresh)
+    with pytest.raises(PublicPredictionError):
+        probe.acquire_access_token()
