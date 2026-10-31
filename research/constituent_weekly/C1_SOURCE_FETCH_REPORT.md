@@ -1,6 +1,6 @@
 # C1 Official Weight Report Retrieval
 
-Retrieval time (UTC): 2026-10-31T06:44:14.483394+00:00
+Retrieval time (UTC): 2026-10-31T06:45:06.793932+00:00
 Overall status: **SAMPLE_ARCHIVE_DOWNLOADED**
 
 This is a source discovery and archive inventory step. It does not certify historical effective weights, report publication time, membership, daily interpolation or basket-to-index reconciliation.
