@@ -239,3 +239,25 @@
 ## Dhan authentication attempt — run 41145607225
 - Status: FAILED or incomplete. The public archive route will still be attempted.
 - Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.
+
+
+## E0018 — 2026-10-31 — C0 plan validator used the wrong phase-heading pattern
+- **Observed:** The first validator implementation searched for the literal string "Phase C0" while the locked plan stores phase definitions in a Markdown table as "| C0 —". This could incorrectly flag a complete plan.
+- **Correction:** Changed the validator to check the exact phase-table rows and the preregistered-hypothesis heading. Added regression checks. C0 subsequently passed the structural Actions workflow; commit [746d1b3](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/746d1b382e338e760b1cf4b3ee5ea6fa6b63bc85).
+- **Impact:** Governance-only. No empirical outputs or model results were affected.
+
+## E0019 — 2026-10-31 — C1 CSV preamble mistaken for its table header
+- **Observed:** The first report inventory treated the first CSV row as the table header. The actual NIFTY50 sample begins with a title row and blank line; the schema header is row index 2.
+- **Correction:** Inspected the sample directly, then changed the offline parser to search for the required header fields and count the numbered data rows. Verified 50 unique constituent rows and a displayed weightage sum of 100.0%.
+- **Impact:** Initial archive inventory metadata was incomplete; no weight values were used in modelling (no model exists).
+
+## E0020 — 2026-10-31 — Automated NSE collection/raw artifact before terms review
+- **Observed:** The initial C1 GitHub Actions workflow fetched an NSE Indices report ZIP and uploaded the raw archive as a workflow artifact before the NSE Indices Terms of Use were reviewed.
+- **Terms review:** https://www.niftyindices.com/terms-of-use states that systematic or automated data collection requires express written consent (clause 12) and restricts copying/reproduction/distribution without prior written permission (clause 7); clause 20 describes personal, non-commercial use and prohibits aggregation/copy/duplication. The repository is public.
+- **Correction:** Disabled remote page/ZIP fetching and raw artifact uploads. Replaced the workflow with an offline inventory step for separately authorised local archives only. No raw market data are committed. Opened issue [#27](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/issues/27) to remove the previous artifact/cache; the current connector cannot delete artifacts.
+- **Impact:** C1 is RIGHTS-BLOCKED pending appropriate permission/licensing or a compliant alternative. No model was fitted and no result was derived from the raw file.
+
+## E0021 — 2026-10-31 — Third-party current-members CSV is stale/date-mismatched against sample
+- **Observed:** BKKB20/nse-index-history labels its current-members file as March 2026. Compared with the September 2026 NIFTY50 sample, the candidate has WIPRO only and the later report has BSE only.
+- **Correction:** Reject that CSV as an authoritative current universe or historic point-in-time master. Retain only as a third-party candidate after full circular/effective-date/ISIN audit.
+- **Impact:** Confirms a membership-source quality gate; no historical labels or model training used it.
