@@ -49,10 +49,11 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_FETCH_STATUS_START -->
 ## Latest automated C1 source-fetch result
 
-- Recorded at (UTC): 2026-10-31T06:43:25.304581+00:00
+- Recorded at (UTC): 2026-10-31T06:43:52.796780+00:00
 - Official report retrieval status: SAMPLE_ARCHIVE_DOWNLOADED
 - This result is source-fetch/inventory only; it is not a historical weight, membership, or trading-data validation.
 - nifty50_weights_beta: DOWNLOADED_AND_INVENTORIED; file=mcwb_sep26.zip; sha256=eb6336b8e0c55a0b2cfd1a29d0c79e2b962e091d8d3a3d724e2245320ec0799b; error=None
 - indices_market_cap_weightage: DOWNLOADED_AND_INVENTORIED; file=indices_dataOct2026.zip; sha256=7f1ba20b04ef45f0e061a00b4a8937145d8e9f8f277891ab20fe935826fe995f; error=None
 - C1 acceptance: NOT PASSED; historical reports, point-in-time availability, membership and basket reconciliation remain required.
 <!-- C1_FETCH_STATUS_END -->
+
