@@ -300,3 +300,10 @@ The ChatGPT conversation encountered a send/response transport error during a se
 The bounded free-source review did not clear the remaining C1 gates. Official NSE Indices historical constituent identifiers, market capitalisation, weights and prices are offered through a licensing/subscription route ([NSE Indices data subscription](https://www.nseindia.com/static/nse-indices/index-data-subscription)). The discovered Hugging Face historical-weight series is CC BY-NC-SA 4.0 and the public GitHub alternative uses equal-weighted/binary approximations; neither is accepted as an exact, rights-cleared trading input. [Dhan's v2 documentation](https://dhanhq.co/docs/v2/historical-data/) describes five-year minute history for active instruments with 90-day request windows, not guaranteed inactive/delisted coverage.
 
 **Decision unchanged:** membership integrity sub-gate PASS WITH LIMITATIONS; overall C1 BLOCKED; C2 remains gated. No bottom-up model or strategy is claimed. See [research log](logs/RESEARCH_LOG.md) and [error log](logs/ERROR_LOG.md).
+
+
+## Dhan-first constituent data plan — 2026-10-31
+
+User confirmed Dhan as the available data source. The next constituent data gate will prioritize the existing Dhan Data API subscription for historical daily/intraday OHLCV and security-ID resolution, using cache-first bounded batches and coverage checks for active and delisted/inactive constituents. Required observations include forecast-time anchor bars and expiry-close bars. Authentication is serialized and credentials remain in GitHub Actions secrets.
+
+Dhan price data must not be misrepresented as official historical NIFTY free-float IWF. Exact point-in-time weights, membership/security identity/corporate actions and full constituent price coverage remain separate gates. C1 is still BLOCKED; no C2 model or strategy is claimed. See [BUP-01 status](research/constituent_weekly/STATUS.md) and [research log](logs/RESEARCH_LOG.md).
