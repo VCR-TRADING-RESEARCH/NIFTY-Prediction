@@ -101,8 +101,8 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_DHAN_STATUS_START -->
 ## Latest Dhan equity preflight
 
-- Recorded at (UTC): 2026-10-31T07:33:57.913128+00:00
-- Status: BLOCKED_DHAN_AUTH
+- Recorded at (UTC): 2026-10-31T07:35:43.008453+00:00
+- Status: BLOCKED_PROFILE_HTTP_401
 - Data plan active: None
 - Current symbols resolved: 0
 - Missing symbols from current scrip master: 0
