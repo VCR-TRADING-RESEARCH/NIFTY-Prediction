@@ -257,3 +257,10 @@
 - Added an offline-only GitHub Actions workflow for the CC BY 4.0 NIFTY50 membership subset. It runs on membership/test changes and supports manual `workflow_dispatch`; no network market-data or Dhan auth calls are included.
 - Added a test asserting machine-audit consistency and kept the overall C1 state BLOCKED pending licensed numerical IWF, security identity/corporate actions and full stock-bar coverage.
 - The workflow was committed to the phase branch. Its Actions execution result is not yet independently confirmed in this log update; do not report the GitHub Actions tests as passed until the run is inspected.
+
+## 2026-10-31 — Corrected C1 membership identity after Tata Motors demerger review
+- **Error caught:** the public source had backfilled `TMPV` as the ticker for the pre-2025 Tata Motors security. NSE circular NSE/FAOP/70882 states the TATAMOTORS -> TMPV change is effective 2025-10-24; the project now models the old and new symbol intervals separately.
+- NSE Indices press release 2025-10-07 includes the temporary zero-price `DUMMYTATAM` constituent in NIFTY 50 effective 2025-10-14; press release 2025-11-13 removes TMCV effective 2025-11-17. Project membership stores the dummy through 2025-11-16, marked `zero_price_dummy` and `market_data_required=FALSE`.
+- The corrected 103 month-end snapshots have 50 entries on 102 dates and 51 on 2025-10-31, the sole month-end with the temporary dummy. This corrects the previous incorrect 103/103 all-50 assertion. The dummy is never included in the tradable stock panel.
+- Updated the membership CSV, provenance, machine audit and six-test regression suite. Dedicated post-correction Actions run is pending; previous run 41184751617 passed the earlier four-test suite only and does not validate this correction.
+- C1 remains blocked; no C2 panel/model or trading result created.
