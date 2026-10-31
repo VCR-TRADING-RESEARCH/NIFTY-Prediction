@@ -369,7 +369,7 @@ The protected live Dhan run is no longer awaiting manual dispatch. It was initia
 
 - **Observed:** The first cache validation passed but emitted a pandas FutureWarning because DataFrame.applymap is deprecated.
 - **Fix:** Replaced elementwise applymap with NumPy finite/range checks on the numeric matrix; added tests for infinity, negative and over-100 weights.
-- **Validation:** Regression tests are rerunning on the latest C1 branch update; the live data/weight acquisition run already passed before this non-functional cleanup. Record final CI outcome in the next status update.
+- **Validation:** Follow-up Actions run [41247674443](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41247674443) completed SUCCESS with 18 tests passed in 1.87s. The cache validated, and the deprecated applymap warning did not recur. **Resolved.**
 
 ## Historical alias scope clarification — 2026-11-01
 

@@ -186,3 +186,9 @@
 - Searched for historic NIFTY 50 weights. Located official NSE archive report family for monthly market-cap/weightage reports, and acquired an openly hosted 216-row/100-ticker weight dataset through 2025-08-31. It is CC BY-NC-SA 4.0, non-commercial only, uses some estimated/extrapolated event weights, and needs cross-checks; no 2025-09 onward weights found/added yet.
 - Added cache-first download/validation, provenance/licence notes, identity history notes, user decision file and workflow-driven status updates. No private chain-of-thought is stored in repo; only user-visible decisions, technical steps and outcomes.
 - Overall C1 remains NOT PASSED and C2 remains gated; no prediction model or strategy is claimed.
+
+## 2026-11-01 — C1 reporting correction verified
+
+- Corrected the automatically rendered C1 status block so it describes the 15:15 expiry proxy, latest 15:14 observations, HDFC legacy probes and weight cache rather than the obsolete 15:25–15:29 condition.
+- Replaced a deprecated pandas validation call and added finite/range tests. Follow-up workflow [41247674443](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41247674443) succeeded with 18 passing tests. Cached weights revalidated.
+- Updated the C1 phase status with the latest gate summary. The main README and research/error/conversation logs link the relevant phase artifacts. C1 remains NOT PASSED; no C2/model/strategy was created.

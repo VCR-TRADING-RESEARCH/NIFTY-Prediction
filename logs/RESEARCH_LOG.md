@@ -326,3 +326,11 @@
 - Acquired and cached third-party historical weights: 216 rows, 100 ticker columns, 2008-01-31 to 2025-08-31; max absolute row-sum deviation 4.263256414560601e-14; SHA-256 3a3441a997b64a54363b38ebc02807e82cc0e0affd2efda147d1b7758a0b10cb. Dataset is CC BY-NC-SA 4.0, non-commercial only; source method includes estimated/extrapolated event weights and no coverage after 2025-08-31. Not accepted as official complete IWF.
 - Official NSE reports archive route identified for monthly weightage cross-check. No automatic scraping pending NSE terms/licence determination. 2025-09 onward weights remain missing.
 - Branch contains expiry proxy logic, a cache-first weight fetcher/auditor, regression tests, licence and symbol-provenance files. C1 remains NOT PASSED; C2 remains gated pending weights, historical identifiers/actions, full constituent OHLCV coverage and basket/index reconciliation.
+
+## 2026-11-01 — Final C1 status-renderer and validation confirmation
+
+- Updated the status renderer to print the user-approved 15:15 proxy rule, observed 15:14 sample timestamps, 2/2 historic HDFC legacy probes, cached weights details and the non-commercial licence. The previous renderer displayed the obsolete targeted 15:25 close test; that status-reporting mismatch is corrected.
+- Replaced deprecated pandas DataFrame.applymap validation with NumPy finite/range checks and added regression coverage for non-finite, negative and over-100 weights.
+- Follow-up Actions run [41247674443](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41247674443) completed SUCCESS: **18 tests passed in 1.87s**. It revalidated the cached 216-row weight file and committed updated diagnostics/status.
+- Official NSE search also found the historical weightage report selector in the All Reports archive. An NSE Market Pulse October 2025 publication shows sector aggregates for September 2025; that is not a substitute for individual constituent weights. No direct licensed daily constituent-weight extract beyond August 2025 is accepted yet.
+- C1 remains NOT PASSED: 50/50 active current symbols and 79/84 historical aliases matched; HDFC legacy sample 2/2; 10/10 expiry proxy sample checks; historical weight cache valid through 2025-08-31 only. Full stock OHLCV and index reconciliation remain outstanding.
