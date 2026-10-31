@@ -135,3 +135,7 @@
 - The first post-Tata-correction Actions tests failed. Job-log review traced one failure to a comma in an unquoted dummy-member CSV note (column shift), and one to the older 84-row audit file being present in that intermediate commit.
 - Corrected CSV quoting, checked all 86 rows have 11 columns and no weightage values, and confirmed the corrected 103-month-end counts: 102×50, 1×51 (2025-10 dummy).
 - A fresh membership workflow run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) is queued; no success claim until completed.
+
+## 2026-10-31 — Corrected membership CI passed
+- The corrected CSV and audit triggered Actions run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548); job log confirms **6 passed in 0.02s**.
+- Marked E0030 closed for the CSV quoting / intermediate audit sequencing error. Membership sub-gate remains PASS WITH LIMITATIONS; overall C1 remains BLOCKED, so no stock model was trained.
