@@ -30,6 +30,7 @@ IST = "Asia/Kolkata"
 
 # The current scrip master is checked against both the active universe and historical membership aliases.
 # Live full-universe checks run only on push/dispatch events, never on pull-request credentials.
+# Emit aggregate counts so the protected live run can be independently audited from CI logs.
 def membership_symbol_sets(as_of_date: str) -> tuple[list[str], list[str]]:
     """Return active tradable symbols and all historical tradable aliases from the licensed ledger."""
     frame = pd.read_csv(MEMBERSHIP_CSV, low_memory=False)
