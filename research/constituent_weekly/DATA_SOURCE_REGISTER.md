@@ -118,3 +118,17 @@ The parent repository already has a Dhan integration in scripts/fetch_dhan_recen
 No source currently clears all of: legal rights for the intended use, exact point-in-time NIFTY 50 membership, numeric free-float weights, publication-time evidence, stable ISIN/security-ID history, corporate-action treatment, stock-level 10:00/expiry bars, and basket-to-index reconciliation.
 
 The next C1 step is to reuse and audit the parent Dhan token/data path, conduct a small current-stock daily/intraday endpoint preflight through Actions secrets, then explicitly test removed/inactive instrument coverage using lawful user-entitled inputs. The weight-source problem remains a separate gate; Dhan daily equity data alone does not provide historic NIFTY index weights.
+
+
+## Official index construction detail (verified 2026-10-31)
+
+NSE Indices states that NIFTY 50 uses free-float market-cap weighting from 26 June 2009. Its IWF description explains that free-float capitalisation is total shares outstanding × IWF × stock price, and that constituent IWFs are determined from public shareholding patterns reported to exchanges quarterly. See:
+- https://www.niftyindices.com/indices/equity/broad-based-indices/nifty--50
+- https://www.niftyindices.com/resources/investible-weight-factors
+- https://niftyindices.com/resources/tutorial/calculation-of-indices
+
+Implications for the C1 data audit:
+1. A dated constituent list is insufficient; historical point-in-time IWF and effective dates are required.
+2. Weight reconstruction between snapshots must not carry forward a stale float factor across a quarterly public-shareholding update or a corporate action.
+3. Publication/filing timestamps must be distinguished from the underlying shareholding quarter, because a later filing cannot be used as if it were available at the earlier 10:00 forecast.
+4. The exact free-float weight formula and index-divisor adjustments must be reconciled against the official index methodology before stock-level forecasts are aggregated.
