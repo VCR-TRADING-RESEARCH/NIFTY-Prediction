@@ -110,7 +110,7 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_DHAN_STATUS_START -->
 ## Latest Dhan equity preflight
 
-- Recorded at (UTC): 2026-10-31T22:20:24.242099+00:00
+- Recorded at (UTC): 2026-10-31T22:47:05.285286+00:00
 - Dhan auth method/status: totp_refresh / SUCCESS
 - Profile HTTP status: NOT_RECORDED
 - Status: PASS_ACTIVE_EQUITIES
@@ -118,6 +118,7 @@ No model training until point-in-time membership, numeric free-float weights, se
 - Current NIFTY 50 universe resolved in current Dhan master: 50/50
 - Historical membership symbol aliases matched in current Dhan master: 79/84
 - Five-symbol one-minute anchor/expiry-proxy checks: 10/10
+- Full point-in-time NIFTY 50 probe: 50/50 passed; resolved 50; date 2026-10-29
 - Accepted expiry proxy: last returned one-minute candle at/before 15:15:00 IST; sample proxy timestamp(s): 2022-10-31T15:14:00+05:30, 2026-10-29T15:14:00+05:30
 - Historic HDFC Ltd legacy-security-ID probes: 2/2 passed
 - Deep daily-history probe: PASS
