@@ -208,3 +208,14 @@
 - **Dhan audit:** Existing live_api/app.py uses its token-refresh helper with the Dhan client-ID/PIN/TOTP flow, resolves the NIFTY index only, uses a 24-hour security-master cache and chunked historical NIFTY bars. scripts/fetch_dhan_recent.py is also index-only. It does not yet resolve/download the 50 constituent equities. Parent logs show inconsistent TOTP/auth attempts and a separate options API error; an equity preflight remains unverified.
 - **Current status:** C1 IN PROGRESS / BLOCKED. Historical point-in-time membership and numeric weights with appropriate data rights, stock 10:00/expiry bars, stable security IDs/corporate actions, and weighted-basket reconciliation are not passed. No panel, constituent forecast or bottom-up strategy exists.
 - **Next bounded step:** Use the existing Dhan integration as the first candidate for user-entitled stock candles, test a tiny current/historical equity sample without logging secrets or publishing raw bars, and independently solve the licensed point-in-time weight/membership source. Stop at C1 if no compliant primary weight history can be established.
+
+
+## 2026-10-31 — BUP-01 offline C1 workflow correction and current blocker
+
+- C0 remains PASS for plan/governance structure only.
+- C1's offline inspector now processes only pre-authorised local archives. It does not make network requests, upload data artifacts or commit raw market data.
+- C1 workflow run 41178553686 failed at checkout because the branch-ref expression contained a literal escape; fixed in commit 0b430118c003e2f626b70097756e641fea55067c.
+- Run 41178676032 was marked action_required with no job steps; it did not execute tests. The workflow was tightened to read-only contents permission and the latest local branch status records that the revised offline tests are not yet verified by Actions.
+- C1 status: IN PROGRESS / RIGHTS-BLOCKED. No point-in-time numeric historic weights with cleared reuse rights, certified membership ledger, constituent stock API data, basket reconciliation, panel or model exists.
+- No Dhan constituent equity request has been completed. The existing parent integration is index-only; Dhan equity entitlement and inactive historical instrument coverage remain unverified.
+- Outstanding administrative cleanup: issue #27 asks the maintainer to delete raw artifact 13033492871 from run 41177903446, and any related cache if accessible.
