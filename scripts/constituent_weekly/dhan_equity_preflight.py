@@ -410,7 +410,9 @@ def main() -> int:
     if result.get("token_refresh_diagnostics"):
         print("TOKEN_RESPONSE_SHAPE", json.dumps(result["token_refresh_diagnostics"], sort_keys=True))
     print(f"Data API plan active: {result.get('data_plan_active')}")
-    print(f"Current symbols resolved: {len(result.get('resolved_probe_symbols', []))}; unresolved: {len(result.get('missing_probe_symbols', []))}")
+    print(f"Current NIFTY 50 security-master resolution: {result.get('current_universe_resolved_count', 0)}/{result.get('current_universe_symbol_count', 0)}")
+    print(f"Historical membership aliases found in current scrip master: {result.get('historical_membership_symbols_found_in_current_master_count', 0)}/{result.get('historical_membership_symbol_count', 0)}")
+    print(f"Five-symbol price probe IDs resolved: {len(result.get('resolved_probe_symbols', []))}; unresolved: {len(result.get('missing_probe_symbols', []))}")
     print(f"Daily history probe: {result.get('daily_history_probe', {}).get('status', 'NOT_RUN')}; bars={result.get('daily_history_probe', {}).get('bar_count', 0)}")
     print(f"Intraday windows passing: {result.get('intraday_probe_passed', 0)}/{result.get('intraday_probe_expected', 0)}")
     print(f"Targeted 2026 expiry-close windows passing: {result.get('targeted_expiry_close_passed', 0)}/{result.get('targeted_expiry_close_expected', 0)}")
