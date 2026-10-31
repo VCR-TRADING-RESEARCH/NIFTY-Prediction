@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -41,14 +40,21 @@ def validate() -> list[str]:
         for heading in REQUIRED_PLAN_HEADINGS:
             if heading not in plan:
                 errors.append(f"Missing plan section: {heading}")
-        version_match = re.search(r"^\\*\\*Plan version:\\*\\* (\\d+\\.\\d+)\\s*$", plan, re.MULTILINE)
-        if not version_match:
-            errors.append("Plan version registration marker missing or malformed")
+        version_line = next(
+            (line.strip() for line in plan.splitlines() if line.strip().startswith("**Plan version:**")),
+            None,
+        )
+        if not version_line:
+            errors.append("Plan version registration marker missing")
         else:
-            registered_version = version_match.group(1)
-            history_marker = f"- **v{registered_version} —"
-            if history_marker not in plan:
-                errors.append(f"Plan version {registered_version} has no matching version-history entry")
+            registered_version = version_line.split("**Plan version:**", 1)[1].strip()
+            version_parts = registered_version.split(".")
+            if len(version_parts) != 2 or not all(part.isdigit() for part in version_parts):
+                errors.append("Plan version registration marker is malformed")
+            else:
+                history_marker = f"- **v{registered_version} —"
+                if history_marker not in plan:
+                    errors.append(f"Plan version {registered_version} has no matching version-history entry")
         for token in ("15:00 through 15:14 IST", "15:15 expiry proxy", "official 15:30 close"):
             if token not in plan:
                 errors.append(f"Missing controlled expiry-target definition: {token}")

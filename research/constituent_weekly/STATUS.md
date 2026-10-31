@@ -241,3 +241,10 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - This was a validator defect, not a research-data failure. The separate C1 authorised-source audit passed in run [41249370606](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249370606).
 - Corrective change: validator now parses the declared plan version, requires the same version in the version history, and verifies the 15:15-proxy definition and separate 15:30 sensitivity. A regression test covers the v1.1 amendment.
 - Re-run status will be added after the next Actions result is observed. C1 remains NOT PASSED; C2 stays gated.
+
+
+## Second CI correction — 2026-11-01
+
+- Retry run [41249450033](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249450033) exposed an escaping error in the first regex-based fix to `validate_plan.py`; the plan-version expression did not match the Markdown marker.
+- Replaced regex parsing with direct extraction and numeric validation of the `**Plan version:**` line. The existing v1.1 regression test covers the version-history and expiry-proxy markers.
+- No market data, labels or models were modified. A new workflow run is required to confirm the correction.
