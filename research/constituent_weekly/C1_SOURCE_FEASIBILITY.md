@@ -158,3 +158,8 @@ The official NSE Indices monthly "Market Capitalisation, Weightage, Beta" ZIP fa
 NSE's research-data policy includes historical reports/index data in its research/analysis basket, while Nifty Indices Terms of Use separately restrict systematic/automated collection without express written consent. The scope of permission for recurring automated retrieval, caching and subsequent use for this research-to-personal-trading workflow is not clear enough to proceed. **No ZIP was requested, downloaded or parsed in this step.**
 
 Automated collection remains disabled pending express written consent or a suitable licence. See [C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md](C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md). The 2026-02-27 official white-paper snapshot is a single-date reference only; the third-party monthly weights file remains CC BY-NC-SA, provisional and non-commercial. C1 remains NOT PASSED.
+
+
+## Full-universe Dhan 90-day window validation — 2026-11-01
+
+Run [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795) passed 50/50 point-in-time active constituents over 2026-06-29–2026-09-26. Each symbol had 23,414 bars across 64 regular sessions, 64/64 anchor coverage, 64/64 expiry-proxy coverage, no duplicates and valid OHLCV. This validates one recent 90-day panel slice only. No raw OHLCV data are stored in the public repository. Historical point-in-time membership/identities, legacy security histories, official monthly weights, minute corporate-action treatment and index reconstruction remain unresolved.

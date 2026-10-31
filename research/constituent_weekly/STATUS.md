@@ -270,8 +270,13 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - See [C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md](C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md). C1 NOT PASSED; C2 gated.
 
 
-## 90-day Dhan range test — initial CI correction — 2026-11-01
 
-- Initial push run [41250624129](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250624129) and PR regression run [41250629010](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250629010) failed two new unit tests because the new range-QA helper referenced NumPy without importing it (19 other tests passed in PR run).
-- Added the missing `import numpy as np` in commit 3a9545e. The new push run [41250690640](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41250690640) is the corrective validation; its final status will be recorded after completion.
-- No live market-data API call was reached in the failed test runs. The 90-day historical data probe therefore has no result yet.
+## Full-universe 90-day Dhan range validation — 2026-11-01
+
+- **PASS:** Dhan fresh TOTP authentication succeeded; all 23 offline tests passed in run [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795).
+- Full point-in-time NIFTY 50 cross-section for 2026-06-29 through 2026-09-26: **50/50 security IDs resolved and 50/50 symbols passed**.
+- Each symbol returned 23,414 one-minute bars across 64 regular sessions; 64/64 anchor sessions and 64/64 expiry-proxy sessions; zero missing anchors/expiry bars, zero duplicate timestamps, all OHLCV invariants passed. Aggregate total = 1,170,700 one-minute rows.
+- Raw market bars/prices were not committed; only sanitized QA metadata are in `C1_DHAN_PREFLIGHT.json` and `C1_DHAN_LAST_SUCCESS.json`.
+- Earlier TOTP response anomaly (E0042) resolved on the successful retry run. Double-escaped fallback newline guard (E0043) corrected; 23 tests pass. Special-session logic (E0041) confirmed in 3-stock 90-day range test.
+- Full results: [C1_DHAN_90D_RANGE_VALIDATION.md](C1_DHAN_90D_RANGE_VALIDATION.md).
+- **C1 remains NOT PASSED.** The sample is one quarter only. Five-year point-in-time histories, legacy/inactive identities, minute-bar corporate-action treatment, official historical free-float weights and basket-to-index reconstruction remain open; C2 remains gated.

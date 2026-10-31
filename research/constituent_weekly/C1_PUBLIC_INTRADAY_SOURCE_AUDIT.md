@@ -62,3 +62,10 @@ The official NSE Indices monthly "Market Capitalisation, Weightage, Beta" ZIP fa
 NSE's research-data policy includes historical reports/index data in its research/analysis basket, while Nifty Indices Terms of Use separately restrict systematic/automated collection without express written consent. The scope of permission for recurring automated retrieval, caching and subsequent use for this research-to-personal-trading workflow is not clear enough to proceed. **No ZIP was requested, downloaded or parsed in this step.**
 
 Automated collection remains disabled pending express written consent or a suitable licence. See [C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md](C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md). The 2026-02-27 official white-paper snapshot is a single-date reference only; the third-party monthly weights file remains CC BY-NC-SA, provisional and non-commercial. C1 remains NOT PASSED.
+
+
+## Full-universe 90-day Dhan minute coverage — PASS (2026-11-01)
+
+The protected Dhan preflight run [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795) validated all 50 point-in-time NIFTY 50 equity constituents active on 2026-06-29 over the 2026-06-29–2026-09-26 90-day request window. All 50 security IDs resolved and all 50 symbols passed. Each returned 23,414 bars across 64 regular sessions; every regular session had the 10:00–10:03 anchor and 15:00–15:14 expiry-proxy window; there were no missing sessions, duplicate timestamps or OHLCV invariant failures. Aggregate bar count represented by the sanitized counts: 1,170,700.
+
+This is one recent quarter of minute coverage, not full five-year historical data. The raw bars were not copied to the public repository; only aggregate QA metrics were stored. See [C1_DHAN_90D_RANGE_VALIDATION.md](C1_DHAN_90D_RANGE_VALIDATION.md). C1 remains NOT PASSED pending broader point-in-time history, inactive-security and corporate-action mapping, authorised official weights and index reconstruction.
