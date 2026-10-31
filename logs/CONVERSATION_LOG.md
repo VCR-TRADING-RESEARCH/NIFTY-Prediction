@@ -83,3 +83,9 @@
 - **Dhan code review:** Existing Dhan refresh logic and NIFTY-index intraday pipeline were examined. They do not yet establish constituent-level equity data; parent auth logs show unresolved TOTP/auth problems. No stock API call is claimed as successful.
 - **Research status:** C0 PASS, C1 IN PROGRESS / RIGHTS-BLOCKED. No constituent panel, trained model, bottom-up index prediction, or strategy result exists.
 - **Logging boundary:** Visible conversation updates and auditable decisions are recorded. Hidden private reasoning is not stored.
+
+
+## 2026-10-31 — BUP-01 C1 workflow correction and status
+- Corrected a literal escape in the C1 checkout branch ref after Actions run #28 failed before tests; failure and fix recorded in E0022.
+- The follow-up run #35 entered `action_required` without any job steps. The workflow now uses read-only permissions and only offline authorised-archive inspection, but its tests have not yet passed in Actions.
+- C1 remains RIGHTS-BLOCKED while source permission, historical point-in-time weights/membership and stock equity bars are unresolved. No constituent model or forecast was generated.
