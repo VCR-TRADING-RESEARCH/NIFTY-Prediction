@@ -182,3 +182,26 @@ def test_auth_response_diagnostics_never_return_response_values():
     assert result["access_token_length"] == 40
     assert "secret provider message" not in str(result)
     assert "x" * 40 not in str(result)
+
+
+
+def test_analyse_bars_supports_targeted_expiry_close_without_anchor():
+    body = {
+        "open": [100.0, 100.5],
+        "high": [100.5, 101.0],
+        "low": [99.5, 100.0],
+        "close": [100.2, 100.8],
+        "volume": [500, 600],
+        "timestamp": [
+            epoch_ist("2026-10-30T15:25:00"),
+            epoch_ist("2026-10-30T15:29:00"),
+        ],
+    }
+    result = analyse_bars(
+        body, "RELIANCE", "2026-10-30",
+        require_anchor=False, require_expiry=True,
+    )
+    assert result["status"] == "PASS"
+    assert result["anchor_window_bars"] == 0
+    assert result["expiry_close_window_bars"] == 2
+    assert result["ohlc_volume_invariants_pass"] is True
