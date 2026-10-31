@@ -186,3 +186,19 @@ A separate options strategy study is underway on [research branch](https://githu
 - [Dhan data pipeline and current blocker](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/research/nifty-options-dual-sleeve-backtest/research/options_backtest/DHAN_DATA_PIPELINE.md)
 
 **Current gate:** the public archive audit scanned 124,458,249 one-minute NIFTY option rows from 2024-10-01 to 2026-07-21. OHLC/timestamps and OI/volume completeness passed; 52.84% of rows have zero volume and 35 have negative volume. Only positive-volume bars are eligible for fills. The archive has no IV or bid/ask and does not cover 2021–2024. Dhan authenticated collection remains blocked. NIFTY spot has no traded volume, so the original VWAP condition needs verified NIFTY futures volume. The first B1 positional credit-spread exploratory simulator, unit tests and cached Actions workflow are now implemented on the research branch. Its automated run is pending. The proxy directional filter, reconstructed delta and no-VWAP treatment are explicitly exploratory; no profitability or risk metrics are claimed until execution completes.
+
+
+## New research track: bottom-up NIFTY constituent weekly outcomes (BUP-01)
+
+**Status (2026-10-31):** C0 registration active on the dedicated branch [phase/constituent-weekly-outcomes-c0](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c0). No constituent panel, stock model or bottom-up prediction has been produced yet. The immediate gate is point-in-time membership, historical free-float weights/IWF, security identifiers, corporate actions and stock price coverage.
+
+- [Pre-registered research plan v1.0](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/RESEARCH_PLAN.md)
+- [Literature review](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/LITERATURE_REVIEW.md)
+- [Data source register](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/DATA_SOURCE_REGISTER.md)
+- [Phase status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/STATUS.md)
+- [Manuscript outline](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/research/constituent_weekly/MANUSCRIPT_OUTLINE.md)
+- [Automated/manual research workflow](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c0/.github/workflows/constituent-weekly-research.yml)
+
+**Aggregation rule:** forecast continuous return for each historically eligible constituent and aggregate with point-in-time NIFTY free-float weights. A simple majority vote is only a baseline. The index-level UP probability must model cross-stock dependence; a weighted average of stock UP probabilities is weighted breadth, not the probability that NIFTY rises.
+
+**Stop condition:** no model fitting until the C1 audit validates point-in-time membership, numerical free-float weights, corporate-action treatment, stock anchor/expiry coverage and reconciliation with the official NIFTY price-return index. The existing index-only research remains a separate benchmark and retains its current data-quality/trading-readiness warnings. Any eventual trading simulation must include date-effective Paytm Money costs, spreads, slippage and realistic fills.
