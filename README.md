@@ -318,3 +318,18 @@ The C1 Dhan preflight now derives the active 2026-10-31 tradable NIFTY 50 univer
 - Latest successful live probe [41182679514](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514) still covers only five sample stocks and remains partial for recent expiry-close bars.
 
 Status: C1 BLOCKED; C2 not authorised. No bottom-up stock model, index aggregation or trading strategy exists yet. See [BUP-01 status](research/constituent_weekly/STATUS.md), [research log](logs/RESEARCH_LOG.md), and [error log](logs/ERROR_LOG.md).
+
+## BUP-01 — Live Dhan full-universe result (2026-10-31)
+
+Protected live run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41224048773) succeeded: fresh TOTP token/profile authentication succeeded and the Dhan Data API plan was active.
+
+| Gate | Result |
+|---|---:|
+| Current active NIFTY 50 scrip-master resolution | **50/50** |
+| Historical membership symbols found in current master | **79/84** |
+| Five-stock 2022-10-31 one-minute history | **5/5 PASS** |
+| Five-stock 2026-10-29 expiry-close window | **0/5** |
+
+The five historical symbols/aliases absent from today's Dhan master are HDFC, JPASSOCIAT, MCDOWELL-N, RANBAXY, and TATAMOTORS. This is a current-master lookup limitation, not proof that historical prices cannot be retrieved; dated successor/security-ID mappings must be established before acquisition. The recent sample feed returned 359 one-minute bars per symbol through 15:14 IST, with 10:00 anchors but no 15:25–15:29 expiry-close bars; separate 15:20–15:30 requests were empty for all five symbols.
+
+The workflow committed sanitized diagnostics to the C1 branch. No raw OHLCV bars, security IDs, access tokens, PINs or TOTP secrets were stored. **C1 remains BLOCKED; C2 remains gated.** See [C1 phase status](research/constituent_weekly/STATUS.md), [sanitized Dhan preflight](research/constituent_weekly/C1_DHAN_PREFLIGHT.json), [research log](logs/RESEARCH_LOG.md), and [error log](logs/ERROR_LOG.md).
