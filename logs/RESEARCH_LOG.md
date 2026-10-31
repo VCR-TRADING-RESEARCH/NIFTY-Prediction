@@ -200,3 +200,7 @@
 - Updated BUP-01 profile preflight to use only the documented access-token header; retained client-id for market-data calls. Added regression test. Latest run [41181948126](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181948126): 10/10 offline tests pass.
 - Live token endpoint returned HTTP 200 but no accessToken field (only message/status keys); fallback token returned HTTP 401 on profile. No security master, daily history or intraday equity calls were reached.
 - C1 remains blocked on valid Dhan authentication and the independent official historical free-float weight/membership gates. No stock panel/model/forecast was built.
+
+2026-10-31 — PR #28 review state updated
+
+- After its mocked Actions checks passed, PR #28 was marked ready for review. GitHub reports `mergeable_state=dirty`, so it was not merged. No direct main-branch bypass was used.
