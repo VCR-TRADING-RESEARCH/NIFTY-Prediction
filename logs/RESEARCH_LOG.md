@@ -365,3 +365,9 @@
 - Discovered HF original xxparthparekhxx/indian-stock-market-minute-data (MIT tag, ~10.5GB 1m from 2022–2026, daily 2000–2026). Dataset card states research/backtesting only and not primary live trading; exact underlying source/provenance is unverified. It remains exploratory; no 10.5GB bulk download performed yet.
 - Governance validator errors E0037/E0038 confirmed resolved by push run 41249521876; four governance tests passed. C1 source-audit run 41249642494 passed.
 - C1 remains NOT PASSED: official point-in-time time-series weights, historic constituent price history/corporate actions, and basket-to-index reconciliation remain incomplete. No modeling.
+
+
+## 2026-11-01 — Official monthly weight archive and terms gate
+- Located the official NSE Indices monthly "Market Capitalisation, Weightage, Beta" ZIP family. Independent docs report 159 monthly files from June 2013 onward and independent public code documents the `mcwb_{mon}{yy}.zip` filename pattern.
+- Reviewed NSE research data sharing policy and Nifty Indices site terms. Historical reports/index data are listed in the research/analysis data basket, but automated extraction/collection requires express written consent under the site terms. The precise permissions for automated caching and research leading to personal trading are not resolved.
+- No monthly ZIP file was fetched, parsed or cached in this step. Added the official archive terms audit; C1 remains rights/coverage blocked and C2 gated.

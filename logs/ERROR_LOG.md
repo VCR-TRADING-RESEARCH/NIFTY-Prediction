@@ -406,3 +406,11 @@ The protected live Dhan run is no longer awaiting manual dispatch. It was initia
 - The plan-version governance failures caused by the v1.1 amendment (E0037) and the over-escaped first parser correction (E0038) are resolved.
 - Confirmed by push run [41249521876](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249521876): plan validator PASS and all 4 governance tests passed. The separate source-audit run [41249642494](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642494) passed.
 - The Dhan full-universe data check also passed 50/50 for a single fixed session in run [41249642409](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642409). This is not a complete historical panel.
+
+
+## E0039 — 2026-11-01 — Permission for automated official weights archive access unresolved
+- Severity: High / data-rights gate, not a software defect.
+- Finding: NSE research-data policy describes historical reports/index data as part of the first research/analysis basket. Nifty Indices Terms of Use separately prohibit automated data collection absent express written consent and impose site-use restrictions.
+- Impact: The official month-end constituent weight archive is technically discoverable, but permission for scheduled automated retrieval, caching and the intended personal-trading research workflow is not settled by public wording alone.
+- Containment: No monthly archive ZIP was downloaded, parsed or cached in this review. No scraping or endpoint reverse-engineering was performed. Keep automated retrieval disabled pending written permission or an applicable licence.
+- Evidence: research/constituent_weekly/C1_OFFICIAL_WEIGHTAGE_ARCHIVE_TERMS_AUDIT.md. C1 remains NOT PASSED; C2 remains gated.

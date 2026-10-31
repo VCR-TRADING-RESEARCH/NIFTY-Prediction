@@ -209,3 +209,10 @@
 - Found and cached the NSE Indices March 2026 whitepaper full 50-constituent weight snapshot as of 2026-02-27, preserving two-decimal published weights (sum 100.02% due rounding, no normalisation).
 - Identified the original HF minute dataset declaring MIT and broad 2022–2026/2000–2026 coverage; upstream feed provenance is not documented, and the README restricts stated purpose to research/education/backtesting. No bulk data import yet.
 - E0037/E0038 governance CI issues resolved. C1 remains NOT PASSED; no model or trading result produced. Only visible outcomes are logged.
+
+
+## 2026-11-01 — BUP-01 official weights archive terms review
+- User: "Ok proceed".
+- Assistant identified the official NSE Indices monthly constituent-weight ZIP archive and a public naming-pattern example. Independent documentation reports historical month-end coverage from June 2013.
+- Reviewed the NSE research-data policy and Nifty Indices site terms. Since automated collection requires express written consent under the site terms, no archive ZIP was requested or fetched.
+- Added the permission-gate report to the C1 branch and updated README plus research/error/conversation logs. C1 remains NOT PASSED; no model or strategy was generated.
