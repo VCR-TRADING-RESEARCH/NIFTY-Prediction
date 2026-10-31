@@ -165,3 +165,9 @@ A second corporate-action audit refined the membership ledger. The upstream file
 The ledger also now captures the temporary `DUMMYTATAM` zero-price placeholder from 2025-10-14 through 2025-11-16, explicitly flagged `market_data_required=FALSE`. Thus the corrected 103 month-end snapshots contain 50 unique entries on 102 dates and 51 entries on 2025-10-31. The earlier all-50 count is superseded. The placeholder is for index-ledger completeness only; it is never a stock prediction input.
 
 The revised six-test suite and machine audit are committed. **Post-correction Actions validation passed:** run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548), 6 tests passed. Overall C1 remains BLOCKED on exact licensed IWF, ISIN/security identity history, other corporate actions and constituent price coverage; no C2 panel/model may be built yet.
+
+## Membership CI acceptance — 2026-10-31
+
+- Corrected membership integrity workflow [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548): **SUCCESS; 6 tests passed**.
+- The passing suite checks half-open effective-date intervals, the 2025-10-24 TATAMOTORS/TMPV symbol transition, DUMMYTATAM zero-price placeholder inclusion/removal and its non-tradable flag, corrected 103 month-end cardinality (102×50, 1×51), no fabricated index weights, and machine-audit consistency.
+- This passes the membership-file integrity sub-gate only. It does not certify every upstream membership event, official IWF, ISIN mapping, corporate actions other than those explicitly patched, stock OHLCV coverage or basket/index reconstruction.
