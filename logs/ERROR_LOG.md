@@ -269,3 +269,10 @@
 - **Correction:** Rewrote the workflow YAML with a plain `${{ github.head_ref || github.ref_name }}` expression and removed the unwanted escape. Later tightened validation to `contents: read`, removed raw artifact upload and writeback, and made the workflow publish only a compact job summary.
 - **Follow-up:** [41178676032](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41178676032) was reported as `action_required` with no job steps, so the corrected offline tests are not yet verified by Actions.
 - **Status:** Workflow wiring corrected in source; CI execution remains unverified. C1 still rights/data blocked. No stock panel/model/results were affected.
+
+
+## E0024 — 2026-10-31 — Licensed membership history is incomplete for current and exact free-float weights
+- **Observed:** The CC BY 4.0 membership dataset provides 83 NIFTY50 intervals and 93/93 month-15 cardinality checks from 2018-01 to 2025-09, but its latest NIFTY 50 event is 2025-09-30. 50 intervals are snapshot_floor rather than row-specific press-release evidence; only 33 are press_release sourced.
+- **Observed:** The dataset has no numeric historic NIFTY50 weights. Its related shareholding file contains broad promoter/FII/DII/public/non-inst roll-ups, not the complete strategic-holding categories needed to derive IWF.
+- **Correction/guardrail:** Store the membership as a confidence-coded candidate only; no current member extrapolation, no equal-weight substitution, and no IWF = 100% - promoter formula. C1 remains blocked pending exact weights and security/membership updates.
+- **Impact:** No stock panel/model has been built; the plan's C1 gate prevents confirmatory modeling on this data alone.
