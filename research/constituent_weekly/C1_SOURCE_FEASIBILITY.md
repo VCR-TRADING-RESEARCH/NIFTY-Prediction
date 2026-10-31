@@ -163,3 +163,8 @@ Automated collection remains disabled pending express written consent or a suita
 ## Full-universe Dhan 90-day window validation — 2026-11-01
 
 Run [41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795) passed 50/50 point-in-time active constituents over 2026-06-29–2026-09-26. Each symbol had 23,414 bars across 64 regular sessions, 64/64 anchor coverage, 64/64 expiry-proxy coverage, no duplicates and valid OHLCV. This validates one recent 90-day panel slice only. No raw OHLCV data are stored in the public repository. Historical point-in-time membership/identities, legacy security histories, official monthly weights, minute corporate-action treatment and index reconstruction remain unresolved.
+
+
+## Second full-basket window: 2022Q4 — PASS
+
+A second full point-in-time NIFTY 50 basket validation passed in run [41251808946](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251808946). The 2022-10-03 through 2022-12-30 window covered the 50 members as of 2022-10-03: 50/50 IDs resolved, 50/50 symbols passed, 61 regular sessions per symbol, 61/61 anchor and expiry-proxy coverage, zero duplicates and valid OHLCV. Aggregate row count represented by per-symbol QA counts was 1,146,180. HDFC Ltd's legacy ID 1330 and the period-specific TATAMOTORS→TMPV ID mapping were included. 24 offline tests passed. Full details: [C1 historical 2022 90-day validation](C1_DHAN_HISTORICAL_2022_90D_VALIDATION.md).

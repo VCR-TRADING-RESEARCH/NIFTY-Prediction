@@ -281,3 +281,14 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Earlier TOTP response anomaly (E0042) resolved on the successful retry run. Double-escaped fallback newline guard (E0043) corrected; 23 tests pass. Special-session logic (E0041) confirmed in 3-stock 90-day range test.
 - Full results: [C1_DHAN_90D_RANGE_VALIDATION.md](C1_DHAN_90D_RANGE_VALIDATION.md).
 - **C1 remains NOT PASSED.** The sample is one quarter only. Five-year point-in-time histories, legacy/inactive identities, minute-bar corporate-action treatment, official historical free-float weights and basket-to-index reconstruction remain open; C2 remains gated.
+
+
+## Historical 2022 point-in-time universe — PASS (2026-11-01)
+
+- Workflow [41251808946](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251808946) passed all 24 offline tests and Dhan live preflight.
+- 2022-10-03–2022-12-30 point-in-time NIFTY 50 basket: 50/50 symbols and security IDs passed.
+- Each constituent had 61/61 regular sessions with 10:00–10:03 anchor and 15:00–15:14 expiry-proxy availability; zero missing sessions, zero duplicate timestamps, all OHLCV invariants pass. Aggregate 1,146,180 bars represented by per-symbol counts.
+- Legacy mappings used only for the 2022 period: HDFC Ltd ID 1330; TATAMOTORS symbol mapped to TMPV security ID. No price series was stitched over the 2025 demerger.
+- Combined full-basket 90-day coverage windows now pass for 2022Q4 (historic) and 2026Q3 (recent). This is not a continuous five-year backfill.
+- Details: [C1_DHAN_HISTORICAL_2022_90D_VALIDATION.md](C1_DHAN_HISTORICAL_2022_90D_VALIDATION.md).
+- **C1 remains NOT PASSED**: continuous 2021–2026 coverage, earlier inactive IDs, corporate-action minute treatment, authorised official weight time series and basket-to-index reconstruction remain outstanding. C2 remains gated.

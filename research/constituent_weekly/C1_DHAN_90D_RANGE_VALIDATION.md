@@ -57,3 +57,8 @@ The first returned bar was 09:16 IST on 2026-06-29 and the last returned bar was
 - Extend 90-day coverage in controlled periods across the permitted five-year active-instrument history, while maintaining the public-repository no-raw-price rule.
 - Resolve official point-in-time index weights under an authorised data-use route.
 - Build and validate expiry-date alignment, corporate-action handling and constituent basket-to-NIFTY reconstruction before unlocking C2.
+ 
+
+## Historical window cross-check
+
+The separate 2022 point-in-time basket passed 50/50 in [C1_DHAN_HISTORICAL_2022_90D_VALIDATION.md](C1_DHAN_HISTORICAL_2022_90D_VALIDATION.md). This confirms another isolated quarter, not continuous coverage or the full five-year archive.
