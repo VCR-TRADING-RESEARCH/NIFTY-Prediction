@@ -435,3 +435,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+# Trigger a persisted live Dhan run after correcting the diagnostics commit step.
