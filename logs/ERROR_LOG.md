@@ -264,3 +264,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Added sanitized classification of known authentication failure families without storing provider message text, plus regression coverage. Re-run is pending/in progress.
 - **Security:** No credentials, token values or raw provider response text are stored.
 - **Status:** OPEN — awaiting safe classification and, if confirmed by Dhan, correction of the relevant GitHub Actions secret(s).
+
+
+## 2026-10-31 — Dhan authentication succeeded; constituent coverage partially verified
+
+- Follow-up Actions run [41182679514](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514) completed successfully. The fresh TOTP request returned a valid access token; the profile authenticated (HTTP 200); the Data API plan is active; all 5/5 current scrip-master probe symbols resolved.
+- Historical daily probe passed with 22 bars for 2018-01-01 to 2018-02-01. Historical one-minute probes passed for all 5 symbols on 2022-10-31 (374 bars each, including the 10:00 anchor and 15:25–15:29 close window).
+- Recent-session probe on 2026-10-30 returned 359 bars per symbol and 10:00 anchors, but no 15:25–15:29 bars; targeted close-window requests returned empty arrays (0/5). Overall status remains PARTIAL_OR_BLOCKED; do not treat the recent session as complete.
+- Offline Dhan tests: 11 passed. No credentials, token values, raw bars, prices or security IDs were stored.
+- A one-date follow-up probe for 2026-10-29 has been committed and its Actions run is pending/in progress; this will distinguish a date-specific gap from a recent-history limitation. C1 remains blocked pending point-in-time weights, current membership, identifier/corporate-action history and full coverage validation.
