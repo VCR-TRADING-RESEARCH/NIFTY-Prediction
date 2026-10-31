@@ -80,40 +80,105 @@ def test_analyse_bars_rejects_mismatched_response_arrays():
 
 def test_access_token_helper_prefers_fresh_totp_token(monkeypatch):
     import scripts.constituent_weekly.dhan_equity_preflight as probe
+    from types import SimpleNamespace
+
     monkeypatch.setenv("DHAN_CLIENT_ID", "client")
+    monkeypatch.setenv("DHAN_PIN", "123456")
+    monkeypatch.setenv("DHAN_TOTP_SECRET", "fake-secret")
     monkeypatch.setenv("DHAN_ACCESS_TOKEN", "fallback-token-value")
-    monkeypatch.setattr(probe, "refresh_dhan_token", lambda: ("fresh-token-value", "client"))
-    assert probe.acquire_access_token() == (
-        "fresh-token-value", "client", "totp_refresh", "SUCCESS"
-    )
+    monkeypatch.setattr(probe.pyotp, "TOTP", lambda secret: SimpleNamespace(now=lambda: "654321"))
+
+    captured = {}
+
+    class Response:
+        ok = True
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return {"accessToken": "fresh-token-value-that-is-long-enough"}
+
+    def fake_post(url, *, params, timeout):
+        captured.update(url=url, params=params, timeout=timeout)
+        return Response()
+
+    monkeypatch.setattr(probe.requests, "post", fake_post)
+    token, client_id, method, status, diagnostics = probe.acquire_access_token()
+    assert token == "fresh-token-value-that-is-long-enough"
+    assert client_id == "client"
+    assert method == "totp_refresh"
+    assert status == "SUCCESS"
+    assert captured["url"] == probe.AUTH_URL
+    assert captured["params"] == {"dhanClientId": "client", "pin": "123456", "totp": "654321"}
+    assert diagnostics["response_keys"] == ["accessToken"]
+    assert diagnostics["access_token_field_type"] == "str"
+    assert "accessToken" not in str(diagnostics["token_container"])
 
 
 def test_access_token_helper_uses_fallback_only_after_refresh_failure(monkeypatch):
     import scripts.constituent_weekly.dhan_equity_preflight as probe
-    from live_api.app import PublicPredictionError
+    from types import SimpleNamespace
+
     monkeypatch.setenv("DHAN_CLIENT_ID", "client")
+    monkeypatch.setenv("DHAN_PIN", "123456")
+    monkeypatch.setenv("DHAN_TOTP_SECRET", "fake-secret")
     monkeypatch.setenv("DHAN_ACCESS_TOKEN", "fallback-token-value")
+    monkeypatch.setattr(probe.pyotp, "TOTP", lambda secret: SimpleNamespace(now=lambda: "654321"))
 
-    def fail_refresh():
-        raise PublicPredictionError("sanitized refresh failure")
+    class Response:
+        ok = True
+        status_code = 200
 
-    monkeypatch.setattr(probe, "refresh_dhan_token", fail_refresh)
-    assert probe.acquire_access_token() == (
-        "fallback-token-value", "client", "provided_token_fallback",
-        "FAILED_FALLBACK_USED"
-    )
+        @staticmethod
+        def json():
+            return {"status": "error", "message": "provider message must not be copied"}
+
+    monkeypatch.setattr(probe.requests, "post", lambda *args, **kwargs: Response())
+    token, client_id, method, status, diagnostics = probe.acquire_access_token()
+    assert token == "fallback-token-value"
+    assert client_id == "client"
+    assert method == "provided_token_fallback"
+    assert status == "FAILED_FALLBACK_USED"
+    assert diagnostics["response_keys"] == ["message", "status"]
+    assert "provider message must not be copied" not in str(diagnostics)
 
 
 def test_access_token_helper_rejects_invalid_fallback_line_breaks(monkeypatch):
     import pytest
     import scripts.constituent_weekly.dhan_equity_preflight as probe
-    from live_api.app import PublicPredictionError
+    from types import SimpleNamespace
+
     monkeypatch.setenv("DHAN_CLIENT_ID", "client")
+    monkeypatch.setenv("DHAN_PIN", "123456")
+    monkeypatch.setenv("DHAN_TOTP_SECRET", "fake-secret")
     monkeypatch.setenv("DHAN_ACCESS_TOKEN", "token-value\nBAD_ENV=1")
+    monkeypatch.setattr(probe.pyotp, "TOTP", lambda secret: SimpleNamespace(now=lambda: "654321"))
 
-    def fail_refresh():
-        raise PublicPredictionError("refresh failed")
+    class Response:
+        ok = True
+        status_code = 200
 
-    monkeypatch.setattr(probe, "refresh_dhan_token", fail_refresh)
-    with pytest.raises(PublicPredictionError):
+        @staticmethod
+        def json():
+            return {"message": "no access token"}
+
+    monkeypatch.setattr(probe.requests, "post", lambda *args, **kwargs: Response())
+    with pytest.raises(probe.PublicPredictionError):
         probe.acquire_access_token()
+
+
+def test_auth_response_diagnostics_never_return_response_values():
+    import scripts.constituent_weekly.dhan_equity_preflight as probe
+
+    response = {
+        "status": "failed",
+        "message": "secret provider message",
+        "data": {"accessToken": "x" * 40},
+    }
+    result = probe.auth_response_diagnostics(response)
+    assert result["response_keys"] == ["data", "message", "status"]
+    assert result["data_keys"] == ["accessToken"]
+    assert result["access_token_field_type"] == "str"
+    assert result["access_token_length"] == 40
+    assert "secret provider message" not in str(result)
+    assert "x" * 40 not in str(result)
