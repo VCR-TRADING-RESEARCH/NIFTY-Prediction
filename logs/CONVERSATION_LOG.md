@@ -110,3 +110,10 @@
 - Added a new Dhan equity preflight path and offline tests using the existing POST-based live API auth function. The script avoids printing or storing credentials, token values, security IDs and raw prices.
 - The Dhan workflow's execution is not yet visible; no live equity-data result is claimed.
 - C1 remains blocked on official point-in-time free-float weights, post-2025-09-30 membership and verified constituent minute bars.
+
+2026-10-31 — User requested resume of BUP-01
+
+- Continued the C1 constituent weekly-expiry research and checked the phase records and latest Actions runs.
+- Recorded offline audit success, 10/10 Dhan mocked tests passing, live token response without accessToken and profile HTTP 401.
+- Updated the C1 branch status, README, source register, research/error/conversation logs. Also mirrored the latest C1 status and links into main README and logs.
+- No private reasoning, credentials or secrets are copied into repository logs.
