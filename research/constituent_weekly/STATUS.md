@@ -1,6 +1,6 @@
 # BUP-01 Research Status
 
-**Last updated:** 2026-10-31  
+**Last updated:** 2026-11-01  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
 **Status:** C0 PASS; C1 data feasibility IN PROGRESS / RIGHTS-BLOCKED  
 **Prediction status:** No constituent panel, trained stock model or bottom-up forecast exists  
@@ -9,13 +9,22 @@
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Actions workflow validated required files and plan structure; governance regression tests passed; report committed as 746d1b382e338e760b1cf4b3ee5ea6fa6b63bc85 |
-| C1 — Point-in-time universe/data audit | IN PROGRESS / BLOCKED | One-time report sample structurally parsed; automated NSE collection stopped pending permission; audit licensed/authorised weights, historical membership, security IDs, corporate actions and Dhan stock price coverage |
+| C1 — Point-in-time universe/data audit | IN PROGRESS / BLOCKED | 15:15 expiry proxy accepted and sample validation passed; historical-weight candidate cached; close 2025-09 onward weight gap, historical corporate-action identity, full stock OHLCV coverage and basket reconciliation under review |
 | C2 — Panel labels/features | PENDING | Build only after C1 passes; validate target construction and freeze source hashes/split |
 | C3 — Stock models/baselines | PENDING | Pooled stock panel and bounded benchmarks only after C2 passes |
 | C4 — Index aggregation/uncertainty | PENDING | Weighted expected return and dependence-aware probability; compare on matched cycles |
 | C5 — Economic/execution gate | PENDING | Contract-level fills and date-effective Paytm Money costs required before any strategy claim |
 | C6 — Manuscript/independent audit | PENDING | Complete manuscript, plots, tables, appendices and formula/repository audit |
 
+
+## Latest gate update — 2026-11-01
+
+- **Expiry proxy gate: PASS on the tested sample.** By user instruction, the expiry observation is the close of the latest one-minute candle timestamped 15:00 through 15:14 IST, treated as a 15:15 proxy and not mislabeled as the 15:30 exchange close. Protected run [41247509692](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41247509692) passed all 10 five-symbol/two-date anchor and expiry-proxy checks; all selected the 15:14 candle.
+- **Current universe: 50/50. Historical symbol master match: 79/84.** A separate legacy HDFC Ltd ID test passed on 2022-10-31 and 2023-06-30 (2/2). JPASSOCIAT, RANBAXY and MCDOWELL-N only appear in the ledger in 2014, before the confirmatory 2018-04 start. TATAMOTORS/TMPV remains a dated demerger/symbol boundary; pre/post prices must not be joined unadjusted.
+- **Historical weight candidate: acquired and validated.** 216 dated rows, 100 ticker columns, 2008-01-31 to 2025-08-31; row sums within 4.3e-14 of 100%. Cache: data/constituent_weekly/nifty50_weights_monthly.csv; audit: [C1_NIFTY50_WEIGHT_AUDIT.json](C1_NIFTY50_WEIGHT_AUDIT.json). Licence is CC BY-NC-SA 4.0 and commercial use is not permitted; the source has estimated/extrapolated event weights and is not accepted as official daily IWF.
+- **Official source search:** NSE All Reports lists historical “Market Capitalisation, Weightage, Beta for NIFTY 50 & NIFTY Next 50” and “Indices - Market Capitalisation & Weightage” reports. NSE Market Pulse gives some recent sector-level weights but not a full stock-level point-in-time series. Automated NSE collection remains disabled pending rights/licence clearance. The candidate file does not cover 2025-09 onward.
+- Latest offline workflow regression validation: [run 41247674443](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41247674443), **18 passed**. The status renderer now reports the user's expiry rule, HDFC legacy sample, and weight-cache result.
+- **Overall C1 remains NOT PASSED.** The five-symbol sample is not a 50-stock data panel. Required next gates: authorised/official stock weights after 2025-08 and historical reconciliation, dated ISIN/security identities/corporate actions, full anchor/expiry-proxy OHLCV coverage, and constituent basket reconstruction against the official NIFTY 50 index.
 ## Initial source findings (document review only)
 
 - NIFTY 50 methodology uses free-float market-cap weights; a majority vote of stock directions is not the primary index aggregation rule.
