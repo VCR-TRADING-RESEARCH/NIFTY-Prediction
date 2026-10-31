@@ -106,3 +106,9 @@
 - Hardened workflow so pull-request checks run offline tests only, Dhan calls are serialized, and editing the workflow file alone does not consume another TOTP token. Offline tests passed 11/11 on the last live preflight.
 - Dhan official guidance states access tokens are valid for 24 hours, API-key/secret authentication is the intended automation route, and at most five active tokens may be retained simultaneously. Avoid repeated token-generation loops. Sources: https://dhanhq.co/docs/v2/authentication/ and https://dhan.co/support/platforms/dhanhq-api/how-many-access-tokens-can-i-generate-for-my-dhan-account/.
 - C1 remains BLOCKED: recent-session close coverage and point-in-time index data/rights gates remain unresolved. No constituent model or trading result exists.
+
+## 2026-10-31 — User approved continuation of BUP-01 C1
+- User said “Ok Proceed”.
+- Re-read the C1 status, Dhan preflight JSON, source register, research/error/conversation logs, operating rules, pre-registered research plan and relevant workflow on the C1 branch; checked the corresponding main README state.
+- New source review: official NIFTY methodology/IWF guidance, NSE website Terms of Use and Dhan v2 historical-data documentation. Confirmed IWF is more complex than ownership roll-ups; NSE website terms create a rights gate for automated scraping/simulation; Dhan intraday history is documented for active instruments only and is queried in 90-day windows.
+- Decision: do not repeat TOTP refresh without a meaningful reason; keep NSE scraping disabled; keep C1 BLOCKED and C2 gated. Record only visible decisions and outcomes, not hidden private reasoning or secrets.
