@@ -333,3 +333,17 @@ Protected live run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFTY-P
 The five historical symbols/aliases absent from today's Dhan master are HDFC, JPASSOCIAT, MCDOWELL-N, RANBAXY, and TATAMOTORS. This is a current-master lookup limitation, not proof that historical prices cannot be retrieved; dated successor/security-ID mappings must be established before acquisition. The recent sample feed returned 359 one-minute bars per symbol through 15:14 IST, with 10:00 anchors but no 15:25–15:29 expiry-close bars; separate 15:20–15:30 requests were empty for all five symbols.
 
 The workflow committed sanitized diagnostics to the C1 branch. No raw OHLCV bars, security IDs, access tokens, PINs or TOTP secrets were stored. **C1 remains BLOCKED; C2 remains gated.** See [C1 phase status](research/constituent_weekly/STATUS.md), [sanitized Dhan preflight](research/constituent_weekly/C1_DHAN_PREFLIGHT.json), [research log](logs/RESEARCH_LOG.md), and [error log](logs/ERROR_LOG.md).
+
+## BUP-01 latest Dhan preflight — 2026-10-31
+
+The protected live Dhan run [41223795394](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223795394) authenticated successfully, confirmed an active Data API plan, and resolved **50/50 current NIFTY 50 symbols** against the current Dhan scrip master. **79/84 historical membership aliases** were present in that current master; this is not proof of historic security-ID continuity for inactive/delisted securities.
+
+The bounded five-stock price probes found 22 daily bars for January 2018, and all five stocks passed the 31 October 2022 one-minute anchor/expiry-close checks. The recent 29 October 2026 sample had 10:00 anchors but no 15:25–15:29 close bars for any of the five; targeted close-window requests were empty (0/5). A later authentication-only retry returned HTTP 200 without an access token and the fallback profile check returned HTTP 401; no data requests were made in that retry.
+
+The first workflow revision did not persist generated diagnostics after an autostash/rebase. The commit step was corrected, and the sanitized successful-run report plus the subsequent auth-only failure are now preserved in the C1 branch:
+- [C1 status](research/constituent_weekly/STATUS.md)
+- [Successful-run sanitized report](research/constituent_weekly/C1_DHAN_PREFLIGHT.json)
+- [Latest auth-only attempt](research/constituent_weekly/C1_DHAN_LAST_ATTEMPT.json)
+
+**Gate decision:** C1 remains BLOCKED. No constituent price panel, stock model, NIFTY aggregation, or trading strategy is approved. The remaining blockers include five unresolved historical aliases, actual historic IDs for inactive/delisted securities, recent expiry-close coverage, point-in-time numerical free-float weights, and basket-to-index reconstruction.
+
