@@ -307,3 +307,14 @@ The bounded free-source review did not clear the remaining C1 gates. Official NS
 User confirmed Dhan as the available data source. The next constituent data gate will prioritize the existing Dhan Data API subscription for historical daily/intraday OHLCV and security-ID resolution, using cache-first bounded batches and coverage checks for active and delisted/inactive constituents. Required observations include forecast-time anchor bars and expiry-close bars. Authentication is serialized and credentials remain in GitHub Actions secrets.
 
 Dhan price data must not be misrepresented as official historical NIFTY free-float IWF. Exact point-in-time weights, membership/security identity/corporate actions and full constituent price coverage remain separate gates. C1 is still BLOCKED; no C2 model or strategy is claimed. See [BUP-01 status](research/constituent_weekly/STATUS.md) and [research log](logs/RESEARCH_LOG.md).
+
+## BUP-01 — Dhan full-universe audit code update (2026-10-31)
+
+The C1 Dhan preflight now derives the active 2026-10-31 tradable NIFTY 50 universe and the full historical tradable symbol/alias set from the point-in-time membership ledger, then resolves both against the current Dhan scrip master. It excludes the non-tradable DUMMYTATAM placeholder and reports resolution counts separately from the five-symbol candle probe. Security IDs and raw bars are not committed. A current scrip-master match is not proof of historical ID coverage for inactive/delisted securities.
+
+- Code commit: 05b71dc111779ef40da748319f7d109a012c4451.
+- Offline validation: [Actions run 41223379333](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223379333), SUCCESS; 13 tests passed.
+- The live Dhan step was skipped because this run was a pull-request event; this is an intentional secret-safety guard. Full-universe ID counts have not yet been measured. The protected live test must be started using the [C1 Dhan workflow](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/workflows/constituent-weekly-c1-dhan.yml) with workflow_dispatch on the C1 branch.
+- Latest successful live probe [41182679514](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514) still covers only five sample stocks and remains partial for recent expiry-close bars.
+
+Status: C1 BLOCKED; C2 not authorised. No bottom-up stock model, index aggregation or trading strategy exists yet. See [BUP-01 status](research/constituent_weekly/STATUS.md), [research log](logs/RESEARCH_LOG.md), and [error log](logs/ERROR_LOG.md).
