@@ -304,6 +304,8 @@ def main() -> int:
     result["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
     write_result(result)
     print(f"Dhan equity preflight status: {result['status']}")
+    if result.get("token_refresh_diagnostics"):
+        print("TOKEN_RESPONSE_SHAPE", json.dumps(result["token_refresh_diagnostics"], sort_keys=True))
     print(f"Data API plan active: {result.get('data_plan_active')}")
     print(f"Current symbols resolved: {len(result.get('resolved_probe_symbols', []))}; unresolved: {len(result.get('missing_probe_symbols', []))}")
     print(f"Daily history probe: {result.get('daily_history_probe', {}).get('status', 'NOT_RUN')}; bars={result.get('daily_history_probe', {}).get('bar_count', 0)}")
