@@ -1,0 +1,66 @@
+name: Bottom-up NIFTY constituent research
+
+on:
+  push:
+    branches:
+      - "phase/constituent-*"
+    paths:
+      - "research/constituent_weekly/**"
+      - "scripts/constituent_weekly/**"
+      - "tests/test_constituent_weekly_plan.py"
+      - ".github/workflows/constituent-weekly-research.yml"
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: "Research phase to validate/run"
+        required: true
+        type: choice
+        options:
+          - c0-governance
+          - c1-data
+          - c2-panel
+          - c3-models
+          - c4-aggregation
+          - c5-costs
+          - c6-audit
+
+permissions:
+  contents: write
+
+jobs:
+  c0-registration:
+    if: github.event_name == 'push' || inputs.phase == 'c0-governance'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout phase branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate registered research plan
+        run: python scripts/constituent_weekly/validate_plan.py
+      - name: Run governance regression tests
+        run: python -m unittest discover -s tests -p "test_constituent_weekly_plan.py" -v
+      - name: Commit validation evidence
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/constituent_weekly/C0_VALIDATION_REPORT.md
+          if ! git diff --cached --quiet; then
+            git commit -m "Record BUP-01 C0 validation evidence"
+            git push
+          fi
+
+  future-phase-guard:
+    if: github.event_name == 'workflow_dispatch' && inputs.phase != 'c0-governance'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail closed until the phase implementation is registered
+        run: |
+          echo "The selected phase does not yet have an implementation in this branch."
+          echo "Create and review the dedicated phase branch and data gate before dispatch."
+          exit 1
