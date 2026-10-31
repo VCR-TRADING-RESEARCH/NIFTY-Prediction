@@ -99,22 +99,20 @@ No model training until point-in-time membership, numeric free-float weights, se
 **Phase decision:** C0 PASS. C1 offline workflow PASS. C1 market-data/weights gate remains BLOCKED. Do not create C2 panel or fit stock models until numeric point-in-time free-float weights, the post-2025-09-30 current membership, security identity/corporate actions, and constituent 1-minute price coverage are validated.
 
 <!-- C1_DHAN_STATUS_START -->
-## Latest Dhan equity preflight
+## Latest successful Dhan universe/data preflight
 
-- Recorded at (UTC): 2026-10-31T17:21:14.429027+00:00
-- Dhan auth method/status: totp_refresh / SUCCESS
-- Profile HTTP status: NOT_RECORDED
-- Status: PARTIAL_OR_BLOCKED
-- Data plan active: True
-- Current universe security IDs resolved: 50/50
-- Historical membership symbols found in current scrip master: 79/84
-- Five-symbol price probe IDs resolved: 5
-- Missing symbols from current scrip master: 0
-- One-minute probe windows passing: 5/10
-- Targeted 2026 expiry-close windows passing: 0/5
-- Deep daily-history probe: PASS
-- Raw bars, prices, security IDs, credentials and tokens are not stored in this report.
-- This probe does not establish inactive/delisted instrument history, point-in-time membership or index weights.
+- Successful live data run: [Actions run 41223795394](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223795394), 2026-10-31 17:17:24–17:18:10 UTC; workflow conclusion SUCCESS.
+- Fresh TOTP authentication: SUCCESS; profile HTTP 200; Data API plan active.
+- Offline response-validation tests: **13 passed**.
+- Current NIFTY 50 symbols resolved in current Dhan scrip master: **50/50**.
+- Historical membership aliases found in current scrip master: **79/84**. Five aliases were not resolved; current-master lookup does not prove historical security-ID continuity for delisted/inactive securities.
+- Five-symbol daily-history probe: **PASS**, 22 bars for 2018-01-01 to 2018-02-01.
+- Five-symbol one-minute probe: **5/5 PASS** on 2022-10-31; 374 bars per symbol, including 10:00 anchors and 15:25–15:29 expiry-close bars.
+- Recent 2026-10-29 intraday probe: 10:00 anchors present for all five, but 15:25–15:29 expiry-close bars absent for all five; full-day checks **0/5 PASS**. Targeted close-window requests were empty (**0/5**).
+- A later auth-only retry [41223923790](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223923790) returned HTTP 200 without an access-token field; fallback profile authentication returned HTTP 401. No market-data requests were made. Preserved separately in [C1_DHAN_LAST_ATTEMPT.json](C1_DHAN_LAST_ATTEMPT.json).
+- Corrected the workflow diagnostics commit step: generated files are now committed before rebasing, preventing autostash from leaving updated reports unstaged.
+- The successful report is a sanitized reconstruction from Actions logs because the prior workflow revision failed to persist the generated JSON. It contains no raw bars, prices, security IDs, credentials or tokens.
+- C1 remains **NOT PASSED**: expiry-close coverage, the five unresolved historical aliases, inactive/delisted security history, official point-in-time numerical free-float weights and basket reconciliation remain open.
 <!-- C1_DHAN_STATUS_END -->
 
 ## C1 resume checkpoint — 2026-10-31
