@@ -61,3 +61,10 @@
 - Added `?as_of_date=YYYY-MM-DD` support to the Pages predictor so a completed date-specific JSON result can be opened directly without generating another request. The Actions completion comment now links back to that exact result page.
 - Pages deployment for the deep-link JavaScript passed in run [40201836007](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/40201836007). A later documentation deployment was still running at latest inspection.
 - Direct historical result link: https://vcr-trading-research.github.io/NIFTY-Prediction/?as_of_date=2024-09-20. External browser verification of the rendered page was unavailable; the JSON record and deployment run are verified.
+
+
+## 2026-10-31 — User requested resume; BUP-01 C1 checkpoint
+- User asked to resume the ongoing BUP-01 constituent-level weekly-expiry research.
+- Reviewed existing C1 plan/status, source register, feasibility note, README, research/error logs, and the latest relevant GitHub Actions evidence.
+- Reported and recorded: offline source audit run 41181684637 passed; Dhan preflight run 41181684573 had 9/9 offline tests pass but live profile HTTP 401; token-refresh PR #28 checks pass but PR remains draft/open; licensed membership candidate is not a weight series and is stale after 2025-09.
+- Updated C1 status and README. No private reasoning or credentials are stored; this log records the visible decision and outcomes only.
