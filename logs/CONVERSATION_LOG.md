@@ -176,3 +176,13 @@
 - The corrected workflow committed the sanitized result and status as d5a82d8. Repository verification confirmed the latest successful report and the earlier auth-only failure are separately preserved.
 - Research decision unchanged: C1 BLOCKED; do not proceed to C2 or claim a model/strategy until remaining identity, weights and price-coverage gates pass.
 
+
+
+## 2026-11-01 — Expiry proxy, historical aliases and weight search
+
+- User direction: “I don't need 15:25–15:29 data treat the available time as expiry like 15:15”; “Do the necessary to resolve, if it couldn't be resolved, no issues. 79 are available right?”; “Do a web search to obtain the weights.”
+- Updated C1 expiry acceptance to the final available one-minute candle at/before 15:15 IST and removed the late close-window dependency. The live Dhan run 41247509692 authenticated, resolved 50/50 current symbols and matched 79/84 historical names; 10/10 five-symbol/two-date checks passed with 15:14 timestamps.
+- Tested historic HDFC Ltd security ID on 2022-10-31 and 2023-06-30; both passed. Classified JPASSOCIAT, RANBAXY and MCDOWELL-N as 2014-only membership aliases, outside the confirmatory window; recorded TATAMOTORS/TMPV as a dated identity/corporate-action change.
+- Searched for historic NIFTY 50 weights. Located official NSE archive report family for monthly market-cap/weightage reports, and acquired an openly hosted 216-row/100-ticker weight dataset through 2025-08-31. It is CC BY-NC-SA 4.0, non-commercial only, uses some estimated/extrapolated event weights, and needs cross-checks; no 2025-09 onward weights found/added yet.
+- Added cache-first download/validation, provenance/licence notes, identity history notes, user decision file and workflow-driven status updates. No private chain-of-thought is stored in repo; only user-visible decisions, technical steps and outcomes.
+- Overall C1 remains NOT PASSED and C2 remains gated; no prediction model or strategy is claimed.

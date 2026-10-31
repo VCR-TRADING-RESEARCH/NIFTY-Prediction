@@ -316,3 +316,13 @@
 - The workflow committed the sanitized JSON and status successfully as commit d5a82d8, confirming the autostash persistence defect is corrected.
 - C1 status now points to run 41224048773. The previous auth-only failure is preserved separately in C1_DHAN_LAST_ATTEMPT.json and does not supersede this later successful run.
 
+
+
+## 2026-11-01 — User-approved expiry proxy and weight-source acquisition
+
+- User directed that the absence of 15:25–15:29 candles should not block C1; use the latest available candle at or before 15:15 IST as expiry proxy. Implemented the 15:00–15:14 timestamp window; record the actual timestamp and state that it is a proxy rather than the 15:30 exchange close.
+- Live protected Action [41247509692](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41247509692) completed SUCCESS. Dhan TOTP refresh/profile/data plan passed; current active symbols 50/50; historical aliases 79/84; five-symbol/two-date anchor/expiry proxy checks 10/10 passed, with last available candle timestamp 15:14 IST. Daily history probe 22 bars. No raw market data, price bars, security IDs or credentials persisted.
+- HDFC Ltd legacy-security-ID probe passed on 2022-10-31 and 2023-06-30 (2/2). This verifies those two samples only; it does not establish every historical date. JPASSOCIAT, RANBAXY and MCDOWELL-N appear only before the 2018-04 confirmatory start in the membership ledger; TATAMOTORS/TMPV remains an explicitly dated corporate-action alias requiring a price adjustment/identity rule.
+- Acquired and cached third-party historical weights: 216 rows, 100 ticker columns, 2008-01-31 to 2025-08-31; max absolute row-sum deviation 4.263256414560601e-14; SHA-256 3a3441a997b64a54363b38ebc02807e82cc0e0affd2efda147d1b7758a0b10cb. Dataset is CC BY-NC-SA 4.0, non-commercial only; source method includes estimated/extrapolated event weights and no coverage after 2025-08-31. Not accepted as official complete IWF.
+- Official NSE reports archive route identified for monthly weightage cross-check. No automatic scraping pending NSE terms/licence determination. 2025-09 onward weights remain missing.
+- Branch contains expiry proxy logic, a cache-first weight fetcher/auditor, regression tests, licence and symbol-provenance files. C1 remains NOT PASSED; C2 remains gated pending weights, historical identifiers/actions, full constituent OHLCV coverage and basket/index reconciliation.

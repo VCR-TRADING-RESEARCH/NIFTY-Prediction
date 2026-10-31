@@ -356,3 +356,21 @@ The protected live Dhan run is no longer awaiting manual dispatch. It was initia
 - This demonstrates intermittent authentication-response behavior; the precise provider-side cause remains unconfirmed. Do not repeat token refreshes without a concrete need.
 - The latest successful report is persisted in C1_DHAN_PREFLIGHT.json; the failed auth-only attempt remains separately preserved in C1_DHAN_LAST_ATTEMPT.json.
 
+
+
+## E0034 resolution — 2026-11-01 — User-approved 15:15 expiry proxy
+
+- **Original observation:** Dhan's 2026-10-29 intraday sample ended at 15:14 IST; no 15:25–15:29 observations were returned.
+- **Resolution:** User explicitly instructed that the last available time should be treated as expiry like 15:15. The validator now accepts the close of the latest 1-minute candle timestamped 15:00–15:14 IST, records its real timestamp, and labels it as a 15:15 proxy rather than a 15:30 official close. Targeted 15:20–15:30 requests were removed.
+- **Validation:** Live run [41247509692](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41247509692) passed 10/10 five-stock/two-date checks; all five 2026-10-29 samples selected the 15:14 timestamp. The absence of later candles remains a provider-data fact but is no longer a failure under the user-approved specification.
+- **Scope:** This is a criteria change, not proof of a full 50-stock panel. C1 still requires full historical price coverage and index basket reconciliation.
+
+## E0035 — 2026-10-31 — Deprecated pandas applymap in weight validator (resolved)
+
+- **Observed:** The first cache validation passed but emitted a pandas FutureWarning because DataFrame.applymap is deprecated.
+- **Fix:** Replaced elementwise applymap with NumPy finite/range checks on the numeric matrix; added tests for infinity, negative and over-100 weights.
+- **Validation:** Regression tests are rerunning on the latest C1 branch update; the live data/weight acquisition run already passed before this non-functional cleanup. Record final CI outcome in the next status update.
+
+## Historical alias scope clarification — 2026-11-01
+
+- The 79/84 count is a current-master symbol match, not a complete historical-data count. HDFC is separately resolved to its legacy Dhan security identifier for two successful samples. JPASSOCIAT, RANBAXY and MCDOWELL-N occur only in 2014 membership intervals and are outside the project's 2018-04 onward confirmatory period. TATAMOTORS/TMPV remains a corporate-action boundary that must be adjusted/mapped; don't blindly equate two price histories.
