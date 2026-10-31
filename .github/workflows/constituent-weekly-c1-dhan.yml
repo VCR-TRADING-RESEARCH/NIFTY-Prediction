@@ -5,6 +5,8 @@ on:
     branches:
       - "phase/constituent-weekly-outcomes-c1-data"
     paths:
+      - "scripts/refresh_dhan_token.py"
+      - "tests/test_dhan_token_refresh_script.py"
       - "scripts/constituent_weekly/dhan_equity_preflight.py"
       - "scripts/constituent_weekly/update_c1_dhan_status.py"
       - "tests/test_constituent_weekly_dhan_preflight.py"
