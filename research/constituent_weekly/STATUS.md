@@ -110,7 +110,7 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_DHAN_STATUS_START -->
 ## Latest Dhan equity preflight
 
-- Recorded at (UTC): 2026-10-31T23:04:10.339110+00:00
+- Recorded at (UTC): 2026-10-31T23:06:15.195725+00:00
 - Dhan auth method/status: totp_refresh / SUCCESS
 - Profile HTTP status: NOT_RECORDED
 - Status: PASS_ACTIVE_EQUITIES
@@ -119,12 +119,13 @@ No model training until point-in-time membership, numeric free-float weights, se
 - Historical membership symbol aliases matched in current Dhan master: 79/84
 - Five-symbol one-minute anchor/expiry-proxy checks: 10/10
 - Full point-in-time NIFTY 50 probe: 50/50 passed; resolved 50; date 2026-10-29
+- 90-day Dhan one-minute range: 3/3 symbols passed; date range [('2022-10-03', '2022-12-30')]; standard-session counts [61]; non-standard session dates ['2022-10-24']
 - Accepted expiry proxy: last returned one-minute candle at/before 15:15:00 IST; sample proxy timestamp(s): 2022-10-31T15:14:00+05:30, 2026-10-29T15:14:00+05:30
 - Historic HDFC Ltd legacy-security-ID probes: 2/2 passed
 - Deep daily-history probe: PASS
 - Historical-weight candidate cache: CACHE_VALIDATED; 216 rows, 100 ticker columns, 2008-01-31 to 2025-08-31
 - Weight candidate licence: CC BY-NC-SA 4.0; commercial use permitted: False
-- This is a five-symbol/two-date market-data sample, not full-universe OHLCV certification.
+- The one-day 50-stock probe and three-symbol 90-day batch probe are not a complete five-year point-in-time constituent panel.
 - Raw bars, prices, security IDs, credentials and tokens are not stored in this report.
 - C1 remains gated by official/authorised point-in-time weights, the 2025-09 onward weight gap, full historical security identity and coverage, and index-basket reconciliation.
 <!-- C1_DHAN_STATUS_END -->
