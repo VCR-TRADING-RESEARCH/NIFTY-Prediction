@@ -333,3 +333,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Security:** No token, PIN, TOTP seed, raw provider body, security ID or raw candle was added to logs.
 - **Impact:** No new market data was acquired in this run. Prior successful samples remain valid only for their stated dates and scope.
 - **Status:** OPEN — requires verification/correction of the organization GitHub Actions Dhan credentials and a later fresh protected preflight. Do not retry in a loop or use the expired fallback token.
+
+
+## E0033 — 2026-11-01 — Workflow status gate initially preceded diagnostics commit
+
+- **Observed during review:** The first workflow-gate patch in commit [8e31a7d](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8e31a7d813019733ccf23b07129f24d2a7cb7884) placed the new failing status check before the sanitized diagnostics commit step. A blocked live run could therefore have stopped before preserving its result.
+- **Correction:** Moved the gate to the end of the workflow, after the diagnostics commit, in commit [02c8074](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/02c8074750a65642ddf6078dd4abafce48c3f1fc). Read-back verified that the commit step precedes the fail-closed gate.
+- **Impact:** No live workflow was dispatched between the two revisions; no diagnostic result was lost. The corrected workflow commits sanitized evidence first and only then returns a failing conclusion for a blocked/partial live preflight.
+- **Status:** CLOSED — static ordering check and repository read-back passed; Actions execution remains to be verified on the next authorized live run.
