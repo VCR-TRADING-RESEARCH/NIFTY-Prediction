@@ -209,3 +209,11 @@
 - Reviewed the seven repositories requested for research tooling and created research/constituent_weekly/TOOLING_EVALUATION.md with licence, fitness, risks and phase allocation.
 - No modelling tools were imported during C1 because the registered plan gates them on point-in-time data rights/coverage and panel acceptance. AstraQuant is not integrated due to its custom licence and OKX-specific execution path; tick is deferred until licensed event-level data exists.
 - No plan amendment; no bottom-up model, forecast or strategy produced.
+
+
+## 2026-11-01 — User said “Proceed”; IWF math and source gate continued
+- Added a 22-exclusion mapping matrix and mathematical audit against the official NSE IWF guideline. The official worked example uses total shares as denominator and six-decimal rounding; the third-party parser's A+B+C2 shareholding-percentage base is a different quantity.
+- Added strict arithmetic helpers and regression tests; the official worked example reproduces IWF 0.608794 and position-level duplicate deductions are rejected.
+- A CI wiring omission initially left the new test module out of pytest despite the path filter; corrected it and recorded E0049. Corrected push [41269516064](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269516064) and PR [41269519499](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269519499) passed 50 tests.
+- C1 remains NOT PASSED / RIGHTS-BLOCKED because no legally admitted point-in-time official IWF source, complete 22-exclusion evidence and weighted basket-to-index reconciliation exist. No C2 panel/model/forecast or strategy created.
+- The repo is public; raw market bars, named shareholder information and unlicensed source data are not committed. Visible decisions/outcomes only are logged.
