@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "evidence_type": "SANITIZED_ACTION_LOG_SUMMARY",
+  "methodology_version": "bup01-c1-dhan-target-coverage-v1",
+  "workflow_run_id": 41301447865,
+  "workflow_run_url": "https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865",
+  "workflow_head_sha": "31379700f0f4f9463a87210f34df47fe2013728c",
+  "workflow_completed_at_utc": "2026-11-01T11:46:24Z",
+  "workflow_job_conclusion": "failure_at_report_publication_only",
+  "audit_status": "DATA_COVERAGE_PASS_IDENTITY_ACTION_REVIEW_PENDING",
+  "target_coverage_status": "PASS",
+  "identity_status": "SYMBOL_MAPPING_RESOLVED_KNOWN_AND_UNIVERSAL_CORPORATE_ACTION_REVIEW_PENDING",
+  "cycle_window": {
+    "first_forecast_anchor": "2021-11-12",
+    "last_expiry": "2026-10-27"
+  },
+  "summary": {
+    "scheduled_cycles": 258,
+    "index_target_valid_cycles": 258,
+    "index_target_valid_fraction": 1,
+    "cycles_meeting_47_and_94_percent_stock_gate": 258,
+    "cycles_accepted_for_coverage": 258,
+    "confirmatory_cycles_after_104_prior_cycles": 154,
+    "unresolved_active_symbols": 0,
+    "total_dhan_requests": 1083,
+    "index_window_count": 21,
+    "full_index_window_responses": 20,
+    "partial_index_window_responses": 1,
+    "partial_window": "2024-01-31 to 2024-04-29",
+    "partial_window_note": "The window response was marked PARTIAL_TARGET_DATES, but the script's aggregate cycle calculation reported all 258 weekly anchor/expiry target pairs valid. The exact date-level cause was not retained."
+  },
+  "publication": {
+    "sanitized_report_generated_in_runner": true,
+    "git_commit_failed": true,
+    "cause": "Concurrent branch edits caused rebase conflicts in STATUS.md and RESEARCH_LOG.md.",
+    "final_gate_step": "C1_CONTINUOUS_COVERAGE_GATE_PASSED",
+    "full_per_cycle_detail_persisted": false,
+    "no_prices_or_volumes_in_this_summary": true
+  },
+  "interpretation": "This passes only the registered intraday target-data coverage sub-gate. It does not pass C1 overall; daily OHLCV feature history and exhaustive corporate-action/adjusted-return validation remain open."
+}
