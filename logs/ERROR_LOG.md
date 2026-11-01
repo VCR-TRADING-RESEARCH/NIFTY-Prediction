@@ -724,3 +724,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Root cause:** The initial publisher committed against its checkout snapshot and had no fetch/rebase/rebuild retry loop.
 - **Correction:** Replaced it with `publish_c2_run.py`, which snapshots generated outputs, fetches the latest branch, reapplies outputs/status/log updates and retries non-forced pushes up to five times. A follow-up correction deletes stale prior-run outputs before a new execution.
 - **Status:** CORRECTED IN C2 WORKFLOW; retry-safe publisher is used by current run [41347849285](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41347849285).
+
+
+## E0093 — 2026-11-02 — C2 index-feature reader did not match the official daily CSV schema
+
+- **Detected during:** Static contract review of the C2 runner against `data/reconciliation/nifty50_official_daily.csv`.
+- **Observed:** The source schema uses `official_open`, `official_high`, `official_low`, `official_close`; the first C2 feature function expected bare `open/high/low/close` names.
+- **Root cause:** The new C2 reader did not reuse the source's canonical field aliases.
+- **Correction:** Added explicit support for both source-native `official_*` fields and generic OHLC fields; added an offline regression using the exact official header.
+- **Status:** FIX COMMITTED in 76c2c47 and 780f214. Current in-flight run [41347849285](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41347849285) uses the pre-fix checkout and may stop at the feature-reader gate; the queued corrected run [41348608291](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41348608291) contains the corrected reader and regression.
