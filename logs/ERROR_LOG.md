@@ -414,3 +414,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Re-read the branch tree and fetched the existing utility/report/aggregate-summary files; verified their contents and blob SHAs. Created the one missing test file separately and then wired it into the workflow.
 - **Impact:** No existing file was overwritten, no data artifact was duplicated, and no research calculation was affected.
 - **Status:** CLOSED — all expected proxy files were individually read back. Workflow regression run is the next verification step.
+
+
+## E0052 — 2026-11-01 — BUP-01 plan validator rejected v1.2 due missing version-history line
+
+- **Run:** [41272355566](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272355566).
+- **Observed:** The first v1.2 plan edit changed the registered plan version but the text patch did not add the exact required history marker `- **v1.2 —`. The structural governance workflow correctly failed before running governance tests.
+- **Correction:** Appended a controlled v1.2 version-history entry documenting the user's public-source ETF-proxy amendment. No pre-registered statistical thresholds or original outcome definitions were removed.
+- **Verification:** Corrected push/PR governance validation is pending; no empirical test or model was run under the failed plan validation.
+- **Status:** FIX APPLIED — close after the corrected workflow passes.
