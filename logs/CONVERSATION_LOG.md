@@ -405,6 +405,9 @@
 
 ## 2026-11-02 — Encrypted cache persistence dependency correction
 
+- Corrected the cache writer to use a self-contained AES-GCM implementation with the same BUP01/HF_TOKEN key derivation as the existing encrypted cache, avoiding imports from the full daily-history module.
+- Successful workflow 41343953567 restored the prior cache, validated all three direct NSE bars, encrypted them, and saved the updated cache. Raw market data and credentials remain outside the repository.
+
 ## 2026-11-02 — Encrypted cache persistence dependency correction
 
 - Attempted to persist the three direct-NSE HDFC bars in the existing AES-GCM encrypted cache. The first cache-enhancement workflow failed at import time because its minimal dependency list omitted `pyotp` required by the shared module.

@@ -692,6 +692,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 
 ## E0089 — 2026-11-02 — Encrypted direct-NSE cache writer imported project module without its runtime dependencies
 
+- **Class:** Workflow dependency omission; corrected.
+- **Observed:** Initial cache-enhancement run failed with `ModuleNotFoundError: pyotp` while importing the shared encryption helper from the daily-history module.
+- **Correction:** Removed the heavy module import and implemented the exact same AES-GCM key derivation locally (`SHA-256` over the established BUP01 cache-key prefix plus the HF token), preserving compatibility with the shared cache format. The workflow now installs only requests and cryptography.
+- **Verification:** Rerun [41343953567](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41343953567) succeeded, restored the prior encrypted cache, validated 3/3 direct NSE rows, wrote the supplemental encrypted CSV cache, and saved the new cache key.
+- **Impact:** No raw data or token was committed. Cache persistence is complete; merging the supplemental bars into the feature panel remains pending.
+
 ## E0089 — 2026-11-02 — Encrypted direct-NSE cache writer imported project module without its runtime dependencies
 
 - **Class:** Workflow dependency omission; direct archive audit itself had already passed before cache-persistence enhancement.

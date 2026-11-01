@@ -15,7 +15,9 @@
     "expected_member_sessions": 106392,
     "composite_validation_fraction": 1,
     "raw_values_published": false,
-    "raw_feature_cache_integration": "PENDING"
+    "raw_feature_cache_integration": "ENCRYPTED_SUPPLEMENTAL_CACHE_PERSISTED_NOT_YET_MERGED",
+    "encrypted_cache_sha256": "98c5c1e5e08064184a966780a8dd5d827df475f5b4220381b54bb5c41c64cf26",
+    "encrypted_supplemental_cache_written": true
   },
   "sources": {
     "independent_mirror": {
@@ -113,12 +115,13 @@
       "source_sha256": "1084887d80358e747411fd582405c1166cce44a18eebef8902baea75e6a1b243"
     }
   ],
-  "interpretation": "All seven residual member/date pairs now have independent source-level OHLCV validation. The underlying Dhan/TejHQ daily coverage JSON remains unchanged at 106,385/106,392 because these supplemental raw rows have not yet been merged into the encrypted feature cache. Do not treat the composite count as model-ready feature availability until that integration is completed.",
+  "interpretation": "All seven residual member/date pairs have independent source-level OHLCV validation. The three official NSE rows are now stored in the existing AES-GCM encrypted Actions cache (HF_TOKEN-derived key); the raw bars are not committed or uploaded as artifacts. The daily feature builder has not yet merged/decrypted these supplemental rows, so the base Dhan/TejHQ daily coverage JSON remains 106,385/106,392 and model-ready feature availability must not be called 100% until integration is tested.",
   "limitations": [
     "The mirror is a public third-party archive of NSE daily data; four rows were validated there.",
     "Three HDFC rows were validated from exact official NSE archive files.",
     "Raw prices and volume are not stored in this report.",
     "The corporate-action adjustment ledger remains incomplete; no adjusted returns are certified.",
-    "Feature-cache integration and a reproducible re-run of the daily coverage auditor remain pending."
+    "Feature-cache integration and a reproducible re-run of the daily coverage auditor remain pending.",
+    "Direct NSE raw rows are encrypted in the GitHub Actions cache but are not yet merged into the daily feature panel or the daily coverage source-of-record JSON."
   ]
 }

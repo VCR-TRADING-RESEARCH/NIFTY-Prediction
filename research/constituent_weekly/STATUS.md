@@ -677,7 +677,8 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 
 - Direct NSE archive confirmed **3/3** missing HDFC EQ OHLCV rows (27-Oct-2019, 01-Feb-2020, 14-Nov-2020).
 - Combined with the independent mirror's 4/7 matches, all seven residual security/date pairs now have source-level OHLCV validation.
-- The original Dhan/TejHQ coverage JSON remains 106,385/106,392; supplemental raw-row cache integration is pending, so the composite count is not yet model-ready.
+- The three official NSE rows are now stored in the existing AES-GCM encrypted Actions cache; raw bars are not committed or published as artifacts.
+- Base Dhan/TejHQ daily coverage JSON remains 106,385/106,392 because encrypted supplemental rows are not yet merged into the daily feature panel.
 - [Direct NSE audit](research/constituent_weekly/C1_DIRECT_NSE_SPECIAL_SESSION_AUDIT.md) · [Composite evidence](research/constituent_weekly/C1_COMPOSITE_DAILY_COVERAGE.json)
-- C1 remains NOT PASSED pending encrypted feature-cache integration and corporate-action verification; C2 remains locked.
+- C1 remains NOT PASSED pending feature-panel integration and corporate-action verification; C2 remains locked.
 <!-- C1_DIRECT_NSE_SPECIAL_END -->

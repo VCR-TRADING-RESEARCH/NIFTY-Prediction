@@ -753,10 +753,10 @@
 
 ## 2026-11-02 — Direct NSE special-session archive cross-check
 
-- Direct NSE legacy cash-market archives now validate all three remaining HDFC special-session EQ rows: 2019-10-27, 2020-02-01 and 2020-11-14.
-- Combined with four valid rows from the independent mirror, all seven residual security/date pairs have source-level OHLCV evidence.
-- The original daily coverage JSON remains 106,385/106,392 because supplemental raw rows have not yet been merged into the encrypted feature cache; see C1_COMPOSITE_DAILY_COVERAGE.json.
-- No raw market values were published. Corporate-action verification remains incomplete; C2 remains locked.
+- Direct NSE legacy cash-market archives validate all three remaining HDFC special-session EQ rows: 2019-10-27, 2020-02-01 and 2020-11-14.
+- Combined with four valid independent-mirror rows, all seven residual security/date pairs have source-level OHLCV evidence.
+- Cache enhancement now persists the three raw direct-NSE rows in the existing AES-GCM GitHub Actions cache using the HF_TOKEN-derived key. Cache SHA-256 is recorded in the direct audit JSON; no raw values are committed or uploaded.
+- Base daily coverage JSON remains 106,385/106,392 until the encrypted supplemental rows are merged into the feature panel and the daily auditor is rerun. Corporate-action gate remains NOT PASSED; C2 remains locked.
 
 ## 2026-11-02 — Direct NSE encrypted-cache dependency correction
 
