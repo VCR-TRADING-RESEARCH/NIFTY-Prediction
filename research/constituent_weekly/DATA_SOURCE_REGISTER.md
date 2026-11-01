@@ -1,6 +1,6 @@
 # Data Source Register — BUP-01
 
-**Last reviewed:** 2026-10-31  
+**Last reviewed:** 2026-11-01  
 **Status:** Document-level source discovery complete; empirical coverage audit pending C1.
 
 | Priority | Source | Intended data | Evidence / status |
@@ -257,3 +257,37 @@ The HF dataset's exact row-sum validation is useful as a structural check, but i
 - [Metadata discovery run 41277022940](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41277022940) passed all four offline tests and successfully fetched the API index, /amcs, Nippon AMC detail and /manifest (all HTTP 200 / JSON).
 - The AMC record was identified as nippon-india; its scheme detail included current Nifty BeES and related scheme metadata. The manifest query returned no matching original-AMC or Internet Archive URL; no source links were HEAD-checked.
 - This confirms metadata endpoint availability only. The probe did not call a holdings endpoint or download holdings files; the provider's trading-research reuse licence remains unknown. Treat it as a source-discovery utility only until rights are documented.
+
+
+## Alternative historical weights and membership sources — 2026-11-01
+
+### Preferred primary weight source: NSE Indices archive
+- Official historical reports page: https://www.niftyindices.com/reports (contains “Archives of Daily/Monthly Reports”).
+- Official monthly reports page: https://niftyindices.com/reports/monthly-reports (lists “Indices Market Capitalisation & Weightage (zip)” and “Market Capitalisation, Weightage, Beta (Zip)”).
+- NSE All Reports includes “Market Capitalisation, Weightage, Beta for NIFTY 50 & NIFTY Next 50” and “Indices - Market Capitalisation & Weightage”.
+- These are the preferred index-provider sources for numerical constituents/weights. Exact historical month coverage, fields and public release timestamps still require an authorised sample audit.
+- **Rights gate:** NSE Indices Terms of Use prohibit systematic/automated collection absent express written consent and describe site use as personal/non-commercial. No automated fetch/cache until explicit permission or subscription licence covers this trading-research use.
+
+### Point-in-time membership alternative (CC BY 4.0)
+- Candidate: https://github.com/aditya-jha/nse-historical-membership
+- Its derived dataset is CC BY 4.0 with attribution; code is MIT. The source README describes NIFTY 50 intervals from 2014-01-01, high-confidence membership from 2018 onward, best-effort pre-2018 history, pre-2018 cardinality drift, and latest NIFTY 50 membership event 2025-09-30.
+- Historical numerical weights are NULL in the membership table. Use only as a membership reconciliation candidate; refresh post-2025-09 events and validate security IDs/ISINs, aliases and actions. It is not an IWF series.
+
+### NSE/BSE shareholding XBRL reconstruction
+- NSE filings: https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern
+- BSE filings: https://www.bseindia.com/corporates/Sharehold_Searchnew.aspx
+- NSE IWF methodology: https://archives.nseindia.com/content/indices/Method_NIFTY_Equity_Indices.pdf
+- NSE methodology specifies 22 identifiable public-shareholding exclusions in IWF calculation. Aggregated promoter/FII/DII/public totals do not capture all categories. Extend a detailed filing parser and validate to official weight snapshots; do not use 100%-promoter or FII+DII as IWF.
+
+### AMC ETF/index-fund portfolios (proxy only)
+- HDFC AMC monthly portfolio page: https://www.hdfcfund.com/statutory-disclosure/portfolio/monthly-portfolio; current NIFTY 50 ETF and index-fund workbooks are listed.
+- HDFC/UTI secondary portfolio indexes show recent monthly NIFTY 50 ETF records through Sep-2026. This is only a cross-check lead; source history depth and bulk-use rights must be independently verified.
+- Compare multiple schemes by ISIN against a permissioned official report; quantify cash/derivative residuals and tracking differences. Never silently treat ETF holdings as official index IWF.
+
+### Restricted third-party weights dataset
+- AMP4010/Historical_Nifty_50_Constituent_Weights_20Y on Hugging Face: 216 monthly/event rows, 2008-01-31 to 2025-08-31, 100 ticker series; published CC BY-NC-SA 4.0. Exclude from trading research unless the creator grants a separate written commercial-use licence. It also uses between-snapshot/extrapolation assumptions, so any permitted use would remain exploratory.
+
+### Subscription fallback
+- NSE Indices data subscription page describes historical constituent data including company identifiers, market capitalisation, weights and prices, and lists quantitative research use. Contact: indices@nseids.co.in. Evaluate only after free and permissioned routes have been tested.
+
+Full ranked assessment, gate tests and reconstruction method: [C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md](C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md).
