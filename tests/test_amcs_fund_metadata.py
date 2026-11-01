@@ -9,22 +9,31 @@ from scripts.constituent_weekly.probe_amcs_fund_metadata import (
 
 
 def test_matching_records_extracts_only_nippon_bees_metadata():
-    payload = {
+    amc_payload = {
         "data": [
             {"id": 12, "name": "Nippon India Mutual Fund", "slug": "nippon-india"},
             {"id": 13, "name": "Other AMC", "slug": "other"},
+        ]
+    }
+    scheme_payload = {
+        "data": [
             {
                 "scheme_id": 501,
                 "scheme_name": "Nippon India ETF Nifty 50 BeES",
                 "published_at": "2019-05-08",
                 "secret_holdings_field": "must-not-be-retained",
             },
+            {"scheme_id": 502, "scheme_name": "Nippon India Other ETF"},
         ]
     }
-    amcs = _matching_records(payload, ("nippon",))
-    schemes = _matching_records(payload, ("nifty", "bees"))
+    amcs = _matching_records(amc_payload, ("nippon",))
+    schemes = _matching_records(scheme_payload, ("nifty", "bees"))
     assert amcs == [{"id": 12, "name": "Nippon India Mutual Fund", "slug": "nippon-india"}]
-    assert schemes[0]["scheme_id"] == 501
+    assert schemes == [{
+        "scheme_id": 501,
+        "scheme_name": "Nippon India ETF Nifty 50 BeES",
+        "published_at": "2019-05-08",
+    }]
     assert "secret_holdings_field" not in str(schemes)
 
 
