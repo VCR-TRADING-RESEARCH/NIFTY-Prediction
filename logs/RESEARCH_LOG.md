@@ -697,3 +697,11 @@
 - **API/cache:** 2 requests; 70 symbols reused from the sanitized QA cache.
 - **Interpretation:** daily OHLCV coverage is reported independently from intraday target coverage, historical identity and action-adjusted return integrity. No model is trained and C2 remains gated.
 - **Artifacts:** C1_DAILY_COVERAGE.json and C1_DAILY_COVERAGE_REPORT.md.
+
+
+## 2026-11-01 — C1 shared-cache workflow regression validation
+
+- The daily and corporate-action workflow YAML files now use the same explicit `${{ runner.temp }}/bup01-tejhq-encrypted` path for restore, Python runtime and save.
+- Added static regression assertions for both workflows and a shared-helper test for the corporate-action cache path.
+- Pull-request CI [41319075705](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075705) passed; Dhan preflight [41319075672](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075672) passed its offline checks; continuous coverage [41319075683](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075683) passed its offline validation. Live Dhan steps were correctly skipped on pull-request events.
+- The live corporate-action run [41318287855](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318287855) predates the absolute-path correction; it reported 0 action-partition cache hits. A post-correction live run is still required to prove cache reuse.

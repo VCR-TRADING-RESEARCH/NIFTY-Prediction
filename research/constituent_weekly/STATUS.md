@@ -631,3 +631,6 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - This is a candidate-discovery catalogue only. No adjustment factors were calculated or applied; event-level NSE/issuer verification, security identity confirmation and ex-date raw-close reconciliation remain open. Corporate-action gate NOT PASSED; C1 overall NOT PASSED; C2 remains locked.
 - Report: [C1_CORPORATE_ACTION_AUDIT_REPORT.md](C1_CORPORATE_ACTION_AUDIT_REPORT.md); machine summary: [C1_CORPORATE_ACTION_AUDIT.json](C1_CORPORATE_ACTION_AUDIT.json); methodology: [C1_CORPORATE_ACTION_METHOD.md](C1_CORPORATE_ACTION_METHOD.md).
 - Cache path alignment was corrected in both daily and corporate-action workflows to use the same absolute `runner.temp` directory as Python. A regression guard was added; live verification of cross-run cache hits is pending.
+
+
+- **Workflow validation after cache-path patch:** PR CI [41319075705](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075705) passed; offline Dhan preflight and continuous coverage checks [41319075672](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075672) and [41319075683](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075683) passed. Live data steps were skipped for PR safety. Cache-hit proof remains pending.
