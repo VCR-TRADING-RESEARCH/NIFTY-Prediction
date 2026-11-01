@@ -2,8 +2,8 @@
 
 **Report date:** 2026-11-01  
 **Phase branch:** phase/constituent-weekly-outcomes-c1-data  
-**Plan:** BUP-01 v1.1, locked; no plan amendment  
-**Developer decision:** C1 is **PARTIAL PASS / RIGHTS-BLOCKED**. Do not enable C2–C6 until the listed hard gates are evidenced.
+**Plan:** BUP-01 v1.3 (current method); earlier v1.1/v1.2 text below is historical audit material  
+**Developer decision:** Under v1.3, C1 is **PARTIAL / CONTINUOUS-COVERAGE GATE IN PROGRESS**. No official/ETF weight comparison is required. Do not enable C2–C6 until the revised stock/index coverage and identity gates are evidenced.
 
 ## 1. Executive finding
 
@@ -143,3 +143,37 @@ C1 remains **PARTIAL / NOT YET ACCEPTED**. The proxy source passes a one-date ca
 
 ### Gate disposition
 This raises source feasibility from discovery-only to **recent-schema PASS**, but does not pass C1 overall. C1 is **PARTIAL / NOT ACCEPTED FOR MODELLING**; C2–C6 remain gated. Do not present these holdings as official NIFTY IWF or as a validated historical proxy series.
+
+
+
+## Superseding developer addendum — BUP-01 plan v1.3 (2026-11-01)
+
+This addendum supersedes the earlier weight-rights recommendations and the v1.2 ETF proxy exploration as **active requirements**. The older material above is preserved as the dated historical C1 audit trail only.
+
+### User-directed method
+
+The user said: “No comparison needed. Proceed.” BUP-01 v1.3 removes official free-float/IWF weights, ETF holdings, weight reconstruction and weighted basket-to-index reconciliation from its active method. It uses point-in-time stock forecasts and strictly out-of-fold cycle summaries (unweighted predicted breadth, mean/median probabilities and returns, dispersion, sector breadth, concentration and member coverage) to predict the observed NIFTY 50 10:00-to-15:15-proxy direction label. Equal-weight stock averages are diagnostics only and are never presented as the actual index return.
+
+### Revised gate scoreboard
+
+| Gate | Result | Evidence / limitation |
+|---|---|---|
+| C0 governance / registered protocol | PASS; v1.3 amendment committed | Plan, plan validator and unit tests updated |
+| PIT membership / effective-date ledger | PASS WITH LIMITATIONS | CC BY 4.0 membership subset; 103 month-end reconciliations; source confidence and symbol/action caveats retained |
+| Current active NIFTY 50 security-master resolution | PASS on checked date | 50/50 current constituents resolved in prior protected Dhan run |
+| Bounded stock candle coverage | PASS on separate samples only | Three 90-day samples across 2021/2022/2026 and recent single-day universe checks; not continuous five-year coverage |
+| Continuous stock and NIFTY intraday coverage | NOT YET PROVEN | Need <=90-day chunks across the intended confirmatory period and explicit gap accounting |
+| Historical ISIN/security-ID and corporate actions | PARTIAL / OPEN | HDFC legacy ID passed selected dates; dated TATAMOTORS/TMPV action and all interval mappings must remain explicit |
+| Expiry calendar and index target | PARTIAL / OPEN | Need a verified actual-expiry/session list and same 10:00/15:15-proxy NIFTY index target observations |
+| C1 acceptance | NOT PASSED | >=47 and >=94% valid constituents per accepted cycle; >=98% scheduled cycles with valid observed NIFTY targets; continuous window and identity gates |
+| C2 panel / C3 models / C4 meta-model | PENDING | Must remain gated until C1 passes; no model/forecast exists |
+| C5 trading economics | PENDING | Paytm Money brokerage, taxes/levies, spread, slippage, lots and fills still required |
+| C6 manuscript / independent audit | PENDING | Must include complete manuscript, figures, tables, appendices, supplements and independent error audit |
+
+### Retired data path and rights control
+
+The historic ETF/IWF files and reports remain only as audit history; they are not active inputs and must not be refreshed or compared. The Nippon AMC bulk-workbook automation is paused because its terms restrict aggregation/copying and require prior written permission for reuse of proprietary content. No holdings values were admitted. mfdata.in returned HTTP 522 on three discovery routes; that is inconclusive and does not block the v1.3 no-weight design.
+
+### Next bounded developer action
+
+Implement and test a rate-limited, cache-aware Dhan <=90-day chunk coverage runner for the point-in-time stock universe **and the NIFTY index target**, with separate source IDs, security identity/action manifests, missing-session diagnostics and sanitized output only. Validate a manageable date slice and request-count/runtime guards first, then continue across the registered confirmatory window without repeated token-generation loops. No C2 fitting until the C1 coverage panel and target calendar are accepted.
