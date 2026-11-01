@@ -38,6 +38,7 @@ from scripts.constituent_weekly.audit_c1_continuous_dhan_coverage import (
 from scripts.constituent_weekly.audit_c1_daily_history import (
     decrypt_tejhq_cache_bytes, encrypt_tejhq_cache_bytes, parse_daily_payload,
     request_daily_history, resolve_tejhq_encrypted_cache_dir,
+    load_tejhq_nse_year, load_direct_nse_special_cache,
 )
 from scripts.constituent_weekly.security_identity import point_in_time_symbol
 
@@ -489,24 +490,59 @@ def main() -> int:
         manifest_hash = sha256(json.dumps(manifest, sort_keys=True).encode())
         result["input_manifest"] = {**manifest, "hash": manifest_hash}
 
+        # Reuse the same pinned, independently audited NSE EOD source as C1.
+        # Dhan's daily-history payload shape changed and returned no arrays for all
+        # 62 symbols; repeating those requests would waste time and discard C1's
+        # already validated 100% composite coverage. Restore the C1 encrypted
+        # partition cache first, then download only missing yearly partitions.
+        if os.environ.get("TEJHQ_PERSONAL_USE_ONLY") != "1":
+            raise RuntimeError("TEJHQ_PERSONAL_USE_ONLY=1 is required for this personal-use dataset.")
         daily_frames = {}
-        daily_requests = daily_hits = 0
-        daily_from = "2018-04-01"
-        daily_to = (date.fromisoformat(manifest["last_expiry"]) + timedelta(days=1)).isoformat()
+        daily_hits = daily_requests = 0
+        years = range(2018, date.fromisoformat(manifest["last_expiry"]).year + 1)
+        yearly_frames = []
+        yearly_audit = []
+        for year in years:
+            year_frame, year_meta = load_tejhq_nse_year(year, hf_token, cache_dir)
+            yearly_frames.append(year_frame)
+            yearly_audit.append({
+                "year": int(year), "cache_hit": bool(year_meta.get("encrypted_cache_hit")),
+                "raw_file_sha256": year_meta.get("raw_file_sha256"),
+                "dataset_revision": year_meta.get("dataset_revision"),
+            })
+            daily_hits += int(bool(year_meta.get("encrypted_cache_hit")))
+            daily_requests += int(not bool(year_meta.get("encrypted_cache_hit")))
+            print(f"C2_DAILY_PARTITION {year} {'CACHE_HIT' if year_meta.get('encrypted_cache_hit') else 'DOWNLOADED'}")
+        all_daily = pd.concat(yearly_frames, ignore_index=True) if yearly_frames else pd.DataFrame()
+        if all_daily.empty:
+            raise RuntimeError("Pinned NSE EOD partitions returned no daily rows.")
+        all_daily["symbol"] = all_daily["symbol"].astype(str).str.strip().str.upper()
+        all_daily["series"] = all_daily["series"].astype(str).str.strip().str.upper()
+        all_daily["session_date"] = pd.to_datetime(all_daily["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        for col in ("open", "high", "low", "close", "volume"):
+            all_daily[col] = pd.to_numeric(all_daily[col], errors="coerce")
+        all_daily = all_daily.loc[
+            all_daily["symbol"].isin(set(all_symbols)) & all_daily["series"].eq("EQ")
+        ].copy()
+        direct_daily, direct_meta = load_direct_nse_special_cache(hf_token, cache_dir)
+        if not direct_daily.empty:
+            direct_daily = direct_daily.loc[
+                direct_daily["symbol"].isin(set(all_symbols)) & direct_daily["series"].eq("EQ")
+            ].copy()
+            all_daily = pd.concat([all_daily, direct_daily], ignore_index=True)
+        all_daily = all_daily.dropna(subset=["session_date"])
+        all_daily = all_daily.sort_values(["symbol", "session_date"]).drop_duplicates(
+            subset=["symbol", "session_date"], keep="last"
+        )
         for n, symbol in enumerate(all_symbols, 1):
-            if symbol not in resolved:
+            frame = all_daily.loc[all_daily["symbol"].eq(symbol)].copy()
+            if frame.empty:
                 daily_frames[symbol] = None
-                continue
-            frame, hit, attempts, error = fetch_daily(
-                symbol, str(resolved[symbol]), token, client_id, cache_dir, manifest_hash,
-                daily_from, daily_to,
-            )
-            daily_frames[symbol] = frame
-            daily_hits += int(hit)
-            daily_requests += attempts
-            if attempts:
-                time.sleep(REQUEST_DELAY)
-            print(f"C2_DAILY {n}/{len(all_symbols)} {symbol} {'PASS' if frame is not None else error}")
+                status = "NO_NSE_EQ_ROWS"
+            else:
+                daily_frames[symbol] = frame[["session_date", "open", "high", "low", "close", "volume"]].copy()
+                status = f"PASS_{len(frame)}_ROWS"
+            print(f"C2_DAILY {n}/{len(all_symbols)} {symbol} {status}")
 
         chunks = make_chunks(manifest["first_anchor"], manifest["last_expiry"], CHUNK_DAYS)
         date_chunk = {}
