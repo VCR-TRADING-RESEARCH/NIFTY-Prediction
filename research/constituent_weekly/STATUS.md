@@ -653,3 +653,14 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Official NSE market-activity report documentation identifies `Bcddmmyy.csv` inside daily `nuprddmmyy.zip` as containing corporate-action details. This is a promising mother-source route for dated cross-checking, alongside the NSE Corporate Filings CSV/API interface and the daily corporate-action report specification. The archive URL/date coverage and schema must be validated before this becomes an accepted source.
 - NSE derivative contract adjustments remain distinct from cash-equity historical-price/total-return adjustments.
 - C1 remains PARTIAL / NOT PASSED; seven daily member-session gaps and event-level corporate-action verification remain open. C2 remains locked.
+
+
+## C3-X exploratory prediction track — 2026-11-01
+
+- **Authorization:** User approved proceeding with exploratory prediction tests while full C1 corporate-action review remains incomplete. Registered plan amended to v1.4; confirmatory gates are unchanged.
+- **Branch:** [phase/constituent-weekly-outcomes-c3-exploratory](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c3-exploratory).
+- **Known data:** C1 target QA passed on 258 weekly cycles; 154 remain after a 104-cycle warm-up. The latest QA artifact stores validation flags, not usable market prices; the exploratory workflow therefore must reconstruct a temporary price/features panel from Dhan.
+- **Method:** pooled stock Logistic Regression and ExtraTrees; cycle-grouped expanding-window OOF forecasts; aggregate constituent signals into a NIFTY direction logistic meta-model; chronological final 20% holdout; four-cycle block bootstrap.
+- **Exclusions:** point-in-time C1 valid members only; known structural-event windows from the repo ledger excluded; each retained cycle must still have at least 47 members and at least 94% of point-in-time constituents. Unresolved candidate corporate actions remain a limitation.
+- **Security:** minute bars and per-stock panel stay in memory / authenticated encrypted Actions cache. Only sanitized aggregate metrics, forecasts and reproducibility metadata may be published.
+- **Status:** IMPLEMENTATION IN PROGRESS; results not yet available. C1 PARTIAL; C2 confirmatory LOCKED; C5 trading LOCKED.
