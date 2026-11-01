@@ -433,3 +433,11 @@
 - The official rendered page shows September 2026 and February 2026 monthly portfolio download controls; the resolved direct links use an AMC month-end workbook filename convention.
 - Added a deterministic URL fallback using the calendar month-end and abbreviated month/year in the filename, while preserving HTML link discovery as the first choice. Added regression tests for September 2026, February 2026 and April 2019 candidate paths.
 - Next bounded run will verify HTTP response and workbook schema; the April 2019 path and workbook availability are not yet confirmed.
+
+
+## 2026-11-01 — AMC workbook container and concurrent report-push correction
+
+- Run [41274969265](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274969265) passed the five parser tests, and both recent AMC workbooks returned HTTP 200. The workbook bytes were XLSX, despite the .xls URL suffix; the previous fixed xlrd reader therefore failed. The guessed 2019 link returned 404.
+- Updated the probe to detect Excel container signatures and choose openpyxl for XLSX and xlrd for legacy XLS. Added signature regression tests and removed an unrelated pandas fixture warning.
+- The same Actions run created the sanitized report but its push raced with other C1 commits and was rejected. The workflow now rebases the report commit onto the latest C1 head before pushing.
+- No holdings were extracted successfully in the failed run, and no raw data were stored. C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.
