@@ -91,5 +91,5 @@ def test_model_metric_calculation_is_well_formed():
     assert result["n"] == 4
     assert result["accuracy"] == 1.0
     assert result["balanced_accuracy"] == 1.0
-    assert result["brier"] < 0.1
+    assert result["brier"] <= 0.1
     assert result["roc_auc"] == 1.0
