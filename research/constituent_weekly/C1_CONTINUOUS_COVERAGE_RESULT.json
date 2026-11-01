@@ -1,41 +1,104 @@
 {
-  "schema_version": 1,
-  "evidence_type": "SANITIZED_ACTION_LOG_SUMMARY",
-  "methodology_version": "bup01-c1-dhan-target-coverage-v1",
-  "workflow_run_id": 41301447865,
-  "workflow_run_url": "https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865",
-  "workflow_head_sha": "31379700f0f4f9463a87210f34df47fe2013728c",
-  "workflow_completed_at_utc": "2026-11-01T11:46:24Z",
-  "workflow_job_conclusion": "failure_at_report_publication_only",
-  "audit_status": "DATA_COVERAGE_PASS_IDENTITY_ACTION_REVIEW_PENDING",
-  "target_coverage_status": "PASS",
+  "schema_version": 2,
+  "evidence_type": "CORRECTED_SUMMARY_FROM_CANONICAL_C1_AUDIT",
+  "canonical_source_path": "research/constituent_weekly/C1_CONTINUOUS_COVERAGE.json",
+  "canonical_source_blob_sha": "ea5d4d9ed78af909039bb7a3dbe0990c02a8963b",
+  "canonical_source_updated_at_utc": "2026-11-01T12:06:48.217023+00:00",
+  "status": "PARTIAL_OR_BLOCKED_TARGET_COVERAGE",
+  "target_coverage_status": "FAIL",
   "identity_status": "SYMBOL_MAPPING_RESOLVED_KNOWN_AND_UNIVERSAL_CORPORATE_ACTION_REVIEW_PENDING",
   "cycle_window": {
-    "first_forecast_anchor": "2021-11-12",
+    "first_anchor": "2021-11-12",
     "last_expiry": "2026-10-27"
   },
   "summary": {
     "scheduled_cycles": 258,
-    "index_target_valid_cycles": 258,
-    "index_target_valid_fraction": 1,
-    "cycles_meeting_47_and_94_percent_stock_gate": 258,
-    "cycles_accepted_for_coverage": 258,
-    "confirmatory_cycles_after_104_prior_cycles": 154,
+    "index_target_valid_cycles": 77,
+    "index_target_valid_fraction": 0.29845,
+    "cycles_meeting_47_and_94_percent_stock_gate": 64,
+    "cycles_accepted_for_coverage": 64,
+    "confirmatory_cycles_after_104_prior_cycles": 0,
+    "cycle_outcomes": {
+      "index_and_stock_pass": 64,
+      "index_pass_stock_fail": 13,
+      "index_fail_stock_fail": 181
+    },
+    "member_coverage_distribution": {
+      "full_50_of_50": 64,
+      "partial_16_of_50": 13,
+      "zero_of_50": 181
+    },
+    "first_fully_accepted_cycle": {
+      "anchor": "2021-11-12",
+      "expiry": "2021-11-18"
+    },
+    "last_fully_accepted_cycle": {
+      "anchor": "2023-01-27",
+      "expiry": "2023-02-02"
+    },
+    "first_partial_stock_cycle": {
+      "anchor": "2023-02-03",
+      "expiry": "2023-02-09",
+      "valid_members": 16,
+      "expected_members": 50
+    },
+    "last_partial_stock_cycle": {
+      "anchor": "2023-04-28",
+      "expiry": "2023-05-04",
+      "valid_members": 16,
+      "expected_members": 50
+    },
+    "first_cycle_with_no_stock_or_index_targets": {
+      "anchor": "2023-05-05",
+      "expiry": "2023-05-11"
+    },
+    "index_windows": {
+      "total": 21,
+      "pass_response": 6,
+      "invalid_response": 15,
+      "valid_target_dates": 155,
+      "invalid_target_dates": 361
+    },
+    "stock_chunks": {
+      "total": 1062,
+      "pass_response": 268,
+      "invalid_response": 794,
+      "invalid_status": "MISSING_REQUIRED_ARRAY"
+    },
     "unresolved_active_symbols": 0,
     "total_dhan_requests": 1083,
-    "index_window_count": 21,
-    "full_index_window_responses": 20,
-    "partial_index_window_responses": 1,
-    "partial_window": "2024-01-31 to 2024-04-29",
-    "partial_window_note": "The window response was marked PARTIAL_TARGET_DATES, but the script's aggregate cycle calculation reported all 258 weekly anchor/expiry target pairs valid. The exact date-level cause was not retained."
+    "min_cycle_member_coverage_fraction": 0,
+    "median_valid_members": 0
+  },
+  "response_diagnostic": {
+    "first_probe_run_id": 41308624157,
+    "second_probe_run_id": 41309142791,
+    "second_probe_status": "COMPLETED",
+    "exact_target_parser_passed_all_tested_windows": true,
+    "sequential_post_boundary_stock_burst": {
+      "requests": 16,
+      "passed": 16,
+      "rate_delay_seconds": 0.25
+    },
+    "active_hdfcbank_daily_control": {
+      "http_status": 200,
+      "rows": 192,
+      "from": "2022-10-01",
+      "to": "2023-07-13"
+    },
+    "legacy_hdfc_daily": {
+      "http_status": 400,
+      "error_code": "DH-905",
+      "error_type": "Input_Exception",
+      "range_tests": 3
+    },
+    "interpretation": "Single and controlled serial Dhan requests return valid top-level OHLCV arrays and target parser passes on both sides of the historical boundary. The earlier bulk failure is not a simple historical cutoff; transient/concurrency response handling is being addressed and the cached-chunk retry is running."
   },
   "publication": {
-    "sanitized_report_generated_in_runner": true,
-    "git_commit_failed": true,
-    "cause": "Concurrent branch edits caused rebase conflicts in STATUS.md and RESEARCH_LOG.md.",
-    "final_gate_step": "C1_CONTINUOUS_COVERAGE_GATE_PASSED",
-    "full_per_cycle_detail_persisted": false,
-    "no_prices_or_volumes_in_this_summary": true
+    "canonical_json_is_authoritative": true,
+    "earlier_interim_summary_was_incorrect": true,
+    "superseded_by_this_file": true,
+    "reason": "An interim job-log progress line was mistaken for the final persisted audit summary."
   },
-  "interpretation": "This passes only the registered intraday target-data coverage sub-gate. It does not pass C1 overall; daily OHLCV feature history and exhaustive corporate-action/adjusted-return validation remain open."
+  "interpretation": "Intraday target-data gate FAIL. Daily feature coverage is 94,799/95,900 (98.8519%) with HDFC and TATAMOTORS gaps. C1 overall remains NOT PASSED; C2 is locked."
 }
