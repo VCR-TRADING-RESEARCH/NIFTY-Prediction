@@ -118,6 +118,29 @@ def _fetch_json(session: requests.Session, url: str) -> tuple[Any | None, dict[s
             response.close()
 
 
+
+def _payload_shape(payload: Any) -> dict[str, Any]:
+    """Report JSON schema shape only, never any portfolio/security values."""
+    if not isinstance(payload, dict):
+        return {"root_type": type(payload).__name__}
+    shape: dict[str, Any] = {"root_type": "object", "root_keys": sorted(str(k) for k in payload.keys())[:50]}
+    data = payload.get("data")
+    shape["data_type"] = type(data).__name__ if data is not None else "null"
+    if isinstance(data, list):
+        shape["data_length"] = len(data)
+        if data and isinstance(data[0], dict):
+            shape["first_item_keys"] = sorted(str(k) for k in data[0].keys())[:50]
+            shape["first_item_nested_types"] = {
+                str(k): type(v).__name__ for k, v in list(data[0].items())[:30]
+            }
+    elif isinstance(data, dict):
+        shape["data_keys"] = sorted(str(k) for k in data.keys())[:50]
+        shape["data_nested_types"] = {
+            str(k): type(v).__name__ for k, v in list(data.items())[:30]
+        }
+    return shape
+
+
 def _matching_records(payload: Any, contains: tuple[str, ...]) -> list[dict[str, Any]]:
     matches = []
     seen = set()
@@ -216,7 +239,9 @@ def run_probe() -> dict[str, Any]:
         "amcs": None,
         "amc_detail": None,
         "scheme_detail": None,
+        "scheme_detail_shape": None,
         "month_details": [],
+        "historical_month_samples": [],
         "manifest": None,
         "nippon_amc_matches": [],
         "nifty_bees_scheme_matches": [],
@@ -253,14 +278,18 @@ def run_probe() -> dict[str, Any]:
         scheme_payload, scheme_meta = _fetch_json(session, f"{API_BASE}/scheme/{scheme_slug}")
         report["scheme_detail"] = scheme_meta
         if scheme_payload is not None:
+            report["scheme_detail_shape"] = _payload_shape(scheme_payload)
             scheme_records = _metadata_records(scheme_payload)
             report["scheme_history_metadata"] = scheme_records
 
-    for month_id in _month_identifiers(scheme_records):
+    month_ids = list(dict.fromkeys(_month_identifiers(scheme_records) + ["2019-04", "2022-09", "2025-09", "2026-09"]))[:6]
+    for month_id in month_ids:
         month_payload, month_meta = _fetch_json(session, f"{API_BASE}/month/{month_id}")
-        report["month_details"].append(month_meta)
+        month_meta["month_id"] = month_id
         if month_payload is not None:
+            month_meta["payload_shape"] = _payload_shape(month_payload)
             report["month_source_metadata"].extend(_metadata_records(month_payload))
+        report["month_details"].append(month_meta)
     report["month_source_metadata"] = report["month_source_metadata"][:100]
 
     manifest, manifest_meta = _fetch_json(session, f"{API_BASE}/manifest")
@@ -328,7 +357,7 @@ def render_report(report: dict[str, Any]) -> str:
         endpoint_row("Nippon AMC detail", report.get("amc_detail")),
         endpoint_row("/scheme/{slug}", report.get("scheme_detail")),
         endpoint_row("/manifest", report.get("manifest")),
-        *[endpoint_row("/month/{id}", x) for x in report.get("month_details", [])],
+        *[endpoint_row("/month/" + str(x.get("month_id", "{id}")), x) for x in report.get("month_details", [])],
         "",
         "## Nippon AMC metadata matches",
         "",
@@ -352,6 +381,11 @@ def render_report(report: dict[str, Any]) -> str:
         meta = report.get(meta_key) or {}
         if meta.get("top_level_keys"):
             lines.append(f"- {endpoint_name} top-level JSON keys: " + ", ".join(meta["top_level_keys"]))
+    if report.get("scheme_detail_shape"):
+        lines.append("- /scheme/{slug} JSON shape: " + json.dumps(report["scheme_detail_shape"], sort_keys=True))
+    for meta in report.get("month_details", []):
+        if meta.get("payload_shape"):
+            lines.append("- /month/" + str(meta.get("month_id")) + " JSON shape: " + json.dumps(meta["payload_shape"], sort_keys=True))
     lines += ["", "## Scheme-history metadata (source URLs and dates only)", ""]
     if report.get("scheme_history_metadata"):
         for item in report["scheme_history_metadata"][:50]:
