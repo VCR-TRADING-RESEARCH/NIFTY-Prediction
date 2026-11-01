@@ -45,7 +45,7 @@ def test_features_are_causal_and_anchor_open_is_used():
     assert np.isfinite(list(x1.values())).all()
 
 def test_encrypted_panel_cache_round_trip_and_manifest_binding(tmp_path):
-    path=tmp_path/"panel.enc"; key=cache_key("stable-test-secret","client")
+    path=tmp_path/"panel.enc"; key=key_for("stable-test-secret","client")
     payload={"input_manifest":{"sha":"abc"},"rows":[{"x":1.25}]}
     cache_write(path,key,payload)
     raw=path.read_bytes()
@@ -53,7 +53,7 @@ def test_encrypted_panel_cache_round_trip_and_manifest_binding(tmp_path):
     assert b"1.25" not in raw
     assert cache_read(path,key,{"sha":"abc"})==payload
     assert cache_read(path,key,{"sha":"different"}) is None
-    assert cache_read(path,cache_key("rotated-secret","client"),{"sha":"abc"}) is None
+    assert cache_read(path,key_for("rotated-secret","client"),{"sha":"abc"}) is None
 
 def test_metrics_and_cycle_block_bootstrap_are_reproducible():
     y=np.array([0,1,0,1,1,0,1,0])
