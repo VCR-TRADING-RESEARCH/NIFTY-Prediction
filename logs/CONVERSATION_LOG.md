@@ -477,3 +477,10 @@
 - Rechecked the registered BUP-01 v1.3 plan, operating rules, C2 workflows, branch status, latest reports and logs. Confirmed C2 is panel-only; C3 owns stock models and C4 owns index aggregation.
 - Found the panel-only workflow failure was caused by its missing `TEJHQ_PERSONAL_USE_ONLY=1` environment flag. A separate combined workflow also launched modelling in the C2 branch. Corrected the panel-only workflow, aligned concurrency, removed the combined workflow and documented the phase boundary.
 - C2 remains NOT PASSED until the corrected panel-only workflow produces and passes a fresh panel report. No prediction or strategy is represented as valid. No hidden chain-of-thought, credentials or raw market prices are stored here.
+
+
+## 2026-11-02 — C2 workflow repair follow-up
+
+- Committed the corrected phase wiring on the C2 branch as [8c931b4](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8c931b42cd4bd35a19c16693545a6bcef6fa7c1b).
+- The corrected panel-only run [41352799593](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41352799593) is pending. The duplicate queued combined run [41351806101](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351806101) is cancelled; earlier combined run [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) remains out-of-scope and is not C2 evidence.
+- Updated the root README to supersede the stale C1 coverage/C2-lock summary with the current accepted-with-limitations C1 disposition and C2 repair status. C2 remains unaccepted pending the panel-only run.

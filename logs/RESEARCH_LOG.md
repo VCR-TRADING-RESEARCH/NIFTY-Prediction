@@ -849,3 +849,11 @@
 - Runs [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) and [41351806101](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351806101) were found in the separate combined workflow (one in progress, one pending at inspection). They are not valid C2 acceptance evidence and must not be used to claim an accepted C2 panel.
 - Corrected the retained panel-only workflow to set the explicit personal-use flag, keep `C2_PANEL_ONLY=1`, clear stale model result/forecast files, and share the C2 concurrency group. Retired the combined workflow so stock modelling and index meta-modelling remain in their registered phases. Manual dispatch remains available on the panel-only workflow.
 - C2 gate remains NOT PASSED pending a new panel-only run and its full data/label/feature acceptance checks. No prediction, stock model, index meta-model or strategy is certified by this correction.
+
+
+## 2026-11-02 — Corrected C2 panel-only run queued
+
+- Workflow correction commit: [8c931b4](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8c931b42cd4bd35a19c16693545a6bcef6fa7c1b).
+- Corrected panel-only run [41352799593](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41352799593) was observed as PENDING after the commit. It uses the registered C2-only panel build and the explicit personal-use opt-in.
+- Duplicate combined-workflow run [41351806101](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351806101) was cancelled after concurrency was unified. Older combined run [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) remained in progress at this check; its outputs are explicitly excluded from C2 acceptance.
+- The C2 gate remains NOT PASSED until run 41352799593 completes the panel acquisition, label/coverage, causal-feature, duplicate and acceptance checks. No model or trading result is accepted at this point.

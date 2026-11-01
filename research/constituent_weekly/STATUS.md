@@ -715,13 +715,13 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 
 **C2 gate: NOT PASSED.** The last panel-only run [41351790740](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790740) stopped before data acquisition because the workflow omitted the required `TEJHQ_PERSONAL_USE_ONLY=1` flag. The workflow is corrected; a fresh panel-only run must still pass the registered data, target, member-coverage, causality and duplicate-row checks.
 
-The combined runs [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) and [41351806101](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351806101) are outside the registered C2 scope and are not acceptance evidence. Stock modelling remains C3; index aggregation remains C4. No prediction or strategy is accepted.
+The combined run [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) remains outside the registered C2 scope and is not acceptance evidence. Duplicate run [41351806101](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351806101) was cancelled. Corrected panel-only run [41352799593](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41352799593) is pending. Stock modelling remains C3; index aggregation remains C4. No prediction or strategy is accepted.
 <!-- BUP01_C2_LATEST_END -->
 
 <!-- BUP01_C2_PANEL_START -->
 ## Formal C2 panel update
 
-**Latest formal panel-only attempt:** run [41351790740](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790740) failed before the panel build because the dataset-use opt-in was absent. The workflow correction is committed; C2 remains NOT PASSED pending a fresh run that satisfies the v1.3 panel acceptance gate.
+**Latest formal panel-only attempt:** run [41351790740](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790740) failed before the panel build because the dataset-use opt-in was absent. The workflow correction is committed. Corrected panel-only run [41352799593](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41352799593) is queued; C2 remains NOT PASSED pending its successful v1.3 panel acceptance gate.
 
 See [C2 panel report](C2_PANEL_BUILD.md), [panel manifest](C2_PANEL_BUILD.json), [registered plan](RESEARCH_PLAN.md), and [error log](../../logs/ERROR_LOG.md).
 <!-- BUP01_C2_PANEL_END -->
