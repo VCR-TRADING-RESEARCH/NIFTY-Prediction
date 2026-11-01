@@ -308,3 +308,11 @@
 - Regression coverage added for URI/raw equivalence, invalid HOTP/empty values and positive/negative clock skew. Workflow trigger paths include the new shared helper.
 - Post-merge C1 research and source-audit workflows passed (41266155248, 41266155292). Dhan live workflow 41266155250 was still in dependency installation at last observation; no new auth/data result claimed.
 - C1 remains blocked; no stock panel/model/forecast or strategy authorised.
+
+
+## 2026-11-01 — Dhan auth helper regression suite verified
+
+- First offline CI attempt [41266339150](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266339150) failed at collection because the minimal membership workflow installed pytest but omitted the Dhan helper's `pyotp` and `requests` dependencies. Logged as E0044.
+- Added the dependencies explicitly. Follow-up [41266377005](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266377005) passed **12/12**: 6 existing membership tests plus 6 Dhan token/helper tests (including raw/otpauth TOTP parity, HOTP rejection and clock-skew sign tests).
+- The live preflight [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250) was still executing its protected Dhan preflight at last check. Do not claim authentication or coverage until its final sanitized JSON and fail-closed job conclusion are inspected.
+- Current follow-up PR Dhan validation runs are pull-request/offline-only and cannot prove live-secret authentication.
