@@ -448,3 +448,13 @@ The screenshot's earlier handoff predates the latest C1 evidence. The full 50-st
 - [C1 research log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/RESEARCH_LOG.md)
 - [C1 error log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/ERROR_LOG.md)
 - [C1 continuation / workflow correction commit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/45714d20000c307684bca06efa46c09458689475)
+
+
+## Bottom-up C1 continuation — 2026-11-01
+
+- Dhan authentication code hardening merged to the C1 phase branch via [PR #29](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/29): supports raw Base32 and `otpauth://totp/` inputs and records only sanitized HTTP-Date clock-skew seconds.
+- Offline regression tests cover URI/raw TOTP equivalence, invalid HOTP/empty input, and positive/negative clock skew.
+- Post-merge C1 research workflow [41266155248](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155248) and authorised-source audit [41266155292](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155292) passed.
+- Protected Dhan preflight [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250) had not completed dependency installation at the last check; authentication and new historical data coverage remain unverified.
+- C1 remains blocked by authentication/data coverage and licensed point-in-time weights/identity/reconstruction gates. C2 is not authorised. No bottom-up forecast or trading strategy is claimed.
+- Detailed status: [C1 phase status](research/constituent_weekly/STATUS.md), [research log](logs/RESEARCH_LOG.md), [error log](logs/ERROR_LOG.md), [visible conversation log](logs/CONVERSATION_LOG.md), [registered plan](research/constituent_weekly/RESEARCH_PLAN.md).
