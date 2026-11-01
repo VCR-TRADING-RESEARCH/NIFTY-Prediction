@@ -3,7 +3,10 @@ from __future__ import annotations
 from scripts.constituent_weekly.probe_amcs_fund_metadata import (
     _first_identifier,
     _matching_records,
+    _metadata_records,
+    _month_identifiers,
     _record_summary,
+    _scheme_slug,
     _source_links,
 )
 
@@ -66,3 +69,27 @@ def test_source_links_only_whitelisted_hosts():
     links = _source_links(records)
     assert len(links) == 2
     assert {item["field"] for item in links} == {"source_url", "archive_url"}
+
+
+def test_scheme_history_drops_isin_holding_rows():
+    payload = {
+        'data': [
+            {'id': '2026-09', 'month': '2026-09', 'disclosure_date': '2026-09-30'},
+            {'isin': 'INE000000001', 'name': 'Example constituent', 'quantity': 123, 'weight': 8.7},
+        ]
+    }
+    records = _metadata_records(payload)
+    assert records == [{'id': '2026-09', 'month': '2026-09', 'disclosure_date': '2026-09-30'}]
+    assert 'isin' not in str(records)
+    assert 'quantity' not in str(records)
+
+
+def test_scheme_slug_and_month_identifiers_are_selected_safely():
+    assert _scheme_slug([
+        {'name': 'Nippon India ETF Nifty Bank BeES', 'slug': 'bank-bees'},
+        {'name': 'Nippon India ETF Nifty 50 BeES', 'slug': 'nifty-50-bees'},
+    ]) == 'nifty-50-bees'
+    assert _month_identifiers([
+        {'id': '2026-09'}, {'id': '2026-08'}, {'id': '../bad'},
+        {'id': '2026-07'}, {'id': '2026-06'}, {'id': '2026-05'},
+    ]) == ['2026-09', '2026-08', '2026-07', '2026-06']
