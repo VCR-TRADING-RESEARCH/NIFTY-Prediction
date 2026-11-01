@@ -194,3 +194,12 @@
 - Audited official IWF guideline (22 exclusions), official monthly-weight publication and terms, detailed XBRL category-source candidate with unclear licence scope, and TejHQ EOD/corporate-actions source with personal-research/private-storage terms but no raw redistribution.
 - Overall C1 remains blocked: no legally admitted official point-in-time numerical IWF series or complete 22-category mapping and weighted basket reconciliation. C2+ remain gated. No bottom-up model or strategy is claimed.
 - This log records visible dialogue decisions and research actions only; it does not contain hidden reasoning, credentials or raw market bars.
+
+
+## 2026-11-01 — Continued without stopping: official data rights and final C1 gate
+- The latest Dhan price QA results were written to a standalone C1 validation report. All bounded test windows pass; they are separate 90-day samples, not continuous five-year data.
+- Further free-source review found that quarterly shareholding data is included in the NSE first-basket research list, but the official NSE Research Initiative limits research access to academic/non-commercial use and the NSE Data Sharing & Usage Policy defines such research as for purposes other than trading/profit. The project is intended to support trading, so the free research route cannot safely be used for this track.
+- Additional BSE, GitHub historical EOD and public partial-weight sources do not solve the complete licensed point-in-time IWF gate.
+- Added a non-sent NSE data-rights request template covering official weights/IWF, effective and publication timestamps, 22 exclusions, automated collection, private storage, internal model/backtest/trading use and permitted aggregate publication.
+- C1 remains blocked only by required official weight/rights/completeness and basket-reconciliation gates after the bounded Dhan price checks passed. No C2 model/forecast or strategy has been fabricated.
+- This log contains visible decisions and results only, not hidden reasoning or secrets.
