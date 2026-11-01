@@ -1,7 +1,6 @@
 # C1 Continuous Dhan Stock and NIFTY Target Coverage Report
 
-**Updated:** 2026-11-01T13:36:16.526004+00:00  
-**Full QA artifact:** [Actions run 41309632317](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41309632317), artifact 13086220727
+**Updated:** 2026-11-01T14:25:13.654424+00:00
 **Status:** DATA_COVERAGE_PASS_IDENTITY_ACTION_REVIEW_PENDING
 **Target coverage gate:** PASS
 **Security/action gate:** SYMBOL_MAPPING_RESOLVED_KNOWN_AND_UNIVERSAL_CORPORATE_ACTION_REVIEW_PENDING
@@ -45,7 +44,7 @@
 
 ## Reproducibility
 
-- Membership SHA-256: 2bda35125f722c44dd4b402c91d28c57b56e925081bc67ba23a4e31616dee71d
+- Membership SHA-256: dda5d0aa6cb4feec5edaa53c9a7b099b5d9e46b6020c1ab69c5913f5402d2a08
 - Expiry calendar SHA-256: a1a37949278934fbddebd7ea61092930eb7f25ba171c95fca1421e5ae098eaa5
 - Official NIFTY daily-session SHA-256: 5fee1979958e96276e53054c3e76b3818aa6cc1b3abe0e88dd5647c2976104c7
 - Dhan scrip-master SHA-256: ad00a05b69606346a5e796bef8715a981242eab8063d615294ce8b3e54981a6a
@@ -53,12 +52,3 @@
 - Cached index chunks: 21; cached stock-symbol chunks: 1062
 
 The machine-readable companion C1_CONTINUOUS_COVERAGE.json contains only source-window status, timestamps, QA flags, and constituent symbols; it does not contain raw market prices or Dhan security IDs.
-
-
-## Exact partial-window date QA
-
-- Date: 2024-04-26.
-- Forecast-anchor check: 4 bars; 10:00 IST selected; PASS.
-- Extra 15:14 check: 15 bars; close-window quality flag PARTIAL. This was not a required expiry observation for 26-Apr because the registered expiry was 2-May.
-- Registered cycle: anchor 2024-04-26, expiry 2024-05-02; NIFTY anchor PASS, 2-May expiry proxy PASS, stock coverage PASS; cycle accepted.
-- The complete per-cycle/per-date data is preserved in Actions artifact 13086220727 from run 41309632317.

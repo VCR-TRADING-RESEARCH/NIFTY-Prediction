@@ -585,7 +585,7 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 <!-- C1_CONTINUOUS_COVERAGE_START -->
 ## Latest continuous Dhan stock + NIFTY target coverage audit
 
-- Updated (UTC): 2026-11-01T13:36:16.526004+00:00
+- Updated (UTC): 2026-11-01T14:25:13.654424+00:00
 - Auditor status: **DATA_COVERAGE_PASS_IDENTITY_ACTION_REVIEW_PENDING**
 - Stock/index data-coverage gate: **PASS**
 - Security/action identity gate: **SYMBOL_MAPPING_RESOLVED_KNOWN_AND_UNIVERSAL_CORPORATE_ACTION_REVIEW_PENDING**
@@ -603,8 +603,6 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Raw market bars, prices, volumes, Dhan security IDs and credentials are not included in this report.
 - A passing market-data coverage sub-gate does not complete corporate-action review or unlock C2 by itself.
 <!-- C1_CONTINUOUS_COVERAGE_END -->
-
-
 
 ## Intraday target QA reconciliation — 2026-11-01
 

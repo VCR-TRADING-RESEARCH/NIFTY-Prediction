@@ -5,7 +5,7 @@
   "cache_reused_stock_chunks": 0,
   "chunks_completed_this_run": 21,
   "chunks_total": 21,
-  "created_at_utc": "2026-11-01T13:07:06.961077+00:00",
+  "created_at_utc": "2026-11-01T13:52:59.490495+00:00",
   "cycle_results": [
     {
       "anchor_date": "2021-11-12",
@@ -5778,11 +5778,9 @@
       "index_expiry_proxy_ok": true,
       "index_target_ok": true,
       "known_corporate_action_excluded_symbols": [],
-      "member_count": 50,
-      "member_coverage_fraction": 0.98,
-      "missing_members": [
-        "HDFC"
-      ],
+      "member_count": 49,
+      "member_coverage_fraction": 1.0,
+      "missing_members": [],
       "previous_expiry": "2023-07-06",
       "stock_coverage_ok": true,
       "valid_member_count": 49,
@@ -17302,7 +17300,7 @@
     "last_expiry": "2026-10-27"
   },
   "data_plan_active": true,
-  "elapsed_seconds": 1754.99,
+  "elapsed_seconds": 1939.75,
   "expiry_calendar_verified_count": 401,
   "fatal_error": null,
   "identity_status": "SYMBOL_MAPPING_RESOLVED_KNOWN_AND_UNIVERSAL_CORPORATE_ACTION_REVIEW_PENDING",
@@ -23142,7 +23140,7 @@
   "input_manifest": {
     "dhan_scrip_master_sha256": "ad00a05b69606346a5e796bef8715a981242eab8063d615294ce8b3e54981a6a",
     "expiry_calendar_sha256": "a1a37949278934fbddebd7ea61092930eb7f25ba171c95fca1421e5ae098eaa5",
-    "membership_sha256": "2bda35125f722c44dd4b402c91d28c57b56e925081bc67ba23a4e31616dee71d",
+    "membership_sha256": "dda5d0aa6cb4feec5edaa53c9a7b099b5d9e46b6020c1ab69c5913f5402d2a08",
     "official_daily_session_sha256": "5fee1979958e96276e53054c3e76b3818aa6cc1b3abe0e88dd5647c2976104c7",
     "window_end": "2026-10-27",
     "window_start": "2021-11-02"
@@ -137937,31 +137935,9 @@
           "expiry_ok": true,
           "expiry_time_ist": "15:14",
           "status": "PASS"
-        },
-        "2023-07-07": {
-          "anchor_bars": 4,
-          "anchor_ok": true,
-          "anchor_time_ist": "10:00",
-          "duplicate_anchor_timestamps": 0,
-          "duplicate_expiry_timestamps": 0,
-          "expiry_bars": 15,
-          "expiry_ok": true,
-          "expiry_time_ist": "15:14",
-          "status": "PASS"
-        },
-        "2023-07-13": {
-          "anchor_bars": 0,
-          "anchor_ok": false,
-          "anchor_time_ist": null,
-          "duplicate_anchor_timestamps": 0,
-          "duplicate_expiry_timestamps": 0,
-          "expiry_bars": 0,
-          "expiry_ok": false,
-          "expiry_time_ist": null,
-          "status": "TARGET_WINDOW_GAP_OR_INVALID_OHLC"
         }
       },
-      "status": "PARTIAL_TARGET_DATES"
+      "status": "PASS_RESPONSE"
     },
     "HEROMOTOCO|2021-11-12|2022-02-09": {
       "bar_count": 24909,
@@ -313367,5 +313343,5 @@
   "target_coverage_status": "PASS",
   "token_refresh_status": "SUCCESS",
   "unresolved_security_symbols": [],
-  "updated_at_utc": "2026-11-01T13:36:16.526004+00:00"
+  "updated_at_utc": "2026-11-01T14:25:13.654424+00:00"
 }
