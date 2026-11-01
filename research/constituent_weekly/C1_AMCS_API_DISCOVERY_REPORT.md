@@ -1,6 +1,6 @@
 # C1 amcs.fund API metadata discovery
 
-- Run time (UTC): 2026-11-01T08:35:59.571810+00:00
+- Run time (UTC): 2026-11-01T08:36:41.722992+00:00
 - Scope: **metadata only**; the probe calls the documented scheme/month endpoints but retains only date/source metadata, discards ISIN-level holdings fields, does not download workbooks, and does not store portfolio values.
 - Rights: **UNVERIFIED**. Public API access is not treated as permission for commercial/trading-research extraction, caching, or redistribution.
 
@@ -11,6 +11,7 @@
 | Nippon AMC detail | PASS_JSON | 200 | application/json; charset=utf-8 | 71595 | 5 |
 | /scheme/{slug} | PASS_JSON | 200 | application/json; charset=utf-8 | 19743 | 5 |
 | /manifest | PASS_JSON | 200 | application/json; charset=utf-8 | 3050 | 5 |
+| /month/{id} | PASS_JSON | 200 | application/json; charset=utf-8 | 15250 | 5 |
 
 ## Nippon AMC metadata matches
 
@@ -26,6 +27,11 @@
 - {"amc": "nippon-india", "month": "2026-09", "name": "Nippon India Nifty Next 50 Junior BeES FoF", "slug": "nippon-india-nifty-next-50-junior-bees-fof"}
 - {"amc": "nippon-india", "month": "2026-09", "name": "Nippon India ETF Nifty Infrastructure BeES", "slug": "nippon-india-etf-nifty-infrastructure-bees"}
 - {"amc": "nippon-india", "month": "2026-09", "name": "Nippon India ETF Nifty 50 Shariah BeES", "slug": "nippon-india-etf-nifty-50-shariah-bees"}
+- API index top-level JSON keys: api, docs, endpoints, unit
+- /amcs top-level JSON keys: api, data, month, source, unit
+- AMC detail top-level JSON keys: api, data, month, source, unit
+- /scheme/{slug} top-level JSON keys: api, data, month, source, unit
+- /manifest top-level JSON keys: api, data, month, source, unit
 
 ## Scheme-history metadata (source URLs and dates only)
 
@@ -33,7 +39,7 @@
 
 ## Month-level source metadata
 
-- No source metadata was returned by /month/{id}.
+- {"month": "2026-09"}
 
 ## Historical source-file metadata matches
 
