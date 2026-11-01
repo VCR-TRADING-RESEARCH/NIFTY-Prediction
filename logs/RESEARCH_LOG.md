@@ -516,3 +516,18 @@
 - **Data/rights:** No scheme holdings route or source-file body was downloaded; no portfolio values were admitted. amcs.fund data-reuse rights for trading research remain unverified.
 - **Correction:** E0062 closed after the successful follow-up run; it was an incorrectly mixed offline test fixture, not an API/data error.
 - **Plan:** BUP-01 v1.2 remains locked. C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.
+
+
+## 2026-11-01 — Alternative historical membership/weight routes assessed
+
+- **Phase:** C1 — source feasibility and rights audit.
+- **User request:** “Can you find alternatives?”
+- **Primary alternative:** NSE Indices official historical reports page has an Archives of Daily/Monthly Reports selector; official monthly report page lists market-capitalisation and weightage ZIP reports. NSE All Reports lists a NIFTY 50/NIFTY Next 50 market-cap/weightage/beta report and a broader index market-cap/weightage report. The archive looks like the strongest exact-weight source, but month-by-month coverage, publication times and permitted research use remain unverified.
+- **Rights check:** current NSE Indices Terms of Use prohibit systematic/automated collection absent express written consent and describe site use as personal/non-commercial. No scraper/cache will be enabled without consent or a subscription licence.
+- **Membership alternative:** inspected aditya-jha/nse-historical-membership. Derived data are CC BY 4.0 with attribution; NIFTY 50 membership intervals begin 2014-01-01, README states high confidence from 2018 onward and best-effort earlier, and coverage lists last NIFTY 50 event as 2025-09-30. Historical weight values are null. Accept only as a membership comparator after reconciliation and update.
+- **XBRL route:** NSE/BSE quarterly SHP filings offer independent ownership inputs. NSE IWF methodology has 22 exclusion classes; current promoter/FII/DII aggregates do not calculate IWF. A detailed classification and timestamp-aware parser must be built and tested against an official index-weight snapshot.
+- **ETF proxy route:** HDFC, UTI and Nippon index-fund/ETF monthly portfolios can be compared by ISIN but remain proxies, subject to source-use rights and cash/derivative residuals. Do not substitute ETF weights for official index weights.
+- **Rejected for current use:** AMP4010 Hugging Face historical NIFTY weight series is CC BY-NC-SA 4.0 and requires a separate commercial licence; it also uses monthly/event snapshots and between-snapshot assumptions.
+- **Paid fallback:** NSE Indices data subscription describes historical constituent identifiers, market capitalisation, weights and prices and names quantitative research as a data-use category. Check only after free routes and rights/permission possibilities.
+- **Implementation:** full assessment saved at research/constituent_weekly/C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md. No model training or raw data ingestion occurred. Plan v1.2 remains unchanged.
+- **Decision:** C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. The preferred next path is permissioned NSE weight reports + CC BY 4.0 PIT membership comparator + Dhan price-drift reconstruction with event resets and official basket reconciliation.
