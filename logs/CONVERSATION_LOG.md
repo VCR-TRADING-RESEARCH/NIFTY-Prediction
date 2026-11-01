@@ -403,3 +403,9 @@
 - Corrected the first direct-NSE parser after inspecting actual legacy CSV headers: TIMESTAMP is the date field. Rerun validated all 3/3 rows with OHLC, volume and ISIN checks.
 - Composite source evidence now covers all seven residual member/date pairs. Base daily coverage JSON remains unchanged at 106,385/106,392 until supplemental rows are safely merged into encrypted feature cache. Corporate-action verification remains open. No hidden reasoning or credentials are logged.
 
+## 2026-11-02 — Encrypted cache persistence dependency correction
+
+## 2026-11-02 — Encrypted cache persistence dependency correction
+
+- Attempted to persist the three direct-NSE HDFC bars in the existing AES-GCM encrypted cache. The first cache-enhancement workflow failed at import time because its minimal dependency list omitted `pyotp` required by the shared module.
+- Logged as E0089 and expanded the workflow install step to project/live-API requirements before rerunning. No raw bars or secrets were committed.

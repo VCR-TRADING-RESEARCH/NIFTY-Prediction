@@ -689,3 +689,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Parse `TIMESTAMP` as a supported trade-date field; rerun the exact three archives; verify one EQ row, OHLC invariants, nonnegative volume and matching ISIN per date.
 - **Outcome:** 3/3 direct NSE rows validated. The earlier 0/3 result is superseded and must not be used. Parser fix is committed in the direct-NSE audit script.
 - **Impact:** No raw values were published. Original Dhan/TejHQ coverage remains unchanged until supplemental encrypted-cache integration.
+
+## E0089 — 2026-11-02 — Encrypted direct-NSE cache writer imported project module without its runtime dependencies
+
+## E0089 — 2026-11-02 — Encrypted direct-NSE cache writer imported project module without its runtime dependencies
+
+- **Class:** Workflow dependency omission; direct archive audit itself had already passed before cache-persistence enhancement.
+- **Observed:** The cache-enhanced run restored the existing encrypted cache, then failed before archive processing with `ModuleNotFoundError: pyotp` while importing the shared encryption helper from the daily-history module.
+- **Cause:** The direct workflow installed only requests/cryptography/pandas/numpy/pyarrow, while the shared module imports the project live-API dependency set at module load.
+- **Correction:** Install the repository and live-API requirements before importing the shared AES-GCM helper. Keep the HF token in the Actions environment only; never print or commit it.
+- **Impact:** No raw data were committed. The earlier direct NSE validation remains valid; encrypted supplemental-cache persistence is pending a rerun.

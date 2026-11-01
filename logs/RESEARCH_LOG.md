@@ -757,3 +757,10 @@
 - Combined with four valid rows from the independent mirror, all seven residual security/date pairs have source-level OHLCV evidence.
 - The original daily coverage JSON remains 106,385/106,392 because supplemental raw rows have not yet been merged into the encrypted feature cache; see C1_COMPOSITE_DAILY_COVERAGE.json.
 - No raw market values were published. Corporate-action verification remains incomplete; C2 remains locked.
+
+## 2026-11-02 — Direct NSE encrypted-cache dependency correction
+
+## 2026-11-02 — Direct NSE encrypted-cache dependency correction
+
+- The direct NSE archive audit validates 3/3 special-session rows. A follow-up attempt to persist the raw rows into the encrypted cache exposed a missing runtime dependency (`pyotp`) from the shared cache-encryption module.
+- Updated the workflow dependency installation to use the project's runtime requirements plus cache dependencies. No raw values were committed; encrypted cache persistence remains pending rerun.
