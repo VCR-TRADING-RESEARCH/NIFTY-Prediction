@@ -178,3 +178,9 @@
 - Verified that the final fail-closed Dhan workflow gate now runs after committing diagnostics and fails on partial QA status. The failure is correctly attributed to the SHREECEM data invariant, not token authentication.
 - Created a single-symbol, bounded diagnostic to identify the anomalous bar timestamp without storing prices or volume values. First offline attempt found an unsupported pandas datetime formatter; corrected it. The corrected Actions result is pending.
 - C1 remains blocked by the remaining data anomaly and, more importantly, no licensed official point-in-time IWF/weight series or validated basket reconstruction. No model or strategy is claimed. Conversation log preserves visible decisions only; no hidden reasoning or secrets.
+
+
+## 2026-11-01 — SHREECEM diagnostic test and runner fixes
+- Offline diagnostic tests passed 2/2 after replacing unsupported pandas timestamp formatting.
+- Its live step then failed before any Dhan call because direct script execution lacked the repository root on Python sys.path. Fixed in commit 34e067d and the workflow has been retriggered for the same single-symbol check.
+- The 2021 edge blocker remains one negative-volume SHREECEM row; no raw bars or volume values are stored.
