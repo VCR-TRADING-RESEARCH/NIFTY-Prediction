@@ -170,3 +170,11 @@
 - Continued C1 authentication work and closed E0044: corrected the offline CI runner dependencies after the first helper-test attempt failed collection due missing `pyotp`; follow-up Actions run 41266377005 passed all 12 membership + Dhan auth tests.
 - Protected Dhan live preflight run 41266155250 remains under inspection; no final live-auth or full-data coverage claim is made yet.
 - Continue to respect locked C1 data/rights gates; do not use unauthorized weights, equal-weight substitutes, or incomplete panels. Record visible decisions/outcomes only, not hidden reasoning or secrets.
+
+
+## 2026-11-01 — User instructed “Proceed without stopping”
+- Continued beyond the prior TOTP blocker. Merged authentication helper accepts raw Base32 and otpauth TOTP inputs and records only sanitized server/runner clock skew.
+- Live protected run 41266155250 showed first-attempt fresh token success, active Dhan Data API plan and 0-second clock skew. Current universe 50/50; 50/50 recent single-session probe; full 50-stock 2026Q3 and 2022Q4 90-day probes both 50/50; 2021 edge 49/50 strict OHLCV due one SHREECEM negative-volume row.
+- Verified that the final fail-closed Dhan workflow gate now runs after committing diagnostics and fails on partial QA status. The failure is correctly attributed to the SHREECEM data invariant, not token authentication.
+- Created a single-symbol, bounded diagnostic to identify the anomalous bar timestamp without storing prices or volume values. First offline attempt found an unsupported pandas datetime formatter; corrected it. The corrected Actions result is pending.
+- C1 remains blocked by the remaining data anomaly and, more importantly, no licensed official point-in-time IWF/weight series or validated basket reconstruction. No model or strategy is claimed. Conversation log preserves visible decisions only; no hidden reasoning or secrets.
