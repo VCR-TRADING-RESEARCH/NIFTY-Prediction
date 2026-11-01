@@ -134,6 +134,37 @@ def build_expiry_cycles(
     return cycles
 
 
+def evaluate_cycle_coverage(cycle_results: list[dict[str, Any]]) -> dict[str, Any]:
+    """Calculate the registered thresholds using only previously accepted expiry cycles."""
+    total = len(cycle_results)
+    index_valid = sum(bool(item.get("index_target_ok")) for item in cycle_results)
+    stock_covered = sum(bool(item.get("stock_coverage_ok")) for item in cycle_results)
+    accepted = sum(bool(item.get("cycle_accepted_for_panel")) for item in cycle_results)
+    index_fraction = index_valid / total if total else 0.0
+    accepted_before = 0
+    confirmatory_after_104 = 0
+    for item in cycle_results:
+        if item.get("cycle_accepted_for_panel"):
+            if accepted_before >= MIN_CONFIRMATORY_HISTORY:
+                confirmatory_after_104 += 1
+            accepted_before += 1
+    passed = bool(
+        total >= MIN_CONFIRMATORY_HISTORY + 1
+        and index_fraction >= MIN_INDEX_TARGET_FRACTION
+        and accepted >= MIN_CONFIRMATORY_HISTORY + 1
+        and confirmatory_after_104 > 0
+    )
+    return {
+        "scheduled_cycles": total,
+        "index_target_valid_cycles": index_valid,
+        "index_target_valid_fraction": round(index_fraction, 6),
+        "cycles_meeting_47_and_94_percent_stock_gate": stock_covered,
+        "cycles_accepted_for_panel": accepted,
+        "confirmatory_cycles_after_104_prior_cycles": confirmatory_after_104,
+        "target_coverage_gate": "PASS" if passed else "FAIL",
+    }
+
+
 def make_chunks(start_date: str, end_date: str, days: int = CHUNK_DAYS) -> list[dict[str, str]]:
     """Create non-overlapping, inclusive date chunks, never longer than 90 days."""
     if days < 1 or days > 90:
@@ -478,19 +509,41 @@ def main() -> int:
     report["index_security_id_resolved"] = bool(index_security_id)
     write_report(report)
 
+    # If every requested window is already covered by matching sanitized QA cache
+    # entries, do not create another 24-hour Dhan token merely to re-read the cache.
+    pending_index = any(
+        index_dates_by_chunk[key]
+        and report["index_chunks"].get(key, {}).get("status") != "PASS_RESPONSE"
+        for key in index_dates_by_chunk
+    )
+    pending_stocks = any(
+        dates
+        and symbol in resolved
+        and report["stock_chunks"].get(f"{symbol}|{key}", {}).get("status") != "PASS_RESPONSE"
+        for key, symbol_targets in stock_targets_by_chunk.items()
+        for symbol, dates in symbol_targets.items()
+    )
+    need_network = pending_index or pending_stocks
+    token = ""
+    client_id = ""
     try:
-        token, client_id, auth_method, refresh_status, _auth_diagnostics = acquire_access_token()
-        report["auth_method"] = auth_method
-        report["token_refresh_status"] = refresh_status
-        profile = request_profile(token)
-        report["profile_http_status"] = int(profile.status_code)
-        if not profile.ok:
-            raise FatalAccessError(f"Dhan profile authorization failed with HTTP {profile.status_code}.")
-        profile_body = profile.json()
-        plan = str(profile_body.get("dataPlan", "")).strip().casefold()
-        report["data_plan_active"] = plan == "active"
-        if plan != "active":
-            raise FatalAccessError("Dhan Data API plan is not active.")
+        if need_network:
+            token, client_id, auth_method, refresh_status, _auth_diagnostics = acquire_access_token()
+            report["auth_method"] = auth_method
+            report["token_refresh_status"] = refresh_status
+            profile = request_profile(token)
+            report["profile_http_status"] = int(profile.status_code)
+            if not profile.ok:
+                raise FatalAccessError(f"Dhan profile authorization failed with HTTP {profile.status_code}.")
+            profile_body = profile.json()
+            plan = str(profile_body.get("dataPlan", "")).strip().casefold()
+            report["data_plan_active"] = plan == "active"
+            if plan != "active":
+                raise FatalAccessError("Dhan Data API plan is not active.")
+        else:
+            report["auth_method"] = "SANITIZED_QA_CACHE"
+            report["token_refresh_status"] = "NOT_NEEDED"
+            report["data_plan_active"] = "NOT_RECHECKED"
     except Exception as exc:
         report["status"] = "BLOCKED_AUTH_OR_ENTITLEMENT"
         report["fatal_error"] = str(exc)[:220] if isinstance(exc, FatalAccessError) else type(exc).__name__
@@ -597,27 +650,11 @@ def main() -> int:
                 "stock_coverage_ok": stock_ok,
                 "cycle_accepted_for_panel": bool(index_ok and stock_ok),
             })
-        valid_index = sum(item["index_target_ok"] for item in cycle_results)
-        accepted = sum(item["cycle_accepted_for_panel"] for item in cycle_results)
-        stock_covered = sum(item["stock_coverage_ok"] for item in cycle_results)
-        index_ratio = valid_index / len(cycle_results) if cycle_results else 0.0
-        max_usable_history = sum(
-            1 for i, item in enumerate(cycle_results)
-            if item["cycle_accepted_for_panel"] and i >= MIN_CONFIRMATORY_HISTORY
-        )
-        target_gate = bool(
-            index_ratio >= MIN_INDEX_TARGET_FRACTION
-            and accepted >= MIN_CONFIRMATORY_HISTORY
-            and max_usable_history > 0
-        )
+        coverage_summary = evaluate_cycle_coverage(cycle_results)
+        target_gate = coverage_summary["target_coverage_gate"] == "PASS"
         report["cycle_results"] = cycle_results
         report["summary"] = {
-            "scheduled_cycles": len(cycle_results),
-            "index_target_valid_cycles": valid_index,
-            "index_target_valid_fraction": round(index_ratio, 6),
-            "cycles_meeting_47_and_94_percent_stock_gate": stock_covered,
-            "cycles_accepted_for_panel": accepted,
-            "confirmatory_cycles_after_104_prior_cycles": max_usable_history,
+            **coverage_summary,
             "minimum_member_coverage_fraction": round(
                 min((item["member_coverage_fraction"] for item in cycle_results), default=0.0), 6
             ),
@@ -625,7 +662,6 @@ def main() -> int:
             "total_dhan_requests_this_run": report["requests_this_run"],
             "total_index_chunks_cached": len(report["index_chunks"]),
             "total_stock_symbol_chunks_cached": len(report["stock_chunks"]),
-            "target_coverage_gate": "PASS" if target_gate else "FAIL",
         }
         report["target_coverage_status"] = "PASS" if target_gate else "FAIL"
         report["identity_status"] = "PARTIAL" if unresolved_symbols else "MAPPING_RESOLVED_REQUIRES_CORPORATE_ACTION_REVIEW"
