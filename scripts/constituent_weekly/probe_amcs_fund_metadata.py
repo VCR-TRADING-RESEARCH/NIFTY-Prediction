@@ -178,7 +178,7 @@ def _scheme_slug(records: list[dict[str, Any]]) -> str | None:
 def _month_identifiers(records: list[dict[str, Any]]) -> list[str]:
     ids: list[str] = []
     for record in records:
-        value = record.get("id")
+        value = record.get("id") or record.get("month_id") or record.get("month") or record.get("period")
         if value is not None and re.fullmatch(r"[A-Za-z0-9_-]{1,100}", str(value)):
             candidate = str(value)
             if candidate not in ids:
@@ -344,6 +344,14 @@ def render_report(report: dict[str, Any]) -> str:
             lines.append("- " + json.dumps(item, sort_keys=True, ensure_ascii=False))
     else:
         lines.append("- No scheme metadata match was returned from the AMC detail endpoint.")
+    for endpoint_name, meta_key in [
+        ("API index", "api_index"), ("/amcs", "amcs"),
+        ("AMC detail", "amc_detail"), ("/scheme/{slug}", "scheme_detail"),
+        ("/manifest", "manifest")
+    ]:
+        meta = report.get(meta_key) or {}
+        if meta.get("top_level_keys"):
+            lines.append(f"- {endpoint_name} top-level JSON keys: " + ", ".join(meta["top_level_keys"]))
     lines += ["", "## Scheme-history metadata (source URLs and dates only)", ""]
     if report.get("scheme_history_metadata"):
         for item in report["scheme_history_metadata"][:50]:
