@@ -347,3 +347,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Therefore run 41263593605 must be described as **offline tests PASS (26/26), live data gate BLOCKED, Actions job conclusion SUCCESS due to older workflow revision**. Do not describe it as a successful live preflight.
 - Dhan auth remains OPEN. Do not repeat token generation until account secrets are checked or the API-key/secret OAuth route is configured.
 - This clarification does not change C1/C2 acceptance status.
+
+
+## E0044 — 2026-11-01 — Offline Dhan authentication tests missing runtime dependencies
+
+- **Run:** [41266339150](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266339150).
+- **Observed:** The newly added offline CI step failed during test collection with `ModuleNotFoundError: No module named 'pyotp'`. The membership workflow installed pytest only, but the imported Dhan token module and shared TOTP helper require `pyotp` (and requests).
+- **Correction:** Added explicit `pyotp` and `requests` installation to the offline workflow. Follow-up run [41266377005](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266377005) completed SUCCESS with **12 passed**.
+- **Impact:** No live auth request or market-data request was affected by this failed offline job. It was a CI dependency-setup error, not a TOTP/provider credential finding.
+- **Status:** CLOSED — required dependencies are explicit and the corrected offline suite passes.
