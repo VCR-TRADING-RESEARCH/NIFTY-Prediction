@@ -460,3 +460,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Retain page discovery when available and add a deterministic month-end URL fallback. The filename pattern is checked against the direct September 2026 and February 2026 download URLs surfaced from the official AMC page. April 2019 remains a candidate to be empirically checked in the next run.
 - **Impact:** No holdings workbook was downloaded in the failed discovery run; no data or research result is affected.
 - **Status:** FIX COMMITTED — close after the new run's HTTP and schema results are inspected.
+
+
+## E0057 — 2026-11-01 — AMC workbooks served as XLSX despite .xls filenames; report commit raced with concurrent push
+
+- **Run:** [41274969265](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274969265).
+- **Observed:** The five parser tests passed. September 2026 and February 2026 URLs returned HTTP 200, but the payloads were XLSX containers while the filenames ended in .xls; xlrd correctly rejected those files. The guessed April 2019 URL returned HTTP 404. The workflow created the sanitised report, but its commit push was rejected because another commit had advanced the same C1 branch during the job.
+- **Correction:** Detect workbook type by file signature (XLSX ZIP signature -> openpyxl; legacy OLE XLS -> xlrd), install openpyxl in the workflow, and rebase the sanitized report commit onto the latest branch before pushing.
+- **Impact:** No constituent holdings values were published. Two recent AMC files are reachable, but schema parsing and the historical URL remain unverified.
+- **Status:** FIX COMMITTED — validate in the next probe run; close only after successful schema parsing and a successful report push.
