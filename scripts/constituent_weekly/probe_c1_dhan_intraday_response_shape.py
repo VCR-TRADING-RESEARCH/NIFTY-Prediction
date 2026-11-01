@@ -63,11 +63,25 @@ CASES = [
         "to": "2023-08-03",
     },
     {
-        "name": "legacy_hdfc_daily_history",
+        "name": "legacy_hdfc_daily_history_full",
         "kind": "daily_stock",
         "symbol": "HDFC",
         "from": "2018-04-01",
         "to": "2023-07-13",
+    },
+    {
+        "name": "legacy_hdfc_daily_history_recent",
+        "kind": "daily_stock",
+        "symbol": "HDFC",
+        "from": "2022-10-01",
+        "to": "2023-07-13",
+    },
+    {
+        "name": "legacy_hdfc_daily_history_single_date",
+        "kind": "daily_stock",
+        "symbol": "HDFC",
+        "from": "2023-06-30",
+        "to": "2023-07-01",
     },
 ]
 
@@ -82,7 +96,9 @@ def classify_provider_text(value: Any) -> str:
         ("ENTITLEMENT_OR_PLAN", ("plan", "subscription", "entitlement", "not allowed", "permission")),
         ("AUTHENTICATION", ("unauthor", "invalid token", "expired token", "access denied")),
         ("INVALID_INSTRUMENT", ("invalid security", "invalid instrument", "security id", "not found")),
-        ("DATE_RANGE_OR_HISTORY", ("date range", "historical data", "past data", "from date", "to date")),
+        ("DATE_RANGE_OR_HISTORY", ("date range", "historical data", "past data", "from date", "to date", "invalid date")),
+        ("INVALID_PARAMETERS", ("invalid parameter", "incorrect parameter", "bad request", "validation error")),
+        ("INACTIVE_OR_DELISTED_SECURITY", ("inactive instrument", "delisted", "merged", "not active", "instrument inactive")),
         ("NO_DATA", ("no data", "no record", "not available", "empty")),
     ]
     for category, matches in patterns:
@@ -128,19 +144,21 @@ def response_shape(response: requests.Response) -> dict[str, Any]:
     message_text = next((x for x in message_fields if isinstance(x, str) and x), None)
     result["provider_message_category"] = classify_provider_text(message_text)
 
-    payload = body.get("data")
-    result["data_field_type"] = type(payload).__name__ if "data" in body else "MISSING"
-    if isinstance(payload, dict):
-        result["data_keys"] = sorted(str(k) for k in payload.keys())[:60]
-        for key in ("open", "high", "low", "close", "volume", "timestamp", "start_Time", "startTime"):
-            value = payload.get(key)
-            result[f"{key}_type"] = type(value).__name__ if value is not None else "MISSING"
-            if isinstance(value, list):
-                result[f"{key}_length"] = len(value)
-    elif isinstance(payload, list):
-        result["data_length"] = len(payload)
-        if payload and isinstance(payload[0], dict):
-            result["first_data_object_keys"] = sorted(str(k) for k in payload[0].keys())[:60]
+    payload = body.get("data") if isinstance(body.get("data"), dict) else body
+    result["data_field_type"] = type(body["data"]).__name__ if "data" in body else "TOP_LEVEL_ARRAYS"
+    result["payload_container"] = "data_object" if payload is not body else "top_level"
+    result["payload_keys"] = sorted(str(k) for k in payload.keys())[:60]
+    for key in ("open", "high", "low", "close", "volume", "timestamp", "start_Time", "startTime"):
+        value = payload.get(key)
+        result[f"{key}_type"] = type(value).__name__ if value is not None else "MISSING"
+        if isinstance(value, list):
+            result[f"{key}_length"] = len(value)
+    for key in ("errorCode", "errorType"):
+        if key in body:
+            value = body.get(key)
+            result[f"{key}_type"] = type(value).__name__
+            if isinstance(value, (str, int, float, bool)):
+                result[f"{key}_value"] = str(value)[:60]
     return result
 
 

@@ -34,24 +34,26 @@ def test_response_shape_records_keys_types_and_array_lengths_only():
     assert shape["provider_status_value"] == "failure"
     assert shape["provider_message_category"] == "DATE_RANGE_OR_HISTORY"
     assert shape["data_field_type"] == "NoneType"
+    assert shape["payload_container"] == "top_level"
+    assert shape["payload_keys"] == ["data", "errorCode", "remarks", "status"]
     assert "No data found" not in str(shape)
     assert "errorCode" in shape["top_level_keys"]
 
 
-def test_response_shape_handles_successful_arrays_without_recording_values():
+def test_response_shape_handles_successful_top_level_arrays_without_recording_values():
     fake = FakeResponse(200, {
         "status": "success",
-        "data": {
-            "open": [100, 101],
-            "high": [102, 103],
-            "low": [99, 100],
-            "close": [101, 102],
-            "volume": [1000, 1200],
-            "start_Time": [1, 2],
-        },
+        "open": [100, 101],
+        "high": [102, 103],
+        "low": [99, 100],
+        "close": [101, 102],
+        "volume": [1000, 1200],
+        "timestamp": [1, 2],
     })
     shape = response_shape(fake)
-    assert shape["data_keys"] == ["close", "high", "low", "open", "start_Time", "volume"]
+    assert shape["data_field_type"] == "TOP_LEVEL_ARRAYS"
+    assert shape["payload_container"] == "top_level"
+    assert shape["payload_keys"] == ["close", "high", "low", "open", "status", "timestamp", "volume"]
     assert shape["open_length"] == 2
-    assert shape["start_Time_length"] == 2
+    assert shape["timestamp_length"] == 2
     assert "100" not in str(shape)
