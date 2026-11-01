@@ -284,3 +284,9 @@
 - Confirmed earlier bounded live evidence: full current-universe 50/50 for one session (41249642409), full 50/50 for the 2026Q3 90-day slice (41251346795), and full 50/50 for the 2022Q4 90-day slice (41251808946). These separated slices do not establish uninterrupted coverage between them or across all five years.
 - Added a fail-closed workflow status gate after the sanitized diagnostics commit so future live authentication/data failures cannot be mistaken for green research runs. No new token attempt was made after the blocked result.
 - C1 remains NOT PASSED; C2–C6 remain pending/gated. No constituent panel, forecast, or strategy is claimed.
+
+
+## 2026-11-01 — Workflow gate ordering review
+
+- Review caught that the first fail-closed Dhan status-gate patch was positioned before the diagnostics commit. It was moved after the commit step before any further live run. The updated YAML was fetched back from GitHub and confirmed to commit sanitized status first, then enforce `PASS_ACTIVE_EQUITIES`.
+- Error E0033 is closed for the ordering defect. Runtime behaviour remains to be verified on the next authorized protected Dhan preflight; no additional run was triggered while authentication remains blocked.
