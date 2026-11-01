@@ -43,3 +43,35 @@ The NSE Indices data subscription page describes licensed products containing co
 - Independent filename-pattern example: FarzanBhalara/Discretized-Neural-SDE-for-Risk-Return-and-Market-regimes, step0_fetch_nifty50_panel.py.
 
 Audit scope: source discovery and public-terms review only. No monthly ZIP was downloaded, opened or processed in this step.
+
+
+## Additional official-source and free-alternative review — 2026-11-01
+
+### Official monthly report family now confirmed on the current publisher page
+
+The current NSE Indices [Monthly Reports page](https://www.niftyindices.com/reports/monthly-reports) lists both **"Indices Market Capitalisation & Weightage (zip)"** and **"Market Capitalisation, Weightage, Beta (Zip)"**. This confirms a real official route for monthly weight records, not merely the previously inferred filename pattern. No ZIP was downloaded or parsed in this review.
+
+The current [Nifty Indices Terms of Use](https://www.niftyindices.com/terms-of-use) prohibit systematic or automated data collection without express written consent, prohibit copying/reproducing/redistributing site content without prior written permission, and limit general website use to personal non-commercial use. Therefore this public report listing is not permission for the project's automated download, repository caching or public redistribution. NSE's own [Index Data Subscription page](https://www.nseindia.com/static/nse-indices/index-data-subscription) explicitly describes licensed constituent products including identifiers, market capitalisation, weights and prices, and gives `indices@nse.co.in` for licensing enquiries.
+
+### IWF methodology makes a simple public-float proxy insufficient
+
+The official [Guideline on Investible Weight Factors](https://nsearchives.nseindia.com/web/sites/default/files/inline-files/Guideline_Investible_Weight_Factors.pdf) states that IWF is derived from quarterly shareholding-pattern disclosures. It lists 22 categories to exclude where identifiable separately, including promoter/DR and associate cross-holdings, family and promoter trusts, employee trusts, directors/KMP, strategic holdings, government, FDI, private equity/funds, sovereign wealth funds, locked-in shares, IEPF and persons acting in concert. The guideline's example rounds IWF to six decimals. Thus `1 - promoter_pct`, `public_pct`, FII/DII flows, or total market capitalisation cannot be substituted for IWF.
+
+### Additional open data candidate assessed
+
+The GitHub project [aditya-jha/nse-historical-membership](https://github.com/aditya-jha/nse-historical-membership) publishes a point-in-time quarterly shareholding output for 2,261 symbols and 108 quarters (2001-03 to 2026-04), under a stated CC BY 4.0 data licence. Its shipped flat table is aggregated to ticker/period/promoter/FII/DII/public/pledge percentages. It does **not** publish the detailed 22-category exclusions needed to calculate official IWF. Its data-licence attribution note also describes NSE press releases/circulars, while this shareholding module is described as parsed from NSE XBRL filings; provenance/redistribution scope for this particular module therefore needs confirmation before bulk import. It is a candidate source for a future ownership/sentiment feature audit, not an accepted weight source.
+
+The [AMP4010 historical weight candidate](https://huggingface.co/datasets/AMP4010/Historical_Nifty_50_Constituent_Weights_20Y) remains CC BY-NC-SA 4.0, ends 2025-08-31, and documents extrapolated weights around rebalances. It is not admitted for the primary or commercial trading track. Binary/equal-weight membership files are not numerical IWF.
+
+### Updated decision
+
+- Free-source search has identified: (a) official monthly weight archives that require a permission/licence decision for automated extraction and use; and (b) reusable public membership/shareholding datasets that do not supply the complete IWF exclusion data.
+- No legally cleared, complete, point-in-time numerical IWF series with effective/publication dates and the full 22-category treatment has been identified for BUP-01.
+- Do not scrape the monthly archive, store its ZIPs, or use third-party approximations as a primary weight series.
+- Next permitted route is a written permission/licence covering machine retrieval, cache retention, research/backtesting, internal trading use and any intended publication, or a separately licensed vendor data feed. The permission scope must be recorded before automation.
+
+Additional references:
+- Nifty Indices official IWF guidance: https://www.niftyindices.com/resources/investible-weight-factors
+- NSE official shareholding-pattern filings page: https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern
+- NSE IWF guideline PDF: https://nsearchives.nseindia.com/web/sites/default/files/inline-files/Guideline_Investible_Weight_Factors.pdf
+- Quarterly shareholding candidate dataset: https://github.com/aditya-jha/nse-historical-membership
