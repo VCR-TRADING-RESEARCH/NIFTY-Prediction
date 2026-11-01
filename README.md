@@ -324,3 +324,14 @@ This is a major-identity correction, not the exhaustive adjustment ledger for di
 Live Dhan audit [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865) passed its explicit data gate: 258/258 weekly cycles had valid observed NIFTY anchor/expiry target pairs and met the registered at least 47 / at least 94% constituent coverage rule; 154 confirmatory cycles remained after the 104-cycle warm-up; zero unresolved active symbols; 1,083 requests across 21 windows. One index window (2024-01-31 to 2024-04-29) was marked partial though the final cycle target count was complete. Exact date-level detail was lost in the post-run rebase conflict, so it is disclosed as a caveat. See [durable result JSON](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_RESULT.json), [report](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_REPORT.md), and [E0070](logs/ERROR_LOG.md).
 
 **C1 is not fully passed.** Daily OHLCV feature coverage and exhaustive corporate-action adjustment review remain pending. No C2 model or trading strategy has been trained.
+
+
+## Corrected C1 intraday coverage result — 2026-11-01
+
+The complete sanitized QA artifact from [Actions run 41309632317](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41309632317), artifact 13086220727, is the authoritative current intraday result: **258/258 weekly expiry cycles passed** the observed NIFTY anchor/expiry target check and the 47-stock / 94% constituent-input rule; 154 confirmatory cycles remain after the 104-cycle warm-up; minimum constituent coverage was 98%; no active symbols were unresolved; 1,083 requests covered 21 windows.
+
+The sole partial flag was the 15:14 check on **26 April 2024**. This was an anchor day, not an expiry day: the 10:00 anchor passed, and the actual expiry proxy for that cycle on **2 May 2024** passed. The generic chunk check of 15:14 on every calendar date does not invalidate the registered expiry target.
+
+The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is retained as historical evidence; it is superseded by the full 258-cycle artifact. See [corrected result JSON](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_RESULT.json), [report](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_REPORT.md), and [full Actions QA artifact](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41309632317).
+
+**Overall C1 remains NOT PASSED.** The first daily OHLCV audit measured 98.85% valid member sessions and left the HDFC legacy history and one TATAMOTORS session unresolved; the corrected personal-use fallback is being validated. Exhaustive corporate-action/adjusted-return review remains open. C2 stays locked.
