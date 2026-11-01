@@ -290,3 +290,13 @@
 
 - Review caught that the first fail-closed Dhan status-gate patch was positioned before the diagnostics commit. It was moved after the commit step before any further live run. The updated YAML was fetched back from GitHub and confirmed to commit sanitized status first, then enforce `PASS_ACTIVE_EQUITIES`.
 - Error E0033 is closed for the ordering defect. Runtime behaviour remains to be verified on the next authorized protected Dhan preflight; no additional run was triggered while authentication remains blocked.
+
+## 2026-11-01 — Resume: validator fix verified; live Dhan authentication blocked
+
+- Re-read the C1 status, latest preflight JSON, previous successful preflight, research plan, operating rules, and research/error/conversation logs before continuing.
+- Inspected the failure from run [41252703953](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41252703953). The Muhurat-session row was being counted in the ordinary outside-hours counter as well as in the separate special-session count. The correction makes those classifications disjoint. Offline regression suite passed **26/26** in [run 41263593605](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41263593605).
+- Inspected all steps of run 41263593605 and its sanitized JSON. Live authentication failed: two TOTP token-generation attempts returned HTTP 200 without an access token; provider diagnostics classified the response as `TOTP_REJECTED_OR_INVALID`; the fallback access token returned profile HTTP 401. No security master, daily history, or intraday history call was made.
+- The job conclusion was SUCCESS because the final fail-closed workflow step was not in the executed run. Read-back of the current C1 branch workflow confirms the enforcement step now follows the diagnostics commit; runtime verification is still pending.
+- Previous successes remain valid only for their tested scopes: one session 50/50; 2026-06-29–2026-09-26 50/50; 2022-10-03–2022-12-30 50/50. The 2021-11-01–2022-01-29 edge range remains untested.
+- Decision: stop automated token retries. Require corrected Dhan organization secrets or a configured API-key/secret OAuth flow before another protected live data run. C1 remains NOT PASSED; C2 stays gated. No stock model, index aggregation, forecast or strategy was produced.
+- User-facing checkpoint: user asked to resume after a screenshot showing the 2021-edge QA investigation. The visible response explains the distinct offline-test and live-authentication blockers. Hidden private reasoning and secrets are not recorded.
