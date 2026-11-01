@@ -376,3 +376,15 @@
 - Decided not to import modelling/tooling dependencies in C1 because the registered plan requires C1 data/rights and C2 panel acceptance first. This avoids unnecessary dependencies and model/search leakage while no stock panel exists.
 - Phase allocation: arch/PySR in bounded C3; MAPIE in C4 only after sequential coverage checks; TradingAgents as sandboxed hypothesis reviewer; QuantEvolve in limited C5 search only; tick deferred until validated event/tick data exists. AstraQuant excluded from integration due to custom AGPL/Commons Clause/addenda and OKX-specific execution path.
 - No third-party source code was cloned or copied. No external exchange collectors or trading agents were run. BUP-01 v1.1 unchanged; overall C1 remains NOT PASSED / RIGHTS-BLOCKED.
+
+
+## 2026-11-01 — IWF 22-exclusion and denominator audit completed
+
+- Opened and visually reviewed the official NSE two-page IWF guideline PDF from the current NSE Indices IWF page. It enumerates 22 exclusions, says they are excluded where separately identifiable, and its worked example uses total shares as denominator and rounds IWF to six decimals.
+- Added a row-by-row 22-item mapping matrix and a narrative audit. Several items are potentially present as XBRL categories; promoter family, group/associate ownership, director/KMP, board rights, first refusal, strategic purpose and PAC status require additional dated relationship/contract evidence. The candidate README/code does not prove every row.
+- Mathematical hard check: the third-party parser's A+B+C2 percentage denominator is distinct from the total-share denominator shown in the IWF example. A reconstruction must use absolute share counts, total-share reconciliation, and position-level overlap removal; no percentage-complement shortcut is valid.
+- Added pure arithmetic helpers and seven tests for the official example (0.608794), deduplication, denominator validity, 22-category evidence coverage and free-float weight normalization.
+- The first CI run omitted the new test module from the pytest command (E0049) despite its path filter; corrected before acceptance. Corrected run [41269516064](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269516064) and PR run [41269519499](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269519499) each passed **50/50**. Source-audit run [41269430549](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269430549) also passed.
+- No category dataset, named-holder data, official monthly ZIP, or raw Dhan market bars were imported. The upstream parsed compressed CSV licence remains unclear for that nested file; official automated collection requires written data rights for intended use.
+- The main repo is public; raw source data or personal shareholder records cannot be stored there as a cache. Only permitted metadata and aggregate QA summaries may be published pending rights review.
+- **Gate result:** technical IWF calculation harness passes; data-source rights/completeness and official basket reconstruction remain NOT PASSED. BUP-01 v1.1 remains locked and C2–C6 remain gated.
