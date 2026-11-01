@@ -295,3 +295,9 @@ The corrected 86-row project ledger contains 85 distinct symbols. It validates 5
 ## C1 mfdata.in history-route probe — 2026-11-01
 
 The documented [mfdata.in API](https://mfdata.in/docs) advertises a no-key search and a family-level monthly holdings-history endpoint returning available YYYY-MM labels. The bounded Actions check [41297143071](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41297143071) passed 13/13 tests, but all three discovery routes returned HTTP 522. No family ID was found and the month-history route was not reached. Treat coverage as **INCONCLUSIVE**, not absent. No holdings were downloaded; source data-use rights and publication timing remain unverified. See [sanitised report](research/constituent_weekly/C1_AMCS_API_DISCOVERY_REPORT.md), [C1 status](research/constituent_weekly/STATUS.md), [research log](logs/RESEARCH_LOG.md), and [error log](logs/ERROR_LOG.md). C1 remains NOT PASSED / RIGHTS-BLOCKED; no C2 modelling starts.
+
+
+
+## Original AMC source-locator fallback — 2026-11-01
+
+[amcs.fund's monthly archive](https://amcs.fund/month) and [methodology](https://amcs.fund/methodology) state that the service indexes each fund house's original monthly portfolio disclosure, uses the printed disclosure date, links the original file plus an Internet Archive copy, and flags partial source months. Prior C1 API probes reached the amcs.fund metadata/month routes (including a 2019-04 sample) but retained schema only, not holdings. This is a promising provenance route for original AMC evidence, not an index-weight series: ETF portfolios are only proxies for NIFTY free-float IWF. Source-file dates, ISIN identity, monthly continuity, exact scheme coverage and reuse rights still need validation. See [C1 status](research/constituent_weekly/STATUS.md) and [research log](logs/RESEARCH_LOG.md).
