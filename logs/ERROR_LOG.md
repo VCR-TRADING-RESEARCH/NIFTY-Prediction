@@ -690,3 +690,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Added `causal_features_from_history`; the panel builder now computes each stock's validated daily history once and reuses it for all that stock's weekly anchors. Each feature calculation still filters strictly to dates before its anchor and uses the same registered feature equations.
 - **Validation:** Added an equivalence test asserting cached/precomputed history yields identical features to the direct wrapper. Commit a6db061e8f4d465b5592b625d2c3d4816905fe14 plus test commit 9668eb846f73aa9ce022f9a760867c03546d70dc. Automated validation is pending.
 - **Impact:** No features, labels, sample rules, model candidates, validation splits or results are changed; only redundant recomputation is removed. Current active run uses the pre-optimization checkout; the queued/latest retry will use this optimization.
+
+
+## E0082 — 2026-11-01 — Optional local clone validation unavailable
+
+- **Observed:** An attempt to clone the exploratory branch into the local assistant container for an independent offline pytest pass failed because that container could not resolve github.com (DNS/network resolution failure).
+- **Scope:** This is a local validation-environment limitation only. It did not affect GitHub Actions, repository state, Dhan credentials or market-data acquisition.
+- **Mitigation:** Use the repository's GitHub Actions regression suite as the authoritative execution environment. The preceding corrected run passed 22 tests; the optimized code adds one new feature-equivalence test and is awaiting its queued Actions run.
+- **Impact:** No data, code, model output or research conclusion changed as a result of this local clone attempt.
