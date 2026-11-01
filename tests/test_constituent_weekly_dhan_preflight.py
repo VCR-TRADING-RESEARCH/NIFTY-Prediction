@@ -520,3 +520,25 @@ def test_resolve_ids_accepts_full_membership_symbol_list():
     assert resolve_ids(master, ["RELIANCE", "BSE", "WIPRO"]) == {
         "RELIANCE": "101", "BSE": "102", "WIPRO": "103"
     }
+
+
+def test_analyse_bars_scopes_ohlcv_quality_to_the_1515_cutoff():
+    body = {
+        "open": [100.0, 100.5, 101.0],
+        "high": [101.0, 101.5, 102.0],
+        "low": [99.0, 99.5, 100.0],
+        "close": [100.5, 101.0, 101.5],
+        "volume": [100, 120, -1],
+        "timestamp": [
+            epoch_ist("2021-12-30T10:00:00"),
+            epoch_ist("2021-12-30T15:14:00"),
+            epoch_ist("2021-12-30T15:29:00"),
+        ],
+    }
+    result = analyse_bars(body, "SHREECEM", "2021-12-30")
+    assert result["status"] == "PASS"
+    assert result["expiry_proxy_bar_time_ist"] == "2021-12-30T15:14:00+05:30"
+    assert result["target_scope_bar_count"] == 2
+    assert result["post_expiry_cutoff_bar_count"] == 1
+    assert result["post_expiry_cutoff_negative_volume_rows"] == 1
+    assert result["ohlc_volume_invariants_pass"] is True
