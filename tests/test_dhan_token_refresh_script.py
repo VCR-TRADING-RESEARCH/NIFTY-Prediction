@@ -114,3 +114,37 @@ def test_token_refresh_rejects_token_line_breaks(monkeypatch, tmp_path, capsys):
     output = capsys.readouterr().err
     assert "line breaks" in output
     assert not env_file.exists()
+
+
+
+def test_dhan_totp_parser_accepts_raw_base32_and_otpauth_uri():
+    from scripts.dhan_auth import build_totp
+
+    seed = "JBSWY3DPEHPK3PXP"
+    raw = build_totp(seed)
+    uri = f"otpauth://totp/Dhan:client?secret={seed}&issuer=Dhan&algorithm=SHA1&digits=6&period=30"
+    from_uri = build_totp(uri)
+    assert raw.now() == from_uri.now()
+    assert len(raw.now()) == 6
+    assert raw.now().isdigit()
+
+
+def test_dhan_totp_parser_rejects_non_totp_or_empty_input():
+    import pytest
+    from scripts.dhan_auth import build_totp
+
+    with pytest.raises(ValueError):
+        build_totp("")
+    with pytest.raises(ValueError):
+        build_totp("otpauth://hotp/Dhan:client?secret=JBSWY3DPEHPK3PXP&counter=1")
+
+
+def test_dhan_clock_skew_diagnostic_is_sanitized_and_deterministic():
+    from datetime import datetime, timezone
+    from scripts.dhan_auth import server_clock_skew_seconds
+
+    local = datetime(2026, 11, 1, 12, 0, 0, tzinfo=timezone.utc)
+    assert server_clock_skew_seconds("Sun, 01 Nov 2026 12:00:08 GMT", now=local) == 8
+    assert server_clock_skew_seconds("Sun, 01 Nov 2026 11:59:52 GMT", now=local) == -8
+    assert server_clock_skew_seconds("not-a-date", now=local) is None
+    assert server_clock_skew_seconds(None, now=local) is None

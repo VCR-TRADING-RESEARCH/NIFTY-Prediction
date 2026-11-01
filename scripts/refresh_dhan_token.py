@@ -12,6 +12,8 @@ import sys
 import pyotp
 import requests
 
+from scripts.dhan_auth import build_totp, server_clock_skew_seconds
+
 
 def main() -> int:
     client_id = os.getenv("DHAN_CLIENT_ID", "").strip()
@@ -30,7 +32,7 @@ def main() -> int:
         return 2
 
     try:
-        totp = pyotp.TOTP(totp_secret).now()
+        totp = build_totp(totp_secret).now()
         response = requests.post(
             "https://auth.dhan.co/app/generateAccessToken",
             params={"dhanClientId": client_id, "pin": pin, "totp": totp},
@@ -39,6 +41,9 @@ def main() -> int:
         if not response.ok:
             print("DHAN_AUTH_ERROR: Token service returned HTTP", response.status_code, file=sys.stderr)
             return 2
+        skew = server_clock_skew_seconds(getattr(response, "headers", {}).get("Date"))
+        if skew is not None:
+            print(f"DHAN_AUTH_CLOCK_DIAGNOSTIC: server_minus_runner_seconds={skew}")
         payload = response.json()
         token = payload.get("accessToken") or payload.get("access_token")
         if not isinstance(token, str) or len(token) < 20:
