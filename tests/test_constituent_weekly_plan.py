@@ -45,8 +45,8 @@ class ConstituentWeeklyPlanTests(unittest.TestCase):
         plan = (ROOT / "research" / "constituent_weekly" / "RESEARCH_PLAN.md").read_text(encoding="utf-8")
         self.assertIn("Forecast quality is not trading P&L", plan)
         self.assertIn("Paytm Money", plan)
-        self.assertIn("Stop C1 if point-in-time membership/security identity", plan)
-        self.assertIn("Historical free-float weights and ETF holdings are not gates in v1.3", plan)
+        self.assertIn("Stop confirmatory C2/C3 if point-in-time membership/security identity", plan)
+        self.assertIn("Historical free-float weights and ETF holdings are not gates in v1.4", plan)
 
     def test_equal_weight_diagnostics_are_not_called_nifty_return(self):
         plan = (ROOT / "research" / "constituent_weekly" / "RESEARCH_PLAN.md").read_text(encoding="utf-8")
