@@ -8,6 +8,7 @@ from scripts.constituent_weekly.probe_amcs_fund_metadata import (
     _record_summary,
     _scheme_slug,
     _source_links,
+    _tipsheet_weight_candidates,
 )
 
 
@@ -93,3 +94,38 @@ def test_scheme_slug_and_month_identifiers_are_selected_safely():
         {'id': '2026-09'}, {'id': '2026-08'}, {'id': '../bad'},
         {'id': '2026-07'}, {'id': '2026-06'}, {'id': '2026-05'},
     ]) == ['2026-09', '2026-08', '2026-07', '2026-06']
+
+
+
+def test_tipsheet_manifest_finds_nifty50_weight_series_without_values():
+    payload = {
+        "datasets": [
+            {
+                "name": "indices/nifty-50/weightage",
+                "title": "Nifty 50 historical constituent weights",
+                "url": "/data/v1/indices/nifty50/weightage.abcd.json",
+                "date_start": "2008-01-31",
+                "date_end": "2026-09-30",
+                "resolution": "monthly",
+                "source": "monthly weightage files",
+            },
+            {"name": "indices/nifty-bank/weightage", "url": "/data/v1/bank.json"},
+        ]
+    }
+    records = _tipsheet_weight_candidates(payload)
+    assert len(records) == 1
+    assert records[0]["date_start"] == "2008-01-31"
+    assert records[0]["resolution"] == "monthly"
+    assert records[0]["url"].startswith("https://tipsheet.markets/")
+
+
+def test_tipsheet_manifest_rejects_off_host_urls():
+    payload = {
+        "datasets": [
+            {
+                "name": "Nifty 50 weight history",
+                "url": "https://evil.example/weights.json",
+            }
+        ]
+    }
+    assert _tipsheet_weight_candidates(payload) == []
