@@ -726,3 +726,12 @@
 - Candidate event count and matching remained unchanged at 18,361 deduplicated events and 711 PIT member matches.
 - Official NSE Market Activity Report documentation describes `Bcddmmyy.csv` within daily `nuprddmmyy.zip` as the daily corporate-action detail file. It is the next candidate primary-source cross-check route; archive URL/date coverage/schema still require live validation.
 - No factor was calculated/applied; C1 corporate-action gate remains NOT PASSED; C2 remains locked.
+
+
+## 2026-11-02 — C1 special-session calendar reconciliation
+
+- Reviewed all seven residual daily OHLCV security/date gaps against NSE circulars and NSE Market Pulse. Six dates are Diwali Muhurat sessions; 2020-02-01 was a full 09:15–15:30 Union Budget trading session.
+- The special-session dates remain genuine exchange trading dates and remain in the coverage denominator. This corrects the risk of misclassifying them as ordinary holidays or assuming all sessions use normal daytime hours.
+- No prices were imputed and no gaps were waived. Targeted independent daily-bar reconciliation is still required for all seven security/date pairs.
+- Audit: `research/constituent_weekly/C1_SPECIAL_SESSION_CALENDAR_RECONCILIATION.md`. Evidence includes NSE circulars NSE/CMTR/39216, NSE/CMTR/43290, NSE/CMTR/50050, NSE/FAOP/54024, NSE/CMTR/70319 and NSE Market Pulse November 2024.
+- C1 remains PARTIAL / NOT PASSED; C2 remains locked.
