@@ -426,3 +426,11 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - The next run [41274888924](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274888924) passed four parser tests but returned no archive links from the runner's raw HTML, despite the rendered AMC page exposing monthly portfolio downloads.
 - Added a deterministic month-end filename fallback based on two direct official links resolved through the rendered page (Sep-2026 and Feb-2026); Apr-2019 is included as an empirical older-sample check. Corrected probe is running.
 - **C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.** No constituent holdings data have been parsed or admitted yet; source rights, publication dates, security history and basket reconciliation remain open.
+
+
+## 2026-11-01 — AMC XLSX container and report-push correction
+
+- Bounded probe run [41274969265](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274969265) received HTTP 200 for the September 2026 and February 2026 monthly workbooks, but both were XLSX payloads despite .xls URL suffixes. The previous xlrd-only reader rejected them. The guessed April 2019 direct URL returned 404.
+- Corrected the probe to detect XLSX versus legacy XLS by file signature, added openpyxl and regression tests, and made report commits rebase before push to handle concurrent C1 updates.
+- Corrected probe run pending. No holdings data or constituent panel has been admitted.
+- **C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.**
