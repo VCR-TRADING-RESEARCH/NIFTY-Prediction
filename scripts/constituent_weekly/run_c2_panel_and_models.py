@@ -262,9 +262,15 @@ def index_features(frame: pd.DataFrame, asof: str) -> dict | None:
     data = data.loc[data["session_date"] < asof].sort_values("session_date")
     if len(data) < 62:
         return None
-    close = pd.to_numeric(data["close"], errors="coerce")
-    high = pd.to_numeric(data["high"], errors="coerce")
-    low = pd.to_numeric(data["low"], errors="coerce")
+    columns = {str(c).casefold(): c for c in data.columns}
+    close_col = columns.get("close") or columns.get("official_close")
+    high_col = columns.get("high") or columns.get("official_high")
+    low_col = columns.get("low") or columns.get("official_low")
+    if not all((close_col, high_col, low_col)):
+        raise ValueError("NIFTY daily file must provide close/high/low or official_close/official_high/official_low.")
+    close = pd.to_numeric(data[close_col], errors="coerce")
+    high = pd.to_numeric(data[high_col], errors="coerce")
+    low = pd.to_numeric(data[low_col], errors="coerce")
     rets = close.pct_change()
     out = {}
     for h in (1, 5, 10, 20, 60):
