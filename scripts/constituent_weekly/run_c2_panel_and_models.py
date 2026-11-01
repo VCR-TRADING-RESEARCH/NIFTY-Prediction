@@ -51,6 +51,8 @@ OUT_MD = ROOT / "research/constituent_weekly/C2_MODEL_RESULTS.md"
 OUT_INDEX = ROOT / "research/constituent_weekly/C2_INDEX_OOF_FORECASTS.csv"
 OUT_STOCK = ROOT / "research/constituent_weekly/C2_STOCK_OOF_FORECASTS.csv"
 OUT_CYCLE = ROOT / "research/constituent_weekly/C2_CYCLE_FEATURE_SUMMARIES.csv"
+OUT_PANEL_JSON = ROOT / "research/constituent_weekly/C2_PANEL_BUILD.json"
+OUT_PANEL_MD = ROOT / "research/constituent_weekly/C2_PANEL_BUILD.md"
 
 TZ = ZoneInfo(IST)
 START_FLOOR = date(2021, 11, 1)
@@ -545,7 +547,8 @@ def main() -> int:
             ilabel = 1 if iret > 0 else (0 if iret < 0 else None)
             if ilabel is None:
                 failures["flat_index_label"] += 1
-                continue
+                if os.environ.get("C2_PANEL_ONLY") != "1":
+                    continue
             ix = index_features(index_daily, c["anchor_date"])
             if ix is None:
                 failures["index_daily_features_missing"] += 1
@@ -600,8 +603,112 @@ def main() -> int:
         primary = primary.dropna(subset=["stock_label"])
         idx_primary = idx_panel.loc[idx_panel["cycle_idx"].isin(accepted)].sort_values("cycle_idx").copy()
         order = sorted(accepted)
-        if len(order) < MIN_HISTORY + MIN_META_HISTORY + 1:
-            raise RuntimeError(f"Only {len(order)} cycles meet 47/94% after flagged rows are excluded.")
+        panel_only = os.environ.get("C2_PANEL_ONLY") == "1"
+        minimum_cycles = MIN_HISTORY + 1 if panel_only else MIN_HISTORY + MIN_META_HISTORY + 1
+        if len(order) < minimum_cycles:
+            raise RuntimeError(f"Only {len(order)} cycles meet 47/94% after flagged rows are excluded; {minimum_cycles} required.")
+
+        if panel_only:
+            if panel.duplicated(subset=["cycle_idx", "symbol"]).any():
+                raise RuntimeError("Duplicate constituent-cycle rows found.")
+            if idx_panel.duplicated(subset=["cycle_idx"]).any():
+                raise RuntimeError("Duplicate NIFTY target cycle rows found.")
+            index_target_fraction = len(idx_panel) / max(1, len(cycles))
+            if index_target_fraction < 0.98:
+                raise RuntimeError(f"NIFTY target coverage is {index_target_fraction:.4%}; minimum is 98%.")
+            holdout_index = max(1, int(np.floor(0.80 * len(order))))
+            holdout_cycle = order[holdout_index] if holdout_index < len(order) else order[-1]
+            holdout_info = next(x for x in cycles if cycles.index(x) == holdout_cycle)
+            stock_key = f"{VERSION}|frozen_panel|{manifest_hash}|stock"
+            index_key = f"{VERSION}|frozen_panel|{manifest_hash}|index"
+            stock_aad, index_aad = stock_key.encode(), index_key.encode()
+            stock_bytes = gzip.compress(panel.sort_values(["cycle_idx", "symbol"]).to_csv(index=False).encode("utf-8"))
+            index_bytes = gzip.compress(idx_panel.sort_values("cycle_idx").to_csv(index=False).encode("utf-8"))
+            stock_path = cache_file(cache_dir, "frozen_panel", stock_key)
+            index_path = cache_file(cache_dir, "frozen_panel", index_key)
+            write_cache(stock_path, stock_bytes, token, stock_aad)
+            write_cache(index_path, index_bytes, token, index_aad)
+            panel_result = {
+                "schema_version": 1,
+                "status": "COMPLETED",
+                "created_at_utc": datetime.now(timezone.utc).isoformat(),
+                "methodology_version": VERSION,
+                "input_manifest": {**manifest, "hash": manifest_hash},
+                "acceptance": {
+                    "scheduled_cycles": int(len(cycles)),
+                    "valid_index_target_cycles": int(len(idx_panel)),
+                    "valid_index_target_fraction": float(index_target_fraction),
+                    "minimum_index_target_fraction": 0.98,
+                    "primary_eligible_cycles": int(len(order)),
+                    "cycles_for_first_C3_confirmatory_forecast": int(MIN_HISTORY + 1),
+                    "stock_member_rule": "at least 47 valid; at least 94% of point-in-time tradable members",
+                    "holdout_fraction": 0.20,
+                    "holdout_boundary_cycle_idx": int(holdout_cycle),
+                    "holdout_boundary_anchor_date": holdout_info["anchor_date"],
+                    "holdout_boundary_expiry_date": holdout_info["expiry_date"],
+                    "duplicate_constituent_cycle_rows": 0,
+                    "duplicate_index_cycle_rows": 0,
+                },
+                "panel": {
+                    "constituent_rows": int(len(panel)),
+                    "primary_flagged_rows": int((~panel["primary_flag"]).sum()),
+                    "identity_flagged_rows": int(panel["identity_review_flag"].sum()),
+                    "known_action_crossing_rows": int(panel["action_crossing_flag"].sum()),
+                    "stock_flat_labels": int(panel["stock_label"].isna().sum()),
+                    "index_flat_labels": int(idx_panel["index_label"].isna().sum()),
+                    "index_rows": int(len(idx_panel)),
+                    "accepted_cycles_after_primary_sensitivity": int(len(order)),
+                    "symbols": int(panel["symbol"].nunique()),
+                    "feature_columns": FEATURES + ["cs_rank_ret5", "cs_rank_ret20"],
+                    "index_feature_columns": INDEX_FEATURES,
+                    "failure_counts": dict(failures),
+                },
+                "encrypted_panel_cache": {
+                    "stock": {
+                        "cache_relative_path": str(stock_path.relative_to(cache_dir)),
+                        "ciphertext_sha256": sha256(stock_path.read_bytes()),
+                        "ciphertext_bytes": int(stock_path.stat().st_size),
+                    },
+                    "index": {
+                        "cache_relative_path": str(index_path.relative_to(cache_dir)),
+                        "ciphertext_sha256": sha256(index_path.read_bytes()),
+                        "ciphertext_bytes": int(index_path.stat().st_size),
+                    },
+                    "encryption": "AES-GCM; HF_TOKEN-derived BUP01 cache key; raw values not published",
+                },
+                "limitations": [
+                    "The user waived remaining historical identity and event-level action checks as progression preconditions; this does not certify those checks as passed.",
+                    "No unverified corporate-action adjustment is applied. Identity/action flags remain in the encrypted panel.",
+                    "The full row-level panel and all price/feature values remain only in the encrypted Actions cache.",
+                    "No model fitting occurs in formal C2; stock models belong to C3 and index aggregation belongs to C4.",
+                ],
+            }
+            OUT_PANEL_JSON.parent.mkdir(parents=True, exist_ok=True)
+            OUT_PANEL_JSON.write_text(json.dumps(panel_result, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            lines = [
+                "# C2 Point-in-Time Constituent Panel Build", "",
+                f"**Status:** {panel_result['status']}", "",
+                f"- Scheduled expiry cycles: {len(cycles)}",
+                f"- Valid NIFTY index targets: {len(idx_panel)} ({index_target_fraction:.2%})",
+                f"- Constituent-cycle rows: {len(panel)}",
+                f"- Distinct symbols: {panel['symbol'].nunique()}",
+                f"- Primary eligible cycles: {len(order)}",
+                f"- Identity-flagged rows: {int(panel['identity_review_flag'].sum())}",
+                f"- Known action-crossing rows: {int(panel['action_crossing_flag'].sum())}",
+                f"- Holdout boundary: {holdout_info['anchor_date']} to {holdout_info['expiry_date']}",
+                "- Full panel and prices: AES-GCM encrypted Actions cache only.",
+                "- No model fitting occurred in C2.",
+                "", "See C2_PANEL_BUILD.json for hashes, acceptance details and encrypted cache references.",
+            ]
+            OUT_PANEL_MD.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+            result["status"] = "PANEL_BUILT"
+            result["panel_build"] = panel_result
+            result["elapsed_seconds"] = round(time.monotonic() - started, 2)
+            OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
+            OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            write_report(result)
+            print("C2_PANEL_BUILT", len(panel), "rows", len(order), "eligible cycles")
+            return 0
 
         # Expanding walk-forward stock models. All constituents from a given cycle stay in the same test fold.
         stock_oof_rows, summaries = [], []
