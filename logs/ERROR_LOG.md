@@ -664,3 +664,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Added a versioned C3-X exploratory-only workflow. It rebuilds the required sample from Dhan, constructs causal features in memory, excludes available structural-event windows, enforces the registered per-cycle 47/94% threshold and 104-cycle warm-up, and stores the derived panel only in authenticated encrypted Actions cache. Confirmatory C1/C2 acceptance remains unchanged.
 - **Validation:** Pending the first live workflow and its regression suite.
 - **Impact:** No prior result is re-labelled or reused as a bottom-up model result. No strategy or profitability claim is made.
+
+
+## E0079 — 2026-11-01 — First C3-X regression run failed before Dhan access
+
+- **Observed:** Actions run 41321180592 failed during pytest collection. The exploratory test imported cache_key, while the runner exposed the helper as key_for. The synthetic causal-feature fixture also supplied only 24 calendar days, fewer than the 21 prior trading sessions required.
+- **Root cause:** A test/implementation naming mismatch and inadequate synthetic fixture; no live market-data request was made and no prediction result was produced.
+- **Correction:** Align the test import with key_for and increase synthetic history to 32 calendar days.
+- **Validation:** Corrective commit 392ff2b8c6bf3ecec513ae7dccad64d13260d012 triggered the rerun. Awaiting regression and live workflow results.
+- **Impact:** No market data, panel, model or result changed. The failed attempt is not counted as a prediction test.
