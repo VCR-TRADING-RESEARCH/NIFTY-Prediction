@@ -542,7 +542,7 @@ The first pinned corporate-action discovery workflow [41318287855](https://githu
 
 This is a discovery catalogue only. No factor is calculated or applied, and the corporate-action gate remains NOT PASSED. The official NSE F&O adjustment methodology is documented separately and is not treated as a universal cash-equity total-return formula. Per-event issuer/exchange verification, rights TERP inputs, dividend cash/threshold handling, split/bonus ratio semantics and scheme-specific merger handling remain required. See the [catalogue report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT_REPORT.md), [machine summary](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT.json), [method note](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_CORPORATE_ACTION_METHOD.md), [phase status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md), [research log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/RESEARCH_LOG.md), and [error log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/ERROR_LOG.md).
 
-The daily and corporate-action workflows now share one absolute Actions runner cache directory, with regression assertions. Live proof of cross-run cache hits is still pending. Overall C1 remains NOT PASSED and C2 remains locked.
+The daily and corporate-action workflows share one absolute Actions runner cache directory, with regression assertions. Live corporate-action cache reuse is verified: 9/9 yearly partitions were restored with zero downloads ([run 41319736877](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319736877)). Overall C1 remains PARTIAL/NOT PASSED; confirmatory C2 remains locked.
 
 
 The shared-cache path correction has passed PR regression checks [41319075705](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075705), [41319075672](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075672), and [41319075683](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075683). These runs correctly skipped live Dhan data access on PR events. Cache reuse still requires a post-fix live run with nonzero encrypted-cache hits.
@@ -563,3 +563,15 @@ The daily feature panel remains at 106,385/106,392 valid member-sessions (99.993
 
 
 Latest phase status, error log and research log are maintained on the [C1 data branch](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly).
+
+
+## C3-X exploratory bottom-up prediction tests — 2026-11-01
+
+The user approved a bounded exploratory prediction run before full C1 corporate-action reconciliation is complete. The registered plan is amended to [v1.4](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-exploratory/research/constituent_weekly/RESEARCH_PLAN.md): this authorizes exploratory-only stock and constituent-signal tests, without waiving the C1/C2 confirmatory data gates or the trading-cost gate.
+
+- [Exploratory phase branch](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c3-exploratory)
+- [C3-X model runner](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-exploratory/scripts/constituent_weekly/run_exploratory_predictions.py)
+- [Automated/manual prediction workflow](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-exploratory/.github/workflows/bup01-c3x-exploratory-predictions.yml)
+- Regression tests include causal-feature cutoff checks, action-window exclusions, encrypted-cache round-trip, reproducible cycle-block bootstrap and C1 coverage tests.
+- Run [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741) passed its regression suite and is still running the initial historical Dhan panel reconstruction/model evaluation. Run [41321616749](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321616749) is queued and will reuse the encrypted panel cache if the first run completes successfully.
+- No bottom-up prediction metrics or trading strategy are claimed yet. Raw intraday bars and plaintext constituent panels are not published. C1 remains PARTIAL; C2 confirmatory and C5 trading remain LOCKED.
