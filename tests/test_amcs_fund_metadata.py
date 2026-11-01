@@ -217,3 +217,27 @@ def test_mfdata_month_coverage_handles_empty_history():
     assert result["month_count"] == 0
     assert result["continuous"] is False
     assert result["coverage_ratio"] is None
+
+
+
+def test_payload_shape_keeps_stable_whitelisted_top_level_mother_source_url():
+    payload = {
+        "source": "https://mf.nipponindiaim.com/InvestorServices/FactsheetsDocuments/portfolio.xls",
+        "data": {"month": "2019-04"},
+    }
+    shape = _payload_shape(payload)
+    assert shape["source_host"] == "mf.nipponindiaim.com"
+    assert shape["source_url"].endswith("/portfolio.xls")
+
+
+def test_payload_shape_drops_untrusted_or_signed_top_level_source_url():
+    external = _payload_shape({
+        "source": "https://evil.example/private.xls",
+        "data": {"month": "2019-04"},
+    })
+    signed = _payload_shape({
+        "source": "https://mf.nipponindiaim.com/portfolio.xls?token=secret",
+        "data": {"month": "2019-04"},
+    })
+    assert "source_url" not in external
+    assert "source_url" not in signed

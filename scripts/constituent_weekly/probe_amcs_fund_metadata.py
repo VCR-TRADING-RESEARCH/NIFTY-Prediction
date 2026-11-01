@@ -148,8 +148,18 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
             shape["source_urls"] = source_urls
     elif isinstance(source, str):
         parsed = urlparse(source)
-        if parsed.scheme == "https" and parsed.hostname:
+        source_allowlist = {
+            "mf.nipponindiaim.com", "hdfcfund.com", "www.hdfcfund.com",
+            "sbimf.com", "www.sbimf.com", "icicipruamc.com", "www.icicipruamc.com",
+            "utimf.com", "www.utimf.com", "doc.utimf.com", "archive.org",
+            "web.archive.org", "amcs.fund", "www.amcs.fund",
+        }
+        if parsed.scheme == "https" and parsed.hostname in source_allowlist:
             shape["source_host"] = parsed.hostname
+            # Keep only a stable public path; never persist query strings/fragments
+            # that may contain temporary or signed download tokens.
+            if not parsed.query and not parsed.fragment and not parsed.username and not parsed.password:
+                shape["source_url"] = source
     if isinstance(data, list):
         shape["data_length"] = len(data)
         if data and isinstance(data[0], dict):
@@ -942,9 +952,19 @@ def run_probe() -> dict[str, Any]:
         report["historical_source_matches"] += _matching_records(manifest, ("nifty", "bees"))
         report["historical_source_matches"] = report["historical_source_matches"][:50]
 
+    # Some API payloads expose the mother-source URL as a top-level string
+    # rather than a nested source_url field. Promote only the whitelisted,
+    # stable-path URLs extracted by _payload_shape; holdings rows stay excluded.
+    root_source_records = []
+    for shape in [report.get("scheme_detail_shape")] + [
+        item.get("payload_shape") for item in report.get("month_details", [])
+    ]:
+        if isinstance(shape, dict) and isinstance(shape.get("source_url"), str):
+            root_source_records.append({"source_url": shape["source_url"]})
     report["source_links"] = _source_links(
         report["historical_source_matches"] + report["nifty_bees_scheme_matches"]
         + report["scheme_history_metadata"] + report["month_source_metadata"]
+        + root_source_records
     )
 
     # Only HEAD links on the original AMC or Internet Archive hosts; never download a file.
