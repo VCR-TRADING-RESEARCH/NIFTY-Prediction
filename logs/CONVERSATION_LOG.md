@@ -330,3 +330,11 @@
 - Added alias/action records for ZOMATO/ETERNAL, TATAGLOBAL/TATACONSUM, TATAMOTORS/TMPV, HDFC/HDFCBANK (explicitly separate), and the non-tradable TATAMOTORS placeholder.
 - The identity ledger is not yet exhaustive for splits, bonuses, dividends, rights or all issuer events. C1 remains partial and C2 stays gated.
 - Only visible decisions and outcomes are recorded; no hidden reasoning or credentials are stored.
+
+
+## 2026-11-01 — C1 minute-history coverage result and publisher failure
+
+- Continued after the user said “Ok proceed”. The live Dhan audit [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865) completed and passed its explicit stock/index target-coverage gate.
+- Result: 258/258 NIFTY target pairs valid, 258/258 constituent cycles meeting the registered stock coverage threshold, 154 confirmatory cycles after warm-up, zero unresolved active symbols, and 1,083 requests over 21 windows.
+- One index window returned PARTIAL_TARGET_DATES while all cycle-level target pairs passed. Per-date detail was not persisted because the later git rebase conflicted on shared status/log files.
+- E0070 and a durable aggregate report record the result. Overall C1 remains partial because daily features and exhaustive action-adjusted returns are not yet validated.
