@@ -396,3 +396,16 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Completed [C1_DEVELOPER_GATE_REPORT.md](C1_DEVELOPER_GATE_REPORT.md), independently summarising passed sub-gates, open source-rights/mapping/coverage gates, workflow evidence and exact next developer actions.
 - Final phase disposition is **C1 PARTIAL PASS / RIGHTS-BLOCKED**. Dhan sampled data QA and the IWF arithmetic harness pass; no licensed complete IWF series or weighted basket reconciliation exists.
 - BUP-01 v1.1 remains locked; C2–C6 remain gated. No model, forecast, strategy or full research manuscript is claimed.
+
+
+## Public-source proxy route — 2026-11-01 (plan v1.2)
+
+- User direction: proceed using available public web sources; an NSE permissions request is no longer a prerequisite for the separately labelled exploratory route.
+- Located Nippon India ETF Nifty 50 BeES published holdings. The AMC's passive replication objective is to hold NIFTY 50 securities in the same proportions as the index. The February 2026 portfolio (28-Feb-2026 portfolio date; NAV date 27-Feb-2026) has 50 stocks and 0.08% cash.
+- Compared the 50 ETF stock positions with the repo's NSE Indices 2026-02-27 official white-paper weight snapshot. After independent normalization over equity holdings: 50/50 matched; MAE 0.002214 pp; RMSE 0.003204 pp; max absolute difference 0.008967 pp; Pearson r 0.99999895. This is a one-date calibration only.
+- Added [C1_ETF_PROXY_CALIBRATION.md](C1_ETF_PROXY_CALIBRATION.md), aggregate calibration metrics [CSV](../../data/constituent_weekly/etf_proxy_calibration_2026-02-27.csv), helper [weight_proxy.py](../../scripts/constituent_weekly/weight_proxy.py), and 8 unit tests.
+- Added a separate point-in-time fixed-share price-drift method. It is valid only within unchanged membership/IWF/share-capital/corporate-action intervals; reset or exclude cycles around events. ETF holdings are never relabelled as official index weights or IWF.
+- SEBI's passive-scheme disclosure framework changed equity passive disclosure to quarterly within 10 days after quarter end, effective 2025-03-16. This does not prove an actual publication timestamp. The proxy method uses actual publication timestamps where available; otherwise it labels period-end +15 calendar days as an imputed availability proxy and requires +10/+20 day sensitivities.
+- Main limitation: only a single 50-stock calibration date has been fully cross-compared against official weights. Although a third-party source indexes 12 recent monthly AMC holdings and AMC factsheet archives exist, full historical snapshots, exact publication timestamps, historical membership/action reseeding and weighted basket-to-index reconciliation are not yet completed.
+- Plan v1.2 adds this exploratory proxy path while preserving the original official-weight confirmatory track and all point-in-time, 98% coverage, 47-stock, walk-forward and transaction-cost gates.
+- C1 current decision: **PARTIAL; proxy path enabled for bounded source acquisition/QA, not yet accepted for modelling**. C2–C6 have not started; no stock model, bottom-up prediction, trading strategy or final manuscript exists.
