@@ -575,3 +575,15 @@ The user approved a bounded exploratory prediction run before full C1 corporate-
 - Regression tests include causal-feature cutoff checks, action-window exclusions, encrypted-cache round-trip, reproducible cycle-block bootstrap and C1 coverage tests.
 - Run [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741) passed 22 regression tests and remains in the initial historical Dhan panel reconstruction/model step. A static review found repeated daily-history aggregation per stock-cycle; the code now computes daily history once per stock and reuses it without changing feature definitions. This equivalence fix is covered by an additional test. The latest workflow run [41324416830](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41324416830) is queued with this optimized code and the concurrency-safe result publisher.
 - No bottom-up prediction metrics or trading strategy are claimed yet. Raw intraday bars and plaintext constituent panels are not published. C1 remains PARTIAL; C2 confirmatory and C5 trading remain LOCKED.
+
+
+## C3-X exploratory result — 2026-11-01
+
+The bounded bottom-up experiment completed successfully in [Actions run 41325350069](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41325350069). It covered 252 eligible expiry cycles, 12,560 stock-cycle rows and a 51-cycle chronological NIFTY holdout.
+
+- NIFTY constituent-signal meta-model: 50.98% accuracy, 53.45% balanced accuracy, MCC 0.068, ROC-AUC 0.487.
+- Previous-cycle baseline: 49.02% accuracy. Meta-model improvement: 1.96 percentage points; four-cycle block-bootstrap 95% interval: -25.49 to +25.49 percentage points.
+- Stock ExtraTrees: 48.29% accuracy / 0.485 ROC-AUC; five-session momentum baseline: 51.51% accuracy.
+- Decision: no reliable predictive edge demonstrated; no live signal or trading strategy.
+- Data caveat: only six structural events were applied from the incomplete ledger; the wider 711-event catalogue is not reconciled. C1 remains PARTIAL, C2 confirmatory and C5 execution remain LOCKED.
+- [Exploratory report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-exploratory/research/constituent_weekly/EXPLORATORY_REPORT.md) · [Machine metrics](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-exploratory/research/constituent_weekly/EXPLORATORY_RESULTS.json) · [Phase status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-exploratory/research/constituent_weekly/STATUS.md)
