@@ -655,3 +655,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction/guard:** Keep all factors unapplied. Require per-event exchange/issuer confirmation, event terms, ISIN/security identity, effective/ex-date, prior raw close and event-family-specific formula checks. Rights must use TERP inputs; merger/demerger must be scheme-specific; buybacks remain event features, not mechanical scale factors.
 - **Validation:** Candidate catalogue workflow [41318287855](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318287855) succeeded; corporate-action gate remains NOT PASSED.
 - **Impact:** No stock label or target was adjusted. C2 remains locked.
+
+
+## E0085 — 2026-11-02 — Special-session calendar classification risk
+- Severity: Medium / data-calendar QA.
+- Observation: Seven residual daily OHLCV gaps were reported without a linked special-session calendar classification.
+- Cause: The coverage report exposed date-level gaps but not the exchange session type and hours. Ordinary daytime assumptions are unsafe for Muhurat dates and exceptional Saturday Budget sessions.
+- Evidence and correction: NSE circulars confirm all seven dates were genuine exchange trading sessions. The dated reconciliation is recorded in `research/constituent_weekly/C1_SPECIAL_SESSION_CALENDAR_RECONCILIATION.md`. All seven dates remain in the expected-session denominator; no value was imputed and no gap was waived.
+- Follow-up: independently obtain and validate each security/date bar, or document a pre-registered evidence-based exclusion. No model data or labels were changed.
