@@ -139,3 +139,11 @@
 ## 2026-10-31 — Corrected membership CI passed
 - The corrected CSV and audit triggered Actions run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548); job log confirms **6 passed in 0.02s**.
 - Marked E0030 closed for the CSV quoting / intermediate audit sequencing error. Membership sub-gate remains PASS WITH LIMITATIONS; overall C1 remains BLOCKED, so no stock model was trained.
+
+
+## 2026-11-01 — Screenshot handoff and repository-state reconciliation
+
+- User supplied a screenshot of the prior BUP-01 status/handoff. The visible question was treated as a request to resume from the repository state, not to repeat the screenshot's older “full 50-stock 90-day run remaining” description.
+- Verified current repo/branch files, the latest Dhan preflight JSON, the last-success snapshot, the 2021 edge run logs and the main README.
+- Clarified that run 41263593605 passed 26 offline tests but its live Dhan preflight was blocked by missing access token / profile HTTP 401; its overall green job conclusion did not mean market-data QA passed.
+- Confirmed the earlier three bounded outcomes and preserved the 15:15 expiry-proxy convention. No private reasoning, tokens, secrets or raw provider data are recorded.

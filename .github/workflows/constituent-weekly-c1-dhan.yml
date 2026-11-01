@@ -72,6 +72,25 @@ jobs:
             echo "" >> "$GITHUB_STEP_SUMMARY"
             echo "The phase status was updated; no token, security ID or raw price values are included." >> "$GITHUB_STEP_SUMMARY"
           fi
+
+      - name: Enforce live Dhan preflight result
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          result_path = Path("research/constituent_weekly/C1_DHAN_PREFLIGHT.json")
+          if not result_path.is_file():
+              print("DHAN_PREFLIGHT_GATE_FAILED: current sanitized result is missing.")
+              raise SystemExit(1)
+          result = json.loads(result_path.read_text(encoding="utf-8"))
+          status = result.get("status")
+          if status != "PASS_ACTIVE_EQUITIES":
+              print(f"DHAN_PREFLIGHT_GATE_FAILED: live preflight status={status!r}. Sanitized diagnostics were committed above.")
+              raise SystemExit(1)
+          print("DHAN_PREFLIGHT_GATE_PASSED: all configured live equity preflight checks passed.")
+          PY
       - name: Commit compact Dhan diagnostics only
         if: always() && github.event_name != 'pull_request'
         run: |

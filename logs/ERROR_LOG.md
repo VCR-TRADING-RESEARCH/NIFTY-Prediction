@@ -315,3 +315,21 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 ### E0029 resolution — 2026-10-31
 - The corrected 86-row membership ledger, Tata symbol boundaries and temporary zero-price placeholder are now validated by the six-test Actions run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548).
 - E0029 is **CLOSED** for this specific corporate-action/interval correction. This does not certify all historic transitions, IWF weights or security-ID mappings.
+
+
+## E0031 — 2026-11-01 — Five-year-edge QA fixture counted special session as post-market
+
+- **Run:** [41252703953](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41252703953), test `test_analyse_intraday_range_excludes_2021_muhurat_date_and_postmarket_rows`.
+- **Observed:** 25 tests passed and one failed. The fixture expected `outside_regular_hours_bar_count == 1`, but the implementation returned 2 because the count used total rows minus regular-session rows and therefore included both the 2021-11-04 Muhurat special-session row and the 2021-11-05 15:45 post-market row.
+- **Correction:** Count post-market rows as outside regular hours only when they are not on an explicitly excluded special-session date; record special-session rows in the separate `special_session_excluded_bar_count`. The revised test suite passed 26/26 in run [41263593605](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41263593605).
+- **Impact:** This closes the offline counter/test defect only. The 2021-11-01–2022-01-29 full-universe data request has not passed; the later live attempt was blocked by Dhan authentication.
+- **Status:** CLOSED — offline logic and regression test. Historical 2021 coverage remains unverified.
+
+## E0032 — 2026-11-01 — Dhan live preflight blocked while Actions job appeared green
+
+- **Run:** [41263593605](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41263593605).
+- **Observed:** Dhan token generation returned HTTP 200 but no access-token field in two attempts. Sanitized diagnostics classify the provider response as `TOTP_REJECTED_OR_INVALID`; the configured access-token fallback then received profile HTTP 401. No security-master or equity-history endpoints were called. The preflight JSON correctly records `BLOCKED_PROFILE_HTTP_401`, but the script's reporting path exited with code zero, allowing the overall Actions job to appear successful.
+- **Correction:** Added a final workflow gate after sanitized diagnostics are committed. For non-PR/live runs, it requires `C1_DHAN_PREFLIGHT.json.status == PASS_ACTIVE_EQUITIES`; blocked/partial/no-result states now fail the Actions run. PR validation continues to run offline tests without secrets.
+- **Security:** No token, PIN, TOTP seed, raw provider body, security ID or raw candle was added to logs.
+- **Impact:** No new market data was acquired in this run. Prior successful samples remain valid only for their stated dates and scope.
+- **Status:** OPEN — requires verification/correction of the organization GitHub Actions Dhan credentials and a later fresh protected preflight. Do not retry in a loop or use the expired fallback token.

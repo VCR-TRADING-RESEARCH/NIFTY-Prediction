@@ -274,3 +274,13 @@
 - Post-correction GitHub Actions run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) completed SUCCESS; job log confirms **6 passed in 0.02s**.
 - The run checked the final 86-row / 85-symbol dataset and updated audit file. It validates membership-file integrity only; it does not pass numerical IWF, full security identity/corporate-action coverage, constituent historical data or basket reconstruction.
 - E0030 is resolved for the membership CSV/test sequencing defect. Overall C1 remains BLOCKED and C2 stays gated.
+
+
+## 2026-11-01 — Five-year QA correction and live Dhan gate verification
+
+- Inspected the complete job logs for run [41252703953](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41252703953). Its offline suite failed 1/26 because the post-market counter included a deliberately excluded 2021 Muhurat-session row. The implementation now reports special-session exclusions separately from true outside-hours bars.
+- Verified run [41263593605](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41263593605): 26/26 offline tests passed. Weight cache integrity also passed, but the cached CC BY-NC-SA series remains non-commercial, estimated in some reconstitution intervals and ends 2025-08-31; it is not accepted as official point-in-time IWF.
+- The live Dhan section of run 41263593605 was blocked: two token attempts returned HTTP 200 without an access token, diagnostics categorised the response as TOTP rejected/invalid, and fallback profile authentication returned HTTP 401. No market-data endpoint was reached. A stale/provided token is not an acceptable workaround.
+- Confirmed earlier bounded live evidence: full current-universe 50/50 for one session (41249642409), full 50/50 for the 2026Q3 90-day slice (41251346795), and full 50/50 for the 2022Q4 90-day slice (41251808946). These separated slices do not establish uninterrupted coverage between them or across all five years.
+- Added a fail-closed workflow status gate after the sanitized diagnostics commit so future live authentication/data failures cannot be mistaken for green research runs. No new token attempt was made after the blocked result.
+- C1 remains NOT PASSED; C2–C6 remain pending/gated. No constituent panel, forecast, or strategy is claimed.
