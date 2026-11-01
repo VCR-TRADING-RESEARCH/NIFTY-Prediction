@@ -407,3 +407,14 @@
 - Updated BUP-01 plan to v1.2. Official index weights and ETF proxy weights remain separate. The original confirmatory standard is not silently relaxed; a proxy-only model, if later run, must be labelled exploratory and pass point-in-time membership, corporate-action, 98% weight coverage and basket/index reconciliation.
 - No public raw intraday bars, named shareholder records or third-party licensed dataset have been imported. The proxy calibration is a small derived QA summary.
 - Current result: C1 PARTIAL; ETF proxy source has passed one-date calibration but a historical series and point-in-time validation are not complete. C2 is not started; no bottom-up forecast or strategy has been produced.
+
+
+## 2026-11-01 — AMC primary-disclosure archive audit and bounded probe
+
+- Located the Nippon India AMC monthly portfolio archive, which lists monthly workbooks through Sep-2026 and older records back to 2018/2019; confirmed a direct Feb-2026 .xls link.
+- AMFI also publishes monthly Excel composite reports, but its current terms limit usage to personal/non-commercial purposes. Because this project supports trading research, AMFI-hosted bulk data is not admitted without separate rights clearance.
+- Independent source coverage points to 90 Nifty BeES monthly observations from Apr-2019 to Sep-2026. This is secondary corroboration only.
+- Added a metadata-only AMC probe for Sep-2026, Feb-2026 and Apr-2019, including schema/header checks and SHA-256. It deliberately does not store holdings values or raw files.
+- **Result at commit time:** workflow not yet executed; no historical weight series or C2 panel is claimed.
+- Streamlined Actions: C0 governance now triggers only on the C0 branch; C1 offline regression and source-audit workflows use PR/manual triggers to avoid duplicate push+PR execution; duplicate IWF test command removed.
+- C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.
