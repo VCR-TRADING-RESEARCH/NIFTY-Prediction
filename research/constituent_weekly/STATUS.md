@@ -389,3 +389,10 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Source audit workflow [41269430549](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269430549) passed. No licensed historical weights/XBRL data or Dhan raw bars were downloaded/imported in this step.
 - The main repository is public. Raw Dhan bars, NSE/XBRL rows, named shareholder records and private-license data must not be committed to its branches, artifacts or public Actions cache. This is an explicit data-handling restriction even though raw caching was requested as a project preference.
 - **C1 remains NOT PASSED / RIGHTS-BLOCKED.** The source/rights/22-exclusion and basket reconciliation hard gate remains open. No panel, model, weighted prediction or strategy was produced. The v1.1 research plan is unchanged.
+
+
+## Developer handoff — 2026-11-01
+
+- Completed [C1_DEVELOPER_GATE_REPORT.md](C1_DEVELOPER_GATE_REPORT.md), independently summarising passed sub-gates, open source-rights/mapping/coverage gates, workflow evidence and exact next developer actions.
+- Final phase disposition is **C1 PARTIAL PASS / RIGHTS-BLOCKED**. Dhan sampled data QA and the IWF arithmetic harness pass; no licensed complete IWF series or weighted basket reconciliation exists.
+- BUP-01 v1.1 remains locked; C2–C6 remain gated. No model, forecast, strategy or full research manuscript is claimed.
