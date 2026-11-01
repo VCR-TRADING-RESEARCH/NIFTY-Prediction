@@ -81,8 +81,8 @@ def test_monthly_portfolio_url_matches_officially_observed_month_end_pattern():
 
 
 def test_workbook_engine_detects_xlsx_and_legacy_xls_signatures():
-    assert workbook_engine(b"PK\\x03\\x04payload") == "openpyxl"
-    assert workbook_engine(b"\\xd0\\xcf\\x11\\xe0payload") == "xlrd"
+    assert workbook_engine(bytes.fromhex("504b0304") + b"payload") == "openpyxl"
+    assert workbook_engine(bytes.fromhex("d0cf11e0") + b"payload") == "xlrd"
 
 
 def test_workbook_engine_rejects_unknown_file_signatures():

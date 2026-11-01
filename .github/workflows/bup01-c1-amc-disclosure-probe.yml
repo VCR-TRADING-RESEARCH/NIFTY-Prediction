@@ -52,6 +52,7 @@ jobs:
             git add research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md
             if ! git diff --cached --quiet; then
               git commit -m "Record sanitised AMC disclosure archive probe"
+              git pull --rebase origin phase/constituent-weekly-outcomes-c1-data
               git push origin HEAD:phase/constituent-weekly-outcomes-c1-data
             fi
           fi

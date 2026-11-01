@@ -139,9 +139,9 @@ def find_target_section(frame: pd.DataFrame) -> dict[str, object]:
 
 def workbook_engine(payload: bytes) -> str:
     """Detect XLSX ZIP containers even when the AMC filename ends in .xls."""
-    if payload.startswith(b"PK\\x03\\x04"):
+    if payload.startswith(bytes.fromhex("504b0304")):
         return "openpyxl"
-    if payload.startswith(b"\\xd0\\xcf\\x11\\xe0"):
+    if payload.startswith(bytes.fromhex("d0cf11e0")):
         return "xlrd"
     raise ValueError("Unrecognised Excel container signature")
 
