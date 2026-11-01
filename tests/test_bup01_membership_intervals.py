@@ -115,3 +115,61 @@ def test_machine_audit_matches_membership_artifact():
     assert audit["validation"]["dates_with_expected_cardinality"] == 103
     assert audit["validation"]["october_2025_expected_dummy_exception_count"] == 51
     assert audit["source_weightage_values_present"] == 0
+
+
+ALT_DATA = ROOT / "data" / "constituent_weekly" / "nifty50_membership_intervals_cc_by_4.csv"
+
+
+def load_alternative_rows():
+    with ALT_DATA.open(newline="", encoding="utf-8") as handle:
+        return list(csv.DictReader(handle))
+
+
+def normalized_members(rows, on: date, *, alternative: bool):
+    names = set()
+    for row in rows:
+        start = date.fromisoformat(row["valid_from"])
+        end = date.fromisoformat(row["valid_to"]) if row.get("valid_to") else None
+        if not (start <= on and (end is None or on < end)):
+            continue
+        symbol = row["symbol"]
+        # The upstream CC BY 4.0 table canonicalises the Tata Motors rename
+        # to TMPV over its full history. Restore the issuer's old exchange
+        # symbol before the effective rename date for a like-for-like compare.
+        if alternative and symbol == "TMPV" and on < date(2025, 10, 24):
+            symbol = "TATAMOTORS"
+        # The temporary zero-price Tata placeholder is not a tradable stock
+        # and is intentionally absent from the alternative membership file.
+        if symbol == "DUMMYTATAM":
+            continue
+        names.add(symbol)
+    return names
+
+
+def test_cc_by_4_membership_source_matches_project_at_79_month_ends():
+    project_rows = load_rows()
+    alternative_rows = load_alternative_rows()
+    dates = list(month_ends(date(2018, 4, 1), date(2026, 10, 31)))
+    assert len(alternative_rows) == 84
+    assert len(dates) == 79
+
+    for on in dates:
+        project = normalized_members(project_rows, on, alternative=False)
+        alternative = normalized_members(alternative_rows, on, alternative=True)
+        assert len(project) == 50, f"{on}: project has {len(project)} tradable members"
+        assert len(alternative) == 50, f"{on}: alternative has {len(alternative)} members"
+        assert project == alternative, (
+            f"{on}: alternative membership differs; "
+            f"missing={sorted(project - alternative)}, "
+            f"extra={sorted(alternative - project)}"
+        )
+
+
+def test_cc_by_4_alternative_has_no_numeric_weights_and_tracks_2026_replacement():
+    rows = load_alternative_rows()
+    assert all(row["weightage"] == "" for row in rows)
+    assert all(row["valid_to_source"] or row["symbol"] != "WIPRO" for row in rows)
+    before = normalized_members(rows, date(2026, 9, 29), alternative=True)
+    after = normalized_members(rows, date(2026, 9, 30), alternative=True)
+    assert "WIPRO" in before and "BSE" not in before
+    assert "WIPRO" not in after and "BSE" in after
