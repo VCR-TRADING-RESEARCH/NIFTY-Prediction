@@ -251,3 +251,9 @@ The HF dataset's exact row-sum validation is useful as a structural check, but i
 - **Independent discovery source:** [amcs.fund Method & sources](https://amcs.fund/methodology) states that it uses AMC-origin Excel/ZIP files, reads the month printed inside each disclosure, and links original AMC files and Internet Archive copies. Its [API index](https://amcs.fund/api/v1) advertises `/amcs`, `/manifest`, `/scheme/{id}` and `/month/{id}`.
 - **Use boundary:** API metadata may be used to locate primary source documents only. No holdings endpoint is requested by the new CI probe. The API provider's licence for commercial/trading-research extraction, caching and downstream use is UNVERIFIED; no API holdings are approved for this study.
 - **Automated metadata-only probe:** [script](../../scripts/constituent_weekly/probe_amcs_fund_metadata.py), [manual/push workflow](../../.github/workflows/bup01-c1-amcs-metadata-discovery.yml), [tests](../../tests/test_amcs_fund_metadata.py), and [probe report](C1_AMCS_API_DISCOVERY_REPORT.md) (pending Actions run).
+
+### amcs.fund API probe outcome (2026-11-01)
+
+- [Metadata discovery run 41277022940](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41277022940) passed all four offline tests and successfully fetched the API index, /amcs, Nippon AMC detail and /manifest (all HTTP 200 / JSON).
+- The AMC record was identified as nippon-india; its scheme detail included current Nifty BeES and related scheme metadata. The manifest query returned no matching original-AMC or Internet Archive URL; no source links were HEAD-checked.
+- This confirms metadata endpoint availability only. The probe did not call a holdings endpoint or download holdings files; the provider's trading-research reuse licence remains unknown. Treat it as a source-discovery utility only until rights are documented.
