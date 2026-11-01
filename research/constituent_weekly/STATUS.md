@@ -517,3 +517,13 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - The API docs report 30 standard requests per minute. The probe used only three bounded discovery calls and stopped without a retry loop. The API page's MIT License refers to the software; no explicit underlying-data licence or permission for commercial trading research, caching or redistribution was verified.
 - **Disposition:** API route is technically documented but actual historical coverage remains **UNVERIFIED / INCONCLUSIVE**. Do not import holdings or use the source for model weights until the history route, actual dates, original-source lineage/publication timing and data-use rights are independently validated.
 - No data was cached, no month-specific holdings endpoint was called, and no stock-level portfolio values were written to the repository. C1 remains **NOT PASSED / RIGHTS-BLOCKED**; C2–C6 remain pending. [Full sanitised discovery report](C1_AMCS_API_DISCOVERY_REPORT.md).
+
+
+
+## Independent AMC-source locator fallback — 2026-11-01
+
+- The [amcs.fund monthly archive/methodology](https://amcs.fund/month) states that its portfolio series is assembled from fund houses' own monthly Excel/ZIP disclosures, that the month is read from the date printed inside each file, and that each month links to the AMC source file and an Internet Archive copy. It flags a month as partial when the readable scheme files cover less than 70% of the fund-house quarterly average AUM.
+- The existing C1 metadata run had valid JSON responses from amcs.fund's scheme and month routes, including the sampled 2019-04 month route. The sanitized probe retained schema/date metadata only; it did not admit holdings values or prove a continuous NIFTY 50 ETF holdings history.
+- Use this as an **original-source locator and independent cross-check**, not as official NIFTY free-float IWF. A NIFTY 50 ETF/index fund portfolio is affected by cash, derivatives, tracking, securities lending and sampling, so it cannot replace index-provider weights without a quantified reconciliation.
+- The best next bounded check is to identify the exact monthly AMC files through the archive's source links, then confirm their printed disclosure dates, security identifiers and month coverage directly at the AMC/Internet Archive. No raw files are to be cached or redistributed until the relevant terms/permission are clear.
+- [amcs.fund method and sources](https://amcs.fund/methodology) and [C1 sanitized metadata report](C1_AMCS_API_DISCOVERY_REPORT.md). Overall C1 remains **NOT PASSED / RIGHTS-BLOCKED**.
