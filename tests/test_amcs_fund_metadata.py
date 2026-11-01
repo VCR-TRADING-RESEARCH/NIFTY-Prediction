@@ -5,6 +5,7 @@ from scripts.constituent_weekly.probe_amcs_fund_metadata import (
     _mfdata_family_summaries,
     _mfdata_months,
     _mfdata_month_coverage,
+    _payload_shape,
     _first_identifier,
     _matching_records,
     _metadata_records,

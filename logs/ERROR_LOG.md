@@ -546,3 +546,14 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Control:** Three discovery routes only; no repeated polling, no token/secrets use, and no holdings-value endpoint was called. The workflow completed, tested offline logic and committed the sanitised status.
 - **Next action:** Leave this source inconclusive. Revisit only when the provider responds from an authorised/reliable network route; do not loop requests. Cross-check another independent AMC archive in parallel if the phase gate requires further progress.
 - **Status:** OPEN / EXTERNAL SOURCE ACCESS BLOCKER. No model inputs were admitted.
+
+
+
+## E0066 — 2026-11-01 — New mother-source URL tests omitted the private payload-shape import
+
+- **Run:** [41298283454](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41298283454).
+- **Observed:** 13 existing tests passed; two newly added tests failed with NameError because the test module called _payload_shape without importing it.
+- **Root cause:** The test cases were appended after the import block without adding their helper to that block.
+- **Correction:** Import _payload_shape explicitly in tests/test_amcs_fund_metadata.py. No production code or source data were changed by the failed run.
+- **Impact:** The metadata API probe was skipped by the workflow's test gate; no live source request was made.
+- **Status:** FIX COMMITTED — validate in automatic rerun.
