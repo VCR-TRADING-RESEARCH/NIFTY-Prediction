@@ -448,3 +448,12 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - The latest source response diagnostic showed valid XLSX ZIP signatures (504b0304) on the two recent AMC workbooks. The parser rejected them due to a double-escaped signature literal.
 - Corrected the predicate to compare exact bytes via bytes.fromhex; included an explicit workflow pull/rebase before publishing the sanitized report. Parser verification pending.
 - No raw workbook data or holdings are in the repository. No C1 modelling gate has passed.
+
+
+## 2026-11-01 — Nippon AMC recent-workbook schema probe passed
+
+- Corrected metadata-only probe [run 41275178244](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275178244): **7/7 offline parser tests passed**; September 2026 and February 2026 workbooks returned HTTP 200 and parsed as XLSX containers despite their .xls filename suffix.
+- September 2026 workbook: 108 sheets; Nifty BeES section found; ISIN, quantity and weight columns detected; 50 ISIN-bearing holdings rows. February 2026: 111 sheets; same schema fields detected; 50 holdings rows.
+- Sanitised report with byte counts and SHA-256 values: [C1 AMC archive probe report](C1_AMC_ARCHIVE_PROBE_REPORT.md). No raw holdings or workbook data were committed.
+- April 2019's archive entry is visible on the AMC page, but the guessed modern filename URL returned 404. This is not proof of missing source data; exact older link remains to be resolved.
+- **C1 decision:** PARTIAL / NOT ACCEPTED FOR MODELLING. The probe validates recent workbook schema only. Rights, actual publication timestamps, historical series coverage, membership/security-action alignment, 98%/47-stock coverage, and basket-to-index reconciliation remain open. C2 remains gated.
