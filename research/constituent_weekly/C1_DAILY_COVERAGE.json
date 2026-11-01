@@ -2,9 +2,9 @@
   "auth_method": "totp_refresh",
   "cache_reused_symbols": 70,
   "coverage_interpretation": "Descriptive daily OHLCV coverage; no unregistered percentage threshold is added. Dhan is primary. Restricted personal-use TejHQ raw NSE bhavcopy is a fallback only for Dhan-missing HDFC/Tata Motors sessions.",
-  "created_at_utc": "2026-11-01T14:34:14.554005+00:00",
+  "created_at_utc": "2026-11-01T14:41:53.494929+00:00",
   "dhan_profile_authorized": true,
-  "elapsed_seconds": 67.39,
+  "elapsed_seconds": 19.12,
   "fatal_error": null,
   "index_calendar_qa": {
     "dhan_duplicate_session_count": 0,
@@ -1551,5 +1551,5 @@
   },
   "token_refresh_status": "SUCCESS",
   "unresolved_symbols": [],
-  "updated_at_utc": "2026-11-01T14:34:44.970940+00:00"
+  "updated_at_utc": "2026-11-01T14:42:05.550037+00:00"
 }
