@@ -412,3 +412,10 @@
 
 - Attempted to persist the three direct-NSE HDFC bars in the existing AES-GCM encrypted cache. The first cache-enhancement workflow failed at import time because its minimal dependency list omitted `pyotp` required by the shared module.
 - Logged as E0089 and expanded the workflow install step to project/live-API requirements before rerunning. No raw bars or secrets were committed.
+
+## 2026-11-02 — Daily coverage completion after direct NSE merge
+
+- Expanded the direct NSE audit to all seven residual member/date pairs, using legacy CM and post-2024 UDiFF archive formats. All 7/7 passed exact symbol/date/EQ, OHLC, volume and ISIN validation.
+- Persisted the seven raw rows only in the AES-GCM encrypted Actions cache using the existing HF_TOKEN-derived key. The daily audit restores that cache without redownloading the seven TejHQ year partitions.
+- Updated the daily coverage auditor to decrypt and merge the supplemental NSE rows. Successful run 41344197015 reports COMPLETE: 106,392/106,392 OHLCV member sessions, zero gaps across 70 symbols, minimum per-symbol coverage 100%.
+- C1 overall remains open for corporate-action event/adjusted-return verification; C2 remains locked. No hidden reasoning or credentials are recorded.

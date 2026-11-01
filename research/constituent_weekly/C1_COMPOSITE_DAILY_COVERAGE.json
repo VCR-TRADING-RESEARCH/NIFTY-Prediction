@@ -1,39 +1,33 @@
 {
   "schema_version": 1,
   "methodology_version": "bup01-c1-composite-daily-residual-verification-v1",
-  "updated_at_utc": "2026-11-01T19:47:48.600641+00:00",
-  "status": "ALL_SEVEN_RESIDUALS_SOURCE_VERIFIED",
+  "updated_at_utc": "2026-11-01T19:56:40.493291+00:00",
+  "status": "ALL_SEVEN_OFFICIAL_NSE_ROWS_VALIDATED_AND_MERGED",
   "base_daily_audit": {
-    "valid_member_sessions_ohlcv": 106385,
+    "status": "COMPLETE",
+    "valid_member_sessions_ohlcv": 106392,
+    "valid_member_sessions_ohlc": 106392,
     "expected_member_sessions": 106392,
-    "remaining_before_supplemental": 7
+    "remaining_missing_sessions": 0
   },
   "summary": {
     "residual_security_date_pairs": 7,
-    "independently_verified_residual_rows": 7,
-    "composite_source_validation_count": 106392,
+    "official_nse_verified_residual_rows": 7,
+    "composite_validation_count": 106392,
     "expected_member_sessions": 106392,
     "composite_validation_fraction": 1,
     "raw_values_published": false,
-    "raw_feature_cache_integration": "ENCRYPTED_SUPPLEMENTAL_CACHE_PERSISTED_NOT_YET_MERGED",
-    "encrypted_cache_sha256": "98c5c1e5e08064184a966780a8dd5d827df475f5b4220381b54bb5c41c64cf26",
-    "encrypted_supplemental_cache_written": true
+    "raw_feature_cache_integration": "MERGED_AND_DAILY_AUDIT_COMPLETE",
+    "encrypted_supplemental_cache_written": true,
+    "encrypted_cache_sha256": "b9855515b134fdc5ac1d997c67aecda314e57757fed595673ca53fd164ad9ea8",
+    "unresolved_member_session_gaps": 0
   },
   "sources": {
-    "independent_mirror": {
-      "market_data_license": "No separate data licence identified; raw data are processed only in runner temporary storage and are not redistributed in this project.",
-      "readme": "https://github.com/floyds1995/Auto-Index-Constituents-Tracker/blob/aa57b1050383c33e436f81844230ad2a4d52c949/README.md",
-      "repository": "floyds1995/Auto-Index-Constituents-Tracker",
-      "revision": "aa57b1050383c33e436f81844230ad2a4d52c949",
-      "software_license": "MIT (repository code)",
-      "source_provenance": "Repository README states NSE equity daily bhavcopy is collected from NSE archive endpoints and stored by month as Parquet.",
-      "updater": "https://github.com/floyds1995/Auto-Index-Constituents-Tracker/blob/aa57b1050383c33e436f81844230ad2a4d52c949/NSE/RawDataOHLCV/update_ohlcv.py"
-    },
-    "direct_exchange": {
-      "archive_format": "Legacy CM equity bhavcopy ZIP/CSV",
+    "direct_official_nse": {
       "independent_of_third_party_mirror": true,
-      "publisher": "National Stock Exchange of India",
-      "url_pattern": "https://archives.nseindia.com/content/historical/EQUITIES/YYYY/MON/cmDDMONYYYYbhav.csv.zip"
+      "legacy_archive_pattern": "https://archives.nseindia.com/content/historical/EQUITIES/YYYY/MON/cmDDMONYYYYbhav.csv.zip",
+      "modern_archive_pattern": "https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_YYYYMMDD_F_0000.csv.zip",
+      "publisher": "National Stock Exchange of India"
     }
   },
   "results": [
@@ -41,19 +35,19 @@
       "symbol": "HDFC",
       "date": "2018-11-07",
       "session": "Diwali Muhurat",
-      "source": "Independent public NSE bhavcopy mirror",
-      "status": "VALIDATED",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
       "ohlc_valid": true,
       "volume_valid": true,
       "identity_status": "MATCH",
-      "source_sha256": "e46d30d4d13e0ac9380e4f3ad87b14b207967a8f7b4e532fce58544ecde1c238"
+      "source_sha256": "34cb7742d962b69efaf6da9606dbd0386a0361c884bddfc63c3248a4d9c2b939"
     },
     {
       "symbol": "HDFC",
       "date": "2019-10-27",
       "session": "Sunday Diwali Muhurat",
-      "source": "Direct official NSE bhavcopy archive",
-      "status": "VALIDATED",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
       "ohlc_valid": true,
       "volume_valid": true,
       "identity_status": "MATCH",
@@ -63,8 +57,8 @@
       "symbol": "HDFC",
       "date": "2020-02-01",
       "session": "Saturday Union Budget special session",
-      "source": "Direct official NSE bhavcopy archive",
-      "status": "VALIDATED",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
       "ohlc_valid": true,
       "volume_valid": true,
       "identity_status": "MATCH",
@@ -74,8 +68,8 @@
       "symbol": "HDFC",
       "date": "2020-11-14",
       "session": "Saturday Diwali Muhurat",
-      "source": "Direct official NSE bhavcopy archive",
-      "status": "VALIDATED",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
       "ohlc_valid": true,
       "volume_valid": true,
       "identity_status": "MATCH",
@@ -85,43 +79,40 @@
       "symbol": "HDFC",
       "date": "2021-11-04",
       "session": "Diwali Muhurat",
-      "source": "Independent public NSE bhavcopy mirror",
-      "status": "VALIDATED",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
       "ohlc_valid": true,
       "volume_valid": true,
       "identity_status": "MATCH",
-      "source_sha256": "d3a0e9ef35bac8610f0b3e4cfaffce0a06d00b805d255335b6108645b34e3119"
+      "source_sha256": "3c6b0e631b0ff18946537ba98dd78a4307a9fbc60d70c85e8e529e8acd1de1d8"
     },
     {
       "symbol": "HDFC",
       "date": "2022-10-24",
       "session": "Diwali Muhurat",
-      "source": "Independent public NSE bhavcopy mirror",
-      "status": "VALIDATED",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
       "ohlc_valid": true,
       "volume_valid": true,
-      "identity_status": "ISIN_NOT_PUBLISHED_IN_MIRROR",
-      "source_sha256": "6378ae28df3482fbcdb9aeba26929f437572401b1278dce6688b56581b077dc5"
+      "identity_status": "MATCH",
+      "source_sha256": "c8aa044e671cdb4dd8d2f312d3894a30a3201d8bc17287963a88c937fcb8c208"
     },
     {
       "symbol": "TATAMOTORS",
       "date": "2025-10-21",
-      "session": "Diwali Muhurat (13:45-14:45)",
-      "source": "Independent public NSE bhavcopy mirror",
-      "status": "VALIDATED",
+      "session": "Diwali Muhurat",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
       "ohlc_valid": true,
       "volume_valid": true,
-      "identity_status": "ISIN_NOT_PUBLISHED_IN_MIRROR",
-      "source_sha256": "1084887d80358e747411fd582405c1166cce44a18eebef8902baea75e6a1b243"
+      "identity_status": "MATCH",
+      "source_sha256": "729f028f4dfde2d7dca1abca7b0277a87c4ca950dd0fd5d180ba8fc48c0b6456"
     }
   ],
-  "interpretation": "All seven residual member/date pairs have independent source-level OHLCV validation. The three official NSE rows are now stored in the existing AES-GCM encrypted Actions cache (HF_TOKEN-derived key); the raw bars are not committed or uploaded as artifacts. The daily feature builder has not yet merged/decrypted these supplemental rows, so the base Dhan/TejHQ daily coverage JSON remains 106,385/106,392 and model-ready feature availability must not be called 100% until integration is tested.",
+  "interpretation": "All seven residual security/date pairs have been independently verified from official NSE cash-market bhavcopy archives (legacy CM format before 8 July 2024 and UDiFF format thereafter). Raw rows are stored only in the AES-GCM encrypted GitHub Actions cache and have been decrypted, validated and merged into the daily coverage audit. The daily coverage source-of-record JSON now reports COMPLETE: 106,392/106,392 OHLCV member sessions, zero per-symbol gaps and 100% minimum per-symbol coverage. Corporate-action adjustment validation remains a separate open gate.",
   "limitations": [
-    "The mirror is a public third-party archive of NSE daily data; four rows were validated there.",
-    "Three HDFC rows were validated from exact official NSE archive files.",
-    "Raw prices and volume are not stored in this report.",
-    "The corporate-action adjustment ledger remains incomplete; no adjusted returns are certified.",
-    "Feature-cache integration and a reproducible re-run of the daily coverage auditor remain pending.",
-    "Direct NSE raw rows are encrypted in the GitHub Actions cache but are not yet merged into the daily feature panel or the daily coverage source-of-record JSON."
+    "No raw price, OHLC or volume values are published in the repository or artifacts.",
+    "The seven residual official NSE rows are cached encrypted and integrated by the daily coverage auditor.",
+    "Corporate-action event verification and adjusted-return integrity remain incomplete; no adjusted returns are certified."
   ]
 }

@@ -687,7 +687,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** Initial exact-date audit reported zero HDFC rows for three special sessions despite successfully downloading valid NSE ZIP/CSV archives.
 - **Cause:** Legacy CM bhavcopy headers use `TIMESTAMP` and `OPEN/HIGH/LOW/CLOSE`; the first parser expected `DATE1` and modern `*_PRICE` names. The OHLC fallback already supported legacy price columns, but the date parser did not read `TIMESTAMP`.
 - **Correction:** Parse `TIMESTAMP` as a supported trade-date field; rerun the exact three archives; verify one EQ row, OHLC invariants, nonnegative volume and matching ISIN per date.
-- **Outcome:** 3/3 direct NSE rows validated. The earlier 0/3 result is superseded and must not be used. Parser fix is committed in the direct-NSE audit script.
+- **Outcome:** 3/3 direct NSE rows validated. The earlier 0/3 result is superseded and must not be used. Parser fix is committed; the expanded official-NSE audit subsequently validated 7/7 residual sessions.
 - **Impact:** No raw values were published. Original Dhan/TejHQ coverage remains unchanged until supplemental encrypted-cache integration.
 
 ## E0089 — 2026-11-02 — Encrypted direct-NSE cache writer imported project module without its runtime dependencies
@@ -696,12 +696,5 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** Initial cache-enhancement run failed with `ModuleNotFoundError: pyotp` while importing the shared encryption helper from the daily-history module.
 - **Correction:** Removed the heavy module import and implemented the exact same AES-GCM key derivation locally (`SHA-256` over the established BUP01 cache-key prefix plus the HF token), preserving compatibility with the shared cache format. The workflow now installs only requests and cryptography.
 - **Verification:** Rerun [41343953567](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41343953567) succeeded, restored the prior encrypted cache, validated 3/3 direct NSE rows, wrote the supplemental encrypted CSV cache, and saved the new cache key.
-- **Impact:** No raw data or token was committed. Cache persistence is complete; merging the supplemental bars into the feature panel remains pending.
+- **Impact:** No raw data or token was committed. Cache persistence and daily feature-panel merge are now complete. Successful daily run 41344197015 reports 106,392/106,392 valid OHLCV sessions.
 
-## E0089 — 2026-11-02 — Encrypted direct-NSE cache writer imported project module without its runtime dependencies
-
-- **Class:** Workflow dependency omission; direct archive audit itself had already passed before cache-persistence enhancement.
-- **Observed:** The cache-enhanced run restored the existing encrypted cache, then failed before archive processing with `ModuleNotFoundError: pyotp` while importing the shared encryption helper from the daily-history module.
-- **Cause:** The direct workflow installed only requests/cryptography/pandas/numpy/pyarrow, while the shared module imports the project live-API dependency set at module load.
-- **Correction:** Install the repository and live-API requirements before importing the shared AES-GCM helper. Keep the HF token in the Actions environment only; never print or commit it.
-- **Impact:** No raw data were committed. The earlier direct NSE validation remains valid; encrypted supplemental-cache persistence is pending a rerun.

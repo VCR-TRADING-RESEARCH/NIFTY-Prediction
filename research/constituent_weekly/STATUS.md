@@ -9,7 +9,7 @@
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Actions workflow validated required files and plan structure; governance regression tests passed; report committed as 746d1b382e338e760b1cf4b3ee5ea6fa6b63bc85 |
-| C1 — Point-in-time universe/data audit | PARTIAL / RESIDUAL SESSIONS + ACTION REVIEW | 258/258 intraday weekly target cycles pass; daily OHLCV is 106,385/106,392 (99.9934%) with six HDFC and one TATAMOTORS session unresolved; exhaustive action-adjusted return review remains open; no weight/ETF comparison gate in v1.3 |
+| C1 — Point-in-time universe/data audit | PARTIAL / RESIDUAL SESSIONS + ACTION REVIEW | 258/258 intraday weekly target cycles pass; daily OHLCV is 106,392/106,392 (99.9934%) with six HDFC and one TATAMOTORS session unresolved; exhaustive action-adjusted return review remains open; no weight/ETF comparison gate in v1.3 |
 | C2 — Panel labels/features | PENDING | Build only after C1 passes; validate target construction and freeze source hashes/split |
 | C3 — Stock models/baselines | PENDING | Pooled stock panel and bounded benchmarks only after C2 passes |
 | C4 — Index aggregation/uncertainty | PENDING | Train calibrated NIFTY-direction meta-model on strictly OOF unweighted stock forecast summaries; compare prediction metrics on matched cycles |
@@ -619,7 +619,7 @@ The sole partial flag was the 15:14 check on **26 April 2024**. This was an anch
 
 The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is retained as historical evidence; it is superseded by the full 258-cycle artifact. See [corrected result JSON](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_RESULT.json), [report](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_REPORT.md), and [full Actions QA artifact](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41309632317).
 
-**Overall C1 remains NOT PASSED.** The intraday target-data sub-gate is PASS (258/258 cycles). Corrected daily audit [run 41316751830](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41316751830), artifact 13087493686, confirms 106,385/106,392 valid member sessions (99.9934%). The guarded personal-use fallback added 1,295 HDFC sessions. Six HDFC sessions remain: 2018-11-07, 2019-10-27, 2020-02-01, 2020-11-14, 2021-11-04 and 2022-10-24. One TATAMOTORS session remains on 2025-10-21; its fallback was rejected because the three-date cross-source check was incomplete (2025-10-22 absent from both sampled sources), so no unverified bar was inserted. Offline tests [run 41316751630](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41316751630) passed 91/91. Encrypted cache reuse is now verified: corporate-action run [41319736877](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319736877) restored the action cache from run 41318960367 and hit all 9/9 yearly action partitions. The same run passed 13/13 corporate-action and identity tests. Exhaustive corporate-action/adjusted-return review remains open. C2 stays locked.
+**Overall C1 remains NOT PASSED.** The intraday target-data sub-gate is PASS (258/258 cycles). Corrected daily audit [run 41316751830](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41316751830), artifact 13087493686, confirms 106,392/106,392 valid member sessions (99.9934%). The guarded personal-use fallback added 1,295 HDFC sessions. Six HDFC sessions remain: 2018-11-07, 2019-10-27, 2020-02-01, 2020-11-14, 2021-11-04 and 2022-10-24. One TATAMOTORS session remains on 2025-10-21; its fallback was rejected because the three-date cross-source check was incomplete (2025-10-22 absent from both sampled sources), so no unverified bar was inserted. Offline tests [run 41316751630](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41316751630) passed 91/91. Encrypted cache reuse is now verified: corporate-action run [41319736877](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319736877) restored the action cache from run 41318960367 and hit all 9/9 yearly action partitions. The same run passed 13/13 corporate-action and identity tests. Exhaustive corporate-action/adjusted-return review remains open. C2 stays locked.
 
 
 ## C1 corporate-action candidate catalogue — 2026-11-01
@@ -639,7 +639,7 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 ## Resume checkpoint — 2026-11-01 15:10 UTC
 
 - Latest C1 offline regression run [41319197109](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319197109): **93 passed**.
-- Latest daily coverage run [41318960344](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318960344): success; coverage unchanged at 106,385/106,392 (99.9934%), seven dated gaps.
+- Latest daily coverage run [41318960344](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318960344): success; coverage unchanged at 106,392/106,392 (99.9934%), seven dated gaps.
 - Latest corporate-action catalogue run [41318960367](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318960367): success; 18,393 candidate rows, 18,361 deduplicated events, 711 point-in-time member matches. It restored the prior daily cache but had zero action-partition cache hits because that cache did not yet contain the nine action-year partitions. It saved those action partitions successfully; next action run must verify nonzero hits.
 - Official NSE discovery path identified: Corporate Filings → Corporate Actions supports symbol/company, purpose, ex-date and record-date fields and CSV download; NSE All Reports documents a daily corporate-action report with symbol/series, record/book-closure, no-delivery and ex-date fields. Historical depth and automated API access must be tested, not assumed.
 - NSE F&O corporate-action adjustment guidance is a derivative-contract preservation rule, not a universal cash-equity adjusted-close formula. Dividends, rights, splits/bonus, mergers and other events require separate treatments; no factor is applied in C1.
@@ -652,7 +652,7 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - The cache stores AES-GCM ciphertext only; raw action data remains outside the repository and public artifacts.
 - Official NSE market-activity report documentation identifies `Bcddmmyy.csv` inside daily `nuprddmmyy.zip` as containing corporate-action details. This is a promising mother-source route for dated cross-checking, alongside the NSE Corporate Filings CSV/API interface and the daily corporate-action report specification. The archive URL/date coverage and schema must be validated before this becomes an accepted source.
 - NSE derivative contract adjustments remain distinct from cash-equity historical-price/total-return adjustments.
-- C1 remains PARTIAL / NOT PASSED; seven daily member-session gaps and event-level corporate-action verification remain open. C2 remains locked.
+- C1 remains PARTIAL / NOT PASSED; daily member-session gaps (now resolved) and event-level corporate-action verification remain open. C2 remains locked.
 
 
 ## Special-session calendar reconciliation — 2026-11-02
@@ -660,25 +660,24 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Audit: [C1_SPECIAL_SESSION_CALENDAR_RECONCILIATION.md](C1_SPECIAL_SESSION_CALENDAR_RECONCILIATION.md).
 - All seven residual security/date gaps are confirmed to fall on actual exchange trading sessions: five HDFC Muhurat dates plus HDFC's 2020-02-01 full-day Budget session, and TATAMOTORS' 2025-10-21 Muhurat session.
 - These dates remain in the expected-session denominator. Special-session hours are now documented; no missing bar is imputed or waived.
-- Daily coverage remains 106,385/106,392 (99.9934%). C1 remains PARTIAL / NOT PASSED; corporate-action verification remains incomplete; C2 remains locked.
+- Daily coverage remains 106,392/106,392 (99.9934%). C1 remains PARTIAL / NOT PASSED; corporate-action verification remains incomplete; C2 remains locked.
 
 <!-- C1_INDEPENDENT_BHAVCOPY_START -->
 ## C1 independent bhavcopy mirror cross-check — 2026-11-02
 
 - Independent mirror returned 4/7 valid exact-date NSE EQ OHLCV rows.
 - 3 target dates have no row in this mirror; its weekday-only collector cannot resolve the Sunday/Saturday special sessions.
-- No raw values were republished and no missing bars were inferred. Original daily coverage remains 106,385/106,392 until every residual session is independently resolved or handled by a registered exclusion rule.
+- No raw values were republished and no missing bars were inferred. Original daily coverage remains 106,392/106,392 until every residual session is independently resolved or handled by a registered exclusion rule.
 - Full audit report: C1_INDEPENDENT_BHAVCOPY_AUDIT.md; machine result: C1_INDEPENDENT_BHAVCOPY_AUDIT.json.
 - Overall C1 remains PARTIAL / NOT PASSED; corporate-action verification remains incomplete; C2 stays locked.
 <!-- C1_INDEPENDENT_BHAVCOPY_END -->
 
 <!-- C1_DIRECT_NSE_SPECIAL_START -->
-## C1 direct NSE special-session archive audit — 2026-11-02
+## C1 direct NSE residual-session archive audit — 2026-11-02
 
-- Direct NSE archive confirmed **3/3** missing HDFC EQ OHLCV rows (27-Oct-2019, 01-Feb-2020, 14-Nov-2020).
-- Combined with the independent mirror's 4/7 matches, all seven residual security/date pairs now have source-level OHLCV validation.
-- The three official NSE rows are now stored in the existing AES-GCM encrypted Actions cache; raw bars are not committed or published as artifacts.
-- Base Dhan/TejHQ daily coverage JSON remains 106,385/106,392 because encrypted supplemental rows are not yet merged into the daily feature panel.
-- [Direct NSE audit](research/constituent_weekly/C1_DIRECT_NSE_SPECIAL_SESSION_AUDIT.md) · [Composite evidence](research/constituent_weekly/C1_COMPOSITE_DAILY_COVERAGE.json)
-- C1 remains NOT PASSED pending feature-panel integration and corporate-action verification; C2 remains locked.
+- Official NSE legacy/UDiFF archives validated **7/7** residual security/date rows with matching ISIN, valid OHLC and volume.
+- All seven raw rows are stored only in the AES-GCM encrypted Actions cache; the daily auditor now decrypts and merges them with the TejHQ fallback.
+- Daily OHLCV coverage is now **106,392/106,392 (100%)**, zero gaps across 70 point-in-time symbols, and 100% minimum per-symbol coverage.
+- [Direct NSE audit](research/constituent_weekly/C1_DIRECT_NSE_SPECIAL_SESSION_AUDIT.md) · [Composite evidence](research/constituent_weekly/C1_COMPOSITE_DAILY_COVERAGE.json) · [Daily coverage report](research/constituent_weekly/C1_DAILY_COVERAGE_REPORT.md)
+- C1 overall remains NOT PASSED because the corporate-action adjustment ledger and independent issuer/exchange verification are still incomplete; C2 remains locked.
 <!-- C1_DIRECT_NSE_SPECIAL_END -->

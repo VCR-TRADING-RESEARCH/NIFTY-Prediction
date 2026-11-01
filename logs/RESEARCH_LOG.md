@@ -777,3 +777,10 @@
 - **API/cache:** 1 requests; 70 symbols reused from the sanitized QA cache.
 - **Interpretation:** daily OHLCV coverage is reported independently from intraday target coverage, historical identity and action-adjusted return integrity. No model is trained and C2 remains gated.
 - **Artifacts:** C1_DAILY_COVERAGE.json and C1_DAILY_COVERAGE_REPORT.md.
+
+## 2026-11-02 — Direct NSE residual archive integration and daily coverage completion
+
+- Direct NSE legacy/UDiFF bhavcopy archives independently validated all seven residual member/date pairs: six HDFC sessions and TATAMOTORS 2025-10-21. Each had one EQ row, valid OHLC/volume and matching ISIN.
+- Raw residual rows were encrypted with the existing HF_TOKEN-derived AES-GCM cache key; the cache was restored with seven TejHQ year partitions and zero partition downloads.
+- The daily coverage auditor now decrypts and merges the supplemental rows with the pinned TejHQ fallback. Successful run [41344197015](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41344197015) reports COMPLETE: 106,392/106,392 OHLCV member sessions, zero symbol gaps, 100% minimum per-symbol coverage, and no unresolved security IDs.
+- Daily data coverage is complete. C1 overall remains gated by the separate corporate-action adjustment/issuer verification and other registered C1 checks; C2 remains locked.

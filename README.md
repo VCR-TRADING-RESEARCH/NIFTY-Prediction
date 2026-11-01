@@ -347,12 +347,11 @@ The pinned independent source returned 4/7 valid exact-date EQ OHLCV rows. Remai
 <!-- C1_INDEPENDENT_BHAVCOPY_END -->
 
 <!-- C1_DIRECT_NSE_SPECIAL_START -->
-## C1 direct NSE special-session archive audit — 2026-11-02
+## C1 direct NSE residual-session archive audit — 2026-11-02
 
-- Direct NSE archive confirmed **3/3** missing HDFC EQ OHLCV rows (27-Oct-2019, 01-Feb-2020, 14-Nov-2020).
-- Combined with the independent mirror's 4/7 matches, all seven residual security/date pairs now have source-level OHLCV validation.
-- The three official NSE rows are now stored in the existing AES-GCM encrypted Actions cache; raw bars are not committed or published as artifacts.
-- Base Dhan/TejHQ daily coverage JSON remains 106,385/106,392 because encrypted supplemental rows are not yet merged into the daily feature panel.
-- [Direct NSE audit](research/constituent_weekly/C1_DIRECT_NSE_SPECIAL_SESSION_AUDIT.md) · [Composite evidence](research/constituent_weekly/C1_COMPOSITE_DAILY_COVERAGE.json)
-- C1 remains NOT PASSED pending feature-panel integration and corporate-action verification; C2 remains locked.
+- Official NSE legacy/UDiFF archives validated **7/7** residual security/date rows with matching ISIN, valid OHLC and volume.
+- All seven raw rows are stored only in the AES-GCM encrypted Actions cache; the daily auditor now decrypts and merges them with the TejHQ fallback.
+- Daily OHLCV coverage is now **106,392/106,392 (100%)**, zero gaps across 70 point-in-time symbols, and 100% minimum per-symbol coverage.
+- [Direct NSE audit](research/constituent_weekly/C1_DIRECT_NSE_SPECIAL_SESSION_AUDIT.md) · [Composite evidence](research/constituent_weekly/C1_COMPOSITE_DAILY_COVERAGE.json) · [Daily coverage report](research/constituent_weekly/C1_DAILY_COVERAGE_REPORT.md)
+- C1 overall remains NOT PASSED because the corporate-action adjustment ledger and independent issuer/exchange verification are still incomplete; C2 remains locked.
 <!-- C1_DIRECT_NSE_SPECIAL_END -->
