@@ -461,3 +461,11 @@
 - Formal panel-only workflow executed on the plan-defined C2 branch.
 - Offline tests: success; panel step: failure; result: FAILED.
 - The bundled pilot remains diagnostic only; C3/C4 model gates remain separate.
+
+
+<!-- C2_PANEL_CONVERSATION_41351790740 -->
+## 2026-11-01T21:26:55.304623+00:00 — formal C2 panel run 41351790740
+
+- Formal panel-only workflow executed on the plan-defined C2 branch.
+- Offline tests: success; panel step: failure; result: INVALID_RESULT_JSON.
+- The bundled pilot remains diagnostic only; C3/C4 model gates remain separate.

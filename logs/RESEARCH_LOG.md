@@ -829,3 +829,13 @@
 - Input manifest: 715623a04ff8e32a2a7b0a744a1e4b590d37f758c708eb5d7f5352d7dd00a553.
 - Encrypted panel cache metadata: {}.
 - C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.
+
+
+<!-- C2_PANEL_RUN_41351790740 -->
+## 2026-11-01T21:26:55.304623+00:00 — formal C2 panel run 41351790740
+
+- Status: INVALID_RESULT_JSON.
+- Summary: **Formal C2 panel run 41351790740:** INVALID_RESULT_JSON; 0 scheduled cycles; 0 valid NIFTY targets (0.00%); 0 cycles pass the 47/94% stock rule; 0 constituent-cycle rows. C2 is not accepted; see the workflow run and error log.
+- Input manifest: not available.
+- Encrypted panel cache metadata: {}.
+- C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.

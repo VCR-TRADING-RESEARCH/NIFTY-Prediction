@@ -783,3 +783,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Error category: RuntimeError.
 - Source location: {'file': 'run_c2_panel_and_models.py', 'function': 'main', 'line': 609}.
 - No panel acceptance is claimed for this run.
+
+
+<!-- C2_PANEL_ERROR_41351790740 -->
+## C2 panel workflow 41351790740 — INVALID_RESULT_JSON
+
+- Offline tests: success; panel step: failure.
+- Error category: pre-panel workflow failure.
+- Source location: {}.
+- No panel acceptance is claimed for this run.

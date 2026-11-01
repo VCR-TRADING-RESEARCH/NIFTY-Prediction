@@ -1,1 +1,1 @@
-# C2 Point-in-Time Constituent Panel Build\n\n**Status:** FAILED\n\n- Error category: RuntimeError\n- Source location: {'file': 'run_c2_panel_and_models.py', 'line': 609, 'function': 'main'}\n
+# C2 Point-in-Time Constituent Panel Build\n\n**Status:** FAILED\n\n- Error category: RuntimeError\n- Error message: TEJHQ_PERSONAL_USE_ONLY=1 is required for this personal-use dataset.\n- Source location: {'file': 'run_c2_panel_and_models.py', 'line': 499, 'function': 'main'}\n

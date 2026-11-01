@@ -1,11 +1,12 @@
 {
-  "created_at_utc": "2026-11-01T21:24:59.980400+00:00",
+  "created_at_utc": "2026-11-01T21:26:52.596458+00:00",
   "fatal_error_category": "RuntimeError",
   "fatal_error_location": {
     "file": "run_c2_panel_and_models.py",
     "function": "main",
-    "line": 609
+    "line": 499
   },
+  "fatal_error_message": "TEJHQ_PERSONAL_USE_ONLY=1 is required for this personal-use dataset.",
   "input_manifest": {
     "action_event_sha256": "0c9231a144a0ba16e03e99658fd6300d588bb498f8557a95886bd77a2b9e45a7",
     "alias_sha256": "27b299b995bf59d08ab5b6a83d3fed0789c26363d842ae4b13acd6379e3985a3",
@@ -27,4 +28,4 @@
   ],
   "schema_version": 1,
   "status": "FAILED"
-}
+}\n
