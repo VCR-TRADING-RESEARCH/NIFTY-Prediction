@@ -630,10 +630,10 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - 17,650 rows are non-member/unmatched in this broad NSE catalogue; they are not all missing constituent events. No ambiguous member match or missing source ISIN was reported in this source extract.
 - This is a candidate-discovery catalogue only. No adjustment factors were calculated or applied; event-level NSE/issuer verification, security identity confirmation and ex-date raw-close reconciliation remain open. Corporate-action gate NOT PASSED; C1 overall NOT PASSED; C2 remains locked.
 - Report: [C1_CORPORATE_ACTION_AUDIT_REPORT.md](C1_CORPORATE_ACTION_AUDIT_REPORT.md); machine summary: [C1_CORPORATE_ACTION_AUDIT.json](C1_CORPORATE_ACTION_AUDIT.json); methodology: [C1_CORPORATE_ACTION_METHOD.md](C1_CORPORATE_ACTION_METHOD.md).
-- Cache path alignment was corrected in both daily and corporate-action workflows to use the same absolute `runner.temp` directory as Python. A regression guard was added; live verification of cross-run cache hits is pending.
+- Cache path alignment is verified in both workflows. Corporate-action run [41319736877](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319736877) passed 13/13 tests and restored 9/9 yearly action partitions from encrypted cache, with zero downloads.
 
 
-- **Workflow validation after cache-path patch:** PR CI [41319075705](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075705) passed; offline Dhan preflight and continuous coverage checks [41319075672](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075672) and [41319075683](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075683) passed. Live data steps were skipped for PR safety. Cache-hit proof remains pending.
+- **Workflow validation after cache-path patch:** PR CI [41319075705](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075705) passed; offline Dhan preflight and continuous coverage checks [41319075672](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075672) and [41319075683](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075683) passed. Live data steps were skipped for PR safety. Live encrypted cache reuse was subsequently verified by corporate-action run [41319736877](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319736877): 9/9 yearly action partitions reused, zero downloads.
 
 
 ## Resume checkpoint — 2026-11-01 15:10 UTC
