@@ -63,7 +63,7 @@ def validate() -> list[str]:
                 errors.append(f"Missing phase definition: {phase}")
         if "Pre-registered hypotheses" not in plan:
             errors.append("Pre-registered hypotheses section missing")
-        for token in ("98%", "104", "20261031", "Paytm Money", "free-float"):
+        for token in ("98%", "94%", "47", "104", "20261031", "Paytm Money", "out of fold"):
             if token not in plan:
                 errors.append(f"Missing mandatory protocol item: {token}")
 
@@ -85,9 +85,9 @@ def validate() -> list[str]:
         "Result: PASS",
         "",
         "Validated required plan, literature, source register, status and manuscript outline files.",
-        "Checked research questions, objectives, formal target, data hierarchy, model scope, validation, stop rules, all seven phases, free-float coverage, minimum history, fixed bootstrap seed and transaction-cost requirements.",
+        "Checked research questions, objectives, formal target, data hierarchy, stock/meta-model scope, out-of-fold aggregation, member-count/index-label coverage, validation, stop rules, all seven phases, minimum history, fixed bootstrap seed and transaction-cost requirements.",
         "",
-        "This is a structural governance check only. It does not validate market data, historical constituents, stock prices, weights, models or trading performance.",
+        "This is a structural governance check only. It does not validate market data, historical constituents, stock prices, models or trading performance.",
         "",
         "Run locally: python scripts/constituent_weekly/validate_plan.py",
     ]
