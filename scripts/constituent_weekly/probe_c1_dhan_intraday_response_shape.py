@@ -171,6 +171,7 @@ def post_probe(
 
 def main() -> int:
     started = time.monotonic()
+    stage = "token_acquisition"
     report: dict[str, Any] = {
         "schema_version": 1,
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -182,22 +183,29 @@ def main() -> int:
     }
     try:
         token, client_id, auth_method, refresh_status, diagnostics = acquire_access_token()
+        stage = "profile_entitlement"
         profile = requests.get(
             "https://api.dhan.co/v2/profile",
             headers={"access-token": token, "Accept": "application/json"},
             timeout=30,
         )
+        report["profile_http_status"] = int(profile.status_code)
         if not profile.ok:
             raise RuntimeError(f"Dhan profile request failed with HTTP {profile.status_code}.")
         profile_body = profile.json()
-        if str(profile_body.get("dataPlan", "")).strip().casefold() != "active":
+        report["data_plan_active"] = str(profile_body.get("dataPlan", "")).strip().casefold() == "active"
+        if not report["data_plan_active"]:
             raise RuntimeError("Dhan Data API plan is not active.")
 
+        stage = "scrip_master_download"
         master_response = requests.get(MASTER_URL, timeout=45)
+        report["scrip_master_http_status"] = int(master_response.status_code)
         master_response.raise_for_status()
         master = pd.read_csv(pd.io.common.BytesIO(master_response.content), low_memory=False)
         stock_ids = resolve_ids(master, ["RELIANCE"])
         index_id = find_nifty50_security(master)
+        report["reliance_symbol_resolved"] = "RELIANCE" in stock_ids
+        report["nifty50_index_resolved"] = bool(index_id)
         if "RELIANCE" not in stock_ids:
             raise RuntimeError("RELIANCE security lookup missing from current scrip master.")
         if not index_id:
@@ -214,6 +222,7 @@ def main() -> int:
         report["token_refresh_diagnostic_keys"] = sorted(diagnostics.keys()) if isinstance(diagnostics, dict) else []
 
         for case in CASES:
+            stage = f"market_data_request:{case['name']}"
             if case["kind"] == "daily_stock":
                 url = DAILY_URL
                 security_id = "1330"  # documented legacy Dhan HDFC Ltd security ID, not HDFCBANK
@@ -257,6 +266,18 @@ def main() -> int:
     except Exception as exc:
         report["status"] = "BLOCKED_OR_FAILED"
         report["fatal_error_type"] = type(exc).__name__
+        report["fatal_error_stage"] = stage
+        message = str(exc).casefold()
+        if "data api plan is not active" in message:
+            report["fatal_error_category"] = "DATA_PLAN_NOT_ACTIVE"
+        elif "profile request failed with http" in message:
+            report["fatal_error_category"] = "PROFILE_HTTP_ERROR"
+        elif "security lookup missing" in message:
+            report["fatal_error_category"] = "SCRIP_MASTER_ID_LOOKUP_FAILED"
+        elif "http" in message and "master" in stage:
+            report["fatal_error_category"] = "SCRIP_MASTER_HTTP_ERROR"
+        else:
+            report["fatal_error_category"] = type(exc).__name__.upper()
         report["elapsed_seconds"] = round(time.monotonic() - started, 2)
         OUTPUT.parent.mkdir(parents=True, exist_ok=True)
         OUTPUT.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")

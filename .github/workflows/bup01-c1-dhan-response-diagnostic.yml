@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: c1-dhan-response-shape-${{ github.run_id }}
-          path: research/constituent_weekly/C1_DHAN_INTRADIAL_RESPONSE_DIAGNOSTIC.json
+          path: research/constituent_weekly/C1_DHAN_INTRADAY_RESPONSE_DIAGNOSTIC.json
           if-no-files-found: warn
           retention-days: 90
       - name: Publish diagnostic from current branch with retry
@@ -66,17 +66,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          source_file="research/constituent_weekly/C1_DHAN_INTRADIAL_RESPONSE_DIAGNOSTIC.json"
+          source_file="research/constituent_weekly/C1_DHAN_INTRADAY_RESPONSE_DIAGNOSTIC.json"
           if [ ! -s "$source_file" ]; then
             echo "No response-shape diagnostic file was created."
             exit 1
           fi
-          cp "$source_file" "$RUNNER_TEMP/C1_DHAN_INTRADIAL_RESPONSE_DIAGNOSTIC.json"
+          cp "$source_file" "$RUNNER_TEMP/C1_DHAN_INTRADAY_RESPONSE_DIAGNOSTIC.json"
           for attempt in 1 2 3 4 5; do
             git fetch origin phase/constituent-weekly-outcomes-c1-data
             git reset --hard origin/phase/constituent-weekly-outcomes-c1-data
             mkdir -p research/constituent_weekly
-            cp "$RUNNER_TEMP/C1_DHAN_INTRADIAL_RESPONSE_DIAGNOSTIC.json" "$source_file"
+            cp "$RUNNER_TEMP/C1_DHAN_INTRADAY_RESPONSE_DIAGNOSTIC.json" "$source_file"
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -f "$source_file"
@@ -100,7 +100,7 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          path = Path("research/constituent_weekly/C1_DHAN_INTRADIAL_RESPONSE_DIAGNOSTIC.json")
+          path = Path("research/constituent_weekly/C1_DHAN_INTRADAY_RESPONSE_DIAGNOSTIC.json")
           if not path.exists():
               print("Diagnostic JSON missing.")
               raise SystemExit(0)
