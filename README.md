@@ -317,3 +317,10 @@ Automated AMC workbook downloads are paused; the remaining AMC workflow runs par
 A dated security-alias layer now translates canonical membership symbols to the exchange ticker actually traded at each date. This corrects LTIMindtree's 2023–2024 NIFTY membership interval to the actual symbol LTIM (not later symbol LTM), and captures the ZOMATO/ETERNAL, TATAGLOBAL/TATACONSUM and TATAMOTORS/TMPV transitions. HDFC Ltd remains distinct from HDFCBANK, and the Tata Motors demerger ex-date is not treated as a continuous raw-price interval. See [security alias history](data/constituent_weekly/security_alias_history.csv), [major corporate-action events](data/constituent_weekly/security_corporate_action_events.csv), [identity resolver](scripts/constituent_weekly/security_identity.py), and [C1 identity review](research/constituent_weekly/C1_HISTORICAL_SYMBOL_IDENTITY.md).
 
 This is a major-identity correction, not the exhaustive adjustment ledger for dividends/splits/bonus/rights actions; C1 remains PARTIAL. [Latest C1 status](research/constituent_weekly/STATUS.md).
+
+
+## Intraday target-coverage result — 2026-11-01
+
+Live Dhan audit [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865) passed its explicit data gate: 258/258 weekly cycles had valid observed NIFTY anchor/expiry target pairs and met the registered at least 47 / at least 94% constituent coverage rule; 154 confirmatory cycles remained after the 104-cycle warm-up; zero unresolved active symbols; 1,083 requests across 21 windows. One index window (2024-01-31 to 2024-04-29) was marked partial though the final cycle target count was complete. Exact date-level detail was lost in the post-run rebase conflict, so it is disclosed as a caveat. See [durable result JSON](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_RESULT.json), [report](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_REPORT.md), and [E0070](logs/ERROR_LOG.md).
+
+**C1 is not fully passed.** Daily OHLCV feature coverage and exhaustive corporate-action adjustment review remain pending. No C2 model or trading strategy has been trained.
