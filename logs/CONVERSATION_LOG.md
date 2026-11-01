@@ -348,3 +348,11 @@
 - Corrected the latest coverage result/report/status so the old 77/258 result is retained only as an earlier incomplete run, not the current gate outcome.
 - Offline C1 regression suite on commit 658d513 passed 87 tests. The live daily audit remains queued behind the shared Dhan market-data concurrency lock.
 - Overall C1 remains PARTIAL: daily feature-data gaps and complete corporate-action/adjusted-return checks remain open; C2 stays gated.
+
+
+## 2026-11-01 — User resumed C1 daily-history fallback and test validation
+
+- Added a hard runtime guard requiring the explicit TEJHQ_PERSONAL_USE_ONLY=1 workflow setting before the restricted mother-source fallback is permitted.
+- Made encrypted cache keys unique per workflow run with a restore prefix for the pinned dataset revision, allowing later runs to extend the encrypted cache without attempting to overwrite an immutable GitHub cache key.
+- Corrected the daily test harness and common dependencies. The latest offline run [41315241386](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41315241386) passed 88 tests.
+- Live daily data/fallback is still queued behind an earlier serialized Dhan coverage run. No TejHQ coverage additions are claimed until that live run completes.
