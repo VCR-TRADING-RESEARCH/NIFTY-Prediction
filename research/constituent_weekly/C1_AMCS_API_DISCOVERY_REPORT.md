@@ -1,6 +1,6 @@
 # C1 amcs.fund API metadata discovery
 
-- Run time (UTC): 2026-11-01T10:10:47.807165+00:00
+- Run time (UTC): 2026-11-01T10:21:42.282107+00:00
 - Scope: **metadata only**; the probe inspects AMC archive UI and mfdata.in family/month-history metadata. It does not submit AMC archive forms, call fund-family holdings endpoints, download portfolio workbooks, or store holdings values.
 - Rights: **UNVERIFIED**. Public API access is not treated as permission for commercial/trading-research extraction, caching, or redistribution.
 
@@ -100,8 +100,8 @@
 
 ## Mother AMC archive interface discovery (metadata only)
 
-- {"form_actions": [], "html_bytes": 1343348, "http_status": 200, "input_fields": [{"id": "footer-email-input", "name": "emailControl", "type": "email"}], "page_url": "https://www.utimf.com/downloads/scheme-wise-portfolio-disclosure", "pattern_counts": [{"count": 5, "term": "source"}, {"count": 449, "term": "portfolio"}, {"count": 3, "term": "holdings"}, {"count": 3010, "term": "year"}, {"count": 201, "term": "month"}], "script_src_count": 3, "script_srcs_sample": ["https://www.utimf.com/downloads/polyfills-6ISPNSXF.js", "https://www.utimf.com/downloads/scripts-6V3YJ43N.js", "https://www.utimf.com/downloads/main-BEBE7XNI.js"], "select_fields": [], "source_links": [{"host": "www.utimf.com", "label": "Skip to main content", "url": "https://www.utimf.com/downloads/scheme-wise-portfolio-disclosure#main-content"}, {"host": "www.utimf.com", "label": "Home", "url": "https://www.utimf.com/"}], "status": "PASS_HTML"}
-- {"form_actions": [], "html_bytes": 1341436, "http_status": 200, "input_fields": [{"id": "footer-email-input", "name": "emailControl", "type": "email"}], "page_url": "https://www.utimf.com/downloads/consolidate-all-portfolio-disclosure", "pattern_counts": [{"count": 5, "term": "source"}, {"count": 449, "term": "portfolio"}, {"count": 3, "term": "holdings"}, {"count": 3010, "term": "year"}, {"count": 201, "term": "month"}], "script_src_count": 3, "script_srcs_sample": ["https://www.utimf.com/downloads/polyfills-6ISPNSXF.js", "https://www.utimf.com/downloads/scripts-6V3YJ43N.js", "https://www.utimf.com/downloads/main-BEBE7XNI.js"], "select_fields": [], "source_links": [{"host": "www.utimf.com", "label": "Skip to main content", "url": "https://www.utimf.com/downloads/consolidate-all-portfolio-disclosure#main-content"}, {"host": "www.utimf.com", "label": "Home", "url": "https://www.utimf.com/"}], "status": "PASS_HTML"}
+- {"form_actions": [], "html_bytes": 1343337, "http_status": 200, "input_fields": [{"id": "footer-email-input", "name": "emailControl", "type": "email"}], "page_url": "https://www.utimf.com/downloads/scheme-wise-portfolio-disclosure", "pattern_counts": [{"count": 5, "term": "source"}, {"count": 449, "term": "portfolio"}, {"count": 3, "term": "holdings"}, {"count": 3010, "term": "year"}, {"count": 201, "term": "month"}], "script_src_count": 3, "script_srcs_sample": ["https://www.utimf.com/downloads/polyfills-6ISPNSXF.js", "https://www.utimf.com/downloads/scripts-6V3YJ43N.js", "https://www.utimf.com/downloads/main-BEBE7XNI.js"], "select_fields": [], "source_links": [{"host": "www.utimf.com", "label": "Skip to main content", "url": "https://www.utimf.com/downloads/scheme-wise-portfolio-disclosure#main-content"}, {"host": "www.utimf.com", "label": "Home", "url": "https://www.utimf.com/"}], "status": "PASS_HTML"}
+- {"form_actions": [], "html_bytes": 1341425, "http_status": 200, "input_fields": [{"id": "footer-email-input", "name": "emailControl", "type": "email"}], "page_url": "https://www.utimf.com/downloads/consolidate-all-portfolio-disclosure", "pattern_counts": [{"count": 5, "term": "source"}, {"count": 449, "term": "portfolio"}, {"count": 3, "term": "holdings"}, {"count": 3010, "term": "year"}, {"count": 201, "term": "month"}], "script_src_count": 3, "script_srcs_sample": ["https://www.utimf.com/downloads/polyfills-6ISPNSXF.js", "https://www.utimf.com/downloads/scripts-6V3YJ43N.js", "https://www.utimf.com/downloads/main-BEBE7XNI.js"], "select_fields": [], "source_links": [{"host": "www.utimf.com", "label": "Skip to main content", "url": "https://www.utimf.com/downloads/consolidate-all-portfolio-disclosure#main-content"}, {"host": "www.utimf.com", "label": "Home", "url": "https://www.utimf.com/"}], "status": "PASS_HTML"}
 - {"form_actions": [], "html_bytes": null, "http_status": null, "input_fields": [], "page_url": "https://www.hdfcfund.com/statutory-disclosure/portfolio/monthly-portfolio", "pattern_counts": [], "script_src_count": 0, "script_srcs_sample": [], "select_fields": [], "source_links": [], "status": "ERROR"}
 
 ## Mother AMC archive UI script patterns
@@ -144,9 +144,14 @@
 
 ## mfdata.in independent portfolio-history availability audit
 
-- Scope: scheme/family labels and month availability metadata only; no per-stock holdings endpoint was requested.
-| mfdata.in /api/v1/schemes?search=nifty 50 | ERROR | 522 | application/json; charset=utf-8 | 0 |  |
-- No matching family records were returned by the documented mfdata scheme search.
+- Scope: documented family holdings-history endpoint queried for available YYYY-MM labels only. No individual /holdings?month= response or security-level holding value was downloaded or stored.
+| mfdata.in documented search | ERROR | 522 | application/json; charset=utf-8 | 0 |  |
+- Matching NIFTY 50 family records: 0; usable family IDs: 0
+| mfdata.in family catalogue fallback | ERROR | 522 | application/json; charset=utf-8 | 0 |  |
+- Matching NIFTY 50 family records: 0; usable family IDs: 0
+| mfdata.in legacy schemes-search fallback | ERROR | 522 | application/json; charset=utf-8 | 0 |  |
+- Matching NIFTY 50 family records: 0; usable family IDs: 0
+- Discovery routes returned no usable NIFTY 50 family IDs; the holdings-history route was not called.
 - No family_id values were available to query the documented holdings-history endpoint.
 
 ## Tipsheet NIFTY 50 weight-data catalogue entries
