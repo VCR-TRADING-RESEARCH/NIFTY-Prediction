@@ -4,6 +4,7 @@ from scripts.constituent_weekly.probe_amcs_fund_metadata import (
     _extract_html_metadata,
     _mfdata_family_summaries,
     _mfdata_months,
+    _mfdata_month_coverage,
     _first_identifier,
     _matching_records,
     _metadata_records,
@@ -196,3 +197,23 @@ def test_mfdata_month_parser_only_keeps_valid_year_month_labels():
         "data": ["2019-04", "2022-09", "2026-09", "2019-13", "not-a-month"],
     }
     assert _mfdata_months(payload) == ["2019-04", "2022-09", "2026-09"]
+
+
+
+def test_mfdata_month_coverage_reports_internal_gaps():
+    result = _mfdata_month_coverage(["2020-01", "2020-03", "2020-04"])
+    assert result["month_count"] == 3
+    assert result["first_month"] == "2020-01"
+    assert result["last_month"] == "2020-04"
+    assert result["expected_month_count"] == 4
+    assert result["missing_month_count"] == 1
+    assert result["missing_months_sample"] == ["2020-02"]
+    assert result["continuous"] is False
+    assert result["coverage_ratio"] == 0.75
+
+
+def test_mfdata_month_coverage_handles_empty_history():
+    result = _mfdata_month_coverage([])
+    assert result["month_count"] == 0
+    assert result["continuous"] is False
+    assert result["coverage_ratio"] is None

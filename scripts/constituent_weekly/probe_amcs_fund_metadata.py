@@ -638,7 +638,7 @@ def _mfdata_months(payload: Any) -> list[str]:
 
     def visit(value: Any) -> None:
         if isinstance(value, str):
-            if re.fullmatch(r"20\\d{2}-(0[1-9]|1[0-2])", value):
+            if re.fullmatch(r"20\d{2}-(0[1-9]|1[0-2])", value):
                 found.add(value)
         elif isinstance(value, dict):
             for child in value.values():
@@ -651,6 +651,44 @@ def _mfdata_months(payload: Any) -> list[str]:
     return sorted(found)
 
 
+def _mfdata_month_coverage(months: list[str]) -> dict[str, Any]:
+    """Summarize actual monthly availability and internal gaps without holdings values."""
+    ordered = sorted(set(months))
+    if not ordered:
+        return {
+            "month_count": 0,
+            "first_month": None,
+            "last_month": None,
+            "expected_month_count": 0,
+            "missing_month_count": 0,
+            "missing_months_sample": [],
+            "continuous": False,
+            "coverage_ratio": None,
+        }
+    def ordinal(value: str) -> int:
+        year, month = (int(part) for part in value.split("-"))
+        return year * 12 + month - 1
+
+    first_ord, last_ord = ordinal(ordered[0]), ordinal(ordered[-1])
+    present = {ordinal(value) for value in ordered}
+    missing = [
+        f"{value // 12:04d}-{value % 12 + 1:02d}"
+        for value in range(first_ord, last_ord + 1)
+        if value not in present
+    ]
+    expected = last_ord - first_ord + 1
+    return {
+        "month_count": len(ordered),
+        "first_month": ordered[0],
+        "last_month": ordered[-1],
+        "expected_month_count": expected,
+        "missing_month_count": len(missing),
+        "missing_months_sample": missing[:24],
+        "continuous": not missing,
+        "coverage_ratio": round(len(ordered) / expected, 6) if expected else 1.0,
+    }
+
+
 def run_probe() -> dict[str, Any]:
     session = requests.Session()
     session.headers.update({
@@ -659,7 +697,7 @@ def run_probe() -> dict[str, Any]:
     })
     report: dict[str, Any] = {
         "run_time_utc": datetime.now(timezone.utc).isoformat(),
-        "scope": "Metadata-only source discovery. No holdings endpoint is requested and no holdings values are stored.",
+        "scope": "Metadata-only source discovery. Documented holdings-history endpoints are queried for month labels only; per-month holdings payloads and security-level values are not requested or stored.",
         "api_index": None,
         "amcs_html_pages": [],
         "amcs_ui_scripts": [],
@@ -675,6 +713,7 @@ def run_probe() -> dict[str, Any]:
         "tipsheet_manifest": None,
         "tipsheet_weight_candidates": [],
         "mfdata_schemes": None,
+        "mfdata_endpoint_probes": [],
         "mfdata_scheme_families": [],
         "mfdata_family_histories": [],
         "nippon_amc_matches": [],
@@ -787,16 +826,59 @@ def run_probe() -> dict[str, Any]:
     if tipsheet_payload is not None:
         report["tipsheet_weight_candidates"] = _tipsheet_weight_candidates(tipsheet_payload)
 
-    # Independent free-source check: mfdata.in documents a no-key schemes search
-    # and a separate monthly holdings-history endpoint. Only IDs, fund labels and
-    # YYYY-MM availability are retained; per-stock holdings responses are never called.
-    mfdata_payload, mfdata_meta = _fetch_json(
-        session,
-        "https://mfdata.in/api/v1/schemes?search=nifty%2050&has_holdings=true&limit=1000",
-    )
-    report["mfdata_schemes"] = mfdata_meta
-    family_summaries = _mfdata_family_summaries(mfdata_payload) if mfdata_payload is not None else []
+    # Independent free-source check. Use the documented /search endpoint first,
+    # then the documented family catalogue, and keep /schemes search as a final
+    # compatibility fallback. The dedicated /holdings/history endpoint returns
+    # month labels only; this probe never requests /holdings?month=YYYY-MM.
+    mfdata_routes = [
+        ("documented search", "https://mfdata.in/api/v1/search?q=nifty%2050"),
+        ("family catalogue fallback", "https://mfdata.in/api/v1/families?has_holdings=true&limit=1000"),
+        ("legacy schemes-search fallback", "https://mfdata.in/api/v1/schemes?search=nifty%2050&has_holdings=true&limit=1000"),
+    ]
+    family_summaries: list[dict[str, Any]] = []
+    seen_family_records: set[str] = set()
+    for route_label, route_url in mfdata_routes:
+        mfdata_payload, mfdata_meta = _fetch_json(session, route_url)
+        mfdata_meta["endpoint_label"] = route_label
+        route_matches = _mfdata_family_summaries(mfdata_payload) if mfdata_payload is not None else []
+        mfdata_meta["nifty50_match_count"] = len(route_matches)
+        mfdata_meta["family_id_count"] = sum(1 for row in route_matches if row.get("family_id") is not None)
+        report["mfdata_endpoint_probes"].append(mfdata_meta)
+        if route_label == "documented search":
+            report["mfdata_schemes"] = mfdata_meta
+        for row in route_matches:
+            fingerprint = json.dumps(row, sort_keys=True, default=str)
+            if fingerprint not in seen_family_records:
+                family_summaries.append(row)
+                seen_family_records.add(fingerprint)
+        if any(row.get("family_id") is not None for row in family_summaries):
+            break
+
+    # Search may return scheme_code without family_id. Resolve only a small
+    # bounded set through the documented scheme-detail route before history checks.
+    resolved: list[dict[str, Any]] = []
+    for candidate in family_summaries[:8]:
+        if candidate.get("family_id") is not None:
+            resolved.append(candidate)
+            continue
+        scheme_code = candidate.get("scheme_code")
+        if scheme_code is None or not re.fullmatch(r"[0-9]{1,12}", str(scheme_code)):
+            continue
+        detail_payload, detail_meta = _fetch_json(
+            session, f"https://mfdata.in/api/v1/schemes/{scheme_code}"
+        )
+        detail_meta["endpoint_label"] = f"scheme detail {scheme_code}"
+        detail_matches = _mfdata_family_summaries(detail_payload) if detail_payload is not None else []
+        detail_meta["nifty50_match_count"] = len(detail_matches)
+        report["mfdata_endpoint_probes"].append(detail_meta)
+        for item in detail_matches:
+            if item.get("family_id") is not None:
+                resolved.append(item)
+
+    if resolved:
+        family_summaries = resolved
     report["mfdata_scheme_families"] = family_summaries
+
     seen_family_ids: set[str] = set()
     for family in family_summaries:
         family_id = family.get("family_id")
@@ -813,16 +895,15 @@ def run_probe() -> dict[str, Any]:
             f"https://mfdata.in/api/v1/families/{family_id_s}/holdings/history",
         )
         months = _mfdata_months(hist_payload) if hist_payload is not None else []
+        coverage = _mfdata_month_coverage(months)
         report["mfdata_family_histories"].append({
             "family": family,
             "status": hist_meta.get("status"),
             "http_status": hist_meta.get("http_status"),
             "bytes": hist_meta.get("bytes"),
-            "month_count": len(months),
-            "first_month": months[0] if months else None,
-            "last_month": months[-1] if months else None,
+            **coverage,
             "months_sample": months[:3] + (months[-3:] if len(months) > 3 else []),
-            "month_list_sha256": hashlib.sha256("\\n".join(months).encode("utf-8")).hexdigest(),
+            "month_list_sha256": hashlib.sha256("\n".join(months).encode("utf-8")).hexdigest(),
         })
 
     # Discover other fund houses' NIFTY 50 index ETFs/funds. Retain only scheme
@@ -989,13 +1070,16 @@ def render_report(report: dict[str, Any]) -> str:
         lines.append("- No source metadata was returned by /month/{id}.")
 
     lines += ["", "## mfdata.in independent portfolio-history availability audit", ""]
-    lines.append("- Scope: scheme/family labels and month availability metadata only; no per-stock holdings endpoint was requested.")
-    lines.append(endpoint_row("mfdata.in /api/v1/schemes?search=nifty 50", report.get("mfdata_schemes")))
+    lines.append("- Scope: documented family holdings-history endpoint queried for available YYYY-MM labels only. No individual /holdings?month= response or security-level holding value was downloaded or stored.")
+    for item in report.get("mfdata_endpoint_probes", []):
+        label = item.get("endpoint_label", "mfdata.in endpoint")
+        lines.append(endpoint_row("mfdata.in " + label, item))
+        lines.append("- Matching NIFTY 50 family records: " + str(item.get("nifty50_match_count", 0)) + "; usable family IDs: " + str(item.get("family_id_count", 0)))
     if report.get("mfdata_scheme_families"):
         for item in report["mfdata_scheme_families"][:50]:
             lines.append("- Scheme family: " + json.dumps(item, sort_keys=True, ensure_ascii=False))
     else:
-        lines.append("- No matching family records were returned by the documented mfdata scheme search.")
+        lines.append("- Discovery routes returned no usable NIFTY 50 family IDs; the holdings-history route was not called.")
     if report.get("mfdata_family_histories"):
         for item in report["mfdata_family_histories"]:
             lines.append("- Holdings-history availability: " + json.dumps(item, sort_keys=True, ensure_ascii=False))
