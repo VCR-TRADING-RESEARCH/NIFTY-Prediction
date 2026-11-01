@@ -1,0 +1,38 @@
+name: BUP-01 C1 direct NSE special-session archive check
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c1-data
+    paths:
+      - "scripts/constituent_weekly/audit_c1_direct_nse_special.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: bup01-c1-direct-nse-special
+  cancel-in-progress: false
+jobs:
+  direct-nse-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c1-data
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install minimal dependency
+        run: python -m pip install requests
+      - name: Fetch and validate exact NSE archives
+        run: python scripts/constituent_weekly/audit_c1_direct_nse_special.py --root . --run-id "$GITHUB_RUN_ID"
+      - name: Publish audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/constituent_weekly/C1_DIRECT_NSE_SPECIAL_SESSION_AUDIT.json research/constituent_weekly/C1_DIRECT_NSE_SPECIAL_SESSION_AUDIT.md
+          git add README.md research/constituent_weekly/STATUS.md logs/RESEARCH_LOG.md logs/CONVERSATION_LOG.md
+          git commit -m "Record direct NSE special-session bhavcopy audit" || exit 0
+          git push origin HEAD:phase/constituent-weekly-outcomes-c1-data
