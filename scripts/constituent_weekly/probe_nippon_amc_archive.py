@@ -137,10 +137,19 @@ def find_target_section(frame: pd.DataFrame) -> dict[str, object]:
     }
 
 
+def workbook_engine(payload: bytes) -> str:
+    """Detect XLSX ZIP containers even when the AMC filename ends in .xls."""
+    if payload.startswith(b"PK\\x03\\x04"):
+        return "openpyxl"
+    if payload.startswith(b"\\xd0\\xcf\\x11\\xe0"):
+        return "xlrd"
+    raise ValueError("Unrecognised Excel container signature")
+
+
 def workbook_probe(payload: bytes) -> dict[str, object]:
     if len(payload) > MAX_FILE_BYTES:
         raise ValueError("Workbook exceeds configured size ceiling")
-    excel = pd.ExcelFile(BytesIO(payload), engine="xlrd")
+    excel = pd.ExcelFile(BytesIO(payload), engine=workbook_engine(payload))
     best: dict[str, object] = {"scheme_found": False, "header_found": False, "isin_rows": 0}
     found_sheet_count = 0
     for sheet in excel.sheet_names:
