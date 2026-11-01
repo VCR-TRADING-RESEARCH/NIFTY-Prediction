@@ -618,7 +618,7 @@ def main() -> int:
                 raise RuntimeError(f"NIFTY target coverage is {index_target_fraction:.4%}; minimum is 98%.")
             holdout_index = max(1, int(np.floor(0.80 * len(order))))
             holdout_cycle = order[holdout_index] if holdout_index < len(order) else order[-1]
-            holdout_info = next(x for x in cycles if cycles.index(x) == holdout_cycle)
+            holdout_info = cycles[holdout_cycle]
             stock_key = f"{VERSION}|frozen_panel|{manifest_hash}|stock"
             index_key = f"{VERSION}|frozen_panel|{manifest_hash}|index"
             stock_aad, index_aad = stock_key.encode(), index_key.encode()
