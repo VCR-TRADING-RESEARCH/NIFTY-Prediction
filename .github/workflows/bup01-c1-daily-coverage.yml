@@ -20,7 +20,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: bup01-c1-market-data-${{ github.repository }}
+  group: bup01-c1-market-data-${{ github.repository }}-${{ github.event_name == 'pull_request' && github.workflow || 'push' }}
   cancel-in-progress: false
 
 jobs:
@@ -62,7 +62,7 @@ jobs:
         if: always() && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: c1-daily-ohclv-coverage-${{ github.run_id }}
+          name: c1-daily-ohlcv-coverage-${{ github.run_id }}
           path: |
             research/constituent_weekly/C1_DAILY_COVERAGE.json
             research/constituent_weekly/C1_DAILY_COVERAGE_REPORT.md
