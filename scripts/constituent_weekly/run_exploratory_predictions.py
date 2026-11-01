@@ -49,6 +49,22 @@ def cache_write(path,key,obj):
     nonce=os.urandom(12); encrypted=AESGCM(key).encrypt(nonce,plain,AAD)
     tmp=path.with_suffix(".tmp"); tmp.write_bytes(b"BUP1E"+nonce+encrypted); tmp.replace(path)
 
+def checkpoint_path(root, namespace, identity):
+    digest=hashlib.sha256(identity.encode()).hexdigest()
+    return root/"checkpoints"/namespace/(digest+".enc")
+
+def frame_checkpoint_read(path,key,identity):
+    obj=cache_read(path,key,{"identity":identity})
+    if not obj or "frame_json" not in obj: return None
+    try:
+        return pd.read_json(obj["frame_json"],orient="records")
+    except Exception:
+        return None
+
+def frame_checkpoint_write(path,key,identity,frame):
+    cache_write(path,key,{"input_manifest":{"identity":identity},
+                          "frame_json":frame.to_json(orient="records",date_format="iso")})
+
 def to_frame(body,require_volume):
     arr,err=audit._payload_arrays(body)
     if arr is None or err: raise ResearchBlocked(f"Bad Dhan bar response: {err}")
@@ -130,7 +146,7 @@ def request_bars(sec,seg,inst,token,client,start,end,volume):
     body,attempts=audit.request_intraday_window(str(sec),seg,inst,token,client,start,end)
     return to_frame(body,volume),attempts
 
-def build_panel(c1,token,client,source_manifest):
+def build_panel(c1,token,client,source_manifest,cache_root,cache_key):
     if c1.get("target_coverage_status")!="PASS": raise ResearchBlocked("C1 target-coverage sub-gate is not PASS")
     cycles=[dict(x) for x in c1.get("cycle_results",[]) if x.get("cycle_accepted_for_coverage") and x.get("index_target_ok")]
     cycles.sort(key=lambda x:(x["anchor_date"],x["expiry_date"]))
@@ -161,12 +177,19 @@ def build_panel(c1,token,client,source_manifest):
             if c["anchor_date"] in cmap:
                 j=ordered.index(cmap[c["anchor_date"]]["from"])
                 if j>0: starts.add(ordered[j-1])
-        frames=[]
-        for cs in sorted(starts):
-            ch=next(x for x in chunks if x["from"]==cs)
-            f,n=request_bars(resolved[sym],"NSE_EQ","EQUITY",token,client,ch["from"],ch["to"],True)
-            frames.append(f); requests_made+=n; time.sleep(0.5)
-        combined=pd.concat(frames,ignore_index=True).sort_values("timestamp") if frames else pd.DataFrame()
+        chunk_ids=",".join(sorted(starts))
+        identity=json.dumps({"manifest":source_manifest,"symbol":sym,"security_id":str(resolved[sym]),
+                             "segment":"NSE_EQ","instrument":"EQUITY","chunks":chunk_ids},sort_keys=True)
+        cp=checkpoint_path(cache_root,"stocks",identity)
+        combined=frame_checkpoint_read(cp,cache_key,identity)
+        if combined is None:
+            frames=[]
+            for cs in sorted(starts):
+                ch=next(x for x in chunks if x["from"]==cs)
+                f,n=request_bars(resolved[sym],"NSE_EQ","EQUITY",token,client,ch["from"],ch["to"],True)
+                frames.append(f); requests_made+=n; time.sleep(0.5)
+            combined=pd.concat(frames,ignore_index=True).sort_values("timestamp") if frames else pd.DataFrame()
+            frame_checkpoint_write(cp,cache_key,identity,combined)
         # Build each constituent's validated daily history once, then reuse it across weekly anchors.
         # The history is still sliced strictly before each anchor date inside the feature function.
         history=daily_history(combined)
@@ -187,8 +210,14 @@ def build_panel(c1,token,client,source_manifest):
     for ch in chunks:
         ds=[d for d in index_dates if ch["from"]<=d<=ch["to"]]
         if not ds: continue
-        frame,n=request_bars(idx_id,"IDX_I","INDEX",token,client,ch["from"],ch["to"],False)
-        requests_made+=n; time.sleep(0.5)
+        identity=json.dumps({"manifest":source_manifest,"security_id":str(idx_id),"segment":"IDX_I",
+                             "instrument":"INDEX","chunk":ch["from"]},sort_keys=True)
+        cp=checkpoint_path(cache_root,"index",identity)
+        frame=frame_checkpoint_read(cp,cache_key,identity)
+        if frame is None:
+            frame,n=request_bars(idx_id,"IDX_I","INDEX",token,client,ch["from"],ch["to"],False)
+            requests_made+=n; time.sleep(0.5)
+            frame_checkpoint_write(cp,cache_key,identity,frame)
         for d in ds:
             try: index_targets[d]=target_prices(frame,d)
             except (ValueError,KeyError,IndexError): pass
@@ -306,7 +335,7 @@ def main():
     if not cache_hit:
         token,client,auth_method,refresh,_=acquire_access_token()
         c1=json.loads(C1.read_text())
-        panel=build_panel(c1,token,client,manifest_now)
+        panel=build_panel(c1,token,client,manifest_now,cdir,key)
         panel["auth_method"]=auth_method;panel["token_refresh_status"]=refresh
         cache_write(cpath,key,panel)
     pred,cycles,hold=fit_stock_oof(panel)
