@@ -1,6 +1,6 @@
 # C1 amcs.fund API metadata discovery
 
-- Run time (UTC): 2026-11-01T08:36:41.722992+00:00
+- Run time (UTC): 2026-11-01T08:42:40.932478+00:00
 - Scope: **metadata only**; the probe calls the documented scheme/month endpoints but retains only date/source metadata, discards ISIN-level holdings fields, does not download workbooks, and does not store portfolio values.
 - Rights: **UNVERIFIED**. Public API access is not treated as permission for commercial/trading-research extraction, caching, or redistribution.
 
@@ -11,7 +11,10 @@
 | Nippon AMC detail | PASS_JSON | 200 | application/json; charset=utf-8 | 71595 | 5 |
 | /scheme/{slug} | PASS_JSON | 200 | application/json; charset=utf-8 | 19743 | 5 |
 | /manifest | PASS_JSON | 200 | application/json; charset=utf-8 | 3050 | 5 |
-| /month/{id} | PASS_JSON | 200 | application/json; charset=utf-8 | 15250 | 5 |
+| /month/2026-09 | PASS_JSON | 200 | application/json; charset=utf-8 | 15250 | 5 |
+| /month/2019-04 | PASS_JSON | 200 | application/json; charset=utf-8 | 7880 | 5 |
+| /month/2022-09 | PASS_JSON | 200 | application/json; charset=utf-8 | 14444 | 5 |
+| /month/2025-09 | PASS_JSON | 200 | application/json; charset=utf-8 | 10934 | 5 |
 
 ## Nippon AMC metadata matches
 
@@ -32,6 +35,11 @@
 - AMC detail top-level JSON keys: api, data, month, source, unit
 - /scheme/{slug} top-level JSON keys: api, data, month, source, unit
 - /manifest top-level JSON keys: api, data, month, source, unit
+- /scheme/{slug} JSON shape: {"data_keys": ["events", "exited", "first_month", "flows_basis", "history", "hold_hist", "holdings", "investors", "lookthrough", "mix", "peers", "prev_month", "returns", "scheme", "unit"], "data_nested_types": {"events": "list", "exited": "list", "first_month": "str", "flows_basis": "str", "history": "list", "hold_hist": "dict", "holdings": "list", "investors": "NoneType", "lookthrough": "NoneType", "mix": "dict", "peers": "list", "prev_month": "str", "returns": "dict", "scheme": "dict", "unit": "str"}, "data_type": "dict", "root_keys": ["api", "data", "month", "source", "unit"], "root_type": "object"}
+- /month/2026-09 JSON shape: {"data_keys": ["amcs", "buys", "events", "flows_basis", "groups", "label", "month", "next", "prev", "rich", "sector_flows", "sells", "totals", "unit"], "data_nested_types": {"amcs": "list", "buys": "list", "events": "list", "flows_basis": "str", "groups": "list", "label": "str", "month": "str", "next": "NoneType", "prev": "str", "rich": "bool", "sector_flows": "list", "sells": "list", "totals": "dict", "unit": "str"}, "data_type": "dict", "root_keys": ["api", "data", "month", "source", "unit"], "root_type": "object"}
+- /month/2019-04 JSON shape: {"data_keys": ["amcs", "buys", "events", "flows_basis", "groups", "label", "month", "next", "prev", "rich", "sector_flows", "sells", "totals", "unit"], "data_nested_types": {"amcs": "list", "buys": "list", "events": "list", "flows_basis": "str", "groups": "list", "label": "str", "month": "str", "next": "str", "prev": "str", "rich": "bool", "sector_flows": "list", "sells": "list", "totals": "dict", "unit": "str"}, "data_type": "dict", "root_keys": ["api", "data", "month", "source", "unit"], "root_type": "object"}
+- /month/2022-09 JSON shape: {"data_keys": ["amcs", "buys", "events", "flows_basis", "groups", "label", "month", "next", "prev", "rich", "sector_flows", "sells", "totals", "unit"], "data_nested_types": {"amcs": "list", "buys": "list", "events": "list", "flows_basis": "str", "groups": "list", "label": "str", "month": "str", "next": "str", "prev": "str", "rich": "bool", "sector_flows": "list", "sells": "list", "totals": "dict", "unit": "str"}, "data_type": "dict", "root_keys": ["api", "data", "month", "source", "unit"], "root_type": "object"}
+- /month/2025-09 JSON shape: {"data_keys": ["amcs", "buys", "events", "flows_basis", "groups", "label", "month", "next", "prev", "rich", "sector_flows", "sells", "totals", "unit"], "data_nested_types": {"amcs": "list", "buys": "list", "events": "list", "flows_basis": "str", "groups": "list", "label": "str", "month": "str", "next": "str", "prev": "str", "rich": "bool", "sector_flows": "list", "sells": "list", "totals": "dict", "unit": "str"}, "data_type": "dict", "root_keys": ["api", "data", "month", "source", "unit"], "root_type": "object"}
 
 ## Scheme-history metadata (source URLs and dates only)
 
@@ -40,6 +48,9 @@
 ## Month-level source metadata
 
 - {"month": "2026-09"}
+- {"month": "2019-04"}
+- {"month": "2022-09"}
+- {"month": "2025-09"}
 
 ## Historical source-file metadata matches
 
