@@ -72,7 +72,19 @@ def normalize_nse_frame(raw: pd.DataFrame) -> pd.DataFrame:
     ]):
         raise ValueError("Unsupported NSE bhavcopy schema")
 
-    parsed_dates = pd.to_datetime(raw[date_col], errors="coerce", dayfirst=True)
+    # ISO YYYY-MM-DD must be parsed explicitly; dayfirst=True can invert
+    # its month/day fields (for example, 2020-02-01 -> 2020-01-02).
+    date_text = raw[date_col].astype("string").str.strip()
+    iso_mask = date_text.str.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", na=False)
+    parsed_dates = pd.Series(pd.NaT, index=raw.index, dtype="datetime64[ns]")
+    if iso_mask.any():
+        parsed_dates.loc[iso_mask] = pd.to_datetime(
+            date_text.loc[iso_mask], format="%Y-%m-%d", errors="coerce"
+        )
+    if (~iso_mask).any():
+        parsed_dates.loc[~iso_mask] = pd.to_datetime(
+            date_text.loc[~iso_mask], errors="coerce", dayfirst=True
+        )
     return pd.DataFrame({
         "date": parsed_dates.dt.strftime("%Y-%m-%d"),
         "symbol": raw[symbol_col].astype("string").str.strip().str.upper(),
