@@ -598,3 +598,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** A durable summary JSON/report is committed. The workflow now uploads sanitized artifacts before publication and regenerates status/logs from the latest branch with bounded retries.
 - **Impact:** Intraday target-data sub-gate PASS; C1 overall remains NOT PASSED pending daily OHLCV feature history and full corporate-action adjustment validation.
 - **Status:** DATA RESULT RECORDED; publisher fix committed for next validation.
+
+
+## C1 daily OHLCV coverage audit — 2026-11-01T12:47:45.759152+00:00
+
+- **Status:** PARTIAL_OR_BLOCKED_RUNTIME_ERROR.
+- **Sanitized failure category:** NameError.
+- **Requests completed:** 1.
+- **Impact:** daily feature-source coverage remains unproven; C2 is not unlocked.

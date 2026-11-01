@@ -1,7 +1,7 @@
 # C1 Daily OHLCV Member-Session Coverage Report
 
-**Updated:** 2026-11-01T12:00:04.795656+00:00
-**Auditor status:** COMPLETED_WITH_GAPS
+**Updated:** 2026-11-01T12:47:45.759152+00:00
+**Auditor status:** PARTIAL_OR_BLOCKED_RUNTIME_ERROR
 
 ## Scope
 
@@ -46,7 +46,7 @@
 | GAIL | 534 | 534 | 100.00% | 534 | 100.00% | 0 | PASS_RESPONSE |
 | GRASIM | 1918 | 1918 | 100.00% | 1918 | 100.00% | 0 | PASS_RESPONSE |
 | HCLTECH | 1918 | 1918 | 100.00% | 1918 | 100.00% | 0 | PASS_RESPONSE |
-| HDFC | 1100 | 0 | 0.00% | 0 | 0.00% | 0 | MISSING_DAILY_ARRAY |
+| HDFC | 1100 | 0 | 0.00% | 0 | 0.00% | 1100 | MISSING_DAILY_ARRAY |
 | HDFCBANK | 1918 | 1918 | 100.00% | 1918 | 100.00% | 0 | PASS_RESPONSE |
 | HDFCLIFE | 1551 | 1551 | 100.00% | 1551 | 100.00% | 0 | PASS_RESPONSE |
 | HEROMOTOCO | 1650 | 1650 | 100.00% | 1650 | 100.00% | 0 | PASS_RESPONSE |
@@ -107,4 +107,4 @@
 - Membership SHA-256: 2bda35125f722c44dd4b402c91d28c57b56e925081bc67ba23a4e31616dee71d
 - Official daily-session SHA-256: 5fee1979958e96276e53054c3e76b3818aa6cc1b3abe0e88dd5647c2976104c7
 - Dhan scrip-master SHA-256: ad00a05b69606346a5e796bef8715a981242eab8063d615294ce8b3e54981a6a
-- Requests this run: 69; cached symbols reused: 0
+- Requests this run: 1; cached symbols reused: 69

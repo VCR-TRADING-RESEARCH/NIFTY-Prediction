@@ -567,8 +567,8 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 <!-- C1_DAILY_COVERAGE_START -->
 ## Daily OHLCV member-session coverage audit
 
-- Updated (UTC): 2026-11-01T12:00:04.795656+00:00
-- Auditor status: **COMPLETED_WITH_GAPS**
+- Updated (UTC): 2026-11-01T12:47:45.759152+00:00
+- Auditor status: **PARTIAL_OR_BLOCKED_RUNTIME_ERROR**
 - Window: 2018-04-01 to 2026-10-30
 - Point-in-time symbols: 69
 - Parseable daily API responses: 68
@@ -576,8 +576,8 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Valid OHLC member sessions: 94799 (98.85%)
 - Valid OHLCV member sessions: 94799 (98.85%)
 - Unresolved security IDs: 0
-- Dhan requests in this run: 69
-- Reused cached symbols: 0
+- Dhan requests in this run: 1
+- Reused cached symbols: 69
 - Raw prices, OHLC arrays, volumes, security IDs and credentials are not published.
 - The plan does not set a separate daily-coverage percentage gate; this is descriptive evidence to support the C1 feature-data decision.
 <!-- C1_DAILY_COVERAGE_END -->
