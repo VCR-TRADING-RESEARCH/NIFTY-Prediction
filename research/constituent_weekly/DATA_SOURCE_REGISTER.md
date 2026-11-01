@@ -242,3 +242,12 @@ The HF dataset's exact row-sum validation is useful as a structural check, but i
 - Public API index: https://amcs.fund/api/v1. Advertised endpoints include /amcs, /manifest, /scheme/{id} and /month/{id}. This could reveal historical attachment URLs and monthly completeness. Its endpoint payload was not inspected in this pass, and its own data-reuse terms/licence remain unverified.
 - Use this as a source-link and coverage cross-check only until the API schema, source lineage, reuse rights and point-in-time timestamps are audited. No holdings rows have been imported.
 - Sources: Nippon [AMC portfolio archive](https://mf.nipponindiaim.com/investor-service/downloads/factsheet-portfolio-and-other-disclosures); amcs.fund [methodology](https://amcs.fund/methodology) and [API index](https://amcs.fund/api/v1).
+
+
+## AMC-origin historical portfolio archive and API discovery (2026-11-01)
+
+- **Primary archive:** [Nippon India AMC monthly portfolio archive](https://mf.nipponindiaim.com/investor-service/downloads/factsheet-portfolio-and-other-disclosures). Rendered archive listing shows month-end portfolio records from September 2012 (30 September 2012) through current listings and explicitly includes April 2019. The archive index is not proof of uninterrupted file retrieval or publication timestamps.
+- **Recent schema evidence:** the September 2026 and February 2026 Nifty BeES workbooks passed metadata/schema checks (50 ISIN-bearing rows each; ISIN, quantity and weight columns). See [AMC probe report](C1_AMC_ARCHIVE_PROBE_REPORT.md).
+- **Independent discovery source:** [amcs.fund Method & sources](https://amcs.fund/methodology) states that it uses AMC-origin Excel/ZIP files, reads the month printed inside each disclosure, and links original AMC files and Internet Archive copies. Its [API index](https://amcs.fund/api/v1) advertises `/amcs`, `/manifest`, `/scheme/{id}` and `/month/{id}`.
+- **Use boundary:** API metadata may be used to locate primary source documents only. No holdings endpoint is requested by the new CI probe. The API provider's licence for commercial/trading-research extraction, caching and downstream use is UNVERIFIED; no API holdings are approved for this study.
+- **Automated metadata-only probe:** [script](../../scripts/constituent_weekly/probe_amcs_fund_metadata.py), [manual/push workflow](../../.github/workflows/bup01-c1-amcs-metadata-discovery.yml), [tests](../../tests/test_amcs_fund_metadata.py), and [probe report](C1_AMCS_API_DISCOVERY_REPORT.md) (pending Actions run).
