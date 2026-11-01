@@ -126,6 +126,27 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
     shape: dict[str, Any] = {"root_type": "object", "root_keys": sorted(str(k) for k in payload.keys())[:50]}
     data = payload.get("data")
     shape["data_type"] = type(data).__name__ if data is not None else "null"
+    source = payload.get("source")
+    if isinstance(source, dict):
+        shape["source_metadata_keys"] = sorted(str(k) for k in source.keys())[:40]
+        allowed_hosts = {
+            "mf.nipponindiaim.com", "hdfcfund.com", "www.hdfcfund.com",
+            "sbimf.com", "www.sbimf.com", "icicipruamc.com", "www.icicipruamc.com",
+            "utimf.com", "www.utimf.com", "archive.org", "web.archive.org",
+            "amcs.fund",
+        }
+        source_urls = {}
+        for key, value in source.items():
+            if isinstance(value, str):
+                parsed = urlparse(value)
+                if parsed.scheme == "https" and parsed.hostname in allowed_hosts:
+                    source_urls[str(key)] = value
+        if source_urls:
+            shape["source_urls"] = source_urls
+    elif isinstance(source, str):
+        parsed = urlparse(source)
+        if parsed.scheme == "https" and parsed.hostname:
+            shape["source_host"] = parsed.hostname
     if isinstance(data, list):
         shape["data_length"] = len(data)
         if data and isinstance(data[0], dict):
@@ -196,6 +217,29 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
                 shape["hold_hist_list_lengths"] = hist_list_lengths[:20]
             if hist_object_key_sets:
                 shape["hold_hist_list_item_keys"] = hist_object_key_sets[:3]
+            months = hold_hist.get("months")
+            if isinstance(months, list):
+                month_values = [x for x in months if isinstance(x, str) and re.fullmatch(r"20\\d{2}-\\d{2}", x)]
+                shape["hold_hist_month_count"] = len(month_values)
+                if month_values:
+                    shape["hold_hist_first_month"] = min(month_values)
+                    shape["hold_hist_last_month"] = max(month_values)
+                    shape["hold_hist_months_unique"] = len(set(month_values))
+            h = hold_hist.get("h")
+            if isinstance(h, dict):
+                shape["hold_hist_series_count"] = len(h)
+                value_types = sorted({type(value).__name__ for value in h.values()})
+                shape["hold_hist_series_value_types"] = value_types
+                series_lengths = [len(value) for value in h.values() if isinstance(value, list)]
+                if series_lengths:
+                    shape["hold_hist_series_length_min"] = min(series_lengths)
+                    shape["hold_hist_series_length_max"] = max(series_lengths)
+                    shape["hold_hist_series_length_unique"] = sorted(set(series_lengths))
+                numeric_series = [
+                    value for value in h.values()
+                    if isinstance(value, list) and all(isinstance(v, (int, float)) or v is None for v in value)
+                ]
+                shape["hold_hist_numeric_series_count"] = len(numeric_series)
             for key, value in hold_hist.items():
                 if isinstance(value, dict):
                     shape["hold_hist_dict_value_key_count"] = len(value)
