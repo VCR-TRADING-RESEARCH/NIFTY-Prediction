@@ -567,17 +567,20 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 <!-- C1_DAILY_COVERAGE_START -->
 ## Daily OHLCV member-session coverage audit
 
-- Updated (UTC): 2026-11-01T12:51:12.757236+00:00
+- Updated (UTC): 2026-11-01T14:27:03.642080+00:00
 - Auditor status: **COMPLETED_WITH_GAPS**
 - Window: 2018-04-01 to 2026-10-30
-- Point-in-time symbols: 69
-- Parseable daily API responses: 68
-- Expected member sessions: 95900
-- Valid OHLC member sessions: 94799 (98.85%)
-- Valid OHLCV member sessions: 94799 (98.85%)
+- Point-in-time symbols: 70
+- Parseable daily API responses: 69
+- Expected member sessions: 106392
+- Valid OHLC member sessions: 106385 (99.99%)
+- Valid OHLCV member sessions: 106385 (99.99%)
 - Unresolved security IDs: 0
-- Dhan requests in this run: 1
-- Reused cached symbols: 69
+- Dhan requests in this run: 71
+- Reused cached symbols: 0
+- TejHQ fallback disposition: COMPLETED_WITH_GAPS
+- TejHQ fallback symbols accepted: 1
+- TejHQ fallback member sessions added: 1295
 - Raw prices, OHLC arrays, volumes, security IDs and credentials are not published.
 - The plan does not set a separate daily-coverage percentage gate; this is descriptive evidence to support the C1 feature-data decision.
 <!-- C1_DAILY_COVERAGE_END -->
