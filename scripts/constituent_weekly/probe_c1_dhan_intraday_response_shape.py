@@ -15,6 +15,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from live_api.app import MASTER_URL, find_nifty50_security
+from scripts.constituent_weekly.audit_c1_continuous_dhan_coverage import inspect_target_dates
 from scripts.constituent_weekly.dhan_equity_preflight import (
     DAILY_URL,
     INTRADAY_URL,
@@ -24,7 +25,7 @@ from scripts.constituent_weekly.dhan_equity_preflight import (
 
 OUTPUT = ROOT / "research" / "constituent_weekly" / "C1_DHAN_INTRADAY_RESPONSE_DIAGNOSTIC.json"
 TIMEOUT_SECONDS = 90
-DELAY_SECONDS = 0.5
+DELAY_SECONDS = 0.25
 
 CASES = [
     {
@@ -33,6 +34,7 @@ CASES = [
         "symbol": "RELIANCE",
         "from": "2022-11-07",
         "to": "2023-02-04",
+        "target_date": "2023-02-02",
     },
     {
         "name": "stock_partial_boundary_window",
@@ -40,6 +42,7 @@ CASES = [
         "symbol": "RELIANCE",
         "from": "2023-02-05",
         "to": "2023-05-05",
+        "target_date": "2023-05-04",
     },
     {
         "name": "stock_post_boundary_full_window",
@@ -47,6 +50,7 @@ CASES = [
         "symbol": "RELIANCE",
         "from": "2023-05-06",
         "to": "2023-08-03",
+        "target_date": "2023-05-11",
     },
     {
         "name": "stock_post_boundary_short_window",
@@ -54,6 +58,7 @@ CASES = [
         "symbol": "RELIANCE",
         "from": "2023-05-06",
         "to": "2023-06-04",
+        "target_date": "2023-05-11",
     },
     {
         "name": "index_post_boundary_full_window",
@@ -83,6 +88,13 @@ CASES = [
         "from": "2023-06-30",
         "to": "2023-07-01",
     },
+    {
+        "name": "active_hdfcbank_daily_control",
+        "kind": "daily_stock",
+        "symbol": "HDFCBANK",
+        "from": "2022-10-01",
+        "to": "2023-07-13",
+    },
 ]
 
 
@@ -107,7 +119,7 @@ def classify_provider_text(value: Any) -> str:
     return "UNCLASSIFIED_PROVIDER_MESSAGE"
 
 
-def response_shape(response: requests.Response) -> dict[str, Any]:
+def response_shape(response: requests.Response, target_date: str | None = None) -> dict[str, Any]:
     result: dict[str, Any] = {
         "http_status": int(response.status_code),
         "http_ok": bool(response.ok),
@@ -159,6 +171,16 @@ def response_shape(response: requests.Response) -> dict[str, Any]:
             result[f"{key}_type"] = type(value).__name__
             if isinstance(value, (str, int, float, bool)):
                 result[f"{key}_value"] = str(value)[:60]
+    if target_date:
+        parsed = inspect_target_dates(body, [target_date], require_volume=True)
+        date_result = parsed.get("dates", {}).get(target_date, {})
+        result["parser_response_status"] = parsed.get("status")
+        result["target_date_checked"] = target_date
+        result["target_date_status"] = date_result.get("status")
+        result["target_anchor_ok"] = date_result.get("anchor_ok")
+        result["target_expiry_ok"] = date_result.get("expiry_ok")
+        result["target_anchor_time_ist"] = date_result.get("anchor_time_ist")
+        result["target_expiry_time_ist"] = date_result.get("expiry_time_ist")
     return result
 
 
@@ -170,7 +192,7 @@ def post_probe(
 ) -> dict[str, Any]:
     try:
         response = requests.post(url, headers=headers, json=payload, timeout=TIMEOUT_SECONDS)
-        shape = response_shape(response)
+        shape = response_shape(response, case.get('target_date'))
     except requests.RequestException as exc:
         shape = {
             "http_status": None,
@@ -220,12 +242,17 @@ def main() -> int:
         report["scrip_master_http_status"] = int(master_response.status_code)
         master_response.raise_for_status()
         master = pd.read_csv(pd.io.common.BytesIO(master_response.content), low_memory=False)
-        stock_ids = resolve_ids(master, ["RELIANCE"])
+        burst_symbols = ["ADANIENT", "ADANIPORTS", "APOLLOHOSP", "ASIANPAINT", "AXISBANK", "BAJAJ-AUTO", "BAJAJFINSV", "BAJFINANCE", "BEL", "BHARTIARTL", "BPCL", "BRITANNIA", "CIPLA", "COALINDIA", "DIVISLAB", "DRREDDY"]
+        stock_ids = resolve_ids(master, ["RELIANCE", "HDFCBANK", *burst_symbols])
         index_id = find_nifty50_security(master)
         report["reliance_symbol_resolved"] = "RELIANCE" in stock_ids
         report["nifty50_index_resolved"] = bool(index_id)
+        report["hdfcbank_symbol_resolved"] = "HDFCBANK" in stock_ids
+        report["burst_symbol_resolution_count"] = len(set(burst_symbols) & set(stock_ids))
         if "RELIANCE" not in stock_ids:
             raise RuntimeError("RELIANCE security lookup missing from current scrip master.")
+        if "HDFCBANK" not in stock_ids:
+            raise RuntimeError("HDFCBANK control security lookup missing from current scrip master.")
         if not index_id:
             raise RuntimeError("NIFTY 50 index security lookup missing from current scrip master.")
 
@@ -238,12 +265,24 @@ def main() -> int:
         report["auth_method"] = auth_method
         report["token_refresh_status"] = refresh_status
         report["token_refresh_diagnostic_keys"] = sorted(diagnostics.keys()) if isinstance(diagnostics, dict) else []
+        burst_cases = [
+            {
+                "name": f"stock_post_boundary_burst_{index:02d}",
+                "kind": "stock",
+                "symbol": symbol,
+                "from": "2023-05-06",
+                "to": "2023-08-03",
+                "target_date": "2023-05-11",
+            }
+            for index, symbol in enumerate(burst_symbols, start=1)
+        ]
+        all_cases = CASES + burst_cases
 
-        for case in CASES:
+        for case in all_cases:
             stage = f"market_data_request:{case['name']}"
             if case["kind"] == "daily_stock":
                 url = DAILY_URL
-                security_id = "1330"  # documented legacy Dhan HDFC Ltd security ID, not HDFCBANK
+                security_id = "1330" if case["symbol"] == "HDFC" else stock_ids[case["symbol"]]
                 payload = {
                     "securityId": security_id,
                     "exchangeSegment": "NSE_EQ",
@@ -255,7 +294,7 @@ def main() -> int:
                 }
             else:
                 url = INTRADAY_URL
-                security_id = index_id if case["kind"] == "index" else stock_ids["RELIANCE"]
+                security_id = index_id if case["kind"] == "index" else stock_ids[case["symbol"]]
                 payload = {
                     "securityId": str(security_id),
                     "exchangeSegment": "IDX_I" if case["kind"] == "index" else "NSE_EQ",
