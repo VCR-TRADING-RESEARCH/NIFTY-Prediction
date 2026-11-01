@@ -487,3 +487,14 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - The API identified Nippon India and current Nifty BeES scheme metadata. It did **not** return an original AMC/Internet Archive source URL in the manifest; April 2019 direct attachment remains unresolved.
 - No holdings endpoint was called and no holdings data were downloaded. API reuse rights remain unverified.
 - C1 remains **NOT PASSED / RIGHTS-BLOCKED**. No stock-level modelling has started; plan v1.2 remains unchanged.
+
+
+## Alternative-source decision — 2026-11-01
+
+- **Preferred weights route found:** official NSE Indices historical monthly report archive. It exposes an “Archives of Daily/Monthly Reports” selector and official market-capitalisation/weightage reports. This is the index-provider data route, but the full monthly history, fields and first-publication timestamps are not yet audited.
+- **Rights gate remains:** NSE Indices Terms of Use prohibit systematic/automated data collection without express written consent and describe website use as personal/non-commercial. No automated report collection/caching will be activated until written permission or a subscription licence covers the intended use.
+- **Membership route found:** aditya-jha/nse-historical-membership publishes derived point-in-time membership under CC BY 4.0. NIFTY 50 history is described as high confidence from 2018 onward, best-effort before 2018, and its current event data ends 2025-09-30. Historical weightage is null; use it for membership reconciliation only.
+- **Independent weight reconstruction route:** NSE/BSE quarterly company XBRL filings can support a detailed IWF audit, but NSE methodology has 22 exclusion categories. Aggregate promoter/FII/DII fields are insufficient; a new detailed category parser and official snapshot reconciliation would be required.
+- **ETF route:** HDFC/UTI/Nippon NIFTY 50 ETF/index fund monthly portfolios are cross-checks/proxies only. The published Hugging Face 20-year weight dataset is CC BY-NC-SA 4.0 and is excluded absent a separate commercial licence.
+- Detailed ranking, formulas, acceptance tests and implementation order: [C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md](C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md).
+- **Overall status:** C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. Plan v1.2 is unchanged. No C2 work or constituent model training is authorised.
