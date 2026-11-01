@@ -418,3 +418,11 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Independent sources report 90 months of Nippon India ETF Nifty 50 BeES portfolio holdings (April 2019–September 2026). They are secondary coverage checks, not primary model inputs.
 - A bounded metadata-only workflow is being added to probe September 2026, February 2026 and April 2019 AMC workbooks. It will store only URLs, file hashes/bytes, sheet/header detection and ISIN-row counts; it will not publish constituent-level values.
 - **C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.** Source-use rights, exact publication timestamps, historical security/action continuity and weight coverage/basket reconciliation remain unresolved.
+
+
+## 2026-11-01 — AMC metadata probe link-discovery correction
+
+- Initial run [41274822097](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274822097) stopped before data access because pytest was missing; this dependency was added.
+- The next run [41274888924](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274888924) passed four parser tests but returned no archive links from the runner's raw HTML, despite the rendered AMC page exposing monthly portfolio downloads.
+- Added a deterministic month-end filename fallback based on two direct official links resolved through the rendered page (Sep-2026 and Feb-2026); Apr-2019 is included as an empirical older-sample check. Corrected probe is running.
+- **C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.** No constituent holdings data have been parsed or admitted yet; source rights, publication dates, security history and basket reconciliation remain open.
