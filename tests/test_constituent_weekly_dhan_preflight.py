@@ -542,3 +542,51 @@ def test_analyse_bars_scopes_ohlcv_quality_to_the_1515_cutoff():
     assert result["post_expiry_cutoff_bar_count"] == 1
     assert result["post_expiry_cutoff_negative_volume_rows"] == 1
     assert result["ohlc_volume_invariants_pass"] is True
+
+
+def test_analyse_intraday_range_reports_negative_volume_after_cutoff_but_passes_target_scope():
+    from scripts.constituent_weekly.dhan_equity_preflight import analyse_intraday_range
+
+    times = [
+        "2021-12-30T10:00:00",
+        "2021-12-30T15:14:00",
+        "2021-12-30T15:29:00",
+    ]
+    body = {
+        "open": [100.0, 100.5, 101.0],
+        "high": [101.0, 101.5, 102.0],
+        "low": [99.0, 99.5, 100.0],
+        "close": [100.5, 101.0, 101.5],
+        "volume": [100, 120, -1],
+        "timestamp": [epoch_ist(value) for value in times],
+    }
+    result = analyse_intraday_range(body, "SHREECEM", "2021-12-30", "2021-12-30")
+    assert result["status"] == "PASS"
+    assert result["session_count"] == 1
+    assert result["anchor_sessions_present"] == 1
+    assert result["expiry_proxy_sessions_present"] == 1
+    assert result["regular_bar_count"] == 2
+    assert result["post_expiry_cutoff_bar_count"] == 1
+    assert result["post_expiry_cutoff_negative_volume_rows"] == 1
+    assert result["invalid_volume_rows"] == 0
+    assert result["target_scope_cutoff_ist"] == "15:15:00"
+
+
+def test_analyse_intraday_range_still_fails_for_negative_volume_inside_target_scope():
+    from scripts.constituent_weekly.dhan_equity_preflight import analyse_intraday_range
+
+    body = {
+        "open": [100.0, 100.5],
+        "high": [101.0, 101.5],
+        "low": [99.0, 99.5],
+        "close": [100.5, 101.0],
+        "volume": [100, -1],
+        "timestamp": [
+            epoch_ist("2021-12-30T10:00:00"),
+            epoch_ist("2021-12-30T15:14:00"),
+        ],
+    }
+    result = analyse_intraday_range(body, "SHREECEM", "2021-12-30", "2021-12-30")
+    assert result["status"] == "RANGE_COVERAGE_OR_OHLC_FAILED"
+    assert result["invalid_volume_rows"] == 1
+    assert result["post_expiry_cutoff_bar_count"] == 0
