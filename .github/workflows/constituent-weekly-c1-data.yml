@@ -8,6 +8,8 @@ on:
       - "research/constituent_weekly/**"
       - "scripts/constituent_weekly/**"
       - "tests/test_constituent_weekly_source_fetch.py"
+      - "tests/test_constituent_weekly_weight_proxy.py"
+      - "scripts/constituent_weekly/weight_proxy.py"
       - ".github/workflows/constituent-weekly-c1-data.yml"
   pull_request:
     branches:
@@ -33,7 +35,9 @@ jobs:
         with:
           python-version: "3.11"
       - name: Run offline source-audit tests
-        run: python -m unittest discover -s tests -p "test_constituent_weekly_source_fetch.py" -v
+        run: |
+          python -m unittest discover -s tests -p "test_constituent_weekly_source_fetch.py" -v
+          python -m unittest discover -s tests -p "test_constituent_weekly_weight_proxy.py" -v
       - name: Inspect separately authorised local archives only
         run: python scripts/constituent_weekly/fetch_official_weight_report.py --input-dir data/authorized/constituent_weekly
       - name: Update local C1 phase-status file
