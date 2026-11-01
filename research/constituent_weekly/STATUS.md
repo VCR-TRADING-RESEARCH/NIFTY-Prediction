@@ -2,17 +2,17 @@
 
 **Last updated:** 2026-11-02  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 intraday target-data sub-gate PASS; daily OHLCV COMPLETE at 106,392/106,392 (100%); overall C1 PARTIAL pending event-level corporate-action verification and dated historical security-identity closure  
-**Prediction status:** No constituent panel, trained stock model or bottom-up forecast exists  
+**Status:** C0 PASS; C1 ACCEPTED WITH LIMITATIONS FOR PROGRESSION by explicit user direction; formal C2 panel-only build IN PROGRESS  
+**Prediction status:** C2 point-in-time panel is being constructed; no stock model or bottom-up NIFTY forecast is yet accepted  
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Locked v1.3 plan and governance checks passed |
-| C1 — Point-in-time universe/data audit | PARTIAL / CORPORATE ACTION + IDENTITY REVIEW | 258/258 intraday weekly target cycles pass; daily OHLCV is 106,392/106,392 across 70 symbols with zero gaps; all seven residual bars validated from official NSE archives and merged via encrypted cache; 711 point-in-time member action candidates still require independent issuer/exchange verification and event-specific treatment; dated historical identity checks remain under review |
-| C2 — Panel labels/features | GATED | Build only after C1 acceptance; freeze source hashes, exclusion ledger and chronological split |
-| C3 — Stock models/baselines | GATED | Pooled stock panel and bounded benchmarks only after C2 passes |
-| C4 — Index aggregation/uncertainty | GATED | Calibrated NIFTY-direction meta-model on strictly OOF unweighted stock forecast summaries |
+| C1 — Point-in-time universe/data audit | ACCEPTED WITH LIMITATIONS FOR C2 PROGRESSION | 258/258 intraday weekly target cycles pass; daily OHLCV is 106,392/106,392 across 70 symbols with zero gaps; all seven residual bars validated from official NSE archives and merged via encrypted cache; 711 point-in-time member action candidates still require independent issuer/exchange verification and event-specific treatment; dated historical identity checks remain under review |
+| C2 — Panel labels/features | IN PROGRESS | Formal panel-only build; freeze source hashes, 20% chronological holdout boundary, identity/action flags and exclusions |
+| C3 — Stock models/baselines | GATED | Separate branch after formal C2 panel acceptance |
+| C4 — Index aggregation/uncertainty | GATED | Separate branch after C3 OOF stock forecasts are frozen |
 | C5 — Economic/execution gate | GATED | Contract-level fills and date-effective Paytm Money costs required before any strategy claim |
 | C6 — Manuscript/independent audit | GATED | Complete manuscript, plots, tables, appendices and formula/repository audit
 
