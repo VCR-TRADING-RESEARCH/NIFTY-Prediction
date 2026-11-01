@@ -40,6 +40,7 @@ MIN_MEMBER_FRACTION = 0.94
 MIN_INDEX_TARGET_FRACTION = 0.98
 MIN_CONFIRMATORY_HISTORY = 104
 METHODOLOGY_VERSION = "bup01-c1-dhan-target-coverage-v1"
+KNOWN_CORPORATE_ACTION_DATES = {"HDFC": "2023-07-01", "TATAMOTORS": "2025-10-14"}
 SPECIAL_EVENING_ONLY_SESSIONS = {
     "2021-11-04",
     "2022-10-24",
@@ -144,7 +145,7 @@ def evaluate_cycle_coverage(cycle_results: list[dict[str, Any]]) -> dict[str, An
     total = len(cycle_results)
     index_valid = sum(bool(item.get("index_target_ok")) for item in cycle_results)
     stock_covered = sum(bool(item.get("stock_coverage_ok")) for item in cycle_results)
-    accepted = sum(bool(item.get("cycle_accepted_for_panel")) for item in cycle_results)
+    accepted = sum(bool(item.get("cycle_accepted_for_coverage")) for item in cycle_results)
     index_fraction = index_valid / total if total else 0.0
     accepted_before = 0
     confirmatory_after_104 = 0
@@ -164,7 +165,7 @@ def evaluate_cycle_coverage(cycle_results: list[dict[str, Any]]) -> dict[str, An
         "index_target_valid_cycles": index_valid,
         "index_target_valid_fraction": round(index_fraction, 6),
         "cycles_meeting_47_and_94_percent_stock_gate": stock_covered,
-        "cycles_accepted_for_panel": accepted,
+        "cycles_accepted_for_coverage": accepted,
         "confirmatory_cycles_after_104_prior_cycles": confirmatory_after_104,
         "target_coverage_gate": "PASS" if passed else "FAIL",
     }
@@ -307,7 +308,12 @@ def inspect_target_dates(
             "duplicate_expiry_timestamps": expiry_dupes,
             "status": "PASS" if anchor_ok and expiry_ok else "TARGET_WINDOW_GAP_OR_INVALID_OHLC",
         }
-    return {"status": "PASS_RESPONSE", "bar_count": int(count), "dates": results}
+    all_pass = bool(results) and all(item["anchor_ok"] and item["expiry_ok"] for item in results.values())
+    return {
+        "status": "PASS_RESPONSE" if all_pass else "PARTIAL_TARGET_DATES",
+        "bar_count": int(count),
+        "dates": results,
+    }
 
 
 def request_intraday_window(
@@ -406,7 +412,7 @@ def load_inputs() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
 def main() -> int:
     started = time.monotonic()
     today = datetime.now(LOCAL_TZ).date()
-    provider_floor = (pd.Timestamp(today) - pd.DateOffset(years=5)).date()
+    provider_floor = (pd.Timestamp(today) - pd.DateOffset(years=5) + pd.Timedelta(days=1)).date()
     configured_floor = date(2021, 11, 1)
     window_start = max(provider_floor, configured_floor)
     membership, expiry_frame, daily_frame = load_inputs()
@@ -624,7 +630,12 @@ def main() -> int:
             collisions = {name for names in id_to_symbols.values() if len(names) > 1 for name in names}
             valid_members = []
             missing_members = []
+            corporate_action_excluded = []
             for symbol in members:
+                action_date = KNOWN_CORPORATE_ACTION_DATES.get(symbol)
+                if action_date and anchor_date < action_date <= expiry_date:
+                    corporate_action_excluded.append(symbol)
+                    continue
                 if symbol in collisions:
                     missing_members.append(symbol)
                     continue
@@ -642,7 +653,7 @@ def main() -> int:
                 else:
                     missing_members.append(symbol)
             member_count = len(members)
-            fraction = valid_members / member_count if member_count else 0.0
+            fraction = len(valid_members) / member_count if member_count else 0.0
             stock_ok = is_stock_coverage_acceptable(len(valid_members), member_count)
             cycle_results.append({
                 "previous_expiry": cycle["previous_expiry"],
@@ -653,11 +664,12 @@ def main() -> int:
                 "member_coverage_fraction": round(fraction, 6),
                 "valid_members": valid_members,
                 "missing_members": missing_members,
+                "known_corporate_action_excluded_symbols": corporate_action_excluded,
                 "index_anchor_ok": bool(index_anchor.get("anchor_ok")),
                 "index_expiry_proxy_ok": bool(index_expiry.get("expiry_ok")),
                 "index_target_ok": index_ok,
                 "stock_coverage_ok": stock_ok,
-                "cycle_accepted_for_panel": bool(index_ok and stock_ok),
+                "cycle_accepted_for_coverage": bool(index_ok and stock_ok),
             })
         coverage_summary = evaluate_cycle_coverage(cycle_results)
         target_gate = coverage_summary["target_coverage_gate"] == "PASS"
@@ -673,7 +685,11 @@ def main() -> int:
             "total_stock_symbol_chunks_cached": len(report["stock_chunks"]),
         }
         report["target_coverage_status"] = "PASS" if target_gate else "FAIL"
-        report["identity_status"] = "PARTIAL" if unresolved_symbols else "MAPPING_RESOLVED_REQUIRES_CORPORATE_ACTION_REVIEW"
+        report["identity_status"] = (
+            "UNRESOLVED_SECURITY_SYMBOLS"
+            if unresolved_symbols
+            else "SYMBOL_MAPPING_RESOLVED_KNOWN_AND_UNIVERSAL_CORPORATE_ACTION_REVIEW_PENDING"
+        )
         report["status"] = (
             "DATA_COVERAGE_PASS_IDENTITY_ACTION_REVIEW_PENDING"
             if target_gate
@@ -684,9 +700,9 @@ def main() -> int:
         write_report(report)
         print("C1_CONTINUOUS_TARGET_COVERAGE", report["target_coverage_status"])
         print(
-            f"INDEX_TARGETS {valid_index}/{len(cycle_results)} "
-            f"STOCK_ACCEPTED_CYCLES {accepted}/{len(cycle_results)} "
-            f"CONFIRMATORY_AFTER_104 {max_usable_history}"
+            f"INDEX_TARGETS {coverage_summary['index_target_valid_cycles']}/{len(cycle_results)} "
+            f"STOCK_ACCEPTED_CYCLES {coverage_summary['cycles_accepted_for_coverage']}/{len(cycle_results)} "
+            f"CONFIRMATORY_AFTER_104 {coverage_summary['confirmatory_cycles_after_104_prior_cycles']}"
         )
         print(f"UNRESOLVED_ACTIVE_SYMBOLS {len(unresolved_symbols)}")
         return 0 if target_gate else 2
