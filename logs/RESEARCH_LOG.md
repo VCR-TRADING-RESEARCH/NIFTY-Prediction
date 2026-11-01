@@ -731,3 +731,8 @@
 ## 2026-11-01 — C3-X exploratory prediction track authorized
 
 The user approved proceeding with prediction tests before final C1 closure. During implementation review, we found the C1 intraday workflow retains only coverage flags, not a training panel, and the older weekly labels file is a direct-index benchmark. Created a separate C3-X branch from the C1 evidence branch and amended the registered plan to v1.4. The exploratory run will reconstruct Dhan minute bars, produce causal pooled stock features, generate expanding-window out-of-fold forecasts and test the unweighted constituent-signal NIFTY aggregator. It will preserve the 104-cycle warm-up and 47/94% per-cycle threshold after known structural-event exclusions. It cannot pass C1/C2 or authorize trading. Results pending.
+
+
+## 2026-11-01 — C3-X first regression attempt and repair
+
+Actions run 41321180592 failed before Dhan access because the unit test imported a differently named cache-key helper and its synthetic fixture was too short for the required 21 prior trading sessions. Corrected the import and expanded the fixture to 32 calendar days. The correction push automatically triggered the next run. No market data or prediction results were produced by the failed attempt.
