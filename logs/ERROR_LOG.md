@@ -698,3 +698,10 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Scope:** This is a local validation-environment limitation only. It did not affect GitHub Actions, repository state, Dhan credentials or market-data acquisition.
 - **Mitigation:** Use the repository's GitHub Actions regression suite as the authoritative execution environment. The preceding corrected run passed 22 tests; the optimized code adds one new feature-equivalence test and is awaiting its queued Actions run.
 - **Impact:** No data, code, model output or research conclusion changed as a result of this local clone attempt.
+
+
+## E0083 — 2026-11-01 — C3-X full-panel cache lacked incremental recovery
+- **Severity:** High — avoidable repeat data retrieval after interrupted runs.
+- **Finding:** the exploratory runner previously persisted only a complete encrypted panel after the whole data/model step. A failure during reconstruction could discard all progress from that run.
+- **Correction:** added AES-GCM encrypted per-symbol stock history and per-index-chunk checkpoints, each tied to the input manifest and instrument/chunk identity. Code commit: `4f83a38eac9ae704cd9e8b5be2071d25ed7ab460`.
+- **Validation:** pending workflow execution. Workflow cache-save condition remains success-only and must be changed to preserve checkpoints when the model stage fails; until then the checkpoints help only when the workflow reaches cache-save.
