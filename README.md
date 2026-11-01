@@ -289,3 +289,9 @@ Official methodology requires free-float IWF and specified strategic-holding exc
 - [Automatic/manual GitHub Actions workflow](.github/workflows/bup01-c1-membership-tests.yml)
 
 The corrected 86-row project ledger contains 85 distinct symbols. It validates 50 unique entries on 102/103 month-end snapshots and 51 on 2025-10-31 because the official temporary zero-price DUMMYTATAM placeholder was active. Tata Motors is mapped as TATAMOTORS through 2025-10-23 and TMPV from 2025-10-24; DUMMYTATAM is explicitly flagged non-tradable. The 2026 WIPRO-to-BSE reconstitution is also applied. The source contains no numerical weights. Exact historical free-float IWF, legacy ISIN/security identity, remaining corporate actions and full constituent intraday/expiry-close coverage remain open; Phase C2 stays gated. The membership workflow uses offline tests only and makes no market-data or authentication calls. The final corrected workflow run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) succeeded with 6 tests passed.
+
+
+
+## C1 mfdata.in history-route probe — 2026-11-01
+
+The documented [mfdata.in API](https://mfdata.in/docs) advertises a no-key search and a family-level monthly holdings-history endpoint returning available YYYY-MM labels. The bounded Actions check [41297143071](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41297143071) passed 13/13 tests, but all three discovery routes returned HTTP 522. No family ID was found and the month-history route was not reached. Treat coverage as **INCONCLUSIVE**, not absent. No holdings were downloaded; source data-use rights and publication timing remain unverified. See [sanitised report](research/constituent_weekly/C1_AMCS_API_DISCOVERY_REPORT.md), [C1 status](research/constituent_weekly/STATUS.md), [research log](logs/RESEARCH_LOG.md), and [error log](logs/ERROR_LOG.md). C1 remains NOT PASSED / RIGHTS-BLOCKED; no C2 modelling starts.
