@@ -138,7 +138,7 @@ Numeric aggregation must use official point-in-time weight/IWF evidence or an au
 - Never commit or log Dhan tokens, client IDs, PINs, TOTP seeds, API keys or sensitive auth payloads.
 - Fail closed on authentication or data failure. Never reuse a stale successful prediction for a failed current request.
 
-## 4.4 Public ETF portfolio holdings proxy (version 1.2 amendment)
+### 5.6 Public ETF portfolio holdings proxy (version 1.2 amendment)
 
 Where a complete historical official constituent-weight/IWF series cannot be obtained from the available public sources, BUP-01 may run a separately reported **ETF-replica proxy** track using published holdings of Nippon India ETF Nifty 50 BeES. This is an exploratory fallback, not a relabelling of ETF holdings as official NIFTY 50 weights or IWF. The original official-weight confirmatory track remains separately identified wherever official data are available.
 
