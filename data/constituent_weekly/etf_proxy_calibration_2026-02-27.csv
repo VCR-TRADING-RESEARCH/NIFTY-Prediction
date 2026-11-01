@@ -1,0 +1,12 @@
+metric,value,unit,description
+matched_stocks,50,count,All constituent tickers matched between sources
+etf_equity_weight_before_normalization,99.92,percent_of_nav,ETF equity holdings exclude 0.08 percent cash
+official_published_weight_sum,100.02,percent,Published two-decimal rounded reference weights
+mean_absolute_difference,0.002213648543,percentage_points,After independently normalizing equity weights to 100 percent
+root_mean_square_difference,0.003203602483,percentage_points,After independently normalizing equity weights to 100 percent
+maximum_absolute_difference,0.008967381864,percentage_points,After independently normalizing equity weights to 100 percent
+pearson_correlation,0.999998947947,correlation,Normalized 50-stock weights
+official_top10_concentration,54.609078,percent,Top ten by official normalized weight
+etf_top10_concentration,54.603683,percent,Top ten by ETF normalized equity weight
+source_portfolio_date,2026-02-28,date,AMC portfolio date; NAV date 2026-02-27
+reference_weight_date,2026-02-27,date,NSE Indices white-paper exhibit
