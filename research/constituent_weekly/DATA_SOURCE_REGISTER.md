@@ -212,3 +212,14 @@ The HF dataset's exact row-sum validation is useful as a structural check, but i
 - The membership CSV stores the dummy as `zero_price_dummy` with `market_data_required=FALSE`. Retain it for historical index-ledger audit; exclude it from tradable constituent panel construction.
 - The corrected 103 month-end snapshots have 50 entries at 102 dates and 51 on 2025-10-31 due the temporary dummy. Earlier all-50 statement is superseded; see [membership provenance](MEMBERSHIP_DATA_PROVENANCE.md) and [machine audit](C1_MEMBERSHIP_AUDIT.json).
 - Validation: corrected Actions run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) succeeded with **6 tests passed**. Earlier failures (runs 41184902797 and 41184934278) were caused by CSV column shifting and an intermediate stale audit JSON; both are corrected and logged in E0030.
+
+
+## 2026-11-01 — Nippon India primary monthly portfolio archive
+
+- Primary AMC archive: https://mf.nipponindiaim.com/investor-service/downloads/factsheet-portfolio-and-other-disclosures
+- The page lists monthly portfolio download files, including September 2026 and February 2026 and older history back to 2018/2019. The February 2026 direct workbook linked by the AMC page is NIMF-MONTHLY-PORTFOLIO-28-Feb-26.xls.
+- AMFI's separate monthly archive offers PDF/Excel composite reports back to April 2018, but its terms state personal and non-commercial permitted use. Do not bulk extract or use this source for this trading-research project without written rights clearance.
+- Secondary cross-check: FundTracker India reports 90 months of Nifty BeES monthly portfolio history from April 2019 to September 2026; DecryptMutualFunds indexes a shorter 24-month history. Neither is accepted as primary evidence.
+- Secondary discovery candidate: amcs.fund describes use of original AMC disclosure files, ISIN, quantity, market value and % to net assets, and archive links. Verify its API schema, file lineage and terms before use.
+- A metadata-only probe is being added in scripts/constituent_weekly/probe_nippon_amc_archive.py. No raw workbook rows or holdings are intended to be committed/cached.
+- Rights, point-in-time publication dates and basket reconciliation remain open; no modelling gate is passed by the source discovery.
