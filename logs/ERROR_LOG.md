@@ -587,3 +587,14 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** The C1 data coverage audit still requests the current LTIMindtree instrument using the current security ID, which resolves the same listed security. The correction is needed for point-in-time feature panels, provenance and historical labels. No model or stock return label was trained on the incorrect alias.
 - **Validation:** [Actions 41302695594](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41302695594) passed 61 tests including the new alias regressions.
 - **Status:** CORRECTED FOR C2 IDENTITY RESOLUTION; exhaustive corporate-action/adjustment audit remains OPEN.
+
+
+## E0070 — 2026-11-01 — C1 intraday coverage passed but publication rebase conflicted
+
+- **Run:** [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865).
+- **Observed:** Dhan audit completed SUCCESS and reported 258/258 valid NIFTY target pairs; 258/258 stock coverage cycles met the 47 / at least 94% gate; 154 confirmatory cycles after warm-up; zero unresolved active symbols; 1,083 requests across 21 windows. The final explicit gate step printed PASS.
+- **Failure point:** The later git pull --rebase conflicted on STATUS.md and RESEARCH_LOG.md due concurrent C1 commits.
+- **Artifact issue:** No Actions artifact upload step existed, so per-cycle/per-symbol QA was not retained. Logs preserve aggregate counts and the partial-window caveat.
+- **Correction:** A durable summary JSON/report is committed. The workflow now uploads sanitized artifacts before publication and regenerates status/logs from the latest branch with bounded retries.
+- **Impact:** Intraday target-data sub-gate PASS; C1 overall remains NOT PASSED pending daily OHLCV feature history and full corporate-action adjustment validation.
+- **Status:** DATA RESULT RECORDED; publisher fix committed for next validation.
