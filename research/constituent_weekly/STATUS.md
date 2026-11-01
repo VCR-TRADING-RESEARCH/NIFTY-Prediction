@@ -472,3 +472,11 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - The prior April 2019 probe used an unverified modern filename convention and returned 404. This is now classified as a wrong/unresolved attachment URL, not as missing 2019 holdings.
 - amcs.fund's API index advertises AMC, scheme and month endpoints. Its methodology says it indexes fund-house source files and Internet Archive copies, with disclosure month read from the file itself. API payload and data reuse rights remain unverified; no holdings were imported.
 - C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. Continue only with bounded exact-source URL/coverage discovery, then rights, timestamps and basket reconciliation gates.
+
+
+## Historical disclosure archive recovery — 2026-11-01
+
+- Rechecked the rendered [official Nippon India AMC archive](https://mf.nipponindiaim.com/investor-service/downloads/factsheet-portfolio-and-other-disclosures): monthly portfolio entries are visible back to **30 September 2012**, including April 2019. This corrects the earlier September 2013 lower-bound statement. It confirms index listings, not the successful retrieval or continuity of every workbook.
+- The separate [amcs.fund methodology](https://amcs.fund/methodology) says its source records link to original AMC files and Internet Archive copies and use the disclosure date printed inside the file. Its [API index](https://amcs.fund/api/v1) advertises `/amcs` and `/manifest` routes.
+- Added a metadata-only CI probe: [script](../../scripts/constituent_weekly/probe_amcs_fund_metadata.py), [workflow](../../.github/workflows/bup01-c1-amcs-metadata-discovery.yml), [tests](../../tests/test_amcs_fund_metadata.py). The probe does not request a holdings endpoint or download files. Its report is pending the workflow run: [C1_AMCS_API_DISCOVERY_REPORT.md](C1_AMCS_API_DISCOVERY_REPORT.md).
+- **C1 remains NOT PASSED / RIGHTS-BLOCKED.** No API data or historical holdings series have been admitted. C2–C6 remain gated; plan v1.2 is unchanged.
