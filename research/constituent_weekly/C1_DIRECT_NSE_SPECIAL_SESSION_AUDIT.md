@@ -1,25 +1,28 @@
-# C1 Direct NSE Special-session Bhavcopy Audit
+# C1 Direct NSE Residual-session Bhavcopy Audit
 
-Updated: 2026-11-01T19:52:56.829739+00:00
-Status: PASS_ALL_THREE
+Updated: 2026-11-01T19:54:48.343345+00:00
+Status: PASS_ALL_SEVEN
+Direct official NSE rows validated: 7/7.
+Encrypted supplemental cache written: True
 
-Direct NSE EQ OHLCV rows validated: 3/3.
-
-| Date | Security | Session | Result | OHLC | Volume |
-|---|---|---|---|---|---|
-| 2019-10-27 | HDFC | Sunday Diwali Muhurat | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS |
-| 2020-02-01 | HDFC | Saturday Union Budget special session | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS |
-| 2020-11-14 | HDFC | Saturday Diwali Muhurat | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS |
+| Date | Symbol | Session | Result | OHLC | Volume | Identity |
+|---|---|---|---|---|---|---|
+| 2018-11-07 | HDFC | Diwali Muhurat | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS | MATCH |
+| 2019-10-27 | HDFC | Sunday Diwali Muhurat | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS | MATCH |
+| 2020-02-01 | HDFC | Saturday Union Budget special session | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS | MATCH |
+| 2020-11-14 | HDFC | Saturday Diwali Muhurat | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS | MATCH |
+| 2021-11-04 | HDFC | Diwali Muhurat | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS | MATCH |
+| 2022-10-24 | HDFC | Diwali Muhurat | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS | MATCH |
+| 2025-10-21 | TATAMOTORS | Diwali Muhurat | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS | MATCH |
 
 ## Method
 
-Fetched each exact legacy NSE cash-market bhavcopy ZIP from both documented archive hosts, parsed its CSV, filtered exact SYMBOL/EQ/DATE1, validated OHLC ordering and nonnegative volume. Only source URL, archive SHA-256 and validation flags are retained; raw values are not published.
-
-## Interpretation
-
-A missing file or absent row is not automatically classified as a holiday/no-trade day. All three dates remain in the expected-session denominator unless exchange evidence supports a registered exclusion.
+Downloaded the exact official NSE cash-market archive for each residual date, selecting legacy CM ZIP/CSV before 8 July 2024 and UDiFF CM ZIP/CSV thereafter. Filtered exact point-in-time symbol, EQ series and trade date; validated unique row, OHLC ordering, nonnegative volume and ISIN. Raw rows are encrypted using the existing BUP01/HF_TOKEN-derived AES-GCM cache key; only metadata and archive hashes are published.
 
 ## Limitations
-- Legacy CSV may omit ISIN; identity is then symbol/series/date only.
+
+- Legacy CSV is checked by symbol/series/timestamp and ISIN when present.
+- Modern UDiFF CSV is checked by TckrSymb/SctySrs/TradDt and ISIN.
 - HTTP 404 is unavailable, not proof of no trade.
-- OHLCV validation does not complete the corporate-action adjustment ledger.
+- Raw rows are persisted only in AES-GCM encrypted Actions cache, not repository or artifacts.
+- Daily feature panel and corporate-action adjusted returns are separate gates.
