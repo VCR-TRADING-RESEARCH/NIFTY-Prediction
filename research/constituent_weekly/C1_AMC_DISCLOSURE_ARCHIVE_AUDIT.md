@@ -59,3 +59,14 @@ The bounded probe passed on the two required recent dates:
 The direct URL candidate for April 2019 returned HTTP 404. The AMC archive page does show a portfolio entry for that month; the modern filename pattern was not confirmed for older years. This is a link-discovery issue, not evidence of source absence. The April file has not been replaced with an inferred or third-party record.
 
 **Interpretation:** Recent source schema is verified, not the full historical series. No individual holding values or raw workbook files have been committed. Publication-time availability, use rights, historical security identity/actions, weight coverage and weighted basket reconciliation remain open. C1 stays PARTIAL / NOT ACCEPTED FOR MODELLING.
+
+
+## Additional historical archive and API discovery — 2026-11-01
+
+- A second read of the official Nippon archive page shows month-end portfolio entries extending back to **September 2013**, not merely 2018/2019. The visible page includes a continuous monthly list across the 2019 and 2018 archive and older entries. This confirms an archive index, not that every legacy download link resolves or that each workbook remains available.
+- The official archive page explicitly lists “Monthly portfolio for the month end 30th April 2019”; the guessed contemporary filename returned 404. The older entry likely uses a different attachment path. No values are inferred.
+- New independent discovery route: [amcs.fund Method & sources](https://amcs.fund/methodology) states that its monthly portfolio explorer fetches each fund house's own Excel/ZIP source files, parses ISIN-bearing rows including quantity, market value and percentage to net assets, takes the disclosure month from the date printed inside the file, and links each month to the fund-house source file plus an Internet Archive copy. It also publishes a public API base at https://amcs.fund/api/v1 with /amcs, /manifest, /scheme/{id} and /month/{id} endpoints.
+- This API is now a **bounded discovery/reconciliation candidate** for recovering the exact historical Nippon attachment URLs and checking monthly source coverage. The JSON API endpoint payload/schema was not retrieved by this probe, no holdings were imported, and the platform's data-reuse licence/terms have not been independently established.
+- Source links: [Nippon AMC archive](https://mf.nipponindiaim.com/investor-service/downloads/factsheet-portfolio-and-other-disclosures), [amcs.fund methodology](https://amcs.fund/methodology), [amcs.fund API index](https://amcs.fund/api/v1).
+
+**Gate impact:** This improves confidence that historical source documents are indexed and suggests a route to exact legacy source URLs. It does not prove historical file retrieval, publication timestamps, rights, point-in-time security identity, weight coverage or index-basket reconciliation. C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.
