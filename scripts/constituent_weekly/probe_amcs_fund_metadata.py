@@ -133,7 +133,7 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
         allowed_hosts = {
             "mf.nipponindiaim.com", "hdfcfund.com", "www.hdfcfund.com",
             "sbimf.com", "www.sbimf.com", "icicipruamc.com", "www.icicipruamc.com",
-            "utimf.com", "www.utimf.com", "archive.org", "web.archive.org",
+            "utimf.com", "www.utimf.com", "doc.utimf.com", "archive.org", "web.archive.org",
             "amcs.fund",
         }
         source_urls = {}
@@ -430,6 +430,9 @@ HTML_PAGES = [
     f"{BASE}/month",
     f"{BASE}/methodology",
     f"{BASE}/scheme/nippon-india-etf-nifty-50-bees",
+    "https://www.utimf.com/downloads/scheme-wise-portfolio-disclosure",
+    "https://www.utimf.com/downloads/consolidate-all-portfolio-disclosure",
+    "https://www.hdfcfund.com/statutory-disclosure/portfolio/monthly-portfolio",
 ]
 ALLOWED_SOURCE_HOSTS = {
     "mf.nipponindiaim.com", "hdfcfund.com", "www.hdfcfund.com",
@@ -443,10 +446,14 @@ def _extract_html_metadata(html: str, page_url: str) -> dict[str, Any]:
     """Extract only page/script/source links, not HTML text or portfolio values."""
     script_srcs: list[str] = []
     hrefs: list[str] = []
+    page_host = (urlparse(page_url).hostname or "").lower()
+    def same_site(host: str) -> bool:
+        host = (host or "").lower()
+        return host == page_host or (page_host and host.endswith("." + page_host))
     for match in re.findall(r"""<(?:script|link)\b[^>]*(?:src|href)\s*=\s*["']([^"']+)["'][^>]*>""", html, flags=re.I):
         absolute = urljoin(page_url, match)
         parsed = urlparse(absolute)
-        if parsed.scheme == "https" and parsed.hostname == "amcs.fund":
+        if parsed.scheme == "https" and same_site(parsed.hostname or ""):
             script_srcs.append(absolute)
     for match in re.findall(r"""<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>(.*?)</a>""", html, flags=re.I | re.S):
         target, label = match
@@ -462,8 +469,41 @@ def _extract_html_metadata(html: str, page_url: str) -> dict[str, Any]:
                 "url": absolute,
                 "label": label_text,
             })
+    form_actions = []
+    for match in re.findall(r"""<form\b[^>]*action\s*=\s*["']([^"']+)["'][^>]*>""", html, flags=re.I):
+        target = urljoin(page_url, match)
+        parsed = urlparse(target)
+        if parsed.scheme == "https" and parsed.hostname in ALLOWED_SOURCE_HOSTS:
+            form_actions.append(target)
+    select_fields = []
+    for match in re.findall(r"""<select\b([^>]*)>(.*?)</select>""", html, flags=re.I | re.S):
+        attrs, body = match
+        name = re.search(r"""\bname\s*=\s*["']([^"']+)["']""", attrs, flags=re.I)
+        ident = re.search(r"""\bid\s*=\s*["']([^"']+)["']""", attrs, flags=re.I)
+        options = []
+        for value, label in re.findall(r"""<option\b[^>]*value\s*=\s*["']([^"']*)["'][^>]*>(.*?)</option>""", body, flags=re.I | re.S):
+            clean = re.sub(r"<[^>]+>", " ", label)
+            clean = re.sub(r"\s+", " ", clean).strip()[:80]
+            options.append({"value": value[:80], "label": clean})
+        select_fields.append({
+            "name": name.group(1) if name else "",
+            "id": ident.group(1) if ident else "",
+            "options_sample": options[:40],
+            "options_count": len(options),
+        })
+    input_fields = []
+    for attrs in re.findall(r"""<input\b([^>]*)>""", html, flags=re.I):
+        name = re.search(r"""\bname\s*=\s*["']([^"']+)["']""", attrs, flags=re.I)
+        ident = re.search(r"""\bid\s*=\s*["']([^"']+)["']""", attrs, flags=re.I)
+        kind = re.search(r"""\btype\s*=\s*["']([^"']+)["']""", attrs, flags=re.I)
+        if name or ident:
+            input_fields.append({
+                "name": name.group(1) if name else "",
+                "id": ident.group(1) if ident else "",
+                "type": kind.group(1) if kind else "",
+            })
     inline_patterns = []
-    for needle in ("source", "archive", "portfolio", "holdings", "internetarchive", "wayback"):
+    for needle in ("source", "archive", "portfolio", "holdings", "internetarchive", "wayback", "getportfolio", "year", "month"):
         count = len(re.findall(needle, html, flags=re.I))
         if count:
             inline_patterns.append({"term": needle, "count": count})
@@ -473,6 +513,9 @@ def _extract_html_metadata(html: str, page_url: str) -> dict[str, Any]:
         "sha256": hashlib.sha256(html.encode("utf-8")).hexdigest(),
         "script_srcs": list(dict.fromkeys(script_srcs))[:30],
         "source_links": hrefs[:50],
+        "form_actions": list(dict.fromkeys(form_actions))[:20],
+        "select_fields": select_fields[:20],
+        "input_fields": input_fields[:40],
         "pattern_counts": inline_patterns,
     }
 
@@ -504,7 +547,7 @@ def _fetch_html_metadata(session: requests.Session, url: str) -> dict[str, Any]:
 
 
 def _scan_amcs_script_metadata(session: requests.Session, script_urls: list[str]) -> list[dict[str, Any]]:
-    """Fetch same-origin UI scripts and retain only source endpoint/link patterns."""
+    """Fetch bounded same-origin AMC UI scripts and retain route/schema metadata only."""
     results = []
     for url in list(dict.fromkeys(script_urls))[:8]:
         response = None
@@ -513,9 +556,22 @@ def _scan_amcs_script_metadata(session: requests.Session, script_urls: list[str]
             response.raise_for_status()
             body = response.text
             endpoint_hits = sorted(set(re.findall(
-                r"""(?:/api/v1/|/month/|/scheme/|/source/|/file/)[A-Za-z0-9_./{}<>-]{1,120}""",
-                body
+                r"""(?:/api/v1/|/api/|/month/|/scheme/|/source/|/file/|/downloads/|/portfolio/|/documents/)[A-Za-z0-9_./{}?=&<>-]{1,160}""",
+                body, flags=re.I
             )))[:100]
+            function_hits = sorted(set(re.findall(
+                r"""(?:GetPortfolio|GetSchemePortfolio|portfolioDisclosure|schemePortfolio|DownloadPortfolio|fetchPortfolio)[A-Za-z0-9_.$]{0,80}""",
+                body, flags=re.I
+            )))[:60]
+            api_hosts = sorted(set(
+                (urlparse(u if "://" in u else "https://" + u).hostname or "")
+                for u in re.findall(r"""https?://[^"'\\s<>]{1,240}""", body, flags=re.I)
+                if urlparse(u if "://" in u else "https://" + u).hostname
+                and (
+                    urlparse(u if "://" in u else "https://" + u).hostname in ALLOWED_SOURCE_HOSTS
+                    or urlparse(u if "://" in u else "https://" + u).hostname.endswith(".cloudfront.net")
+                )
+            ))[:30]
             source_hosts = sorted(set(re.findall(
                 r"""https?://(?:www\.)?(?:mf\.nipponindiaim\.com|hdfcfund\.com|sbimf\.com|icicipruamc\.com|utimf\.com|archive\.org|web\.archive\.org)[^"'\\s<>]{0,200}""",
                 body, flags=re.I
@@ -532,6 +588,8 @@ def _scan_amcs_script_metadata(session: requests.Session, script_urls: list[str]
                 "bytes": len(body.encode("utf-8")),
                 "sha256": hashlib.sha256(body.encode("utf-8")).hexdigest(),
                 "endpoint_patterns": endpoint_hits,
+                "function_patterns": function_hits,
+                "api_hosts": api_hosts,
                 "whitelisted_url_patterns": source_hosts,
                 "source_keyword_counts": keyword_counts,
             })
@@ -560,6 +618,8 @@ def run_probe() -> dict[str, Any]:
         "api_index": None,
         "amcs_html_pages": [],
         "amcs_ui_scripts": [],
+        "amc_archive_ui_pages": [],
+        "amc_archive_ui_scripts": [],
         "amcs": None,
         "amc_detail": None,
         "scheme_detail": None,
@@ -610,9 +670,30 @@ def run_probe() -> dict[str, Any]:
     for page_url in HTML_PAGES:
         report["amcs_html_pages"].append(_fetch_html_metadata(session, page_url))
     scripts = []
-    for page in report["amcs_html_pages"]:
+    for page in report["amcs_html_pages"][:3]:
         scripts.extend(page.get("script_srcs", []))
     report["amcs_ui_scripts"] = _scan_amcs_script_metadata(session, scripts)
+
+    # Inspect the primary AMC archive interfaces for year/month selectors and
+    # their first-party download routes. This metadata-only probe never submits
+    # a portfolio request and never downloads holdings.
+    for page in report["amcs_html_pages"][3:]:
+        report["amc_archive_ui_pages"].append({
+            "page_url": page.get("page_url"),
+            "status": page.get("status"),
+            "http_status": page.get("http_status"),
+            "html_bytes": page.get("html_bytes"),
+            "script_src_count": len(page.get("script_srcs", [])),
+            "source_links": page.get("source_links", [])[:20],
+            "form_actions": page.get("form_actions", []),
+            "select_fields": page.get("select_fields", []),
+            "input_fields": page.get("input_fields", []),
+            "pattern_counts": page.get("pattern_counts", []),
+        })
+    archive_scripts = []
+    for page in report["amcs_html_pages"][3:]:
+        archive_scripts.extend(page.get("script_srcs", []))
+    report["amc_archive_ui_scripts"] = _scan_amcs_script_metadata(session, archive_scripts)
 
     amcs, amcs_meta = _fetch_json(session, f"{API_BASE}/amcs")
     report["amcs"] = amcs_meta
@@ -741,7 +822,7 @@ def render_report(report: dict[str, Any]) -> str:
         "# C1 amcs.fund API metadata discovery",
         "",
         f"- Run time (UTC): {report['run_time_utc']}",
-        "- Scope: **metadata only**; the probe calls the documented scheme/month endpoints but retains only date/source metadata, discards ISIN-level holdings fields, does not download workbooks, and does not store portfolio values.",
+        "- Scope: **metadata only**; the probe calls the documented scheme/month endpoints and inspects first-party HDFC/UTI portfolio archive UI metadata. It does not submit archive forms, download portfolio workbooks, or store holdings values.",
         "- Rights: **UNVERIFIED**. Public API access is not treated as permission for commercial/trading-research extraction, caching, or redistribution.",
         "",
         "| Endpoint | Result | HTTP | Content type | Bytes | Top-level records |",
@@ -776,6 +857,18 @@ def render_report(report: dict[str, Any]) -> str:
             lines.append("- " + json.dumps(item, sort_keys=True, ensure_ascii=False))
     else:
         lines.append("- No cross-AMC NIFTY 50 scheme history was discovered.")
+    lines += ["", "## Mother AMC archive interface discovery (metadata only)", ""]
+    if report.get("amc_archive_ui_pages"):
+        for item in report["amc_archive_ui_pages"]:
+            lines.append("- " + json.dumps(item, sort_keys=True, ensure_ascii=False))
+    else:
+        lines.append("- No mother-AMC archive page metadata was retrieved.")
+    lines += ["", "## Mother AMC archive UI script patterns", ""]
+    if report.get("amc_archive_ui_scripts"):
+        for item in report["amc_archive_ui_scripts"]:
+            lines.append("- " + json.dumps(item, sort_keys=True, ensure_ascii=False))
+    else:
+        lines.append("- No first-party archive UI scripts were found to inspect.")
     lines += ["", "## Nifty BeES scheme metadata matches", ""]
     if report.get("nifty_bees_scheme_matches"):
         for item in report["nifty_bees_scheme_matches"][:20]:
