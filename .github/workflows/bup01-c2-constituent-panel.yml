@@ -6,6 +6,7 @@ on:
       - phase/constituent-weekly-outcomes-c2-models
     paths:
       - "scripts/constituent_weekly/run_c2_panel_and_models.py"
+      - "scripts/constituent_weekly/publish_c2_run.py"
       - "tests/test_c2_panel_and_models.py"
       - ".github/workflows/bup01-c2-constituent-panel.yml"
   workflow_dispatch:
@@ -42,10 +43,17 @@ jobs:
       - name: Install research dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt -r live_api/requirements.txt
+          python -m pip install -r requirements.txt -r live_api/requirements.txt "cryptography>=42"
+
+      - name: Compile C2 runner and publisher
+        run: python -m py_compile scripts/constituent_weekly/run_c2_panel_and_models.py scripts/constituent_weekly/publish_c2_run.py
 
       - name: Run C2 offline regression tests
+        id: offline
         run: python -m pytest -q tests/test_c2_panel_and_models.py
+
+      - name: Prepare encrypted cache directory
+        run: mkdir -p ${{ runner.temp }}/bup01-tejhq-encrypted
 
       - name: Restore encrypted C2 data cache
         uses: actions/cache/restore@v4
@@ -57,6 +65,7 @@ jobs:
 
       - name: Build constituent panel and run walk-forward models
         id: c2
+        if: steps.offline.outcome == 'success'
         continue-on-error: true
         env:
           DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
@@ -67,8 +76,19 @@ jobs:
           BUP01_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/bup01-tejhq-encrypted
         run: python scripts/constituent_weekly/run_c2_panel_and_models.py
 
+      - name: Detect encrypted cache contents
+        if: always()
+        id: cache_state
+        shell: bash
+        run: |
+          if find "${{ runner.temp }}/bup01-tejhq-encrypted" -type f -name '*.aesgcm' -print -quit | grep -q .; then
+            echo "has_files=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_files=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Save encrypted C2 data cache
-        if: always() && hashFiles('${{ runner.temp }}/bup01-tejhq-encrypted/**') != ''
+        if: always() && steps.cache_state.outputs.has_files == 'true'
         uses: actions/cache/save@v4
         with:
           path: ${{ runner.temp }}/bup01-tejhq-encrypted
@@ -88,80 +108,16 @@ jobs:
           if-no-files-found: warn
           retention-days: 90
 
-      - name: Publish sanitized C2 outputs and phase status
+      - name: Publish results with concurrency-safe branch retries
         if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f research/constituent_weekly/C2_MODEL_RESULTS.json research/constituent_weekly/C2_MODEL_RESULTS.md 2>/dev/null || true
-          git add -f research/constituent_weekly/C2_INDEX_OOF_FORECASTS.csv research/constituent_weekly/C2_STOCK_OOF_FORECASTS.csv research/constituent_weekly/C2_CYCLE_FEATURE_SUMMARIES.csv 2>/dev/null || true
-          python - <<'PY'
-          from pathlib import Path
-          import json
-          import datetime
-          path = Path("research/constituent_weekly/C2_MODEL_RESULTS.json")
-          status = Path("research/constituent_weekly/STATUS.md")
-          if path.exists():
-              result = json.loads(path.read_text())
-              panel = result.get("panel", {})
-              model_status = result.get("status", "UNKNOWN")
-              summary = (
-                  f"**C2 latest run:** {model_status}; "
-                  f"{panel.get('primary_eligible_cycles', 0)} eligible cycles; "
-                  f"{panel.get('stock_oof_cycles', 0)} stock OOF cycles; "
-                  f"{panel.get('meta_oof_cycles', 0)} index meta OOF cycles. "
-                  f"Updated {result.get('created_at_utc', 'unknown')} UTC."
-              )
-          else:
-              summary = "**C2 latest run:** No sanitized result JSON was produced; inspect the workflow run."
-          text = status.read_text() if status.exists() else "# Research Status\n"
-          start, end = "<!-- BUP01_C2_LATEST_START -->", "<!-- BUP01_C2_LATEST_END -->"
-          block = f"{start}\n## C2 modelling update\n\n{summary}\n\nSee [C2 results](C2_MODEL_RESULTS.md) and [C2 machine results](C2_MODEL_RESULTS.json).\n{end}"
-          if start in text and end in text:
-              left = text.index(start)
-              right = text.index(end, left) + len(end)
-              text = text[:left] + block + text[right:]
-          else:
-              text += "\n\n" + block + "\n"
-          status.write_text(text)
-          readme = Path("README.md")
-          if readme.exists():
-              r = readme.read_text()
-              marker = "<!-- BUP01_C2_STATUS -->"
-              line = f"\n> **BUP-01 C2 update:** {summary} [C2 report](research/constituent_weekly/C2_MODEL_RESULTS.md) · [C2 phase status](research/constituent_weekly/STATUS.md)\n"
-              if marker in r:
-                  a = r.index(marker) + len(marker)
-                  b = r.find("\n", a)
-                  if b < 0: b = len(r)
-                  r = r[:a] + line.rstrip("\n") + r[b:]
-              else:
-                  r = r.replace("\n", "\n" + marker + line, 1)
-              readme.write_text(r)
-          log = Path("logs/RESEARCH_LOG.md")
-          log.parent.mkdir(exist_ok=True)
-          log_text = log.read_text() if log.exists() else "# Research Log\n"
-          log_text += f"\n\n## {datetime.datetime.now(datetime.timezone.utc).isoformat()} — C2 automated run\n\n- Status: {model_status if path.exists() else 'NO_RESULT_ARTIFACT'}.\n- Summary: {summary}\n- Exact data acquisition and model outputs are recorded in C2_MODEL_RESULTS.json/.md.\n- Raw input payloads are not published; cache is encrypted.\n"
-          log.write_text(log_text)
-          if path.exists() and model_status != "COMPLETED_EXPLORATORY":
-              errors = Path("logs/ERROR_LOG.md")
-              e = errors.read_text() if errors.exists() else "# Error Log\n"
-              e += f"\n\n## C2 run {result.get('created_at_utc')} — {model_status}\n\n- Error category: {result.get('fatal_error_category', 'not provided')}\n- Last source location: {result.get('fatal_error_location', {})}\n- No forecast/strategy acceptance is claimed. Encrypted cache and partial outputs (if any) retained according to workflow controls.\n"
-              errors.write_text(e)
-          conv = Path("logs/CONVERSATION_LOG.md")
-          if conv.exists():
-              conv.write_text(conv.read_text() + "\n\n## 2026-11-02 — User authorised C2 modelling\n\n- User instruction: Proceed.\n- C2 constituent-panel and leakage-safe walk-forward workflow was added on the dedicated C2 branch.\n- The remaining C1 identity/action checks stay recorded as limitations per explicit user direction.\n")
-          PY
-          git add -f research/constituent_weekly/STATUS.md README.md logs/RESEARCH_LOG.md logs/ERROR_LOG.md logs/CONVERSATION_LOG.md 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "No result files or status updates to publish."
-            exit 0
-          fi
-          git commit -m "Publish C2 constituent panel and walk-forward research status"
-          git push origin HEAD:phase/constituent-weekly-outcomes-c2-models
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          C2_TEST_OUTCOME: ${{ steps.offline.outcome }}
+          C2_MODEL_OUTCOME: ${{ steps.c2.outcome }}
+        run: python scripts/constituent_weekly/publish_c2_run.py
 
-      - name: Enforce C2 result acceptance
+      - name: Enforce C2 exploratory result gate
         if: always()
         run: |
           python - <<'PY'
