@@ -633,18 +633,22 @@ def _mfdata_family_summaries(payload: Any) -> list[dict[str, Any]]:
 
 
 def _mfdata_months(payload: Any) -> list[str]:
-    """Extract YYYY-MM month labels only; never serialize holdings records."""
-    candidates: list[str] = []
-    for node in _walk_dicts(payload):
-        for value in node.values():
-            if isinstance(value, str) and re.fullmatch(r"20\\d{2}-(0[1-9]|1[0-2])", value):
-                candidates.append(value)
-    if isinstance(payload, list):
-        candidates.extend(
-            x for x in payload if isinstance(x, str)
-            and re.fullmatch(r"20\\d{2}-(0[1-9]|1[0-2])", x)
-        )
-    return sorted(set(candidates))
+    """Extract YYYY-MM labels recursively; discard all holdings content."""
+    found: set[str] = set()
+
+    def visit(value: Any) -> None:
+        if isinstance(value, str):
+            if re.fullmatch(r"20\\d{2}-(0[1-9]|1[0-2])", value):
+                found.add(value)
+        elif isinstance(value, dict):
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(payload)
+    return sorted(found)
 
 
 def run_probe() -> dict[str, Any]:
