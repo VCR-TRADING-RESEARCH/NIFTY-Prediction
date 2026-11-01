@@ -92,8 +92,8 @@ def daily_history(f):
     h["ret"]=h.close.pct_change(); h["range"]=(h.high-h.low)/h.close.shift(1)
     return h
 
-def causal_features(f,stamp):
-    h=daily_history(f); p=h[h.day.lt(stamp)].tail(21); d=f[f.day.eq(stamp)]
+def causal_features_from_history(f,h,stamp):
+    p=h[h.day.lt(stamp)].tail(21); d=f[f.day.eq(stamp)]
     a=d[d.clock.between("10:00","10:03")]; before=d[d.clock.ge("09:15")&d.clock.lt("10:00")]
     if len(p)<21 or a.empty or before.empty: raise ValueError("Insufficient causal feature history")
     if a.timestamp.duplicated().any() or before.timestamp.duplicated().any(): raise ValueError("Duplicate pre-anchor timestamp")
@@ -110,6 +110,10 @@ def causal_features(f,stamp):
           "volume_ratio_20":float(p.volume.iloc[-1]/vm) if vm>0 else 1.0}
     if not np.isfinite(np.asarray(list(vals.values()),float)).all(): raise ValueError("Non-finite feature")
     return {k:float(v) for k,v in vals.items()}
+
+
+def causal_features(f,stamp):
+    return causal_features_from_history(f,daily_history(f),stamp)
 
 def action_events():
     f=pd.read_csv(ACTIONS,keep_default_na=False); events=[]
@@ -163,17 +167,20 @@ def build_panel(c1,token,client,source_manifest):
             f,n=request_bars(resolved[sym],"NSE_EQ","EQUITY",token,client,ch["from"],ch["to"],True)
             frames.append(f); requests_made+=n; time.sleep(0.5)
         combined=pd.concat(frames,ignore_index=True).sort_values("timestamp") if frames else pd.DataFrame()
+        # Build each constituent's validated daily history once, then reuse it across weekly anchors.
+        # The history is still sliced strictly before each anchor date inside the feature function.
+        history=daily_history(combined)
         for c in symcycles[sym]:
             a,e=c["anchor_date"],c["expiry_date"]
             if action_excluded(sym,a,e,events): excluded+=1; continue
             try:
                 ap,_=target_prices(combined,a); _,ep=target_prices(combined,e)
-                feat=causal_features(combined,a); r=ep/ap-1
+                feat=causal_features_from_history(combined,history,a); r=ep/ap-1
                 if not np.isfinite(r) or r==0: continue
                 stock_rows.append({"source_idx":c["source_idx"],"anchor_date":a,"expiry_date":e,
                                    "symbol":sym,"target_return":float(r),"target":int(r>0),**feat})
             except (ValueError,KeyError,IndexError,ZeroDivisionError): continue
-        del combined,frames
+        del combined,frames,history
     # The observed NIFTY 50 series supplies the index target. It is never a stock-model feature.
     index_targets={}
     index_dates=sorted({d for c in cycles for d in (c["anchor_date"],c["expiry_date"])})
