@@ -6,6 +6,7 @@ from scripts.constituent_weekly.probe_nippon_amc_archive import (
     discover_monthly_portfolio_links,
     find_target_section,
     month_key,
+    monthly_portfolio_url,
 )
 
 BASE = "https://mf.nipponindiaim.com/investor-service/downloads/factsheet-portfolio-and-other-disclosures"
@@ -64,3 +65,15 @@ def test_find_target_section_fails_closed_when_scheme_or_header_missing():
     result = find_target_section(frame)
     assert result["scheme_found"] is False
     assert result["header_found"] is False
+
+
+def test_monthly_portfolio_url_matches_officially_observed_month_end_pattern():
+    assert monthly_portfolio_url("2026-09").endswith(
+        "/NIMF-MONTHLY-PORTFOLIO-30-Sep-26.xls"
+    )
+    assert monthly_portfolio_url("2026-02").endswith(
+        "/NIMF-MONTHLY-PORTFOLIO-28-Feb-26.xls"
+    )
+    assert monthly_portfolio_url("2019-04").endswith(
+        "/NIMF-MONTHLY-PORTFOLIO-30-Apr-19.xls"
+    )
