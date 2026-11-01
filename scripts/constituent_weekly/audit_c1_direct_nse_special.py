@@ -5,7 +5,12 @@ from pathlib import Path
 import requests
 ROOT=Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path: sys.path.insert(0,str(ROOT))
-from scripts.constituent_weekly.audit_c1_daily_history import encrypt_tejhq_cache_bytes
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+def encrypt_tejhq_cache_bytes(payload,token,associated_data):
+ if not token or not token.strip(): raise ValueError("HF_TOKEN is required for encrypted cache.")
+ key=hashlib.sha256(b"BUP01-TejHQ-EOD-cache-v1:"+token.strip().encode()).digest()
+ nonce=os.urandom(12)
+ return nonce+AESGCM(key).encrypt(nonce,payload,associated_data)
 TARGETS=[
 {"date":"2019-10-27","symbol":"HDFC","session":"Sunday Diwali Muhurat","isin":"INE001A01036"},
 {"date":"2020-02-01","symbol":"HDFC","session":"Saturday Union Budget special session","isin":"INE001A01036"},
