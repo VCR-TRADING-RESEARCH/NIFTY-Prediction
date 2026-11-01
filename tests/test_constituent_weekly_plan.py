@@ -30,10 +30,11 @@ class ConstituentWeeklyPlanTests(unittest.TestCase):
 
     def test_versioned_expiry_proxy_amendment_matches_version_history(self):
         plan = (ROOT / "research" / "constituent_weekly" / "RESEARCH_PLAN.md").read_text(encoding="utf-8")
-        self.assertIn("**Plan version:** 1.3", plan)
+        self.assertIn("**Plan version:** 1.4", plan)
         self.assertIn("- **v1.1 — 2026-11-01:**", plan)
         self.assertIn("- **v1.2 — 2026-11-01:**", plan)
         self.assertIn("- **v1.3 — 2026-11-01:**", plan)
+        self.assertIn("- **v1.4 — 2026-11-01:**", plan)
         self.assertIn("no ETF-holdings-versus-index-weight comparison is needed", plan)
         self.assertIn("actual NIFTY 50 index return remains the observed target", plan)
         self.assertIn("15:00 through 15:14 IST", plan)
