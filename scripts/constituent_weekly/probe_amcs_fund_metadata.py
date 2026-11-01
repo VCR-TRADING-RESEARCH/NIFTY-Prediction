@@ -138,6 +138,25 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
         shape["data_nested_types"] = {
             str(k): type(v).__name__ for k, v in list(data.items())[:30]
         }
+        for field in ("history", "holdings", "events"):
+            items = data.get(field)
+            if isinstance(items, list):
+                shape[field + "_count"] = len(items)
+                if items and isinstance(items[0], dict):
+                    shape[field + "_item_keys"] = sorted(str(k) for k in items[0].keys())[:40]
+        history = data.get("history")
+        if isinstance(history, list):
+            dates = []
+            for row in history:
+                if isinstance(row, dict):
+                    for key in ("month", "date", "period", "disclosure_date"):
+                        value = row.get(key)
+                        if isinstance(value, str) and len(value) >= 7:
+                            dates.append(value[:10])
+                            break
+            if dates:
+                shape["history_first_date"] = min(dates)
+                shape["history_last_date"] = max(dates)
     return shape
 
 
