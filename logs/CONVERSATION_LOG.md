@@ -427,3 +427,10 @@
 - Recorded the remaining historical identity and corporate-action checks as accepted limitations, not passed validations.
 - Created C1 acceptance/C2 handoff note and updated STATUS.md. C2 must preserve unresolved flags, avoid unverified adjustment factors, and include a conservative sensitivity panel.
 - Created phase branch `phase/constituent-weekly-outcomes-c2-models`. No model result is claimed yet.
+
+
+## 2026-11-02 — User authorised C2 modelling
+
+- User instruction: Proceed.
+- C2 constituent-panel and leakage-safe walk-forward workflow was added on the dedicated C2 branch.
+- The remaining C1 identity/action checks stay recorded as limitations per explicit user direction.

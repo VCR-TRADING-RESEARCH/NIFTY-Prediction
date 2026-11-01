@@ -700,3 +700,12 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - C2 work must carry unresolved identity/action flags, avoid unverified adjustment factors, and include a conservative sensitivity panel excluding affected observations.
 - Handoff record: [C1 acceptance and C2 handoff](C1_ACCEPTANCE_AND_C2_HANDOFF.md).
 - Active phase branch: [phase/constituent-weekly-outcomes-c2-models](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c2-models).
+
+
+<!-- BUP01_C2_LATEST_START -->
+## C2 modelling update
+
+**C2 latest run:** No sanitized result JSON was produced; inspect the workflow run.
+
+See [C2 results](C2_MODEL_RESULTS.md) and [C2 machine results](C2_MODEL_RESULTS.json).
+<!-- BUP01_C2_LATEST_END -->

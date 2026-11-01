@@ -784,3 +784,11 @@
 - Raw residual rows were encrypted with the existing HF_TOKEN-derived AES-GCM cache key; the cache was restored with seven TejHQ year partitions and zero partition downloads.
 - The daily coverage auditor now decrypts and merges the supplemental rows with the pinned TejHQ fallback. Successful run [41344197015](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41344197015) reports COMPLETE: 106,392/106,392 OHLCV member sessions, zero symbol gaps, 100% minimum per-symbol coverage, and no unresolved security IDs.
 - Daily data coverage is complete. C1 overall remains gated by the separate corporate-action adjustment/issuer verification and other registered C1 checks; C2 remains locked.
+
+
+## 2026-11-01T20:34:44.568170+00:00 — C2 automated run
+
+- Status: NO_RESULT_ARTIFACT.
+- Summary: **C2 latest run:** No sanitized result JSON was produced; inspect the workflow run.
+- Exact data acquisition and model outputs are recorded in C2_MODEL_RESULTS.json/.md.
+- Raw input payloads are not published; cache is encrypted.
