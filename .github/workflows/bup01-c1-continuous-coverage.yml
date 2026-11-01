@@ -11,7 +11,6 @@ on:
       - "data/constituent_weekly/nifty50_membership_intervals.csv"
       - "data/reconciliation/expiry_verification.csv"
       - "data/reconciliation/nifty50_official_daily.csv"
-      - ".github/workflows/bup01-c1-continuous-coverage.yml"
   pull_request:
     branches:
       - phase/constituent-weekly-outcomes-c0
@@ -22,7 +21,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: bup01-c1-continuous-coverage-${{ github.repository }}-${{ github.event_name }}
+  group: bup01-c1-market-data-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:
