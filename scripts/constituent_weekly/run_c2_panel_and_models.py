@@ -901,7 +901,7 @@ def main() -> int:
                 "limitations": result.get("limitations", []),
             }
             OUT_PANEL_JSON.parent.mkdir(parents=True, exist_ok=True)
-            OUT_PANEL_JSON.write_text(json.dumps(failed, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            OUT_PANEL_JSON.write_text(json.dumps(failed, indent=2, sort_keys=True) + "\n", encoding="utf-8")
             OUT_PANEL_MD.write_text(
                 "# C2 Point-in-Time Constituent Panel Build\\n\\n"
                 f"**Status:** FAILED\\n\\n- Error category: {type(exc).__name__}\\n"
@@ -914,7 +914,7 @@ def main() -> int:
             result["fatal_error_location"] = location
             result["elapsed_seconds"] = round(time.monotonic() - started, 2)
             OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-            OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
             write_report(result)
         print("C2_FAILED", type(exc).__name__)
         return 1
