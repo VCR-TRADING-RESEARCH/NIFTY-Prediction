@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import calendar
 import hashlib
 import re
 from datetime import datetime, timezone
@@ -68,6 +69,18 @@ def discover_monthly_portfolio_links(html: str, base_url: str = PAGE_URL) -> dic
         if existing is None or absolute.lower().endswith((".xls", ".xlsx")):
             discovered[key] = absolute
     return discovered
+
+
+def monthly_portfolio_url(month: str) -> str:
+    """Build AMC's observed month-end workbook URL for YYYY-MM."""
+    year_text, month_text = month.split("-", 1)
+    year, month_number = int(year_text), int(month_text)
+    last_day = calendar.monthrange(year, month_number)[1]
+    month_abbr = calendar.month_abbr[month_number]
+    return (
+        "https://mf.nipponindiaim.com/InvestorServices/FactsheetsDocuments/"
+        f"NIMF-MONTHLY-PORTFOLIO-{last_day:02d}-{month_abbr}-{year % 100:02d}.xls"
+    )
 
 
 def cell_text(value: object) -> str:
@@ -148,6 +161,7 @@ def probe_file(session: requests.Session, month: str, url: str) -> dict[str, obj
     result: dict[str, object] = {"month": month, "url": url, "status": "NOT_STARTED"}
     try:
         response = session.get(url, timeout=TIMEOUT, stream=True)
+        result["http_status"] = response.status_code
         response.raise_for_status()
         chunks = []
         total = 0
@@ -235,11 +249,8 @@ def main() -> int:
     links = discover_monthly_portfolio_links(response.text)
     results = []
     for month in TARGET_MONTHS:
-        url = links.get(month)
-        if url:
-            results.append(probe_file(session, month, url))
-        else:
-            results.append({"month": month, "status": "ARCHIVE_LINK_NOT_FOUND"})
+        url = links.get(month) or monthly_portfolio_url(month)
+        results.append(probe_file(session, month, url))
     report = render_report(results)
     path = Path(args.output)
     path.parent.mkdir(parents=True, exist_ok=True)
