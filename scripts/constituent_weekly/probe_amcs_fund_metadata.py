@@ -450,7 +450,7 @@ def _extract_html_metadata(html: str, page_url: str) -> dict[str, Any]:
     def same_site(host: str) -> bool:
         host = (host or "").lower()
         return host == page_host or (page_host and host.endswith("." + page_host))
-    for match in re.findall(r"""<(?:script|link)\b[^>]*(?:src|href)\s*=\s*["']([^"']+)["'][^>]*>""", html, flags=re.I):
+    for match in re.findall(r"""<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>""", html, flags=re.I):
         absolute = urljoin(page_url, match)
         parsed = urlparse(absolute)
         if parsed.scheme == "https" and same_site(parsed.hostname or ""):
@@ -684,6 +684,7 @@ def run_probe() -> dict[str, Any]:
             "http_status": page.get("http_status"),
             "html_bytes": page.get("html_bytes"),
             "script_src_count": len(page.get("script_srcs", [])),
+            "script_srcs_sample": page.get("script_srcs", [])[:30],
             "source_links": page.get("source_links", [])[:20],
             "form_actions": page.get("form_actions", []),
             "select_fields": page.get("select_fields", []),
