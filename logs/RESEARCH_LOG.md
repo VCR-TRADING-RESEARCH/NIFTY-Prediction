@@ -666,3 +666,11 @@
 - **API/cache:** 2 requests; 70 symbols reused from the sanitized QA cache.
 - **Interpretation:** daily OHLCV coverage is reported independently from intraday target coverage, historical identity and action-adjusted return integrity. No model is trained and C2 remains gated.
 - **Artifacts:** C1_DAILY_COVERAGE.json and C1_DAILY_COVERAGE_REPORT.md.
+
+
+## 2026-11-01T14:42:05.550037+00:00 — C1 encrypted cache path correction
+
+- **Code correction:** The encrypted TejHQ cache path now expands `~` before resolving to an absolute path; regression coverage added for tilde and explicit paths.
+- **Actions:** Offline suite [41317402493](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41317402493) passed; live daily workflow [41317402483](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41317402483) completed successfully.
+- **Cache:** First run after the correction had no valid prior cache and therefore downloaded seven pinned yearly partitions. The encrypted cache save step then stored 87,911,829 bytes under the new shared key. The next compatible workflow must verify cache hits; reuse is not yet claimed.
+- **Coverage:** No change to the last audited 106,385/106,392 (99.9934%) member-session coverage or seven residual dates. C1 remains PARTIAL; action-adjusted return audit remains open; no model trained.

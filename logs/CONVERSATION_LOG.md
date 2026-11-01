@@ -356,3 +356,13 @@
 - Made encrypted cache keys unique per workflow run with a restore prefix for the pinned dataset revision, allowing later runs to extend the encrypted cache without attempting to overwrite an immutable GitHub cache key.
 - Corrected the daily test harness and common dependencies. The latest offline run [41315241386](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41315241386) passed 88 tests.
 - Live daily data/fallback is still queued behind an earlier serialized Dhan coverage run. No TejHQ coverage additions are claimed until that live run completes.
+
+
+## 2026-11-01 — User resumed the C1 bottom-up NIFTY research
+
+- Reconfirmed the recovered intraday target gate: 258/258 weekly cycles pass; the 26-Apr-2024 15:14 flag was an anchor-day check and the 02-May-2024 expiry proxy passed.
+- Inspected the daily OHLCV report and its sanitized artifact. Coverage is 106,385/106,392 member-sessions (99.9934%), with six HDFC dates and one TATAMOTORS date unresolved. No missing market bar was fabricated.
+- Corrected fallback residual-date reporting and added source-date diagnostics; 91 regression tests passed and the live rerun completed successfully.
+- Identified and fixed the encrypted-cache path expansion defect. The first corrected run saved the encrypted cache; cache reuse awaits confirmation on the next compatible run.
+- C1 remains partial pending residual data and exhaustive corporate-action/adjusted-return validation. C2 modelling and all strategy claims remain locked.
+- This project log records user-visible requests, decisions and work outcomes; it does not include private model reasoning.

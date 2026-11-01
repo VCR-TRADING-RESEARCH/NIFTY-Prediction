@@ -2,14 +2,14 @@
 
 **Last updated:** 2026-11-01  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 intraday stock/index target-data sub-gate PASS; overall C1 PARTIAL pending daily-feature and corporate-action gates  
+**Status:** C0 PASS; C1 intraday target-data sub-gate PASS; daily OHLCV is 99.9934% with seven dated residual sessions; overall C1 PARTIAL pending residual-gap and corporate-action validation  
 **Prediction status:** No constituent panel, trained stock model or bottom-up forecast exists  
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Actions workflow validated required files and plan structure; governance regression tests passed; report committed as 746d1b382e338e760b1cf4b3ee5ea6fa6b63bc85 |
-| C1 — Point-in-time universe/data audit | PARTIAL / DAILY + ACTION REVIEW PENDING | 258/258 intraday weekly target cycles and the 47/94% stock-input gate pass; daily feature history and exhaustive action-adjusted return review remain open; no weight/ETF comparison gate in v1.3 |
+| C1 — Point-in-time universe/data audit | PARTIAL / RESIDUAL SESSIONS + ACTION REVIEW | 258/258 intraday weekly target cycles pass; daily OHLCV is 106,385/106,392 (99.9934%) with six HDFC and one TATAMOTORS session unresolved; exhaustive action-adjusted return review remains open; no weight/ETF comparison gate in v1.3 |
 | C2 — Panel labels/features | PENDING | Build only after C1 passes; validate target construction and freeze source hashes/split |
 | C3 — Stock models/baselines | PENDING | Pooled stock panel and bounded benchmarks only after C2 passes |
 | C4 — Index aggregation/uncertainty | PENDING | Train calibrated NIFTY-direction meta-model on strictly OOF unweighted stock forecast summaries; compare prediction metrics on matched cycles |
@@ -619,4 +619,4 @@ The sole partial flag was the 15:14 check on **26 April 2024**. This was an anch
 
 The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is retained as historical evidence; it is superseded by the full 258-cycle artifact. See [corrected result JSON](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_RESULT.json), [report](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_REPORT.md), and [full Actions QA artifact](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41309632317).
 
-**Overall C1 remains NOT PASSED.** The intraday target-data sub-gate is PASS (258/258 cycles). Daily audit [run 41315241366](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41315241366) measured 106,385/106,392 valid member sessions (99.9934%); the guarded personal-use fallback added 1,295 HDFC sessions. Six HDFC sessions remain, and one TATAMOTORS session remains unresolved because its three-date source cross-check was incomplete (2 checked, 2 matched, 0 mismatched), so no Tata fallback bar was inserted. Exact residual dates are being corrected in the report. Exhaustive corporate-action/adjusted-return review remains open. C2 stays locked.
+**Overall C1 remains NOT PASSED.** The intraday target-data sub-gate is PASS (258/258 cycles). Corrected daily audit [run 41316751830](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41316751830), artifact 13087493686, confirms 106,385/106,392 valid member sessions (99.9934%). The guarded personal-use fallback added 1,295 HDFC sessions. Six HDFC sessions remain: 2018-11-07, 2019-10-27, 2020-02-01, 2020-11-14, 2021-11-04 and 2022-10-24. One TATAMOTORS session remains on 2025-10-21; its fallback was rejected because the three-date cross-source check was incomplete (2025-10-22 absent from both sampled sources), so no unverified bar was inserted. Offline tests [run 41316751630](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41316751630) passed 91/91. Cache path correction commit [021aac8](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/021aac89ce7d26d808e53fffc79fd7c1037ac669) was exercised by first corrected run [41317402483](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41317402483), which saved the encrypted partitions to the shared cache; restored cache hits remain to be confirmed by the next run. Exhaustive corporate-action/adjusted-return review remains open. C2 stays locked.

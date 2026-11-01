@@ -629,3 +629,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Recompute exact residual date samples only when the source sample is complete; preserve an explicit incomplete marker when it is truncated. Emit sanitized date-only Dhan/TejHQ presence and missing-date arrays for cross-source comparisons. Keep Tata acceptance strict: every registered comparison date must have one row from each source and match; no bar is inferred or inserted when the comparison is incomplete.
 - **Validation:** Added regression tests for post-fallback residual dates, truncated missing-date samples and date-only Tata source diagnostics. The next daily workflow rerun is the live validation.
 - **Impact:** Reporting/diagnostic correction only. The 99.9934% first audited coverage remains provisional pending exact residual-date review; no stock label, model or trading strategy is changed, and C2 remains gated.
+
+
+## E0075 — 2026-11-01 — Encrypted TejHQ cache path mismatch
+
+- **Observed:** Consecutive daily audits re-downloaded all seven TejHQ annual NSE partitions and reported zero encrypted cache hits, despite successful Actions cache restore/save steps.
+- **Root cause:** The configured cache path contained a literal leading `~`. Python `Path()` does not expand that token, so the audit wrote encrypted files to a relative directory while GitHub Actions cached the runner's home-directory path.
+- **Correction:** Added `resolve_tejhq_encrypted_cache_dir()` using `Path.expanduser().resolve()` and a regression test for both home-relative and explicit absolute paths.
+- **Validation:** Commit [021aac8](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/021aac89ce7d26d808e53fffc79fd7c1037ac669) triggered run [41317402483](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41317402483). The first corrected run had no previous cache to restore, downloaded seven partitions and successfully saved the encrypted cache (87,911,829 bytes) under the pinned revision/run-specific key. A subsequent run must confirm nonzero cache hits before reuse is declared verified.
+- **Impact:** No market-data values or daily coverage counts changed. This is a repeat-download/cache-location defect; raw market rows and credentials were not committed.
