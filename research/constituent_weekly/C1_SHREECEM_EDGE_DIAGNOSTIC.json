@@ -1,0 +1,51 @@
+{
+  "track": "BUP-01",
+  "symbol": "SHREECEM",
+  "date_range": {
+    "from": "2021-11-01",
+    "to": "2022-01-29"
+  },
+  "created_at_utc": "2026-11-01T02:49:21.557445+00:00",
+  "credentials_or_tokens_recorded": false,
+  "raw_market_bars_saved": false,
+  "auth_method": "totp_refresh",
+  "token_refresh_status": "SUCCESS",
+  "token_refresh_diagnostics": {
+    "body_type": "dict",
+    "response_keys": [
+      "accessToken",
+      "dhanClientId",
+      "dhanClientName",
+      "dhanClientUcc",
+      "expiryTime",
+      "givenPowerOfAttorney"
+    ],
+    "data_keys": [],
+    "provider_error_category": "UNCLASSIFIED_PROVIDER_RESPONSE",
+    "access_token_field_type": "str",
+    "access_token_length": 304,
+    "token_container": "top_level",
+    "http_status": 200,
+    "refresh_attempts": 1,
+    "server_minus_runner_clock_skew_seconds": -1
+  },
+  "profile_http_status": 200,
+  "data_plan_active": true,
+  "security_id_resolved": true,
+  "intraday_http_status": 200,
+  "volume_diagnostic": {
+    "status": "NEGATIVE_VOLUME_ROWS_FOUND",
+    "regular_session_rows": 22901,
+    "finite_volume_rows": 22901,
+    "negative_volume_row_count": 1,
+    "negative_volume_timestamps_ist": [
+      "2021-12-30T15:29:00+05:30"
+    ],
+    "special_session_dates_excluded": [
+      "2021-11-04"
+    ],
+    "contains_raw_price_or_volume_values": false
+  },
+  "status": "NEGATIVE_VOLUME_ROWS_FOUND",
+  "finished_at_utc": "2026-11-01T02:49:27.913769+00:00"
+}
