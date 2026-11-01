@@ -606,3 +606,10 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Sanitized failure category:** NameError.
 - **Requests completed:** 1.
 - **Impact:** daily feature-source coverage remains unproven; C2 is not unlocked.
+
+## E0072 — 2026-11-01 — Daily audit regression fixture/dependency corrections
+
+- **Observed:** The combined offline suite ran after the daily-auditor syntax correction: 84 tests passed and 3 failed.
+- **Causes:** the common offline workflow did not install `cryptography`, required by the AES-GCM cache test; the synthetic NSE fixture incorrectly counted a BE-series row as EQ; and the test module omitted the `Path` import.
+- **Corrections:** install `cryptography` in the common offline workflow; count only the matching ticker and EQ series in the fixture expectation; add the missing `Path` import.
+- **Interpretation:** these were test harness/fixture defects, not evidence of a live data-source failure. No live TejHQ/HDFC fallback result is claimed until the corrected test gate passes.

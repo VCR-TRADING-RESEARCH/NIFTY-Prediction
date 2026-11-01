@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import pandas as pd
@@ -239,10 +240,10 @@ def test_tejhq_bhavcopy_rows_filter_eq_series_validate_isin_and_ohlcv():
         },
     ])
     qa, rows = inspect_tejhq_member_rows(frame, "TATAMOTORS", ["2025-10-21"])
-    assert qa["source_rows_found"] == 2
+    assert qa["source_rows_found"] == 1
     assert qa["unique_isin_count"] == 1
-    assert qa["duplicate_session_count"] == 1
-    assert qa["valid_session_dates"] == []
+    assert qa["duplicate_session_count"] == 0
+    assert qa["valid_session_dates"] == ["2025-10-21"]
 
 
 def test_tejhq_fallback_fills_only_a_dhan_missing_session_without_double_count():
