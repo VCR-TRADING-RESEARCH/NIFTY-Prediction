@@ -300,3 +300,11 @@
 - Previous successes remain valid only for their tested scopes: one session 50/50; 2026-06-29–2026-09-26 50/50; 2022-10-03–2022-12-30 50/50. The 2021-11-01–2022-01-29 edge range remains untested.
 - Decision: stop automated token retries. Require corrected Dhan organization secrets or a configured API-key/secret OAuth flow before another protected live data run. C1 remains NOT PASSED; C2 stays gated. No stock model, index aggregation, forecast or strategy was produced.
 - User-facing checkpoint: user asked to resume after a screenshot showing the 2021-edge QA investigation. The visible response explains the distinct offline-test and live-authentication blockers. Hidden private reasoning and secrets are not recorded.
+
+
+## 2026-11-01 — Dhan TOTP parsing and clock diagnostics
+- Resumed from the authenticated-data blocker without asking the user to reconfigure credentials. The previous evidence established only that Dhan's generated-token response lacked an access-token field and the fallback profile call returned HTTP 401; it did not prove the supplied setup was wrong.
+- Merged PR #29 (commit cb7d304831f039bb994d819d5570a71f2bec0116): shared TOTP parser accepts raw Base32 and standard otpauth TOTP URIs; whitespace-only normalization for raw secrets; HTTP Date-based runner clock-skew diagnostic records integer seconds only.
+- Regression coverage added for URI/raw equivalence, invalid HOTP/empty values and positive/negative clock skew. Workflow trigger paths include the new shared helper.
+- Post-merge C1 research and source-audit workflows passed (41266155248, 41266155292). Dhan live workflow 41266155250 was still in dependency installation at last observation; no new auth/data result claimed.
+- C1 remains blocked; no stock panel/model/forecast or strategy authorised.
