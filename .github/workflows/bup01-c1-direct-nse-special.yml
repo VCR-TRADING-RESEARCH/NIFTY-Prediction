@@ -22,10 +22,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install minimal dependency
-        run: python -m pip install requests
-      - name: Fetch and validate exact NSE archives
+      - name: Install minimal dependencies
+        run: python -m pip install requests cryptography pandas numpy pyarrow
+      - name: Restore encrypted research cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
+          restore-keys: |
+            bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-
+      - name: Fetch, validate and encrypt exact NSE archives
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TEJHQ_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/bup01-tejhq-encrypted
         run: python scripts/constituent_weekly/audit_c1_direct_nse_special.py --root . --run-id "$GITHUB_RUN_ID"
+      - name: Save encrypted research cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
       - name: Publish audit
         shell: bash
         run: |

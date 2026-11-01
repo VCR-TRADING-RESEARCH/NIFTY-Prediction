@@ -1,8 +1,11 @@
 from __future__ import annotations
-import argparse,csv,hashlib,io,json,time,zipfile
+import argparse,csv,hashlib,io,json,time,zipfile,os,sys
 from datetime import datetime,timezone
 from pathlib import Path
 import requests
+ROOT=Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path: sys.path.insert(0,str(ROOT))
+from scripts.constituent_weekly.audit_c1_daily_history import encrypt_tejhq_cache_bytes
 TARGETS=[
 {"date":"2019-10-27","symbol":"HDFC","session":"Sunday Diwali Muhurat","isin":"INE001A01036"},
 {"date":"2020-02-01","symbol":"HDFC","session":"Saturday Union Budget special session","isin":"INE001A01036"},
@@ -48,7 +51,7 @@ def parse_archive(blob,item,url):
  isin=norm(r.get("ISIN"))
  identity="NOT_PUBLISHED_IN_LEGACY_FILE" if not isin else ("MATCH" if isin==item["isin"] else "MISMATCH")
  ok=ohlc and volume and identity in ("MATCH","NOT_PUBLISHED_IN_LEGACY_FILE")
- return {"status":"VALID_DIRECT_NSE_EQ_OHLCV_ROW" if ok else "INVALID_DIRECT_NSE_ROW","row_count":1,"ohlc_valid":ohlc,"volume_valid":volume,"identity_status":identity,"source_url":url,"source_archive_sha256":hashlib.sha256(blob).hexdigest(),"raw_values_published":False}
+ return {"status":"VALID_DIRECT_NSE_EQ_OHLCV_ROW" if ok else "INVALID_DIRECT_NSE_ROW","row_count":1,"ohlc_valid":ohlc,"volume_valid":volume,"identity_status":identity,"source_url":url,"source_archive_sha256":hashlib.sha256(blob).hexdigest(),"raw_values_published":False,"_raw_row":{**r,"SOURCE_URL":url,"SOURCE_ARCHIVE_SHA256":hashlib.sha256(blob).hexdigest()}}
 def check(item):
  errors=[]
  for url in urls(item["date"]):
@@ -63,9 +66,21 @@ def check(item):
  return {**item,"status":"DIRECT_NSE_ARCHIVE_UNAVAILABLE","row_count":0,"ohlc_valid":False,"volume_valid":False,"source_error_categories":sorted(set(errors))}
 def main():
  p=argparse.ArgumentParser();p.add_argument("--root",default=".");p.add_argument("--run-id",default="");a=p.parse_args()
- results=[check(x) for x in TARGETS]; good=sum(x["status"]=="VALID_DIRECT_NSE_EQ_OHLCV_ROW" for x in results)
+ results=[check(x) for x in TARGETS]
+ raw_rows=[x.pop("_raw_row") for x in results if x.get("_raw_row")]
+ good=sum(x["status"]=="VALID_DIRECT_NSE_EQ_OHLCV_ROW" for x in results)
+ cache_written=False; cache_sha=None
+ token=os.environ.get("HF_TOKEN","")
+ cache_dir=os.environ.get("TEJHQ_ENCRYPTED_CACHE_DIR","")
+ if raw_rows and token and cache_dir:
+  cols=sorted({k for row in raw_rows for k in row})
+  buf=io.StringIO(); writer=csv.DictWriter(buf,fieldnames=cols); writer.writeheader(); writer.writerows(raw_rows)
+  aad=b"bup01:nse-direct-special-sessions:v1"
+  encrypted=encrypt_tejhq_cache_bytes(buf.getvalue().encode("utf-8"),token,aad)
+  target=Path(cache_dir)/"direct_nse_special_sessions.csv.aesgcm"; target.parent.mkdir(parents=True,exist_ok=True); target.write_bytes(encrypted)
+  cache_written=True; cache_sha=hashlib.sha256(encrypted).hexdigest()
  now=datetime.now(timezone.utc).isoformat()
- report={"schema_version":1,"methodology_version":"bup01-c1-direct-nse-special-session-v1","updated_at_utc":now,"github_actions_run_id":a.run_id or None,"status":"PASS_ALL_THREE" if good==3 else "PARTIAL_DIRECT_ARCHIVE_COVERAGE","summary":{"special_sessions":3,"valid_direct_nse_rows":good,"raw_prices_or_volume_published":False},"source":{"publisher":"National Stock Exchange of India","archive_format":"Legacy CM equity bhavcopy ZIP/CSV","url_pattern":"https://archives.nseindia.com/content/historical/EQUITIES/YYYY/MON/cmDDMONYYYYbhav.csv.zip","independent_of_third_party_mirror":True},"results":results,"limitations":["Legacy CSV may omit ISIN; identity is then symbol/series/date only.","HTTP 404 is unavailable, not proof of no trade.","OHLCV validation does not complete the corporate-action adjustment ledger."]}
+ report={"schema_version":1,"methodology_version":"bup01-c1-direct-nse-special-session-v1","updated_at_utc":now,"github_actions_run_id":a.run_id or None,"status":"PASS_ALL_THREE" if good==3 else "PARTIAL_DIRECT_ARCHIVE_COVERAGE","summary":{"special_sessions":3,"valid_direct_nse_rows":good,"raw_prices_or_volume_published":False,"encrypted_supplemental_cache_written":cache_written,"encrypted_cache_sha256":cache_sha,"raw_feature_cache_integration":"PERSISTED_NOT_YET_MERGED"},"source":{"publisher":"National Stock Exchange of India","archive_format":"Legacy CM equity bhavcopy ZIP/CSV","url_pattern":"https://archives.nseindia.com/content/historical/EQUITIES/YYYY/MON/cmDDMONYYYYbhav.csv.zip","independent_of_third_party_mirror":True},"results":results,"limitations":["Legacy CSV may omit ISIN; identity is then symbol/series/date only.","HTTP 404 is unavailable, not proof of no trade.","OHLCV validation does not complete the corporate-action adjustment ledger."]}
  root=Path(a.root);out=root/"research/constituent_weekly/C1_DIRECT_NSE_SPECIAL_SESSION_AUDIT.json";md=root/"research/constituent_weekly/C1_DIRECT_NSE_SPECIAL_SESSION_AUDIT.md";out.parent.mkdir(parents=True,exist_ok=True)
  out.write_text(json.dumps(report,indent=2,sort_keys=True)+"\n",encoding="utf-8")
  lines=["# C1 Direct NSE Special-session Bhavcopy Audit","",f"Updated: {now}",f"Status: {report['status']}","",f"Direct NSE EQ OHLCV rows validated: {good}/3.","","| Date | Security | Session | Result | OHLC | Volume |","|---|---|---|---|---|---|"]
