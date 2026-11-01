@@ -53,5 +53,6 @@ jobs:
             tests/test_constituent_weekly_dhan_preflight.py \
             tests/test_dhan_edge_volume_diagnostic.py \
             tests/test_iwf_math.py \
+            tests/test_iwf_math.py \
             tests/test_nifty50_weight_source.py \
             tests/test_bup01_membership_intervals.py
