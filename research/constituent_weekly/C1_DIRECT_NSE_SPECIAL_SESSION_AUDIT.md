@@ -1,15 +1,15 @@
 # C1 Direct NSE Special-session Bhavcopy Audit
 
-Updated: 2026-11-01T19:47:14.132963+00:00
-Status: PARTIAL_DIRECT_ARCHIVE_COVERAGE
+Updated: 2026-11-01T19:47:48.600641+00:00
+Status: PASS_ALL_THREE
 
-Direct NSE EQ OHLCV rows validated: 0/3.
+Direct NSE EQ OHLCV rows validated: 3/3.
 
 | Date | Security | Session | Result | OHLC | Volume |
 |---|---|---|---|---|---|
-| 2019-10-27 | HDFC | Sunday Diwali Muhurat | NO_EQ_ROW_IN_DIRECT_NSE_ARCHIVE | — | — |
-| 2020-02-01 | HDFC | Saturday Union Budget special session | NO_EQ_ROW_IN_DIRECT_NSE_ARCHIVE | — | — |
-| 2020-11-14 | HDFC | Saturday Diwali Muhurat | NO_EQ_ROW_IN_DIRECT_NSE_ARCHIVE | — | — |
+| 2019-10-27 | HDFC | Sunday Diwali Muhurat | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS |
+| 2020-02-01 | HDFC | Saturday Union Budget special session | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS |
+| 2020-11-14 | HDFC | Saturday Diwali Muhurat | VALID_DIRECT_NSE_EQ_OHLCV_ROW | PASS | PASS |
 
 ## Method
 

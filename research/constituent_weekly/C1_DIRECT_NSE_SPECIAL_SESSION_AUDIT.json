@@ -1,5 +1,5 @@
 {
-  "github_actions_run_id": "41343467684",
+  "github_actions_run_id": "41343518720",
   "limitations": [
     "Legacy CSV may omit ISIN; identity is then symbol/series/date only.",
     "HTTP 404 is unavailable, not proof of no trade.",
@@ -8,91 +8,46 @@
   "methodology_version": "bup01-c1-direct-nse-special-session-v1",
   "results": [
     {
-      "csv_headers": [
-        "SYMBOL",
-        "SERIES",
-        "OPEN",
-        "HIGH",
-        "LOW",
-        "CLOSE",
-        "LAST",
-        "PREVCLOSE",
-        "TOTTRDQTY",
-        "TOTTRDVAL",
-        "TIMESTAMP",
-        "TOTALTRADES",
-        "ISIN",
-        ""
-      ],
-      "csv_member": "cm27OCT2019bhav.csv",
       "date": "2019-10-27",
+      "identity_status": "MATCH",
       "isin": "INE001A01036",
-      "ohlc_valid": false,
-      "row_count": 0,
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
       "session": "Sunday Diwali Muhurat",
       "source_archive_sha256": "b881a41ca300bb9c91d3e532e85cfa6e4f0b79b52840bfee5b921f19e6b38481",
       "source_url": "https://archives.nseindia.com/content/historical/EQUITIES/2019/OCT/cm27OCT2019bhav.csv.zip",
-      "status": "NO_EQ_ROW_IN_DIRECT_NSE_ARCHIVE",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
       "symbol": "HDFC",
-      "volume_valid": false
+      "volume_valid": true
     },
     {
-      "csv_headers": [
-        "SYMBOL",
-        "SERIES",
-        "OPEN",
-        "HIGH",
-        "LOW",
-        "CLOSE",
-        "LAST",
-        "PREVCLOSE",
-        "TOTTRDQTY",
-        "TOTTRDVAL",
-        "TIMESTAMP",
-        "TOTALTRADES",
-        "ISIN",
-        ""
-      ],
-      "csv_member": "cm01FEB2020bhav.csv",
       "date": "2020-02-01",
+      "identity_status": "MATCH",
       "isin": "INE001A01036",
-      "ohlc_valid": false,
-      "row_count": 0,
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
       "session": "Saturday Union Budget special session",
       "source_archive_sha256": "ebed0938cc885e7f450c19d751fc70dcb8f905384fc96617bec889b9004ffd90",
       "source_url": "https://archives.nseindia.com/content/historical/EQUITIES/2020/FEB/cm01FEB2020bhav.csv.zip",
-      "status": "NO_EQ_ROW_IN_DIRECT_NSE_ARCHIVE",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
       "symbol": "HDFC",
-      "volume_valid": false
+      "volume_valid": true
     },
     {
-      "csv_headers": [
-        "SYMBOL",
-        "SERIES",
-        "OPEN",
-        "HIGH",
-        "LOW",
-        "CLOSE",
-        "LAST",
-        "PREVCLOSE",
-        "TOTTRDQTY",
-        "TOTTRDVAL",
-        "TIMESTAMP",
-        "TOTALTRADES",
-        "ISIN",
-        ""
-      ],
-      "csv_member": "cm14NOV2020bhav.csv",
       "date": "2020-11-14",
+      "identity_status": "MATCH",
       "isin": "INE001A01036",
-      "ohlc_valid": false,
-      "row_count": 0,
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
       "session": "Saturday Diwali Muhurat",
       "source_archive_sha256": "652f8a54ba1481baa92032062aec5d3aa00a9db9e919001fec624d69771f1610",
       "source_url": "https://archives.nseindia.com/content/historical/EQUITIES/2020/NOV/cm14NOV2020bhav.csv.zip",
-      "status": "NO_EQ_ROW_IN_DIRECT_NSE_ARCHIVE",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
       "symbol": "HDFC",
-      "volume_valid": false
+      "volume_valid": true
     }
   ],
   "schema_version": 1,
@@ -102,11 +57,11 @@
     "publisher": "National Stock Exchange of India",
     "url_pattern": "https://archives.nseindia.com/content/historical/EQUITIES/YYYY/MON/cmDDMONYYYYbhav.csv.zip"
   },
-  "status": "PARTIAL_DIRECT_ARCHIVE_COVERAGE",
+  "status": "PASS_ALL_THREE",
   "summary": {
     "raw_prices_or_volume_published": false,
     "special_sessions": 3,
-    "valid_direct_nse_rows": 0
+    "valid_direct_nse_rows": 3
   },
-  "updated_at_utc": "2026-11-01T19:47:14.132963+00:00"
+  "updated_at_utc": "2026-11-01T19:47:48.600641+00:00"
 }
