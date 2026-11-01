@@ -24,7 +24,7 @@ index_id,index_name,symbol,valid_from,valid_to,weightage,source,source_url,notes
 217,Nifty 50,GAIL,2014-01-01,2021-03-31,,snapshot_floor,,closed by ind_prs23022021.pdf,equity_security,TRUE
 217,Nifty 50,IOC,2017-03-31,2022-03-31,,press_release,https://niftyindices.com/Press_Release/ind_prs16022017.pdf,closed by ind_prs24022022_1.pdf,equity_security,TRUE
 217,Nifty 50,SHREECEM,2020-03-27,2022-09-30,,press_release,https://niftyindices.com/Press_Release/ind_prs18022020.pdf,closed by ind_prs01092022.pdf,equity_security,TRUE
-217,Nifty 50,HDFC,2014-01-01,2023-07-13,,snapshot_floor,,closed by ind_prs04072023.pdf,equity_security,TRUE
+217,Nifty 50,HDFC,2014-01-01,2023-07-01,,snapshot_floor,,"HDFC Ltd merged into HDFC Bank effective 2023-07-01; last separately tradable session is 2023-06-30. Index administrative removal occurred effective 2023-07-13; do not map the legacy security to HDFCBANK.",equity_security,TRUE
 217,Nifty 50,UPL,2017-09-29,2024-03-28,,press_release,https://niftyindices.com/Press_Release/ind_prs28082017.pdf,closed by ind_prs28022024.pdf,equity_security,TRUE
 217,Nifty 50,DIVISLAB,2020-09-25,2024-09-30,,press_release,https://niftyindices.com/Press_Release/ind_prs20082020.pdf,closed by ind_prs23082024.pdf,equity_security,TRUE
 217,Nifty 50,LTM,2023-07-13,2024-09-30,,press_release,https://niftyindices.com/Press_Release/ind_prs04072023.pdf,closed by ind_prs23082024.pdf,equity_security,TRUE
