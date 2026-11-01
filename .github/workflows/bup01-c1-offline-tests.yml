@@ -17,6 +17,8 @@ on:
       - "tests/test_c1_security_alias_history.py"
       - "scripts/constituent_weekly/audit_c1_daily_history.py"
       - "tests/test_c1_daily_history.py"
+      - "scripts/constituent_weekly/probe_c1_dhan_intraday_response_shape.py"
+      - "tests/test_c1_dhan_response_shape_probe.py"
       - ".github/workflows/bup01-c1-offline-tests.yml"
   pull_request:
     branches:
@@ -58,4 +60,5 @@ jobs:
             tests/test_constituent_weekly_plan.py \
             tests/test_c1_continuous_dhan_coverage.py \
             tests/test_c1_security_alias_history.py \
-            tests/test_c1_daily_history.py
+            tests/test_c1_daily_history.py \
+            tests/test_c1_dhan_response_shape_probe.py
