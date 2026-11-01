@@ -384,6 +384,7 @@ def test_analyse_intraday_range_excludes_2021_muhurat_date_and_postmarket_rows()
     assert result["anchor_sessions_present"] == 3
     assert result["expiry_proxy_sessions_present"] == 3
     assert result["outside_regular_hours_bar_count"] == 1
+    assert result["special_session_excluded_bar_count"] == 1
     assert result["invalid_numeric_rows"] == 0
     assert result["invalid_ohlc_rows"] == 0
     assert result["invalid_volume_rows"] == 0

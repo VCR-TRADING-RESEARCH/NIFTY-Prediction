@@ -311,7 +311,9 @@ def analyse_intraday_range(body: dict, symbol: str, start_date: str, end_date: s
     # Exclude entire date from normal 10:00/15:15 expiry-proxy validation.
     special_session_dates = {"2021-11-04", "2022-10-24"}
     special_dates_in_response = sorted(set(dates).intersection(special_session_dates))
-    regular_mask = clock.between("09:15", "15:30") & ~day.isin(special_session_dates)
+    special_mask = day.isin(special_session_dates)
+    regular_hours_mask = clock.between("09:15", "15:30")
+    regular_mask = regular_hours_mask & ~special_mask
     regular_frame = frame.loc[regular_mask].copy()
     regular_day = day.loc[regular_mask]
     regular_clock = clock.loc[regular_mask]
@@ -360,7 +362,8 @@ def analyse_intraday_range(body: dict, symbol: str, start_date: str, end_date: s
         "status": "PASS" if passed else "RANGE_COVERAGE_OR_OHLC_FAILED",
         "bar_count": int(len(frame)),
         "regular_bar_count": int(len(regular_frame)),
-        "outside_regular_hours_bar_count": int(len(frame) - len(regular_frame)),
+        "outside_regular_hours_bar_count": int((~regular_hours_mask & ~special_mask).sum()),
+        "special_session_excluded_bar_count": int(special_mask.sum()),
         "response_calendar_date_count": int(len(dates)),
         "session_count": int(len(regular_dates)),
         "special_session_dates_excluded": special_dates_in_response,
