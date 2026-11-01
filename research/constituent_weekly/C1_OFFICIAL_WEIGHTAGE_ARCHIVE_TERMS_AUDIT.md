@@ -162,3 +162,12 @@ The free-source sweep now includes official NSE/Nifty Indices reports and terms,
 - The category XBRL dataset remains the technically richest candidate but its explicit licence glob does not clearly include the nested compressed CSV, and categories may not resolve every relationship/agreement exclusion.
 - The official monthly IWF / weight history is the correct data product to request for commercial trading research. A price quote, terms of cache retention, derivative features, derived-statistics publication, internal use, and any redistribution restrictions must be confirmed in writing before ingestion.
 - **No source data was added in this audit.** The research plan remains locked; C1 overall remains NOT PASSED until exact weight rights/completeness and a 98%-coverage basket-to-index reconstruction pass.
+
+
+## IWF calculation follow-up — 22 exclusions and denominator test (2026-11-01)
+
+The row-by-row [22-exclusion matrix](C1_IWF_EXCLUSION_MAPPING.csv) and [IWF mathematical audit](C1_IWF_MAPPING_AUDIT.md) now formalise the category-mapping gate. The official NSE worked example divides by total shares and rounds IWF to six decimals. The third-party parser's A+B+C2 reported-percentage denominator is distinct; do not use its percentages as IWF inputs. Use absolute share counts, verify the authoritative denominator/DR treatment, and deduplicate unique holding positions across overlapping exclusions.
+
+A small arithmetic helper and seven regression tests were added. The official example is reproduced as **0.608794**; duplicate position IDs and incomplete 22-item evidence dispositions are rejected. Corrected offline C1 workflow [41269516064](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269516064) passed 50/50, including the IWF tests. The initial 43-test run omitted the new test file from pytest despite its path filter; this is logged and closed as E0049.
+
+The main repository is public. No raw Dhan minute bars, XBRL category data or named-shareholder data will be committed to public branches/artifacts/caches until source terms explicitly permit that disclosure. The technical calculation harness passes; the rights and empirical coverage gates remain open. No IWF values or historical constituent weights have been produced.
