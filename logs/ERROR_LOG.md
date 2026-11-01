@@ -440,7 +440,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Restrict the governance workflow push trigger to phase/constituent-weekly-outcomes-c0; make the offline-regression and authorised-source audit workflows PR/manual checks rather than repeated push+PR checks; remove the duplicate IWF test invocation.
 - **Impact:** No data, labels or model output was affected. The correction reduces redundant runs and prevents C1 changes from being misrepresented as C0 registration activity.
 - **Verification:** Latest pre-correction runs [41272606532](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272606532), [41272606507](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272606507) and [41272606502](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272606502) all succeeded. Corrected workflow validation is pending.
-- **Status:** FIX COMMITTED — close only after the new workflow push/PR checks complete.
+- **Status:** CLOSED — C0 governance trigger is restricted to the C0 branch; subsequent C1 validation runs completed without C0 governance fan-out.
 
 
 ## E0055 — 2026-11-01 — AMC metadata probe workflow omitted pytest
@@ -449,7 +449,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** Python dependency installation succeeded, but the parser-regression step stopped before source retrieval because the dedicated probe workflow installed requests, BeautifulSoup, pandas and xlrd but not pytest.
 - **Correction:** Added pytest explicitly to the workflow dependency install command. The source-probe step will run only after its tests execute.
 - **Impact:** No AMC workbook was requested or parsed by this failed run; it does not indicate a source-access or data-availability failure.
-- **Status:** FIX APPLIED — close after a successful corrected probe run.
+- **Status:** CLOSED — subsequent probe resolved and parsed both required recent monthly workbooks.
 
 
 ## E0056 — 2026-11-01 — AMC page rendered archive links not discoverable as ordinary .xls anchors in runner HTML
@@ -477,7 +477,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** Seven offline parser and file-signature tests passed. The September 2026 and February 2026 requests both returned HTTP 200, but the downloaded bytes did not begin with either the XLSX ZIP signature or the legacy XLS OLE signature; the guessed April 2019 URL returned HTTP 404. The metadata probe therefore failed closed before reading workbook contents.
 - **Correction/investigation:** Added a browser-style User-Agent, Accept and Referer header; the next run records only response content type, byte count, SHA-256 and the first 12 bytes as hex. No response body, workbook rows or holdings values are emitted.
 - **Impact:** No constituent holdings or weights were parsed or admitted. A 200 status alone is not treated as successful file retrieval.
-- **Status:** INVESTIGATING — require actual supported workbook container and schema confirmation before using the archive.
+- **Status:** CLOSED — run [41275178244](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275178244) found valid XLSX ZIP signatures and parsed both recent workbooks.
 
 
 ## E0059 — 2026-11-01 — XLSX signature predicate was double-escaped in the first container-detection implementation
@@ -486,4 +486,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** The run's report showed content type application/vnd.ms-excel, 1,352,141 bytes and ZIP magic prefix 504b03041400060008000000 for September 2026, and 1,206,358 bytes with the same ZIP prefix for February 2026. Yet workbook_engine rejected both because its Python bytes literal contained double-escaped backslashes rather than the ZIP bytes.
 - **Correction:** Replaced string-style signature literals with bytes.fromhex("504b0304") for XLSX and bytes.fromhex("d0cf11e0") for legacy XLS; updated unit fixtures accordingly. The same commit adds the pull --rebase command to the report-commit step (the earlier run used the workflow version before that correction).
 - **Impact:** No raw workbook body or holdings values were recorded. The direct archive URL works at the transport layer, but actual schema is still unverified. April 2019 candidate remains HTTP 404.
-- **Status:** FIX COMMITTED — validate with the next run; close after both recent workbooks parse and the sanitized report push succeeds.
+- **Status:** CLOSED — exact-byte XLSX signature detection passed; E0060 separately tracks the concurrent report-push issue.
+
+
+## E0060 — 2026-11-01 — AMC probe report auto-commit raced with parallel C1 branch updates
+
+- **Run:** [41275178244](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275178244).
+- **Observed:** The parser and schema probe completed successfully, but the report auto-commit's single git pull/rebase was followed by another C1 branch update before push. GitHub rejected the push because the ref had advanced again.
+- **Correction:** The successful sanitised report is committed through the repository Git data API. The workflow publisher is upgraded to bounded fetch/rebase/push retries; it never force-pushes.
+- **Impact:** No research result or raw data was lost. The report is now committed at C1; no raw holdings or workbook data are stored.
+- **Status:** FIX COMMITTED — the next workflow run validates the bounded retry publisher.
