@@ -3,7 +3,7 @@
 **Report date:** 2026-11-02  
 **Phase branch:** phase/constituent-weekly-outcomes-c1-data  
 **Plan:** BUP-01 v1.3 (locked current method); earlier v1.1/v1.2 IWF material is historical and superseded  
-**Developer decision:** C1 is **PARTIAL / IDENTITY + CORPORATE-ACTION REVIEW**. Daily OHLCV and audited intraday weekly target coverage have passed. Do not enable C2 until dated security identity and event-level corporate-action continuity are accepted. No ETF/IWF comparison is required under v1.3.
+**Historical C1 audit finding:** C1 data coverage passed; historical security identity and event-level corporate-action verification were incomplete. **Progression decision (2026-11-02):** the user explicitly waived those remaining checks as preconditions. C1 is therefore accepted with limitations for progression, not retrospectively certified as fully verified. Formal C2 panel construction carries unresolved flags and a conservative sensitivity panel. No ETF/IWF comparison is required under v1.3.
 
 ## 1. Executive finding
 
@@ -13,7 +13,7 @@ The registered intraday weekly target audit passes **258/258 cycles** against th
 
 The remaining C1 blockers are dated historical security identity/alias closure and event-level corporate-action verification. The discovery catalogue contains 18,361 deduplicated events and 711 point-in-time member matches, but independent exchange/issuer circular review, event-specific ratio/consideration validation, price/volume continuity checks and affected-cycle inclusion/exclusion decisions are not complete. No adjusted-return series is certified.
 
-**No C2 constituent panel, C3 stock model, C4 NIFTY meta-model, C5 economic strategy or C6 final manuscript has been generated.** No bottom-up prediction or trading strategy is claimed.
+**At the time of this historical C1 report, no panel/model existed.** Formal C2 panel-only work is now in progress on `phase/constituent-weekly-outcomes-c2-panel`. The bundled pilot is diagnostic only. No bottom-up prediction or trading strategy is claimed.
 
 ## 2. Gate scoreboard
 
@@ -206,3 +206,17 @@ The later full artifact from [run 41309632317](https://github.com/VCR-TRADING-RE
 The only window-level partial is the extra 15:14 check on 2024-04-26. The 10:00 anchor on that date passes; the date was not a weekly expiry. The cycle's actual expiry proxy on 2024-05-02 passes. The earlier 77/258 result is retained as an earlier incomplete run and is superseded by this full artifact.
 
 **Remaining C1 gates:** the daily first-pass result has 98.85% OHLCV member-session coverage, but the legacy HDFC daily series and one TATAMOTORS member session remain unresolved before the corrected personal-use fallback; exhaustive corporate-action/adjusted-return review is also open. Overall C1 NOT PASSED; C2 PENDING.
+
+
+## 5. User-directed progression decision — 2026-11-02
+
+The user stated: “No check needed.” The project therefore stops further pre-model work on the five remaining historical alias records and the 711 event-catalogue candidates. This is an explicit scope/prioritisation decision, **not** an evidence-based pass of the unresolved checks.
+
+C2 is authorised to proceed with:
+- identity/action flags retained in every relevant panel row;
+- no unverified split, bonus, rights, merger or demerger adjustment factor;
+- a conservative sensitivity panel that excludes rows with known identity review or known action crossings;
+- separate reporting of the exploratory panel and conservative panel;
+- limitations disclosed in any C2–C6 results/manuscript.
+
+Formal C2 branch: [phase/constituent-weekly-outcomes-c2-panel](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c2-panel). The earlier bundled pilot branch `phase/constituent-weekly-outcomes-c2-models` is diagnostic only and does not replace the plan-defined C2/C3/C4 branch sequence.
