@@ -7,6 +7,7 @@ from scripts.constituent_weekly.run_c2_panel_and_models import (
     arrays_from_body,
     equal_cycle_weights,
     event_flags,
+    index_features,
     metrics,
     parse_target_bars,
     stock_features,
@@ -93,3 +94,20 @@ def test_model_metric_calculation_is_well_formed():
     assert result["balanced_accuracy"] == 1.0
     assert result["brier"] <= 0.1
     assert result["roc_auc"] == 1.0
+
+
+def test_index_features_accept_official_nifty_daily_column_names():
+    dates = pd.bdate_range("2025-01-01", periods=90)
+    close = 20000 + np.arange(len(dates)) * 4.0
+    frame = pd.DataFrame({
+        "session_date": dates.strftime("%Y-%m-%d"),
+        "official_open": close - 5, "official_high": close + 20,
+        "official_low": close - 30, "official_close": close,
+    })
+    result = index_features(frame, dates[75].strftime("%Y-%m-%d"))
+    assert result is not None
+    assert set(result) == {
+        "idx_ret_1d", "idx_ret_5d", "idx_ret_10d", "idx_ret_20d", "idx_ret_60d",
+        "idx_vol_10d", "idx_vol_20d", "idx_vol_60d", "idx_range_10d", "idx_range_20d",
+    }
+    assert np.isfinite(list(result.values())).all()
