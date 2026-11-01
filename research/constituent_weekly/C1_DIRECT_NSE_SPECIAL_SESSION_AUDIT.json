@@ -1,0 +1,55 @@
+{
+  "github_actions_run_id": "41343402825",
+  "limitations": [
+    "Legacy CSV may omit ISIN; identity is then symbol/series/date only.",
+    "HTTP 404 is unavailable, not proof of no trade.",
+    "OHLCV validation does not complete the corporate-action adjustment ledger."
+  ],
+  "methodology_version": "bup01-c1-direct-nse-special-session-v1",
+  "results": [
+    {
+      "date": "2019-10-27",
+      "isin": "INE001A01036",
+      "ohlc_valid": false,
+      "row_count": 0,
+      "session": "Sunday Diwali Muhurat",
+      "status": "NO_EQ_ROW_IN_DIRECT_NSE_ARCHIVE",
+      "symbol": "HDFC",
+      "volume_valid": false
+    },
+    {
+      "date": "2020-02-01",
+      "isin": "INE001A01036",
+      "ohlc_valid": false,
+      "row_count": 0,
+      "session": "Saturday Union Budget special session",
+      "status": "NO_EQ_ROW_IN_DIRECT_NSE_ARCHIVE",
+      "symbol": "HDFC",
+      "volume_valid": false
+    },
+    {
+      "date": "2020-11-14",
+      "isin": "INE001A01036",
+      "ohlc_valid": false,
+      "row_count": 0,
+      "session": "Saturday Diwali Muhurat",
+      "status": "NO_EQ_ROW_IN_DIRECT_NSE_ARCHIVE",
+      "symbol": "HDFC",
+      "volume_valid": false
+    }
+  ],
+  "schema_version": 1,
+  "source": {
+    "archive_format": "Legacy CM equity bhavcopy ZIP/CSV",
+    "independent_of_third_party_mirror": true,
+    "publisher": "National Stock Exchange of India",
+    "url_pattern": "https://archives.nseindia.com/content/historical/EQUITIES/YYYY/MON/cmDDMONYYYYbhav.csv.zip"
+  },
+  "status": "PARTIAL_DIRECT_ARCHIVE_COVERAGE",
+  "summary": {
+    "raw_prices_or_volume_published": false,
+    "special_sessions": 3,
+    "valid_direct_nse_rows": 0
+  },
+  "updated_at_utc": "2026-11-01T19:46:28.089947+00:00"
+}
