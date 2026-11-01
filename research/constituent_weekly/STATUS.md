@@ -506,3 +506,14 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Reconciled it against the project's independently maintained C1 interval ledger at **103/103 month-ends** from 2018-04-30 through 2026-10-31. Upstream symbol canonicalisation TMPV is mapped back to TATAMOTORS before 2025-10-24; temporary non-tradable DUMMYTATAM is excluded for the tradable membership comparison. The project ledger has 50 members at 102 dates and 51 on 2025-10-31 only because the temporary zero-price placeholder is counted.
 - Latest cross-check run [41289992040](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289992040) passed all selected regression tests. The separate authorised-source audit [41289991986](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289991986) also succeeded.
 - **Important:** this validates membership only. The CC BY table's historical numeric weightage cells are all blank. It is not an index-weight or IWF series and does not close the C1 weight/data gate.
+
+
+
+## mfdata.in month-history availability probe — 2026-11-01
+
+- [Actions run 41297143071](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41297143071) completed **SUCCESS**. All 13 metadata/parser regression tests passed; the probe and sanitised report publication also completed.
+- The source's [published documentation](https://mfdata.in/docs) describes a no-key scheme search, a family-level monthly portfolio-history endpoint, and a separate month-specific holdings endpoint. The history route is the appropriate low-data-risk first test because it returns month labels only.
+- Live result: all three discovery routes (/search, /families fallback and legacy /schemes search) returned HTTP **522** from the hosted runner. No NIFTY 50 family ID was identified and the /families/{family_id}/holdings/history endpoint was **not reached**. This is an upstream/gateway access failure, not evidence of zero historical records.
+- The API docs report 30 standard requests per minute. The probe used only three bounded discovery calls and stopped without a retry loop. The API page's MIT License refers to the software; no explicit underlying-data licence or permission for commercial trading research, caching or redistribution was verified.
+- **Disposition:** API route is technically documented but actual historical coverage remains **UNVERIFIED / INCONCLUSIVE**. Do not import holdings or use the source for model weights until the history route, actual dates, original-source lineage/publication timing and data-use rights are independently validated.
+- No data was cached, no month-specific holdings endpoint was called, and no stock-level portfolio values were written to the repository. C1 remains **NOT PASSED / RIGHTS-BLOCKED**; C2–C6 remain pending. [Full sanitised discovery report](C1_AMCS_API_DISCOVERY_REPORT.md).
