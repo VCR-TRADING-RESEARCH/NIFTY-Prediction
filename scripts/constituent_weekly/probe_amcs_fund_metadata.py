@@ -195,7 +195,7 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
             hist_object_key_sets = []
             hist_month_keys = []
             for key, value in hold_hist.items():
-                if isinstance(key, str) and re.fullmatch(r"20\\d{2}-\\d{2}", key):
+                if isinstance(key, str) and re.fullmatch(r"20\d{2}-\\d{2}", key):
                     hist_month_keys.append(key)
                 if isinstance(value, list):
                     hist_counts["list"] = hist_counts.get("list", 0) + 1
@@ -205,14 +205,14 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
                 elif isinstance(value, dict):
                     hist_counts["dict"] = hist_counts.get("dict", 0) + 1
                     for nested_key in value:
-                        if isinstance(nested_key, str) and re.fullmatch(r"20\\d{2}-\\d{2}", nested_key):
+                        if isinstance(nested_key, str) and re.fullmatch(r"20\d{2}-\\d{2}", nested_key):
                             hist_month_keys.append(nested_key)
             shape["hold_hist_container_counts"] = hist_counts
             shape["hold_hist_key_count"] = len(hold_hist)
             shape["hold_hist_key_names"] = [
                 str(key) for key in list(hold_hist.keys())[:10]
                 if re.fullmatch(r"[A-Za-z_]{1,40}", str(key))
-                or re.fullmatch(r"20\\d{2}-\\d{2}", str(key))
+                or re.fullmatch(r"20\d{2}-\\d{2}", str(key))
             ]
             if hist_list_lengths:
                 shape["hold_hist_list_lengths"] = hist_list_lengths[:20]
@@ -220,8 +220,9 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
                 shape["hold_hist_list_item_keys"] = hist_object_key_sets[:3]
             months = hold_hist.get("months")
             if isinstance(months, list):
-                month_values = [x for x in months if isinstance(x, str) and re.fullmatch(r"20\\d{2}-\\d{2}", x)]
+                month_values = [x for x in months if isinstance(x, str) and re.fullmatch(r"20\d{2}-\\d{2}", x)]
                 shape["hold_hist_month_count"] = len(month_values)
+                shape["hold_hist_months"] = month_values[:20]
                 if month_values:
                     shape["hold_hist_first_month"] = min(month_values)
                     shape["hold_hist_last_month"] = max(month_values)
@@ -248,7 +249,7 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
                     shape["hold_hist_dict_value_key_samples"] = [
                         str(k) for k in list(value.keys())[:10]
                         if re.fullmatch(r"[A-Za-z_]{1,40}", str(k))
-                        or re.fullmatch(r"20\\d{2}-\\d{2}", str(k))
+                        or re.fullmatch(r"20\d{2}-\\d{2}", str(k))
                     ]
                     break
                 if isinstance(value, list) and value:
@@ -461,6 +462,15 @@ def run_probe() -> dict[str, Any]:
                 "keys": sorted(str(k) for k in index.keys())[:40],
                 "endpoint_names": sorted(str(k) for k in index.get("endpoints", {}).keys())[:80]
                     if isinstance(index.get("endpoints"), dict) else [],
+                "endpoint_count": len(index.get("endpoints", []))
+                    if isinstance(index.get("endpoints"), list) else None,
+                "endpoint_item_keys": sorted(str(k) for k in index["endpoints"][0].keys())[:30]
+                    if isinstance(index.get("endpoints"), list) and index["endpoints"] and isinstance(index["endpoints"][0], dict) else [],
+                "endpoint_paths": [
+                    item.get("path") or item.get("url") or item.get("route")
+                    for item in index.get("endpoints", [])
+                    if isinstance(item, dict) and isinstance(item.get("path") or item.get("url") or item.get("route"), str)
+                ][:60] if isinstance(index.get("endpoints"), list) else [],
                 "docs_type": type(index.get("docs")).__name__,
                 "endpoints_type": type(index.get("endpoints")).__name__,
             }
