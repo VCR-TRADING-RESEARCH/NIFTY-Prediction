@@ -50,6 +50,8 @@ jobs:
 
       - name: Clear stale C2 result snapshots
         run: |
+          rm -f research/constituent_weekly/C2_PANEL_BUILD.json
+          rm -f research/constituent_weekly/C2_PANEL_BUILD.md
           rm -f research/constituent_weekly/C2_MODEL_RESULTS.json
           rm -f research/constituent_weekly/C2_MODEL_RESULTS.md
           rm -f research/constituent_weekly/C2_INDEX_OOF_FORECASTS.csv
@@ -109,6 +111,8 @@ jobs:
         with:
           name: bup01-c2-results-${{ github.run_id }}
           path: |
+            research/constituent_weekly/C2_PANEL_BUILD.json
+            research/constituent_weekly/C2_PANEL_BUILD.md
             research/constituent_weekly/C2_MODEL_RESULTS.json
             research/constituent_weekly/C2_MODEL_RESULTS.md
             research/constituent_weekly/C2_INDEX_OOF_FORECASTS.csv
