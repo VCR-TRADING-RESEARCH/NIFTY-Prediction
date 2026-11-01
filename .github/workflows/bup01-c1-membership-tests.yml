@@ -45,6 +45,6 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install test runner
-        run: python -m pip install --disable-pip-version-check pytest
+        run: python -m pip install --disable-pip-version-check pytest pyotp requests
       - name: Validate membership intervals and Dhan authentication helper
         run: python -m pytest -q tests/test_bup01_membership_intervals.py tests/test_dhan_token_refresh_script.py
