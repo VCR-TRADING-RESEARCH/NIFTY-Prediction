@@ -1,7 +1,7 @@
 # C1 amcs.fund API metadata discovery
 
-- Run time (UTC): 2026-11-01T10:08:18.142729+00:00
-- Scope: **metadata only**; the probe calls the documented scheme/month endpoints and inspects first-party HDFC/UTI portfolio archive UI metadata. It does not submit archive forms, download portfolio workbooks, or store holdings values.
+- Run time (UTC): 2026-11-01T10:10:47.807165+00:00
+- Scope: **metadata only**; the probe inspects AMC archive UI and mfdata.in family/month-history metadata. It does not submit AMC archive forms, call fund-family holdings endpoints, download portfolio workbooks, or store holdings values.
 - Rights: **UNVERIFIED**. Public API access is not treated as permission for commercial/trading-research extraction, caching, or redistribution.
 
 | Endpoint | Result | HTTP | Content type | Bytes | Top-level records |
@@ -141,6 +141,13 @@
 - {"month": "2019-04"}
 - {"month": "2022-09"}
 - {"month": "2025-09"}
+
+## mfdata.in independent portfolio-history availability audit
+
+- Scope: scheme/family labels and month availability metadata only; no per-stock holdings endpoint was requested.
+| mfdata.in /api/v1/schemes?search=nifty 50 | ERROR | 522 | application/json; charset=utf-8 | 0 |  |
+- No matching family records were returned by the documented mfdata scheme search.
+- No family_id values were available to query the documented holdings-history endpoint.
 
 ## Tipsheet NIFTY 50 weight-data catalogue entries
 
