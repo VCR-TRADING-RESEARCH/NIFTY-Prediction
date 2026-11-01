@@ -323,3 +323,14 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - The corrected 2021-11-01–2022-01-29 full-universe edge request did **not** execute because the earlier test failure stopped the Dhan step; the subsequent run was blocked at authentication. It remains unverified.
 - No C2 panel, stock model, weighted index forecast, or trading strategy is authorised. C1 remains **NOT PASSED** pending Dhan access, licensed/authorised point-in-time weights, identity/corporate-action coverage and basket reconstruction.
 - Next action: correct the organization Dhan authentication secrets (verify client ID, six-digit PIN, and TOTP setup/seed) or configure the documented API-key/secret OAuth credentials. Do not loop token retries or use the expired fallback token.
+
+
+## Dhan authentication hardening — 2026-11-01
+
+- Merged PR [#29](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/pull/29), commit `cb7d304831f039bb994d819d5570a71f2bec0116`.
+- Shared authentication helper now accepts either a raw Base32 TOTP seed or a standard `otpauth://totp/` provisioning URI. Whitespace around a raw seed is normalized conservatively; other unrecognized formats fail closed.
+- Added a sanitized comparison of the Dhan HTTP `Date` header against runner UTC time. Only the integer clock difference is retained; no seed, OTP, token, PIN or provider response values are logged.
+- Added offline regression tests for raw/URI equivalence, invalid HOTP/empty values and positive/negative clock offsets. The Dhan workflow now triggers when the shared helper or its tests change.
+- Post-merge C1 source-audit and research workflows: [run 41266155292](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155292) and [run 41266155248](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155248) completed successfully.
+- Protected Dhan preflight [run 41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250) was still installing dependencies at the last observation; offline tests, clock diagnostic and live authentication result are therefore pending. No new data coverage is claimed yet.
+- Overall C1 remains **NOT PASSED / RIGHTS + DATA BLOCKED**; C2 remains gated. This code change diagnoses authentication; it does not establish that the previous secret configuration was incorrect.
