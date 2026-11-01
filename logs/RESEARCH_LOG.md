@@ -327,3 +327,10 @@
 - The new final workflow gate ran after the sanitized report was committed and deliberately failed the job on PARTIAL_OR_BLOCKED; no further false-green conclusion. E0032 (live token/profile auth blocker) and E0033 (status gate ordering/runtime) are now closed; E0045 tracks the single SHREECEM volume anomaly.
 - Added a bounded single-stock SHREECEM diagnostic (one 90-day API request) to get the bad row timestamp, not its price or volume. Initial offline test exposed unsupported pandas .dt.isoformat; fixed to call Timestamp.isoformat() on row objects. Corrected diagnostic run is pending.
 - **Gate outcome:** authentication and most sampled price-history gates pass, but C1 remains NOT PASSED due to the SHREECEM strict QA item, incomplete continuous five-year backfill, and the decisive unresolved official/licensed point-in-time IWF series and basket reconciliation. C2 remains gated. No stock model or forecast run.
+
+
+## 2026-11-01 — SHREECEM diagnostic runner import-path correction
+
+- Corrected diagnostic timestamp formatting; offline test run [41266604463](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266604463) then passed 2/2.
+- The same run failed before network access because direct execution from the script subdirectory did not place repository root on sys.path (E0046). Added explicit repository-root insertion before project imports in commit 34e067d.
+- The corrected push-triggered one-symbol run is pending. No extra full-universe data request is scheduled by this diagnostic workflow.
