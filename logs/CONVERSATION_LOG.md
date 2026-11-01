@@ -419,3 +419,11 @@
 - Persisted the seven raw rows only in the AES-GCM encrypted Actions cache using the existing HF_TOKEN-derived key. The daily audit restores that cache without redownloading the seven TejHQ year partitions.
 - Updated the daily coverage auditor to decrypt and merge the supplemental NSE rows. Successful run 41344197015 reports COMPLETE: 106,392/106,392 OHLCV member sessions, zero gaps across 70 symbols, minimum per-symbol coverage 100%.
 - C1 overall remains open for corporate-action event/adjusted-return verification; C2 remains locked. No hidden reasoning or credentials are recorded.
+
+
+## 2026-11-02 — User authorised progression without remaining C1 checks
+
+- User instruction: "No check needed".
+- Recorded the remaining historical identity and corporate-action checks as accepted limitations, not passed validations.
+- Created C1 acceptance/C2 handoff note and updated STATUS.md. C2 must preserve unresolved flags, avoid unverified adjustment factors, and include a conservative sensitivity panel.
+- Created phase branch `phase/constituent-weekly-outcomes-c2-models`. No model result is claimed yet.
