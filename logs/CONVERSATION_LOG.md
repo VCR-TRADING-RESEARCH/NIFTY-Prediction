@@ -232,3 +232,11 @@
 - One-date source calibration: Nippon India ETF Nifty 50 BeES portfolio date 2026-02-28 / NAV date 2026-02-27 compared with NSE Indices official weight snapshot 2026-02-27; 50/50 matched; MAE 0.002214 pp; RMSE 0.003204 pp; max absolute difference 0.008967 pp; Pearson r 0.99999895 after equity-only normalization.
 - Plan amended to v1.2 to add point-in-time ETF holdings snapshots and fixed-share weight drift between observations, with strict event reseeding, reporting-lag controls and a separate exploratory result track. Official confirmatory gates remain.
 - Only visible decisions and outcomes are logged; hidden private reasoning and credentials are not stored.
+
+
+## 2026-11-01 — Resume / Proceed after screenshot of interrupted chat
+
+- User provided a screenshot showing that two “Resume” messages could not be sent in the ChatGPT client while repository Actions were updating the C1 branch. The screenshot itself does not establish a GitHub failure.
+- Repository re-check found the latest C1 commit f1aa72f and successful source-audit, Dhan PR-preflight/offline, and governance Actions runs. The latest Dhan job was a PR/offline run; its live Dhan request steps were correctly skipped.
+- User then said “Proceed”. The agent continued the bounded C1 source/rights audit, found the Nippon India AMC monthly portfolio archive and documented the AMFI non-commercial website terms. No hidden reasoning, credentials or raw market data are recorded.
+- Current decision: implement a metadata-only probe of three AMC workbooks; keep C2 blocked pending source-use rights, publication timing, corporate-action identity, coverage and basket reconciliation.
