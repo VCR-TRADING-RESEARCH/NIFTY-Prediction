@@ -125,3 +125,21 @@ C1 remains **PARTIAL / NOT YET ACCEPTED**. The proxy source passes a one-date ca
 - [Weight-proxy utilities](../../scripts/constituent_weekly/weight_proxy.py)
 - [Eight regression tests](../../tests/test_constituent_weekly_weight_proxy.py)
 - [Plan v1.2](RESEARCH_PLAN.md)
+
+
+## Addendum — recent Nippon AMC source-schema validation (2026-11-01)
+
+### Passed evidence
+- The AMC primary monthly portfolio archive exposes a recent Nifty BeES portfolio workbook.
+- September 2026 and February 2026 direct workbooks both returned HTTP 200. Although URLs end in .xls, file signatures identify XLSX containers; the probe reads them with the correct engine.
+- Target scheme was located in both workbooks. ISIN, quantity and portfolio-weight headers were detected; each scheme section contained 50 ISIN-bearing rows.
+- Seven offline regression tests passed. The metadata-only results, byte sizes and SHA-256 hashes are recorded in [C1_AMC_ARCHIVE_PROBE_REPORT.md](C1_AMC_ARCHIVE_PROBE_REPORT.md), linked to Actions run [41275178244](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275178244).
+
+### Still blocked
+- The April 2019 archive item is visible, but the guessed modern-format download URL returned 404. Its correct historical direct link remains unresolved.
+- The actual publication timestamps for each portfolio month have not been independently established.
+- AMC site/data terms do not yet affirmatively establish automated extraction and trading-research use rights. AMFI composite data remain excluded absent separate clearance.
+- No historical holdings series has yet been reconstructed, no point-in-time weight coverage has been measured, and no weighted basket-to-index reconciliation has run.
+
+### Gate disposition
+This raises source feasibility from discovery-only to **recent-schema PASS**, but does not pass C1 overall. C1 is **PARTIAL / NOT ACCEPTED FOR MODELLING**; C2–C6 remain gated. Do not present these holdings as official NIFTY IWF or as a validated historical proxy series.
