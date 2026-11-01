@@ -25,7 +25,7 @@ def parse_archive(blob,item,url):
  for row in reader:
   r={norm(k):v for k,v in row.items() if k is not None}
   if norm(r.get("SYMBOL"))!=item["symbol"] or norm(r.get("SERIES"))!="EQ": continue
-  raw=str(r.get("DATE1","")).strip()
+  raw=str(r.get("DATE1") or r.get("TIMESTAMP") or r.get("TRADE_DATE") or "").strip()
   parsed=None
   for fmt in ("%d-%b-%Y","%d-%B-%Y","%Y-%m-%d","%d/%m/%Y"):
    try: parsed=datetime.strptime(raw,fmt).strftime("%Y-%m-%d"); break
