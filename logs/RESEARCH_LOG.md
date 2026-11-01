@@ -802,3 +802,7 @@
 - Input manifest: 715623a04ff8e32a2a7b0a744a1e4b590d37f758c708eb5d7f5352d7dd00a553.
 - Encrypted panel cache metadata: {}.
 - C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.
+
+
+## C2 panel acquisition diagnostic — 2026-11-02
+- Formal C2 workflow [41349085435](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41349085435) passed compilation and 7 offline tests but failed panel acceptance because all 62 daily responses parsed as MISSING_DAILY_ARRAY after 1,083 intraday calls. C1 daily evidence remains 106,392/106,392; this is a C2 acquisition issue, not a data-availability conclusion. Reordered daily acquisition before intraday (commit d37382c) and added value-free response-shape diagnostics (45839fa). Reruns [41350817688](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41350817688) and [41350828764](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41350828764) pending.
