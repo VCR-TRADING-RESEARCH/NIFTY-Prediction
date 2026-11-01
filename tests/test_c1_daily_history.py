@@ -9,6 +9,7 @@ from scripts.constituent_weekly.audit_c1_daily_history import (
     build_expected_member_sessions,
     parse_daily_payload,
     summarise_daily_coverage,
+    summarise_daily_universe,
 )
 
 
@@ -104,3 +105,42 @@ def test_duplicate_daily_session_is_not_double_counted():
     assert result["valid_ohlc_session_count"] == 1
     assert result["duplicate_session_count"] == 1
     assert result["missing_session_count"] == 1
+
+
+def test_unparseable_historical_security_is_counted_as_zero_coverage():
+    symbols = ["HDFC", "TATAMOTORS"]
+    expected = {
+        "HDFC": [f"2023-01-{day:02d}" for day in range(1, 11)],
+        "TATAMOTORS": [f"2023-01-{day:02d}" for day in range(1, 11)],
+    }
+    results = {
+        "HDFC": {
+            "status": "MISSING_DAILY_ARRAY",
+            "valid_ohlc_session_count": 0,
+            "valid_volume_session_count": 0,
+        },
+        "TATAMOTORS": {
+            "status": "PASS_RESPONSE",
+            "valid_ohlc_session_count": 9,
+            "valid_volume_session_count": 9,
+        },
+    }
+    summary = summarise_daily_universe(symbols, expected, results)
+    assert summary["point_in_time_symbols_expected"] == 2
+    assert summary["symbols_with_parseable_daily_responses"] == 1
+    assert summary["symbols_with_unparseable_daily_responses"] == 1
+    assert summary["symbols_with_any_ohlc_gap"] == 2
+    assert summary["symbols_with_any_ohlcv_gap"] == 2
+    assert summary["minimum_symbol_ohlc_coverage_fraction"] == 0.0
+    assert summary["median_symbol_ohlc_coverage_fraction"] == 0.45
+    assert summary["weighted_ohlc_session_coverage_fraction"] == 0.45
+
+
+def test_unresolved_security_id_is_also_zero_coverage():
+    expected = {"OLDCO": ["2023-01-02", "2023-01-03"]}
+    summary = summarise_daily_universe(
+        ["OLDCO"], expected, {}, unresolved_symbols=["OLDCO"]
+    )
+    assert summary["symbols_with_unparseable_daily_responses"] == 1
+    assert summary["symbols_with_unresolved_security_id"] == 1
+    assert summary["weighted_ohlc_session_coverage_fraction"] == 0.0
