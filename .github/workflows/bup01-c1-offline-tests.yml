@@ -57,4 +57,5 @@ jobs:
             tests/test_bup01_membership_intervals.py \
             tests/test_constituent_weekly_plan.py \
             tests/test_c1_continuous_dhan_coverage.py \
-            tests/test_c1_security_alias_history.py
+            tests/test_c1_security_alias_history.py \
+            tests/test_c1_daily_history.py
