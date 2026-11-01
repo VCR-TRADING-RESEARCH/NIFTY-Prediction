@@ -364,3 +364,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** In the 2021-11-01–2022-01-29 90-day edge check, SHREECEM returned all 61 regular sessions, all 61 anchor sessions and all 61 15:00–15:14 expiry-proxy sessions; timestamps were unique and OHLC/numeric checks passed. Exactly one finite negative volume row caused the OHLCV invariant to fail. The other 49 point-in-time constituents passed all checks.
 - **Correction/investigation:** Added a bounded, single-symbol diagnostic workflow to identify the offending timestamp only. It records no price/volume values, token or security ID. Its offline test caught an unsupported pandas `.dt.isoformat()` call before the live request; corrected it to format individual Timestamp values.
 - **Status:** OPEN — waiting for the corrected diagnostic's Actions result and then a decision whether the single volume anomaly can be isolated without compromising the pre-registered panel rules.
+
+
+## E0046 — 2026-11-01 — Standalone SHREECEM diagnostic could not import repository module
+
+- **Run:** [41266604463](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266604463).
+- **Observed:** Offline diagnostic tests passed 2/2, but direct execution of the diagnostic script failed before any Dhan request with ModuleNotFoundError: No module named live_api. Direct script execution had not added the repository root to sys.path.
+- **Correction:** Added the resolved repository root to sys.path before importing live_api or project scripts (commit 34e067d).
+- **Impact:** No authentication or data endpoint call was made by this failed diagnostic attempt. The full-universe Dhan preflight result from run 41266155250 is unchanged.
+- **Status:** OPEN — awaiting the corrected one-symbol workflow result.
