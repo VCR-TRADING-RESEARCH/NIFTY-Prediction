@@ -966,7 +966,27 @@ def main() -> int:
             OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
             OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
             write_report(result)
-        print("C2_FAILED", type(exc).__name__)
+        # Preserve actionable diagnostics without exposing credentials or provider payloads.
+        safe_message = str(exc)[:500]
+        for secret_name in ("DHAN_ACCESS_TOKEN", "DHAN_CLIENT_ID", "DHAN_PIN", "DHAN_TOTP_SECRET", "HF_TOKEN"):
+            secret_value = os.environ.get(secret_name, "")
+            if secret_value:
+                safe_message = safe_message.replace(secret_value, "[REDACTED]")
+        safe_message = safe_message.replace("\\n", " ")[:500]
+        if os.environ.get("C2_PANEL_ONLY") == "1":
+            failed["fatal_error_message"] = safe_message
+            OUT_PANEL_JSON.write_text(json.dumps(failed, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            OUT_PANEL_MD.write_text(
+                "# C2 Point-in-Time Constituent Panel Build\\n\\n"
+                f"**Status:** FAILED\\n\\n- Error category: {type(exc).__name__}\\n"
+                f"- Error message: {safe_message}\\n- Source location: {location}\\n",
+                encoding="utf-8",
+            )
+        else:
+            result["fatal_error_message"] = safe_message
+            OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            write_report(result)
+        print("C2_FAILED", type(exc).__name__, safe_message)
         return 1
 
 
