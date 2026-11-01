@@ -525,3 +525,24 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Result:** [Run 41289992040](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289992040) completed SUCCESS. The membership regression and all other tests passed.
 - **Impact:** No membership mismatch or data change was found; this was a test expectation/reporting arithmetic error.
 - **Status:** CLOSED — corrected test passed in CI.
+
+
+
+## E0064 — 2026-11-01 — Double-escaped month regex hid valid YYYY-MM labels in source metadata
+
+- **Observed:** The mfdata month parser used a raw regular expression containing a doubled backslash before the digit token. The regex therefore searched for a literal backslash rather than matching calendar digits.
+- **Root cause:** Regex escaping was doubled when the source code was generated or edited; the original test fixture did not expose it.
+- **Correction:** Fixed the recursive mfdata month parser. Added month-gap coverage tests and a first/last month extraction check.
+- **Validation:** [Actions run 41297143071](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41297143071) passed all 13 metadata/parser tests after the fix.
+- **Impact:** This was a date-metadata parsing defect only. The original discovery result contained no admitted holdings values; no historical data were fabricated or modelled.
+- **Status:** CLOSED — corrected parser and regression suite passed.
+
+
+## E0065 — 2026-11-01 — mfdata.in discovery endpoints returned HTTP 522 from hosted Actions runner
+
+- **Run:** [41297143071](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41297143071).
+- **Observed:** The documented /api/v1/search, the /api/v1/families catalogue fallback, and the legacy /api/v1/schemes search fallback each returned HTTP 522 with no response body. No family ID was available and the dedicated family holdings-history route was not called.
+- **Interpretation:** This is an upstream/gateway timeout for all bounded discovery requests. It is **not** evidence that the service has no NIFTY 50 families or no historical month records.
+- **Control:** Three discovery routes only; no repeated polling, no token/secrets use, and no holdings-value endpoint was called. The workflow completed, tested offline logic and committed the sanitised status.
+- **Next action:** Leave this source inconclusive. Revisit only when the provider responds from an authorised/reliable network route; do not loop requests. Cross-check another independent AMC archive in parallel if the phase gate requires further progress.
+- **Status:** OPEN / EXTERNAL SOURCE ACCESS BLOCKER. No model inputs were admitted.
