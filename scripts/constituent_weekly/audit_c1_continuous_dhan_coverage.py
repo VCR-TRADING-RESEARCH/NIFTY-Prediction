@@ -150,7 +150,7 @@ def evaluate_cycle_coverage(cycle_results: list[dict[str, Any]]) -> dict[str, An
     accepted_before = 0
     confirmatory_after_104 = 0
     for item in cycle_results:
-        if item.get("cycle_accepted_for_panel"):
+        if item.get("cycle_accepted_for_coverage"):
             if accepted_before >= MIN_CONFIRMATORY_HISTORY:
                 confirmatory_after_104 += 1
             accepted_before += 1

@@ -569,3 +569,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** The Dhan live test step was correctly skipped because its preceding offline test gate failed. These runs do **not** indicate a Dhan authentication/API failure.
 - **Correction:** Updated assertions to match the current plan wording and to check the explicit v1.3 exclusion of historical free-float/ETF weights from the active gates.
 - **Status:** FIX COMMITTED — awaiting automatic offline validation.
+
+
+## E0068 — 2026-11-01 — C1 continuous coverage auditor first-pass corrections
+
+- **Status:** FIX COMMITTED — validate in offline regression workflow.
+- **Issues found during resumed review:** the new test module contained invalid Python identifiers beginning with digits; the member-fraction calculation divided a list by an integer instead of dividing its length; the accepted-cycle counter retained an old field name; the output printer retained stale variable names after refactoring; and partial target-day results were being marked cache-complete.
+- **Corrections:** use legal test names; calculate member fraction as len(valid_members)/member_count; require 104 prior accepted coverage cycles; print from the canonical summary dictionary; mark a chunk cache-complete only when every requested target date passes; respect the Dhan five-year floor with its one-day margin; explicitly flag HDFC Ltd merger and Tata Motors demerger target-crossing cycles for exclusion from the coverage-eligible panel.
+- **Important distinction:** the coverage audit reports data availability separately from complete corporate-action treatment. A passing data-coverage gate does not itself pass C1 identity/action governance or authorise C2 modelling.

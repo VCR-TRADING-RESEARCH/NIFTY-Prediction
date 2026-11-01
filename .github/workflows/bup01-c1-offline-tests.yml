@@ -9,6 +9,8 @@ on:
       - "research/constituent_weekly/STATUS.md"
       - "scripts/constituent_weekly/validate_plan.py"
       - "tests/test_constituent_weekly_plan.py"
+      - "scripts/constituent_weekly/audit_c1_continuous_dhan_coverage.py"
+      - "tests/test_c1_continuous_dhan_coverage.py"
       - ".github/workflows/bup01-c1-offline-tests.yml"
   pull_request:
     branches:
@@ -47,4 +49,5 @@ jobs:
             tests/test_constituent_weekly_dhan_preflight.py \
             tests/test_dhan_edge_volume_diagnostic.py \
             tests/test_bup01_membership_intervals.py \
-            tests/test_constituent_weekly_plan.py
+            tests/test_constituent_weekly_plan.py \
+            tests/test_c1_continuous_dhan_coverage.py

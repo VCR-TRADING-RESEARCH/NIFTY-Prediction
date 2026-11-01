@@ -145,12 +145,12 @@ def test_confirmatory_history_counts_only_prior_accepted_cycles():
     good = {
         "index_target_ok": True,
         "stock_coverage_ok": True,
-        "cycle_accepted_for_panel": True,
+        "cycle_accepted_for_coverage": True,
     }
     invalid = {
         "index_target_ok": False,
         "stock_coverage_ok": True,
-        "cycle_accepted_for_panel": False,
+        "cycle_accepted_for_coverage": False,
     }
     exactly_104 = evaluate_cycle_coverage([good.copy() for _ in range(104)])
     assert exactly_104["confirmatory_cycles_after_104_prior_cycles"] == 0
@@ -160,13 +160,36 @@ def test_confirmatory_history_counts_only_prior_accepted_cycles():
     assert cycles_105["confirmatory_cycles_after_104_prior_cycles"] == 1
     assert cycles_105["target_coverage_gate"] == "PASS"
 
-    106_with_one_missing_index = evaluate_cycle_coverage(
+    with_one_missing_index = evaluate_cycle_coverage(
         [good.copy() for _ in range(105)] + [invalid.copy()]
     )
-    assert 106_with_one_missing_index["index_target_valid_fraction"] >= 0.98
-    assert 106_with_one_missing_index["target_coverage_gate"] == "PASS"
+    assert with_one_missing_index["index_target_valid_fraction"] >= 0.98
+    assert with_one_missing_index["target_coverage_gate"] == "PASS"
 
-    105_with_two_missing_index = evaluate_cycle_coverage(
+    with_two_missing_index = evaluate_cycle_coverage(
         [good.copy() for _ in range(103)] + [invalid.copy(), invalid.copy()]
     )
-    assert 105_with_two_missing_index["target_coverage_gate"] == "FAIL"
+    assert with_two_missing_index["target_coverage_gate"] == "FAIL"
+
+
+def test_partial_target_date_response_is_not_marked_cache_complete():
+    body = {
+        "open": [100.0],
+        "high": [101.0],
+        "low": [99.0],
+        "close": [100.5],
+        "volume": [1000],
+        "timestamp": [epoch_ist("2026-10-27T15:14:00")],
+    }
+    result = inspect_target_dates(body, ["2026-10-27"], require_volume=True)
+    assert result["status"] == "PARTIAL_TARGET_DATES"
+    assert result["dates"]["2026-10-27"]["anchor_ok"] is False
+    assert result["dates"]["2026-10-27"]["expiry_ok"] is True
+
+
+def test_known_action_crossing_cycle_has_audit_dates():
+    from scripts.constituent_weekly.audit_c1_continuous_dhan_coverage import KNOWN_CORPORATE_ACTION_DATES
+    assert KNOWN_CORPORATE_ACTION_DATES == {
+        "HDFC": "2023-07-01",
+        "TATAMOTORS": "2025-10-14",
+    }
