@@ -495,4 +495,4 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** The parser and schema probe completed successfully, but the report auto-commit's single git pull/rebase was followed by another C1 branch update before push. GitHub rejected the push because the ref had advanced again.
 - **Correction:** The successful sanitised report is committed through the repository Git data API. The workflow publisher is upgraded to bounded fetch/rebase/push retries; it never force-pushes.
 - **Impact:** No research result or raw data was lost. The report is now committed at C1; no raw holdings or workbook data are stored.
-- **Status:** FIX COMMITTED — the next workflow run validates the bounded retry publisher.
+- **Status:** CLOSED — bounded publisher verified by successful workflow [41275487989](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275487989); all probe steps and report publication completed successfully without force-push.
