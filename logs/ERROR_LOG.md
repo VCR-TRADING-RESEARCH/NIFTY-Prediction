@@ -673,7 +673,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Status:** Correction committed; rerun required. No prices were changed, no missing bars were imputed, and no coverage credit was granted.
 - **Prevention:** Keep regression tests for legacy CM, modern sec_bhavdata_full and UDIFF date schemas; require offline tests to pass before any network request.
 
-## E0086 — 2026-11-02 — Independent-source calendar coverage limitation
+## E0087 — 2026-11-02 — Independent-source calendar coverage limitation
 
 - Class: Data-source coverage limitation, not a market-data disagreement.
 - Observed: pinned independent NSE bhavcopy mirror returned 4/7 valid exact-date EQ OHLCV rows; 3 dates had no EQ row in that mirror.
