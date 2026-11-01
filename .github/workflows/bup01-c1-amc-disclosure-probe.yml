@@ -32,7 +32,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install metadata-probe dependencies
-        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 pandas xlrd
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 pandas xlrd pytest
       - name: Run offline parser regressions
         run: python -m pytest -q tests/test_nippon_amc_archive_probe.py
       - name: Probe latest, calibration and early archive workbooks
