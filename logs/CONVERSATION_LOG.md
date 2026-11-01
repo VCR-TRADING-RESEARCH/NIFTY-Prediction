@@ -256,3 +256,11 @@
 - After the repository controller saved the recent-month schema results, the automatic follow-up run [41275487989](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275487989) completed SUCCESS.
 - All parser tests, source probe, summary publication and sanitised report commit passed. The report publisher's bounded fetch/rebase/push retry worked without force-pushing.
 - No new market-data panel or model was created; the C1 source-rights and historical basket gates remain open.
+
+
+## 2026-11-01 — Resume C1 historical constituent-data research
+
+- User instruction: "Ok proceed".
+- Assistant response: resume at the historical constituent-data gate; recheck repository files and PR, then continue resolving official archive links and free-source evidence; do not start modelling before point-in-time coverage and source lineage are defensible.
+- Visible research update: the official Nippon India archive index explicitly lists monthly portfolio records back to September 2012, including April 2019. The earlier 404 was from a guessed filename. The amcs.fund route is being tested only for metadata/source discovery.
+- This file records visible conversation summaries and decisions only; hidden private chain-of-thought is not stored.
