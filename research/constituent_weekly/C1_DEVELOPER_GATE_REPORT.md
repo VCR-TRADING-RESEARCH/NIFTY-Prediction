@@ -1,38 +1,38 @@
 # BUP-01 C1 developer gate report
 
-**Report date:** 2026-11-01  
+**Report date:** 2026-11-02  
 **Phase branch:** phase/constituent-weekly-outcomes-c1-data  
-**Plan:** BUP-01 v1.3 (current method); earlier v1.1/v1.2 text below is historical audit material  
-**Developer decision:** Under v1.3, C1 is **PARTIAL / CONTINUOUS-COVERAGE GATE IN PROGRESS**. No official/ETF weight comparison is required. Do not enable C2–C6 until the revised stock/index coverage and identity gates are evidenced.
+**Plan:** BUP-01 v1.3 (locked current method); earlier v1.1/v1.2 IWF material is historical and superseded  
+**Developer decision:** C1 is **PARTIAL / IDENTITY + CORPORATE-ACTION REVIEW**. Daily OHLCV and audited intraday weekly target coverage have passed. Do not enable C2 until dated security identity and event-level corporate-action continuity are accepted. No ETF/IWF comparison is required under v1.3.
 
 ## 1. Executive finding
 
-The Dhan authentication and bounded 1-minute equity-data validation pipeline is operational. The latest protected preflight passed its final fail-closed gate and every tested constituent passed strict target-window QA in three separate 90-day windows plus one current session.
+The live Dhan pipeline and daily composite-source audit are operational. Daily OHLCV coverage is **106,392/106,392 (100%)** across 70 point-in-time symbols, with zero gaps and 100% minimum per-symbol coverage. The seven residual daily rows were recovered from official NSE legacy/UDiFF bhavcopy archives, validated by exact symbol/date/EQ, OHLC, volume and ISIN checks, stored only in the AES-GCM encrypted Actions cache, and merged into the daily coverage auditor. The successful daily run is [41344197015](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41344197015); the direct NSE audit is [41344104457](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41344104457).
 
-The remaining hard blocker is not a token/API outage. No available source has been admitted that provides a complete, point-in-time official NIFTY 50 IWF/constituent-weight history with rights for automated retrieval, private retention, model training/backtesting and the intended internal algorithmic-trading research use. The XBRL category candidate is technically promising but its explicit data-licence globs do not clearly cover the nested compressed category CSV, and aggregate categories do not establish all 22 IWF exclusions. The weighted constituent basket has therefore not been reconciled to the official NIFTY 50 index.
+The registered intraday weekly target audit passes **258/258 cycles** against the 47-member/94% constituent-input rule and the NIFTY target coverage rule. The forecast expiry proxy remains the latest valid 15:00–15:14 IST candle, interpreted as 15:15, not the 15:30 close.
 
-**No C2 constituent panel, C3 stock model, C4 weighted NIFTY forecast, C5 economic strategy or C6 final manuscript has been generated.** No usable bottom-up prediction or strategy is claimed.
+The remaining C1 blockers are dated historical security identity/alias closure and event-level corporate-action verification. The discovery catalogue contains 18,361 deduplicated events and 711 point-in-time member matches, but independent exchange/issuer circular review, event-specific ratio/consideration validation, price/volume continuity checks and affected-cycle inclusion/exclusion decisions are not complete. No adjusted-return series is certified.
+
+**No C2 constituent panel, C3 stock model, C4 NIFTY meta-model, C5 economic strategy or C6 final manuscript has been generated.** No bottom-up prediction or trading strategy is claimed.
 
 ## 2. Gate scoreboard
 
 | Gate | Result | Evidence / limitation |
 |---|---|---|
-| C0 research registration and governance | PASS | Pre-registered BUP-01 v1.1; required phase files and governance checks exist |
+| C0 registration/governance | PASS | Locked v1.3 plan and regression checks passed |
 | Current NIFTY 50 scrip master | PASS on tested date | 50/50 current symbols resolved |
-| Historical membership alias resolution | PARTIAL | 79/84 ledger aliases resolve against today's security master; five not found in current master require dated historical identity proof |
-| Dhan authentication / data plan | PASS | TOTP refresh on first attempt; active plan; protected live workflow status PASS_ACTIVE_EQUITIES |
-| One-session 50-name intraday QA | PASS | 2026-10-29: 50/50 |
-| 90-day 50-name intraday QA | PASS on three disjoint samples | 2021-11-01–2022-01-29: 50/50; 2022-10-03–2022-12-30: 50/50; 2026-06-29–2026-09-26: 50/50 |
-| Continuous five-year one-minute coverage | NOT PROVEN | Three separate windows are not a continuous five-year backfill |
-| 10:00 anchor / 15:15 expiry-proxy convention | PASS on sampled rows | Latest candle at 15:00–15:14; all late bars excluded; 15:14 used in examples |
-| SHREECEM 2021 edge QA | PASS after scope correction | Only negative-volume row was 2021-12-30 15:29 IST, beyond the pre-registered 15:15 cutoff; reported separately; target scope remains strict |
-| Historical ISIN/security-ID and corporate actions | PARTIAL / OPEN | Symbol ledger exists but full dated stable-ID history and corporate-action continuity not independently complete |
-| Official point-in-time IWF/weights with intended-use rights | BLOCKED | Official monthly ZIP family identified; written permission/licence for automation, caching and trading-research use not obtained |
-| 22 IWF exclusion evidence | PARTIAL / OPEN | Machine-readable matrix created; multiple relationship/contract categories are not provable from category aggregates alone |
-| IWF mathematical implementation harness | PASS | Official NSE example reproduced as 0.608794; duplicate share-position deduction rejected; seven new tests included |
-| Weighted basket-to-index reconciliation | NOT RUN | Requires authorised complete weights/IWF and identity/corporate-action mapping first |
-| C2–C6 | GATED | No modelling or strategy work without C1 acceptance |
-
+| Historical membership/security aliases | PARTIAL / REVIEW | 79/84 ledger aliases resolve against current master; dated predecessor/successor identity must be confirmed for all in-scope observations |
+| Dhan authentication / data plan | PASS | Protected live workflows; active equity data plan |
+| Intraday weekly target coverage | PASS on audited registered cycles | 258/258 weekly expiry cycles passed the 47-member/94% stock-input and NIFTY target checks |
+| Daily OHLCV coverage | PASS | 106,392/106,392; 70 symbols; zero gaps; 100% minimum per-symbol coverage |
+| Seven residual daily sessions | PASS | 7/7 direct official NSE archives; all rows passed EQ/date, OHLC, volume and ISIN validation |
+| Encrypted cache and composite integration | PASS | AES-GCM cache restored; seven supplemental rows merged; zero yearly TejHQ partition downloads |
+| Expiry proxy convention | PASS on audited rows | Latest candle in 15:00–15:14 IST; no 15:15–15:29 bars |
+| Corporate-action discovery catalogue | PASS as discovery only | 18,361 deduplicated candidate events; 711 point-in-time member matches |
+| Independent event-level issuer/exchange verification | NOT COMPLETE | Circulars, event terms, security transitions and price/volume continuity still need independent review |
+| Adjusted-return / affected-cycle ledger | NOT COMPLETE | No event factors applied; unresolved events must be handled through explicit exclusions |
+| ETF/IWF weights and basket-to-index reconstruction | NOT REQUIRED | Explicitly removed by user-directed v1.3 scope |
+| C2–C6 | GATED | C2 starts only after C1 identity and corporate-action acceptance |
 ## 3. Key Actions runs
 
 - Protected Dhan preflight, final status PASS: [41266897788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266897788).
