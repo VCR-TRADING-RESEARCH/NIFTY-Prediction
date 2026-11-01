@@ -127,6 +127,7 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
     data = payload.get("data")
     shape["data_type"] = type(data).__name__ if data is not None else "null"
     source = payload.get("source")
+    shape["source_type"] = type(source).__name__ if source is not None else "null"
     if isinstance(source, dict):
         shape["source_metadata_keys"] = sorted(str(k) for k in source.keys())[:40]
         allowed_hosts = {
@@ -259,12 +260,20 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
                 shape["hold_hist_month_key_count"] = len(set(hist_month_keys))
                 shape["hold_hist_first_month_key"] = min(hist_month_keys)
                 shape["hold_hist_last_month_key"] = max(hist_month_keys)
-        for field in ("history", "holdings", "events"):
+        for field in ("history", "holdings", "events", "amcs", "groups", "buys", "sells", "sector_flows"):
             items = data.get(field)
             if isinstance(items, list):
                 shape[field + "_count"] = len(items)
                 if items and isinstance(items[0], dict):
                     shape[field + "_item_keys"] = sorted(str(k) for k in items[0].keys())[:40]
+                    item_url_fields = {}
+                    for key, value in items[0].items():
+                        if isinstance(value, str) and ("url" in str(key).lower() or "file" in str(key).lower()):
+                            parsed = urlparse(value)
+                            if parsed.scheme == "https" and parsed.hostname:
+                                item_url_fields[str(key)] = parsed.hostname
+                    if item_url_fields:
+                        shape[field + "_url_hosts"] = item_url_fields
         history = data.get("history")
         if isinstance(history, list):
             dates = []
@@ -446,6 +455,15 @@ def run_probe() -> dict[str, Any]:
 
     index, index_meta = _fetch_json(session, API_BASE)
     report["api_index"] = index_meta
+    if index is not None:
+        if isinstance(index, dict):
+            report["api_index_schema"] = {
+                "keys": sorted(str(k) for k in index.keys())[:40],
+                "endpoint_names": sorted(str(k) for k in index.get("endpoints", {}).keys())[:80]
+                    if isinstance(index.get("endpoints"), dict) else [],
+                "docs_type": type(index.get("docs")).__name__,
+                "endpoints_type": type(index.get("endpoints")).__name__,
+            }
 
     amcs, amcs_meta = _fetch_json(session, f"{API_BASE}/amcs")
     report["amcs"] = amcs_meta
@@ -590,6 +608,8 @@ def render_report(report: dict[str, Any]) -> str:
         "## Nippon AMC metadata matches",
         "",
     ]
+    if report.get("api_index_schema"):
+        lines.append("- API index schema: " + json.dumps(report["api_index_schema"], sort_keys=True))
     if report.get("nippon_amc_matches"):
         for item in report["nippon_amc_matches"][:10]:
             lines.append("- " + json.dumps(item, sort_keys=True, ensure_ascii=False))
