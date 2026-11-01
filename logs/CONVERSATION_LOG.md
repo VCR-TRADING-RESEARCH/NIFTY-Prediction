@@ -184,3 +184,13 @@
 - Offline diagnostic tests passed 2/2 after replacing unsupported pandas timestamp formatting.
 - Its live step then failed before any Dhan call because direct script execution lacked the repository root on Python sys.path. Fixed in commit 34e067d and the workflow has been retriggered for the same single-symbol check.
 - The 2021 edge blocker remains one negative-volume SHREECEM row; no raw bars or volume values are stored.
+
+
+## 2026-11-01 — User said “Proceed without stopping”; C1 gate outcomes recorded
+- Continued the bottom-up C1 work. Protected Dhan preflight [41266897788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266897788) passed with first-attempt TOTP token, active Data API and final fail-closed gate. Clock diagnostic was -1 second.
+- Dhan QA passed 50/50 across three separate 90-day all-constituent samples (2021Q4/2022Q1 edge; 2022Q4; 2026Q3) plus one recent session. This is not a continuous five-year backfill.
+- SHREECEM's single bad volume bar was at 15:29 on 2021-12-30, outside the user's 15:15 expiry proxy cutoff; the code and offline tests now validate 09:15–15:14 strictly and report later bars separately. Full target-scope edge panel passed 50/50.
+- Offline regression suite 41266922851 passed 43 tests. Error log E0045–E0048 marked closed.
+- Audited official IWF guideline (22 exclusions), official monthly-weight publication and terms, detailed XBRL category-source candidate with unclear licence scope, and TejHQ EOD/corporate-actions source with personal-research/private-storage terms but no raw redistribution.
+- Overall C1 remains blocked: no legally admitted official point-in-time numerical IWF series or complete 22-category mapping and weighted basket reconciliation. C2+ remain gated. No bottom-up model or strategy is claimed.
+- This log records visible dialogue decisions and research actions only; it does not contain hidden reasoning, credentials or raw market bars.
