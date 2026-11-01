@@ -765,3 +765,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** C2 now reuses the pinned TejHQ NSE EQ yearly partitions through the existing C1 AES-GCM cache helpers, merges the seven independently validated official-NSE residual sessions, filters to the point-in-time C2 universe, and stores only encrypted raw partitions in the Actions cache. The C2 workflow now runs on the plan-defined C2 panel branch and explicitly sets the personal-use source flag.
 - **Validation:** New workflow [41351049298](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351049298) was triggered by the correction; its result is pending at log update time. Do not mark C2 passed until panel QA and walk-forward gates complete.
 - **Security:** No raw prices, credentials, or hidden chain-of-thought are published.
+
+
+## E0091 — 2026-11-02 — C2 parquet/Hugging Face runtime dependencies omitted
+- **Severity:** Medium — corrected execution dependency.
+- **Run:** [41351049298](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351049298).
+- **Symptom:** C2 exited with sanitized `ModuleNotFoundError` before partition acquisition; offline tests and compilation had passed.
+- **Root cause:** The C2 workflow did not install the optional `huggingface_hub` downloader and Parquet engine `pyarrow`, both explicitly installed by the successful C1 daily-data workflow.
+- **Correction:** Added both packages to the C2 workflow dependency installation. Push-triggered rerun is expected; validate the exact runtime and then inspect any subsequent data or panel failure.
+- **Status:** Corrected in workflow commit [8de2176](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8de2176dedca820dabbc20f26570de9958bb98b0); validation pending.
