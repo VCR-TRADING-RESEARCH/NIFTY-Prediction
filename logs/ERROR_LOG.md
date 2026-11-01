@@ -332,7 +332,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Added a final workflow gate after sanitized diagnostics are committed. For non-PR/live runs, it requires `C1_DHAN_PREFLIGHT.json.status == PASS_ACTIVE_EQUITIES`; blocked/partial/no-result states now fail the Actions run. PR validation continues to run offline tests without secrets.
 - **Security:** No token, PIN, TOTP seed, raw provider body, security ID or raw candle was added to logs.
 - **Impact:** No new market data was acquired in this run. Prior successful samples remain valid only for their stated dates and scope.
-- **Status:** OPEN — requires verification/correction of the organization GitHub Actions Dhan credentials and a later fresh protected preflight. Do not retry in a loop or use the expired fallback token.
+- **Status:** CLOSED for the authentication blocker. Protected run [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250) generated a fresh token on the first attempt, confirmed an active Data API plan and recorded a 0-second Dhan-server/runner clock difference. This proves the current protected flow works operationally; it does not establish which factor caused the previous response anomaly or imply that the user's configuration was incorrect. The same run correctly failed its separate data-quality gate because SHREECEM had one negative-volume row in the five-year-edge window.
 
 
 ## E0033 — 2026-11-01 — Workflow status gate initially preceded diagnostics commit
@@ -340,11 +340,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed during review:** The first workflow-gate patch in commit [8e31a7d](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8e31a7d813019733ccf23b07129f24d2a7cb7884) placed the new failing status check before the sanitized diagnostics commit step. A blocked live run could therefore have stopped before preserving its result.
 - **Correction:** Moved the gate to the end of the workflow, after the diagnostics commit, in commit [02c8074](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/02c8074750a65642ddf6078dd4abafce48c3f1fc). Read-back verified that the commit step precedes the fail-closed gate.
 - **Impact:** No live workflow was dispatched between the two revisions; no diagnostic result was lost. The corrected workflow commits sanitized evidence first and only then returns a failing conclusion for a blocked/partial live preflight.
-- **Status:** CLOSED — static ordering check and repository read-back passed; Actions execution remains to be verified on the next authorized live run.
+- **Status:** CLOSED — runtime verified in run [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250): sanitized diagnostics committed first; final gate then exited non-zero on `PARTIAL_OR_BLOCKED` as designed.
 
 ### Runtime clarification — 2026-11-01
 - Inspection of the executed job steps for run [41263593605](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41263593605) shows that it did not execute the `Enforce live Dhan preflight result` step. The current C1 workflow source does contain that step after the sanitized diagnostics commit, but that later workflow revision has not yet been exercised by a subsequent protected live run.
-- Therefore run 41263593605 must be described as **offline tests PASS (26/26), live data gate BLOCKED, Actions job conclusion SUCCESS due to older workflow revision**. Do not describe it as a successful live preflight.
+- Therefore run 41263593605 must be described as **offline tests PASS (26/26), live data gate BLOCKED, Actions job conclusion SUCCESS due to older workflow revision**. The later protected run [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250) executed the gate after diagnostics were committed; it failed on the explicit `PARTIAL_OR_BLOCKED` data status. The workflow's fail-closed runtime behavior is now verified.
 - Dhan auth remains OPEN. Do not repeat token generation until account secrets are checked or the API-key/secret OAuth route is configured.
 - This clarification does not change C1/C2 acceptance status.
 
@@ -356,3 +356,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Added explicit `pyotp` and `requests` installation to the offline workflow. Follow-up run [41266377005](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266377005) completed SUCCESS with **12 passed**.
 - **Impact:** No live auth request or market-data request was affected by this failed offline job. It was a CI dependency-setup error, not a TOTP/provider credential finding.
 - **Status:** CLOSED — required dependencies are explicit and the corrected offline suite passes.
+
+
+## E0045 — 2026-11-01 — SHREECEM five-year-edge data contains one negative-volume row
+
+- **Run:** [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250).
+- **Observed:** In the 2021-11-01–2022-01-29 90-day edge check, SHREECEM returned all 61 regular sessions, all 61 anchor sessions and all 61 15:00–15:14 expiry-proxy sessions; timestamps were unique and OHLC/numeric checks passed. Exactly one finite negative volume row caused the OHLCV invariant to fail. The other 49 point-in-time constituents passed all checks.
+- **Correction/investigation:** Added a bounded, single-symbol diagnostic workflow to identify the offending timestamp only. It records no price/volume values, token or security ID. Its offline test caught an unsupported pandas `.dt.isoformat()` call before the live request; corrected it to format individual Timestamp values.
+- **Status:** OPEN — waiting for the corrected diagnostic's Actions result and then a decision whether the single volume anomaly can be isolated without compromising the pre-registered panel rules.
