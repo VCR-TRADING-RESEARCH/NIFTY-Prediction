@@ -690,3 +690,12 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Feature values remain strictly causal: prior daily rows only, plus same-day pre-anchor bars and the 10:00 anchor open.
 - Added test for equivalence between direct and precomputed feature paths.
 - Current active run [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741) uses the earlier checkout; subsequent queued run uses the optimization. Validation pending.
+
+
+## C3-X latest queue update — 2026-11-01
+
+- Original Dhan panel run [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741) passed regression but remains in live panel reconstruction.
+- Daily-history calculation is now precomputed once per stock and reused across its weekly observations; feature equations and causal cutoff are unchanged.
+- Added a feature-equivalence regression test; latest optimized workflow [41324416830](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41324416830) is queued.
+- Superseded queued workflows [41321616749](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321616749) and [41324403823](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41324403823) were cancelled by newer commits; these are workflow queue replacements, not data/model failures.
+- Prediction outputs are still absent; no metrics are claimed.
