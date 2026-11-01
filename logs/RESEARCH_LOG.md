@@ -774,3 +774,12 @@ The current live attempt [41321327741](https://github.com/VCR-TRADING-RESEARCH/N
 
 - Run: https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41325350069
 - Result status: EXPLORATORY_COMPLETE_NOT_CONFIRMATORY
+
+
+## 2026-11-01 — C3-X completed; exploratory result is weak
+- Workflow [41325350069](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41325350069) completed successfully. 252 eligible expiry cycles; 12,560 stock-cycle rows; 51-cycle NIFTY holdout.
+- NIFTY OOF constituent meta-model: 50.98% accuracy, 53.45% balanced accuracy, MCC 0.068, ROC-AUC 0.487. Previous-cycle baseline: 49.02%; four-cycle block-bootstrap 95% interval for accuracy difference: [-25.49, +25.49] percentage points.
+- Stock ExtraTrees: 48.29% accuracy and ROC-AUC 0.485; five-session momentum sign baseline: 51.51% accuracy.
+- Conclusion: no reliable predictive edge demonstrated. C3-X closes as exploratory only; no strategy/live signal. C1 PARTIAL, C2 confirmatory and C5 execution remain locked.
+- 1,095 Dhan requests; 418,742,717-byte encrypted Actions cache saved. The cache should be reused on future runs when the manifest and key material match.
+- Report, JSON metrics and holdout CSV committed by workflow. Status summary corrected in the same phase branch.
