@@ -156,9 +156,9 @@ def test_confirmatory_history_counts_only_prior_accepted_cycles():
     assert exactly_104["confirmatory_cycles_after_104_prior_cycles"] == 0
     assert exactly_104["target_coverage_gate"] == "FAIL"
 
-    105_cycles = evaluate_cycle_coverage([good.copy() for _ in range(105)])
-    assert 105_cycles["confirmatory_cycles_after_104_prior_cycles"] == 1
-    assert 105_cycles["target_coverage_gate"] == "PASS"
+    cycles_105 = evaluate_cycle_coverage([good.copy() for _ in range(105)])
+    assert cycles_105["confirmatory_cycles_after_104_prior_cycles"] == 1
+    assert cycles_105["target_coverage_gate"] == "PASS"
 
     106_with_one_missing_index = evaluate_cycle_coverage(
         [good.copy() for _ in range(105)] + [invalid.copy()]
