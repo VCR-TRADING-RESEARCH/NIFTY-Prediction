@@ -1,7 +1,7 @@
 # C1 primary AMC monthly-disclosure archive audit
 
 **Audit date:** 2026-11-01  
-**Decision:** SOURCE FOUND; METADATA PROBE PENDING; RIGHTS/POINT-IN-TIME GATES NOT PASSED
+**Decision:** OFFICIAL ARCHIVE INDEX VERIFIED TO 2012-09; RECENT WORKBOOK SCHEMA PASSED; LEGACY URL/RIGHTS/POINT-IN-TIME GATES NOT PASSED
 
 ## Research question
 
@@ -9,7 +9,7 @@ Can Nippon India AMC's own historical monthly portfolio disclosures provide a da
 
 ## Primary-source discovery
 
-The Nippon India Mutual Fund disclosure page lists monthly portfolio files and exposes direct download links. Current listings run through September 2026, and older monthly portfolios extend into 2018/2019. The February 2026 workbook linked by the AMC page resolves to:
+The Nippon India Mutual Fund disclosure page lists monthly portfolio files and exposes direct download links. Current listings run through September 2026, and the rendered archive index includes month-end portfolio entries from September 2012 through the currently listed 2026 archive, including April 2019. Listing coverage does not prove every file resolves or every month is complete. The February 2026 workbook linked by the AMC page resolves to:
 
 https://mf.nipponindiaim.com/InvestorServices/FactsheetsDocuments/NIMF-MONTHLY-PORTFOLIO-28-Feb-26.xls
 
@@ -70,3 +70,14 @@ The direct URL candidate for April 2019 returned HTTP 404. The AMC archive page 
 - Source links: [Nippon AMC archive](https://mf.nipponindiaim.com/investor-service/downloads/factsheet-portfolio-and-other-disclosures), [amcs.fund methodology](https://amcs.fund/methodology), [amcs.fund API index](https://amcs.fund/api/v1).
 
 **Gate impact:** This improves confidence that historical source documents are indexed and suggests a route to exact legacy source URLs. It does not prove historical file retrieval, publication timestamps, rights, point-in-time security identity, weight coverage or index-basket reconciliation. C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.
+
+
+## Official archive lower bound corrected and API metadata probe added — 2026-11-01
+
+- The rendered official Nippon archive lists monthly portfolio entries as early as **30 September 2012** (archive page lines 555–561), correcting the earlier under-report of September 2013. April 2019 remains explicitly listed. This is an index-level observation only; file-by-file availability and continuity remain unverified.
+- [amcs.fund methodology](https://amcs.fund/methodology) states that its pipeline reads AMC-origin Excel/ZIP disclosures, uses the date printed inside each disclosure for the month, and links each monthly record to the original fund-house file and an Internet Archive copy. The published [API index](https://amcs.fund/api/v1) returns the advertised route list, including `/amcs` and `/manifest`.
+- A new metadata-only API probe and manual/push GitHub Actions workflow have been committed: [probe script](../../scripts/constituent_weekly/probe_amcs_fund_metadata.py), [workflow](../../.github/workflows/bup01-c1-amcs-metadata-discovery.yml), [offline sanitisation tests](../../tests/test_amcs_fund_metadata.py). It requests only API index/AMC/manifest metadata, does not request a scheme holdings endpoint, and performs HEAD-only checks on whitelisted AMC/Internet Archive file URLs. Its result report will be [C1_AMCS_API_DISCOVERY_REPORT.md](C1_AMCS_API_DISCOVERY_REPORT.md).
+- The probe has not yet been independently observed completing in Actions at the time of this audit update. No API JSON records or source-file URLs are claimed as retrieved. Any API-origin holdings remain excluded until reuse rights are established.
+- The research browser can read the API index but cannot retrieve the `/amcs` or `/manifest` JSON endpoints directly; CI is the bounded next check. The external API's commercial/trading-research licence remains unverified.
+
+**Gate impact:** Historical archive depth is better evidenced, but C1 remains **PARTIAL / NOT ACCEPTED FOR MODELLING**. Do not train or import third-party holdings until source rights, exact source-file lineage, publication/availability timestamps, point-in-time holdings/security identity, 98% weight coverage, 47-stock minimum and basket-to-index reconciliation all pass.
