@@ -663,3 +663,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Cause: The coverage report exposed date-level gaps but not the exchange session type and hours. Ordinary daytime assumptions are unsafe for Muhurat dates and exceptional Saturday Budget sessions.
 - Evidence and correction: NSE circulars confirm all seven dates were genuine exchange trading sessions. The dated reconciliation is recorded in `research/constituent_weekly/C1_SPECIAL_SESSION_CALENDAR_RECONCILIATION.md`. All seven dates remain in the expected-session denominator; no value was imputed and no gap was waived.
 - Follow-up: independently obtain and validate each security/date bar, or document a pre-registered evidence-based exclusion. No model data or labels were changed.
+
+## E0086 — 2026-11-02 — Special-session audit parser precheck failed
+- **Severity:** Medium — audit execution blocked before external data retrieval.
+- **Run:** [41340624209](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41340624209).
+- **Symptom:** Five parser tests passed; the ISO-date UDIFF test failed because pandas with `dayfirst=True` interpreted an ISO string ambiguously, causing the target row to be missed. The live market-data query was skipped, so this run produced no bar-level finding.
+- **Root cause:** The normalizer applied day-first parsing to both ISO (YYYY-MM-DD) and day-month text dates.
+- **Correction:** Split ISO dates from non-ISO dates and parse the ISO subset with explicit `%Y-%m-%d`; retain day-first parsing only for exchange text formats. Add the regression assertion and make artifact/publish steps success-gated so precheck failures do not create cascading publish failures.
+- **Status:** Correction committed; rerun required. No prices were changed, no missing bars were imputed, and no coverage credit was granted.
+- **Prevention:** Keep regression tests for legacy CM, modern sec_bhavdata_full and UDIFF date schemas; require offline tests to pass before any network request.
