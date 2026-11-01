@@ -168,6 +168,32 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
             shape["hold_hist_type"] = "object"
             shape["hold_hist_entry_count"] = len(hold_hist)
             shape["hold_hist_value_types"] = sorted({type(v).__name__ for v in hold_hist.values()})
+            hist_counts = {}
+            hist_list_lengths = []
+            hist_object_key_sets = []
+            hist_month_keys = []
+            for key, value in hold_hist.items():
+                if isinstance(key, str) and re.fullmatch(r"20\\d{2}-\\d{2}", key):
+                    hist_month_keys.append(key)
+                if isinstance(value, list):
+                    hist_counts["list"] = hist_counts.get("list", 0) + 1
+                    hist_list_lengths.append(len(value))
+                    if value and isinstance(value[0], dict):
+                        hist_object_key_sets.append(sorted(str(k) for k in value[0].keys())[:40])
+                elif isinstance(value, dict):
+                    hist_counts["dict"] = hist_counts.get("dict", 0) + 1
+                    for nested_key in value:
+                        if isinstance(nested_key, str) and re.fullmatch(r"20\\d{2}-\\d{2}", nested_key):
+                            hist_month_keys.append(nested_key)
+            shape["hold_hist_container_counts"] = hist_counts
+            if hist_list_lengths:
+                shape["hold_hist_list_lengths"] = hist_list_lengths[:20]
+            if hist_object_key_sets:
+                shape["hold_hist_list_item_keys"] = hist_object_key_sets[:3]
+            if hist_month_keys:
+                shape["hold_hist_month_key_count"] = len(set(hist_month_keys))
+                shape["hold_hist_first_month_key"] = min(hist_month_keys)
+                shape["hold_hist_last_month_key"] = max(hist_month_keys)
         for field in ("history", "holdings", "events"):
             items = data.get(field)
             if isinstance(items, list):
