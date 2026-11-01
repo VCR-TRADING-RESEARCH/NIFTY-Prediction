@@ -1,1 +1,1 @@
-# C2 Point-in-Time Constituent Panel Build\n\n**Status:** FAILED\n\n- Error category: RuntimeError\n- Error message: TEJHQ_PERSONAL_USE_ONLY=1 is required for this personal-use dataset.\n- Source location: {'file': 'run_c2_panel_and_models.py', 'line': 499, 'function': 'main'}\n
+# C2 Point-in-Time Constituent Panel Build\n\n**Status:** FAILED\n\n- Error category: ModuleNotFoundError\n- Error message: No module named 'huggingface_hub'\n- Source location: {'file': 'audit_c1_daily_history.py', 'line': 471, 'function': 'load_tejhq_nse_year'}\n

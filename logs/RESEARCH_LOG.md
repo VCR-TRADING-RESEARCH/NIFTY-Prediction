@@ -857,3 +857,13 @@
 - Corrected panel-only run [41352799593](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41352799593) was observed as PENDING after the commit. It uses the registered C2-only panel build and the explicit personal-use opt-in.
 - Duplicate combined-workflow run [41351806101](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351806101) was cancelled after concurrency was unified. Older combined run [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) remained in progress at this check; its outputs are explicitly excluded from C2 acceptance.
 - The C2 gate remains NOT PASSED until run 41352799593 completes the panel acquisition, label/coverage, causal-feature, duplicate and acceptance checks. No model or trading result is accepted at this point.
+
+
+<!-- C2_PANEL_RUN_41352799593 -->
+## 2026-11-01T21:37:43.649101+00:00 — formal C2 panel run 41352799593
+
+- Status: INVALID_RESULT_JSON.
+- Summary: **Formal C2 panel run 41352799593:** INVALID_RESULT_JSON; 0 scheduled cycles; 0 valid NIFTY targets (0.00%); 0 cycles pass the 47/94% stock rule; 0 constituent-cycle rows. C2 is not accepted; see the workflow run and error log.
+- Input manifest: not available.
+- Encrypted panel cache metadata: {}.
+- C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.

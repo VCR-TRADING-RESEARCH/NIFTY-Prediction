@@ -484,3 +484,11 @@
 - Committed the corrected phase wiring on the C2 branch as [8c931b4](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8c931b42cd4bd35a19c16693545a6bcef6fa7c1b).
 - The corrected panel-only run [41352799593](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41352799593) is pending. The duplicate queued combined run [41351806101](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351806101) is cancelled; earlier combined run [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) remains out-of-scope and is not C2 evidence.
 - Updated the root README to supersede the stale C1 coverage/C2-lock summary with the current accepted-with-limitations C1 disposition and C2 repair status. C2 remains unaccepted pending the panel-only run.
+
+
+<!-- C2_PANEL_CONVERSATION_41352799593 -->
+## 2026-11-01T21:37:43.649101+00:00 — formal C2 panel run 41352799593
+
+- Formal panel-only workflow executed on the plan-defined C2 branch.
+- Offline tests: success; panel step: failure; result: INVALID_RESULT_JSON.
+- The bundled pilot remains diagnostic only; C3/C4 model gates remain separate.

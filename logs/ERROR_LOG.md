@@ -804,3 +804,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Run handling:** Runs [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) and [41351806101](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351806101) belong to the retired combined workflow. Their output is not C2 acceptance evidence, regardless of eventual completion.
 - **Status:** C2 remains NOT PASSED until a corrected panel-only run passes data, label, coverage, feature-causality and duplicate-row gates. C3/C4 remain gated. No prediction or trading strategy is accepted.
 - **Corrected follow-up:** panel-only run [41352799593](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41352799593) was created from the corrected workflow commit and was **PENDING** at this status check; this is the valid C2 acceptance path. Duplicate combined-workflow run [41351806101](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351806101) was cancelled by the shared concurrency group.\n- **Security:** No credentials, raw market payloads or access-token values were added to logs.
+
+
+<!-- C2_PANEL_ERROR_41352799593 -->
+## C2 panel workflow 41352799593 — INVALID_RESULT_JSON
+
+- Offline tests: success; panel step: failure.
+- Error category: pre-panel workflow failure.
+- Source location: {}.
+- No panel acceptance is claimed for this run.
