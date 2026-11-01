@@ -577,3 +577,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Issues found during resumed review:** the new test module contained invalid Python identifiers beginning with digits; the member-fraction calculation divided a list by an integer instead of dividing its length; the accepted-cycle counter retained an old field name; the output printer retained stale variable names after refactoring; and partial target-day results were being marked cache-complete.
 - **Corrections:** use legal test names; calculate member fraction as len(valid_members)/member_count; require 104 prior accepted coverage cycles; print from the canonical summary dictionary; mark a chunk cache-complete only when every requested target date passes; respect the Dhan five-year floor with its one-day margin; explicitly flag HDFC Ltd merger and Tata Motors demerger target-crossing cycles for exclusion from the coverage-eligible panel.
 - **Important distinction:** the coverage audit reports data availability separately from complete corporate-action treatment. A passing data-coverage gate does not itself pass C1 identity/action governance or authorise C2 modelling.
+
+
+## E0069 — 2026-11-01 — Canonical membership ticker differed from point-in-time exchange symbol (LTIM/LTM)
+
+- **Observed:** The project membership ledger stores the LTIMindtree NIFTY 50 interval 2023-07-13 to 2024-09-30 under canonical symbol LTM, but the exchange-traded symbol during those dates was LTIM. NSE circulars confirm LTIM→LTM effective only 2026-02-27.
+- **Root cause:** The canonical membership source normalizes rename chains to the terminal/current symbol; it is not by itself a point-in-time traded-ticker ledger.
+- **Correction:** Added security_alias_history.csv, security_corporate_action_events.csv and a tested point_in_time_symbol() resolver. The resolver maps canonical LTM to actual LTIM for dates before 2026-02-27, and records other major symbol changes and action events.
+- **Impact:** The C1 data coverage audit still requests the current LTIMindtree instrument using the current security ID, which resolves the same listed security. The correction is needed for point-in-time feature panels, provenance and historical labels. No model or stock return label was trained on the incorrect alias.
+- **Validation:** [Actions 41302695594](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41302695594) passed 61 tests including the new alias regressions.
+- **Status:** CORRECTED FOR C2 IDENTITY RESOLUTION; exhaustive corporate-action/adjustment audit remains OPEN.

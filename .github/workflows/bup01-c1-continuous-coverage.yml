@@ -57,6 +57,13 @@ jobs:
           DHAN_PIN: ${{ secrets.DHAN_PIN }}
           DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
         run: python scripts/constituent_weekly/audit_c1_continuous_dhan_coverage.py
+      - name: Rebase current checkout before editing shared status files
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          git stash push -u -m "C1 coverage audit output before status publish" || true
+          git fetch origin phase/constituent-weekly-outcomes-c1-data
+          git rebase origin/phase/constituent-weekly-outcomes-c1-data
+          git stash pop || true
       - name: Publish sanitized coverage report and status
         if: always() && github.event_name != 'pull_request'
         run: python scripts/constituent_weekly/update_c1_continuous_status.py
@@ -71,7 +78,6 @@ jobs:
           git add -f logs/RESEARCH_LOG.md logs/ERROR_LOG.md 2>/dev/null || true
           if ! git diff --cached --quiet; then
             git commit -m "Record continuous C1 stock and NIFTY target coverage audit"
-            git pull --rebase origin phase/constituent-weekly-outcomes-c1-data
             git push origin HEAD:phase/constituent-weekly-outcomes-c1-data
           fi
       - name: Enforce registered data-coverage gate
