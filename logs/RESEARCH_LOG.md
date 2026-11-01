@@ -569,3 +569,17 @@
 - **Rights:** no blanket licence to download/cache/re-publish the underlying AMC files was established. Public page availability does not override AMC source terms.
 - **Disposition:** useful provenance path; not yet an admitted model input. C1 remains NOT PASSED / RIGHTS-BLOCKED; no C2 or trading backtest triggered.
 
+
+
+
+## 2026-11-01 — v1.3 user-directed weight-free bottom-up index aggregation
+
+- **User direction:** “No comparison needed. Proceed.” Applied narrowly to mean no ETF-holdings-versus-official-NIFTY-weight comparison; no ETF weight series or historical free-float IWF reconstruction is required for this active method.
+- **Plan amendment:** registered BUP-01 v1.3. Stock targets remain the 10:00-to-15:15-proxy constituent price outcomes. For each expiry cycle, generate strictly out-of-fold stock probabilities/expected returns, summarize them with unweighted predicted breadth, probability/return means and medians, dispersion, sector breadth, concentration and valid-member coverage, then fit a chronological NIFTY-direction meta-model to the observed NIFTY index label.
+- **Mathematical safeguard:** the actual NIFTY target is still the observed index series. An equal-weighted constituent mean is a diagnostic only, not the actual index return. The meta-model must not use in-sample stock predictions or predictions trained on the same expiry cycle.
+- **C1 gates preserved/revised:** maintain point-in-time membership, stable ISIN/security IDs, corporate-action continuity, verified expiry/session calendar and continuous stock plus NIFTY index candles. Accepted cycles require at least 47 and at least 94% of eligible tradable constituents with valid forecasts; at least 98% of scheduled eligible cycles must have valid NIFTY targets; first confirmatory forecast requires 104 prior eligible cycles.
+- **Rights control:** Nippon AMC bulk workbook automation is paused; no holdings values were admitted. Existing weights/ETF files and calibration reports remain historical audit material only and are not used or refreshed. The v1.3 C1 gate no longer requires weights or basket-to-index weight reconciliation.
+- **Automation:** Dhan C1 workflow no longer refreshes the historical weight cache; AMC archive workflow now runs offline parser tests only. The v1.3 plan validator, member-count/OOF tests and manual/push offline workflow are updated.
+- **Validation:** the preceding mother-source metadata workflow [41298336318](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41298336318) completed SUCCESS, including offline tests and metadata probe. The v1.3 plan/offline workflow is running on the amended branch; record its final result when complete.
+- **Current phase decision:** C0 PASS; C1 PARTIAL / CONTINUOUS-COVERAGE GATE IN PROGRESS. No C2 panel, stock model, forecast, strategy or final manuscript exists. Locked plan v1.3; no weight comparison is to be performed.
+
