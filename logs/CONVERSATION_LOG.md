@@ -446,3 +446,10 @@
 
 ## User requested resume — 2026-11-02
 - User said “Resume”. We inspected formal C2 workflow and report. It failed after 7 offline tests passed because all 62 Dhan daily payloads were missing expected arrays. Explained this is a response compatibility/acquisition issue and not a failure of C1's 100% daily coverage. Reordered requests and added sanitized response-shape diagnostics; no raw values or credentials logged.
+
+
+## 2026-11-02 — Resume C2 after daily response blocker
+- User requested: “Resume”.
+- Visible status shared: C2's prior attempt passed seven offline tests and authenticated, but Dhan daily history returned an unexpected response shape for all 62 symbols.
+- Decision: do not repeat the same 62 Dhan daily requests. Reuse the already audited pinned NSE daily source and the seven official-NSE residual rows from C1 through encrypted cache helpers; fix the C2 workflow's branch mismatch; rerun C2 automatically.
+- No hidden reasoning, secrets, or raw market prices are stored in this log.
