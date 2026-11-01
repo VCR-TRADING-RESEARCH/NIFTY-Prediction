@@ -602,3 +602,13 @@
 - **Window:** first anchor 2021-11-12 through final expiry 2026-10-27. The 2024-01-31 to 2024-04-29 index window was PARTIAL_TARGET_DATES, despite the final 258/258 cycle-level target count. Exact partial-date detail is not recoverable.
 - **Publication:** runner generated sanitized report; git pull --rebase conflicted on STATUS.md and RESEARCH_LOG.md. Final target-coverage gate printed PASS. Detailed per-cycle QA was not retained as an Actions artifact.
 - **Next:** artifact upload before branch update, clean-reset/re-generate status publication, separate daily OHLCV audit and exhaustive action-aware return review before C2.
+
+
+## 2026-11-01 — C1 Dhan daily OHLCV coverage
+
+- **Auditor status:** COMPLETED_WITH_GAPS.
+- **Window:** 2018-04-01 to 2026-10-30.
+- **Coverage:** 68/69 parseable symbols; 94799/95900 valid OHLC member sessions; weighted OHLCV coverage 98.85%.
+- **API/cache:** 69 requests; 0 symbols reused from the sanitized QA cache.
+- **Interpretation:** daily OHLCV coverage is reported independently from intraday target coverage, historical identity and action-adjusted return integrity. No model is trained and C2 remains gated.
+- **Artifacts:** C1_DAILY_COVERAGE.json and C1_DAILY_COVERAGE_REPORT.md.

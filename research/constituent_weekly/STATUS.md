@@ -563,3 +563,21 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - **Identity/action gate:** still PARTIAL. Dated alias resolution is improved, but comprehensive split, bonus, dividend, rights and merger/demerger adjustment review remains open.
 - **Daily feature-history gate:** pending; a separate Dhan daily OHLCV audit is being built.
 - **Overall C1:** still NOT PASSED. C2 remains locked. No model, forecast or trading strategy has been trained or certified.
+
+<!-- C1_DAILY_COVERAGE_START -->
+## Daily OHLCV member-session coverage audit
+
+- Updated (UTC): 2026-11-01T12:00:04.795656+00:00
+- Auditor status: **COMPLETED_WITH_GAPS**
+- Window: 2018-04-01 to 2026-10-30
+- Point-in-time symbols: 69
+- Parseable daily API responses: 68
+- Expected member sessions: 95900
+- Valid OHLC member sessions: 94799 (98.85%)
+- Valid OHLCV member sessions: 94799 (98.85%)
+- Unresolved security IDs: 0
+- Dhan requests in this run: 69
+- Reused cached symbols: 0
+- Raw prices, OHLC arrays, volumes, security IDs and credentials are not published.
+- The plan does not set a separate daily-coverage percentage gate; this is descriptive evidence to support the C1 feature-data decision.
+<!-- C1_DAILY_COVERAGE_END -->
