@@ -291,3 +291,15 @@ The HF dataset's exact row-sum validation is useful as a structural check, but i
 - NSE Indices data subscription page describes historical constituent data including company identifiers, market capitalisation, weights and prices, and lists quantitative research use. Contact: indices@nseids.co.in. Evaluate only after free and permissioned routes have been tested.
 
 Full ranked assessment, gate tests and reconstruction method: [C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md](C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md).
+
+
+
+## v1.3 active acquisition policy — 2026-11-01
+
+The user directed: “No comparison needed.” The active BUP-01 model no longer requires official NIFTY IWF, an ETF weight series or a reconstructed index weight history. No ETF-versus-index weight comparison is to be performed.
+
+**Active sources:** (1) the CC BY 4.0 point-in-time NIFTY 50 membership subset and its documented update ledger; (2) Dhan user-entitled one-minute stock and NIFTY index candles, subject to account/API terms and the configured 90-day request limit; (3) stable security/ISIN identity and dated corporate-action evidence; (4) verified expiry/session dates and the observed NIFTY index target series; (5) point-in-time sector/global/VIX/options/news data only if availability timestamps and use rights are established.
+
+**Retired / not used in v1.3:** NSE historical weight ZIPs, XBRL-derived IWF, the AMP4010 non-commercial weight cache, and AMC ETF portfolio holdings. Existing files/reports are retained as historical audit material only; they are not model inputs, are not refreshed and must not be described as official index weights. The Nippon AMC bulk workbook workflow is paused under the AMC's published restrictions on aggregation/copying and reuse of proprietary site content without prior written consent.
+
+**C1 acquisition gates:** continuously test the full point-in-time stock and NIFTY intraday target coverage using <=90-day chunks; retain source and request manifests, hashes and sanitized QA; preserve all stock/member exclusions and corporate-action boundaries. Do not place raw broker bars, credentials or restricted source rows in the public repository. A cycle requires at least 47 valid stock forecasts and >=94% of its point-in-time tradable members; at least 98% of scheduled cycles must have a valid observed NIFTY target before the confirmatory sample is frozen.
