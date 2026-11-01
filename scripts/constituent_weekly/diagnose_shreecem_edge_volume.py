@@ -42,12 +42,11 @@ def negative_volume_diagnostics(body: dict, start_date: str, end_date: str) -> d
     volume = pd.to_numeric(regular_frame["volume"], errors="coerce")
     finite = volume.notna() & np.isfinite(volume.to_numpy(dtype=float))
     negative = finite & volume.lt(0)
-    timestamps = regular_frame.loc[negative, "time_ist"].dt.isoformat().tolist()
     in_range = (
         regular_frame["time_ist"].dt.strftime("%Y-%m-%d").between(start_date, end_date)
     )
     negative &= in_range
-    timestamps = regular_frame.loc[negative, "time_ist"].dt.isoformat().tolist()
+    timestamps = [timestamp.isoformat() for timestamp in regular_frame.loc[negative, "time_ist"].tolist()]
     return {
         "status": "NEGATIVE_VOLUME_ROWS_FOUND" if timestamps else "NO_NEGATIVE_VOLUME",
         "regular_session_rows": int(len(regular_frame)),
