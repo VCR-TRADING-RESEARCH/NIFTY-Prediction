@@ -167,7 +167,13 @@ def response_shape(
         body.get("error"),
     ]
     message_text = next((x for x in message_fields if isinstance(x, str) and x), None)
+    error_code = body.get("errorCode")
+    error_type = body.get("errorType")
     result["provider_message_category"] = classify_provider_text(message_text)
+    if str(error_code or "").strip().upper() == "DH-905":
+        # Dhan classifies DH-905 as an input/parameter validation exception.
+        # It is not proof that a historical security never had exchange data.
+        result["provider_message_category"] = "DHAN_INPUT_EXCEPTION_DH905"
 
     payload = body.get("data") if isinstance(body.get("data"), dict) else body
     result["data_field_type"] = type(body["data"]).__name__ if "data" in body else "TOP_LEVEL_ARRAYS"

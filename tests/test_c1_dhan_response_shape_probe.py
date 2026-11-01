@@ -102,3 +102,16 @@ def test_stock_parser_still_requires_valid_volume_when_checked():
     assert shape["parser_response_status"] == "INVALID_RESPONSE"
     assert shape["target_anchor_ok"] is False
     assert shape["target_expiry_ok"] is False
+
+
+def test_response_shape_classifies_dhan_input_exception_without_retaining_message():
+    fake = FakeResponse(400, {
+        "errorCode": "DH-905",
+        "errorType": "Input_Exception",
+        "errorMessage": "synthetic provider detail must not be retained",
+    })
+    shape = response_shape(fake)
+    assert shape["provider_message_category"] == "DHAN_INPUT_EXCEPTION_DH905"
+    assert shape["errorCode_value"] == "DH-905"
+    assert shape["errorType_value"] == "Input_Exception"
+    assert "synthetic provider detail" not in str(shape)
