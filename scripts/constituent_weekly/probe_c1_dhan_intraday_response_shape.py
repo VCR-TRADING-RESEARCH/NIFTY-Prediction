@@ -66,6 +66,15 @@ CASES = [
         "symbol": "NIFTY 50",
         "from": "2023-05-06",
         "to": "2023-08-03",
+        "target_date": "2023-05-11",
+    },
+    {
+        "name": "index_failing_window_date_2024",
+        "kind": "index",
+        "symbol": "NIFTY 50",
+        "from": "2024-01-31",
+        "to": "2024-04-29",
+        "target_date": "2024-02-01",
     },
     {
         "name": "legacy_hdfc_daily_history_full",
@@ -119,7 +128,11 @@ def classify_provider_text(value: Any) -> str:
     return "UNCLASSIFIED_PROVIDER_MESSAGE"
 
 
-def response_shape(response: requests.Response, target_date: str | None = None) -> dict[str, Any]:
+def response_shape(
+    response: requests.Response,
+    target_date: str | None = None,
+    require_volume: bool = True,
+) -> dict[str, Any]:
     result: dict[str, Any] = {
         "http_status": int(response.status_code),
         "http_ok": bool(response.ok),
@@ -172,7 +185,7 @@ def response_shape(response: requests.Response, target_date: str | None = None) 
             if isinstance(value, (str, int, float, bool)):
                 result[f"{key}_value"] = str(value)[:60]
     if target_date:
-        parsed = inspect_target_dates(body, [target_date], require_volume=True)
+        parsed = inspect_target_dates(body, [target_date], require_volume=require_volume)
         date_result = parsed.get("dates", {}).get(target_date, {})
         result["parser_response_status"] = parsed.get("status")
         result["target_date_checked"] = target_date
@@ -192,7 +205,11 @@ def post_probe(
 ) -> dict[str, Any]:
     try:
         response = requests.post(url, headers=headers, json=payload, timeout=TIMEOUT_SECONDS)
-        shape = response_shape(response, case.get('target_date'))
+        shape = response_shape(
+            response,
+            case.get("target_date"),
+            require_volume=case.get("kind") != "index",
+        )
     except requests.RequestException as exc:
         shape = {
             "http_status": None,

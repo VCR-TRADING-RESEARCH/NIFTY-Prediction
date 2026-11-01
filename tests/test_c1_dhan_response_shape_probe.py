@@ -57,3 +57,48 @@ def test_response_shape_handles_successful_top_level_arrays_without_recording_va
     assert shape["open_length"] == 2
     assert shape["timestamp_length"] == 2
     assert "100" not in str(shape)
+
+
+def test_index_parser_accepts_valid_ohlc_without_volume():
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    timestamps = [
+        int(datetime.fromisoformat("2023-05-11T10:00:00").replace(tzinfo=ZoneInfo("Asia/Kolkata")).timestamp()),
+        int(datetime.fromisoformat("2023-05-11T15:14:00").replace(tzinfo=ZoneInfo("Asia/Kolkata")).timestamp()),
+    ]
+    fake = FakeResponse(200, {
+        "open": [100.0, 101.0],
+        "high": [101.0, 102.0],
+        "low": [99.0, 100.0],
+        "close": [100.5, 101.5],
+        "timestamp": timestamps,
+    })
+    shape = response_shape(fake, "2023-05-11", require_volume=False)
+    assert shape["parser_response_status"] == "PASS_RESPONSE"
+    assert shape["target_anchor_ok"] is True
+    assert shape["target_expiry_ok"] is True
+    assert shape["target_anchor_time_ist"] == "10:00"
+    assert shape["target_expiry_time_ist"] == "15:14"
+
+
+def test_stock_parser_still_requires_valid_volume_when_checked():
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    timestamps = [
+        int(datetime.fromisoformat("2023-05-11T10:00:00").replace(tzinfo=ZoneInfo("Asia/Kolkata")).timestamp()),
+        int(datetime.fromisoformat("2023-05-11T15:14:00").replace(tzinfo=ZoneInfo("Asia/Kolkata")).timestamp()),
+    ]
+    fake = FakeResponse(200, {
+        "open": [100.0, 101.0],
+        "high": [101.0, 102.0],
+        "low": [99.0, 100.0],
+        "close": [100.5, 101.5],
+        "volume": [],
+        "timestamp": timestamps,
+    })
+    shape = response_shape(fake, "2023-05-11", require_volume=True)
+    assert shape["parser_response_status"] == "INVALID_RESPONSE"
+    assert shape["target_anchor_ok"] is False
+    assert shape["target_expiry_ok"] is False
