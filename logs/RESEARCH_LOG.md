@@ -556,3 +556,16 @@
 - **Phase outcome:** This route is retained as a documented fallback candidate, but it is not an admitted data source. No holdings downloaded, no model training, no forecast. BUP-01 plan v1.2 unchanged; C1 remains NOT PASSED / RIGHTS-BLOCKED.
 - **Next bounded action:** No immediate network retry loop. Continue to an independently accessible AMC mother-source route only where access and data-use terms allow; reopen mfdata only when provider access is available.
 
+
+
+
+## 2026-11-01 — Original AMC disclosure locator assessed as mfdata fallback
+
+- **Source:** [amcs.fund monthly archive](https://amcs.fund/month) and [methodology](https://amcs.fund/methodology).
+- **Source claim:** the site states it builds from each fund house's own monthly portfolio spreadsheet/ZIP, reads the month from the date printed in the disclosure, links source files and Internet Archive copies, and flags incomplete months where accessible files cover less than 70% of average fund-house AUM. These are provider methodology claims, not an independent reproduction yet.
+- **Existing technical evidence:** the C1 metadata workflow returned valid JSON (HTTP 200) from the API index, AMC/scheme metadata and sampled month endpoints including 2019-04. The sanitizer kept metadata/schema only; it did not store security-level holdings or raw source files. The scheme snapshots also showed only a 13-month hold_hist cache, which is not accepted as complete historical coverage.
+- **Research use:** retain amcs.fund as a route to discover the original AMC disclosure files and archived copies. For each scheme-month, the actual printed disclosure date, original URL, archive URL, ISIN identity, 50-stock presence, portfolio weight sum and source reuse rights must be checked.
+- **Limitation:** ETF/index-fund weights are not NIFTY free-float IWF. They may include cash/derivatives or tracking residuals and may differ by scheme. Use only as a proxy/cross-check after a direct comparison with independently published index weights.
+- **Rights:** no blanket licence to download/cache/re-publish the underlying AMC files was established. Public page availability does not override AMC source terms.
+- **Disposition:** useful provenance path; not yet an admitted model input. C1 remains NOT PASSED / RIGHTS-BLOCKED; no C2 or trading backtest triggered.
+
