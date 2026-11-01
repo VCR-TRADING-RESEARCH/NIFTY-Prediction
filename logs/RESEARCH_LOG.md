@@ -593,3 +593,12 @@
 - **Artifacts:** security_alias_history.csv, security_corporate_action_events.csv, security_identity.py, tests/test_c1_security_alias_history.py.
 - **Limitation:** this is a major identity/event ledger, not a complete dividend/split/bonus/rights adjustment series. C1 stays partial; no model or stock return label is built from these mappings yet.
 - **Workflow:** alias/identity regression run [41302695594](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41302695594) pending; continuous Dhan run [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865) was still processing at this log point.
+
+
+## 2026-11-01 — Live C1 Dhan intraday target coverage completed; publication conflict recorded
+
+- **Run:** [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865).
+- **Result:** 258/258 weekly expiry cycles had valid observed NIFTY anchor/expiry-proxy target pairs; 258/258 met the stock input rule (at least 47 and at least 94%); 154 confirmatory cycles remain after 104 prior accepted cycles; zero unresolved active symbols; 1,083 Dhan requests across 21 windows.
+- **Window:** first anchor 2021-11-12 through final expiry 2026-10-27. The 2024-01-31 to 2024-04-29 index window was PARTIAL_TARGET_DATES, despite the final 258/258 cycle-level target count. Exact partial-date detail is not recoverable.
+- **Publication:** runner generated sanitized report; git pull --rebase conflicted on STATUS.md and RESEARCH_LOG.md. Final target-coverage gate printed PASS. Detailed per-cycle QA was not retained as an Actions artifact.
+- **Next:** artifact upload before branch update, clean-reset/re-generate status publication, separate daily OHLCV audit and exhaustive action-aware return review before C2.
