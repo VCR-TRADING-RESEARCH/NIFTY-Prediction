@@ -222,7 +222,9 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
             if isinstance(months, list):
                 month_values = [x for x in months if isinstance(x, str) and re.fullmatch(r"20\d{2}-\\d{2}", x)]
                 shape["hold_hist_month_count"] = len(month_values)
-                shape["hold_hist_months"] = month_values[:20]
+                shape["hold_hist_months"] = months[:20]
+                shape["hold_hist_months_normalized"] = month_values[:20]
+                shape["hold_hist_month_labels_type"] = sorted({type(x).__name__ for x in months})
                 if month_values:
                     shape["hold_hist_first_month"] = min(month_values)
                     shape["hold_hist_last_month"] = max(month_values)
@@ -466,12 +468,17 @@ def run_probe() -> dict[str, Any]:
                     if isinstance(index.get("endpoints"), list) else None,
                 "endpoint_item_keys": sorted(str(k) for k in index["endpoints"][0].keys())[:30]
                     if isinstance(index.get("endpoints"), list) and index["endpoints"] and isinstance(index["endpoints"][0], dict) else [],
-                "endpoint_paths": [
-                    item.get("path") or item.get("url") or item.get("route")
-                    for item in index.get("endpoints", [])
-                    if isinstance(item, dict) and isinstance(item.get("path") or item.get("url") or item.get("route"), str)
-                ][:60] if isinstance(index.get("endpoints"), list) else [],
+                "endpoint_paths": (
+                    [item for item in index.get("endpoints", []) if isinstance(item, str)][:80]
+                    if isinstance(index.get("endpoints"), list) and all(isinstance(item, str) for item in index.get("endpoints", []))
+                    else [
+                        item.get("path") or item.get("url") or item.get("route")
+                        for item in index.get("endpoints", [])
+                        if isinstance(item, dict) and isinstance(item.get("path") or item.get("url") or item.get("route"), str)
+                    ][:80] if isinstance(index.get("endpoints"), list) else []
+                ),
                 "docs_type": type(index.get("docs")).__name__,
+                "docs_excerpt": index.get("docs", "")[:700] if isinstance(index.get("docs"), str) else None,
                 "endpoints_type": type(index.get("endpoints")).__name__,
             }
 
