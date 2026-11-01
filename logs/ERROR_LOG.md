@@ -705,3 +705,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Finding:** the exploratory runner previously persisted only a complete encrypted panel after the whole data/model step. A failure during reconstruction could discard all progress from that run.
 - **Correction:** added AES-GCM encrypted per-symbol stock history and per-index-chunk checkpoints, each tied to the input manifest and instrument/chunk identity. Code commit: `4f83a38eac9ae704cd9e8b5be2071d25ed7ab460`.
 - **Validation:** pending workflow execution. Workflow cache-save condition remains success-only and must be changed to preserve checkpoints when the model stage fails; until then the checkpoints help only when the workflow reaches cache-save.
+
+
+## E0084 — 2026-11-02 — Stale phase status contradicted completed exploratory run
+- **Severity:** Medium — documentation integrity, not a model execution failure.
+- **Finding:** after workflow 41325350069 completed and committed the exploratory report/results, the top-level BUP-01 status still said no constituent panel or bottom-up forecast existed and listed C3 as pending. The later result section had not been integrated into the phase summary.
+- **Correction:** appended a dated C3-X result/decision section to STATUS.md with sample sizes, holdout metrics, uncertainty, cache evidence, limitations and explicit no-trading decision.
+- **Prevention:** future phase summaries must distinguish confirmatory gates from bounded exploratory exceptions; publication automation should update the phase table, not only append result notes.
+- **Status:** corrected on the C3-X branch; main README synchronization and independent result audit remain outstanding.
