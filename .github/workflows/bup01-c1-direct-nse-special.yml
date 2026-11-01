@@ -5,6 +5,7 @@ on:
       - phase/constituent-weekly-outcomes-c1-data
     paths:
       - "scripts/constituent_weekly/audit_c1_direct_nse_special.py"
+      - ".github/workflows/bup01-c1-direct-nse-special.yml"
   workflow_dispatch:
 permissions:
   contents: write
