@@ -233,3 +233,12 @@ The HF dataset's exact row-sum validation is useful as a structural check, but i
 - The guessed April-2019 modern filename path returned 404 even though the AMC archive page lists an April-2019 monthly portfolio record. The correct historic direct URL remains to be identified; no substitute data are inferred.
 - AMFI remains excluded without rights clearance due personal/non-commercial website terms. Nippon AMC use rights for automated extraction/trading research also remain unresolved.
 - This proves recent schema only, not a historical time series, point-in-time availability or official index IWF. C1 remains PARTIAL; no C2 modelling.
+
+
+## 2026-11-01 — Older AMC archive index and amcs.fund source API discovery
+
+- Nippon India's official portfolio archive page lists month-end portfolio entries back to at least September 2013, including every displayed month from 2018 through 2019. Its April 2019 portfolio entry is visible, but the modern month-end filename guess returned 404; this does not establish that the file is absent.
+- [amcs.fund methodology](https://amcs.fund/methodology) describes parsing each AMC's original Excel/ZIP monthly portfolio file and preserving disclosure dates printed inside files. It says each month links to the original fund-house file and an Internet Archive copy.
+- Public API index: https://amcs.fund/api/v1. Advertised endpoints include /amcs, /manifest, /scheme/{id} and /month/{id}. This could reveal historical attachment URLs and monthly completeness. Its endpoint payload was not inspected in this pass, and its own data-reuse terms/licence remain unverified.
+- Use this as a source-link and coverage cross-check only until the API schema, source lineage, reuse rights and point-in-time timestamps are audited. No holdings rows have been imported.
+- Sources: Nippon [AMC portfolio archive](https://mf.nipponindiaim.com/investor-service/downloads/factsheet-portfolio-and-other-disclosures); amcs.fund [methodology](https://amcs.fund/methodology) and [API index](https://amcs.fund/api/v1).
