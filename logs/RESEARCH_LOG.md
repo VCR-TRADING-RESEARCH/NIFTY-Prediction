@@ -631,3 +631,12 @@
 - **Partial-window explanation:** the only partial date is 2024-04-26 at 15:14, while the 10:00 anchor passes. This was not an expiry day. The cycle anchored 2024-04-26 expires 2024-05-02; its actual expiry proxy, stock coverage and index target all pass.
 - **Reconciliation:** earlier 77/258 and 64 accepted-cycle values are from an earlier incomplete run and remain historical; they are superseded as current gate evidence by the later full artifact.
 - **C1 remains partial overall:** the first daily run found 98.85% OHLCV member-session coverage but HDFC legacy history and one TATAMOTORS date missing. The corrected TejHQ personal-use fallback is awaiting its live run. Full action-aware return validation remains open.
+
+
+## 2026-11-01 — C1 daily fallback safeguards and regression validation
+
+- Added an explicit TEJHQ_PERSONAL_USE_ONLY=1 runtime guard before any TejHQ fallback download. Without the flag, fallback is skipped; without HF_TOKEN, it is skipped.
+- Changed encrypted cache publication to a run-unique key plus a dataset/revision restore prefix. This avoids immutable GitHub cache-key collisions preventing the addition of year partitions on later runs.
+- The common C1 offline regression workflow passed **88 tests** in Actions run [41315241386](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41315241386). This includes AES-GCM cache, personal-use guard, HDFC boundary, TejHQ EQ/ISIN/row QA and Tata cross-source check tests.
+- Live TejHQ fallback has not yet run; no fallback sessions are counted in coverage. Dhan daily coverage remains at the last measured first-pass result until the next serialized live daily job completes.
+- Overall C1 remains PARTIAL; daily feature gaps and full action-aware return integrity remain open.
