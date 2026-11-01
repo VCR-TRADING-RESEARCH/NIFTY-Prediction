@@ -684,3 +684,16 @@
 - Cache directory mismatch was identified in both workflows and aligned to the absolute runner temporary directory. New workflow tests guard this path; live cache-hit verification remains pending.
 - Next C1 task: verify each matched member event against official NSE/BSE corporate-action records and issuer filings; build an event-specific adjustment/exclusion ledger with source links, formula inputs and reproducible checks. Only then re-audit daily/expiry return continuity.
 - C1 remains PARTIAL/NOT PASSED; no model trained and no C2 entry.
+
+
+## 2026-11-01T15:01:28.039610+00:00 — C1 Dhan daily OHLCV coverage
+
+- **Auditor status:** COMPLETED_WITH_GAPS.
+- **Window:** 2018-04-01 to 2026-10-30.
+- **Calendar:** 1918 official NIFTY sessions plus 210 validated Dhan index sessions; combined sessions 2128.
+- **Coverage:** 69/70 parseable Dhan symbols; 106385/106392 valid OHLC member sessions; weighted OHLCV coverage 99.9934%.
+- **Fallback:** COMPLETED_WITH_GAPS; 1295 validated member sessions added from the pinned encrypted-cache source.
+- **Residual gaps:** HDFC: 6 (2018-11-07, 2019-10-27, 2020-02-01, 2020-11-14, 2021-11-04, 2022-10-24; sample complete); TATAMOTORS: 1 (2025-10-21; sample complete).
+- **API/cache:** 2 requests; 70 symbols reused from the sanitized QA cache.
+- **Interpretation:** daily OHLCV coverage is reported independently from intraday target coverage, historical identity and action-adjusted return integrity. No model is trained and C2 remains gated.
+- **Artifacts:** C1_DAILY_COVERAGE.json and C1_DAILY_COVERAGE_REPORT.md.

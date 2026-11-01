@@ -567,7 +567,7 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 <!-- C1_DAILY_COVERAGE_START -->
 ## Daily OHLCV member-session coverage audit
 
-- Updated (UTC): 2026-11-01T14:42:05.550037+00:00
+- Updated (UTC): 2026-11-01T15:01:28.039610+00:00
 - Auditor status: **COMPLETED_WITH_GAPS**
 - Window: 2018-04-01 to 2026-10-30
 - Official NIFTY daily sessions: 1918
