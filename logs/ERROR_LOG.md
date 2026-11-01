@@ -449,4 +449,14 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** Python dependency installation succeeded, but the parser-regression step stopped before source retrieval because the dedicated probe workflow installed requests, BeautifulSoup, pandas and xlrd but not pytest.
 - **Correction:** Added pytest explicitly to the workflow dependency install command. The source-probe step will run only after its tests execute.
 - **Impact:** No AMC workbook was requested or parsed by this failed run; it does not indicate a source-access or data-availability failure.
-- **Status:** FIX COMMITTED — close after the corrected run completes.
+- **Status:** FIX APPLIED — close after a successful corrected probe run.
+
+
+## E0056 — 2026-11-01 — AMC page rendered archive links not discoverable as ordinary .xls anchors in runner HTML
+
+- **Run:** [41274888924](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274888924).
+- **Observed:** All four parser tests passed. The discovery parser returned no matching links for September 2026, February 2026 or April 2019, although the rendered official AMC archive page lists those monthly portfolio items. No direct workbook request was made in that run.
+- **Investigation:** The rendered official page exposes direct download URLs for September 2026 and February 2026; the underlying page response available to the runner does not expose those as ordinary anchor hrefs matching the initial parser's assumptions. The AMC links use a regular month-end filename pattern.
+- **Correction:** Retain page discovery when available and add a deterministic month-end URL fallback. The filename pattern is checked against the direct September 2026 and February 2026 download URLs surfaced from the official AMC page. April 2019 remains a candidate to be empirically checked in the next run.
+- **Impact:** No holdings workbook was downloaded in the failed discovery run; no data or research result is affected.
+- **Status:** FIX COMMITTED — close after the new run's HTTP and schema results are inspected.
