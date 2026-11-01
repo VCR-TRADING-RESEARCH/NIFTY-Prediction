@@ -1,7 +1,7 @@
 # C1 amcs.fund API metadata discovery
 
 - Run time (UTC): 2026-11-01T10:21:42.282107+00:00
-- Scope: **metadata only**; the probe inspects AMC archive UI and mfdata.in family/month-history metadata. It does not submit AMC archive forms, call fund-family holdings endpoints, download portfolio workbooks, or store holdings values.
+- Scope: metadata-only source discovery. For this run, the documented search, family-catalogue fallback and legacy scheme-search fallback all returned HTTP 522; no family ID was found, so the family holdings-history endpoint was not reached. No holdings values or source files were downloaded.
 - Rights: **UNVERIFIED**. Public API access is not treated as permission for commercial/trading-research extraction, caching, or redistribution.
 
 | Endpoint | Result | HTTP | Content type | Bytes | Top-level records |
