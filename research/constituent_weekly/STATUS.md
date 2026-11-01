@@ -634,3 +634,13 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 
 
 - **Workflow validation after cache-path patch:** PR CI [41319075705](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075705) passed; offline Dhan preflight and continuous coverage checks [41319075672](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075672) and [41319075683](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075683) passed. Live data steps were skipped for PR safety. Cache-hit proof remains pending.
+
+
+## Resume checkpoint — 2026-11-01 15:10 UTC
+
+- Latest C1 offline regression run [41319197109](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319197109): **93 passed**.
+- Latest daily coverage run [41318960344](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318960344): success; coverage unchanged at 106,385/106,392 (99.9934%), seven dated gaps.
+- Latest corporate-action catalogue run [41318960367](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318960367): success; 18,393 candidate rows, 18,361 deduplicated events, 711 point-in-time member matches. It restored the prior daily cache but had zero action-partition cache hits because that cache did not yet contain the nine action-year partitions. It saved those action partitions successfully; next action run must verify nonzero hits.
+- Official NSE discovery path identified: Corporate Filings → Corporate Actions supports symbol/company, purpose, ex-date and record-date fields and CSV download; NSE All Reports documents a daily corporate-action report with symbol/series, record/book-closure, no-delivery and ex-date fields. Historical depth and automated API access must be tested, not assumed.
+- NSE F&O corporate-action adjustment guidance is a derivative-contract preservation rule, not a universal cash-equity adjusted-close formula. Dividends, rights, splits/bonus, mergers and other events require separate treatments; no factor is applied in C1.
+- C1 remains PARTIAL / NOT PASSED; C2 remains locked.

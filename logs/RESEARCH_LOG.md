@@ -705,3 +705,14 @@
 - Added static regression assertions for both workflows and a shared-helper test for the corporate-action cache path.
 - Pull-request CI [41319075705](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075705) passed; Dhan preflight [41319075672](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075672) passed its offline checks; continuous coverage [41319075683](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075683) passed its offline validation. Live Dhan steps were correctly skipped on pull-request events.
 - The live corporate-action run [41318287855](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318287855) predates the absolute-path correction; it reported 0 action-partition cache hits. A post-correction live run is still required to prove cache reuse.
+
+
+## 2026-11-01 — C1 corporate-action official-source and cache verification checkpoint
+
+- Latest offline regression workflow [41319197109](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319197109) passed 93 tests.
+- Latest daily coverage workflow [41318960344](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318960344) passed; 106,385/106,392 daily member sessions (99.9934%) and seven residual sessions remain unchanged.
+- Latest corporate-action workflow [41318960367](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318960367) passed; 18,393 raw candidates, 18,361 deduplicated, 711 PIT member matches. Zero action-cache hits were expected because the restored cache was populated by the daily workflow and did not contain the action parquet namespace. Nine action partitions were saved for subsequent reuse.
+- Official NSE sources located: [Corporate Filings—Corporate Actions](https://www.nseindia.com/companies-listing/corporate-filings-actions), with symbol/company, purpose, ex-date, record-date and CSV controls; [NSE All Reports data description](https://www.nseindia.com/static/products-services/equity-market-data-reports-download), which describes the daily symbol/series corporate-action report; [NSE derivative adjustment methodology](https://www.nseindia.com/static/products-services/equity-derivatives-corporate-actions-adjustments). The latter applies to derivative contract adjustment and is not adopted as a blanket equity-price adjustment formula.
+- Added a test that verifies encrypted action partition cache round-trip, with the first call downloading and the second reusing cached ciphertext.
+- Next: run the action workflow to verify cache hits; then build the official NSE event cross-check adapter, match by symbol/series/ISIN and ex-date, and manually classify the 711 constituent events. Do not use unverified events or factors in target construction.
+- C1 remains PARTIAL/NOT PASSED; no C2 model training or trading strategy.

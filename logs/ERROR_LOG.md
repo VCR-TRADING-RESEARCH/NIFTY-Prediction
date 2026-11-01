@@ -640,12 +640,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** No market-data values or daily coverage counts changed. This is a repeat-download/cache-location defect; raw market rows and credentials were not committed.
 
 
-## E0076 — 2026-11-01 — C1 workflow cache restore path inconsistent across runner and Python
+## E0076 — 2026-11-01 — First corporate-action cache was cold, not a path failure
 
-- **Observed:** The corporate-action workflow restored the prior daily cache key successfully, but the Python auditor reported zero corporate-action partition hits and downloaded all nine action-year partitions. The daily and action workflows still configured a tilde-prefixed path, while GitHub Actions cache path handling and Python path expansion did not provide a reliably identical location.
-- **Correction:** Both workflows now use the same explicit `${{ runner.temp }}/bup01-tejhq-encrypted` directory for cache restore, Python environment and cache save. Added regression assertions that both workflow YAML files use this exact absolute runner path and no tilde-prefixed path.
-- **Validation:** Workflow/configuration correction committed at [6ecc256](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/6ecc256a913d5dfb69bfb423cafb87de1a4f0b5e); regression guard and shared-cache helper committed at [d2e3844](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/d2e38445a49d8f175aee719eb936dd9ab6c389ee). Pull-request CI [41319075705](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075705) passed; offline Dhan and continuous-coverage checks [41319075672](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075672) and [41319075683](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319075683) passed, with live market-data steps correctly skipped on PR. A live post-fix workflow confirmation is still pending; do not claim cache reuse until logs show nonzero hits.
-- **Impact:** No event counts or market values changed. This is a cache reuse/performance issue only.
+- **Observed:** The corporate-action workflow restored the existing daily-history cache successfully but reported zero action-partition cache hits and downloaded nine annual action partitions.
+- **Root cause:** The restored daily cache contained the seven raw NSE equity bhavcopy partitions, not the separate `actions/nse_YYYY.parquet` corporate-action partitions. The action-specific cache entries did not exist yet. The corporate-action run then saved its nine encrypted action partitions to its own run-keyed cache entry.
+- **Correction:** No code-path correction was needed for this first action-cache miss. The daily and corporate-action workflows use the same absolute `${{ runner.temp }}/bup01-tejhq-encrypted` directory, and both use the same revision-scoped restore prefix. Added an encrypted action-partition round-trip regression to prove that a first call downloads/encrypts and a second call decrypts/reuses without downloading again.
+- **Validation:** Corporate-action run [41318960367](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318960367) succeeded and saved the nine action partitions; the next compatible live action run must report nonzero hits before cross-run reuse is marked PASS.
+- **Impact:** No event counts, market values or labels changed. This is cache warm-up, not a data-integrity failure.
 
 ## E0077 — 2026-11-01 — Corporate-action catalogue is not an adjustment ledger
 

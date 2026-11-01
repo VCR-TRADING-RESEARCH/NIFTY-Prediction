@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pandas as pd
+import pytest
 
 from scripts.constituent_weekly.audit_c1_corporate_actions import (
     catalogue,
@@ -104,3 +105,38 @@ def test_corporate_action_audit_uses_shared_expanded_cache_directory():
     resolved = resolve_tejhq_encrypted_cache_dir(configured)
     assert resolved.is_absolute()
     assert resolved.name == "bup01-tejhq-encrypted"
+
+def test_action_partition_cache_round_trip_reuses_encrypted_partition(tmp_path, monkeypatch):
+    pytest.importorskip("pyarrow")
+    import scripts.constituent_weekly.audit_c1_corporate_actions as audit
+
+    required_columns = sorted(audit.REQUIRED)
+    sample = {column: [None] for column in required_columns}
+    sample.update({
+        "exchange": ["NSE"], "symbol": ["TEST"], "isin": ["INE000000000"],
+        "company": ["Test issuer"], "ex_date": ["2024-01-02"],
+        "record_date": ["2024-01-02"], "type": ["dividend"],
+        "raw_subject": ["test-only subject"],
+    })
+    source = tmp_path / "source.parquet"
+    pd.DataFrame(sample).to_parquet(source, index=False)
+    calls = []
+
+    def fake_download(**kwargs):
+        calls.append(kwargs["filename"])
+        return str(source)
+
+    monkeypatch.setattr(audit, "hf_hub_download", fake_download)
+    cache_dir = tmp_path / "encrypted-cache"
+    token = "test-only-cache-key"
+
+    first, first_meta = audit.load_action_year(2024, token, cache_dir)
+    second, second_meta = audit.load_action_year(2024, token, cache_dir)
+
+    assert first.equals(second)
+    assert first_meta["encrypted_cache_hit"] is False
+    assert second_meta["encrypted_cache_hit"] is True
+    assert calls == ["actions/nse_2024.parquet"]
+    cached = list(cache_dir.glob("*.aesgcm"))
+    assert len(cached) == 1
+    assert source.read_bytes() not in cached[0].read_bytes()

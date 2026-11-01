@@ -377,3 +377,12 @@
 - Both cache workflows were changed to use one absolute runner temporary directory; regression tests were added. Post-fix live cache hit verification remains outstanding.
 - C1 is not passed; daily coverage still has six HDFC and one TATAMOTORS missing member-sessions. Full event verification and action-adjusted return continuity remain open.
 - Only user-visible conversation summary and reproducible work outcomes are recorded; private chain-of-thought is not stored.
+
+
+## 2026-11-01 — User resumed research; official corporate-action source check
+
+- Read current C1 branch head, status, phase plan, logs, workflow runs, daily report and corporate-action catalogue.
+- Confirmed latest offline regression run 41319197109 passed 93 tests; daily coverage run 41318960344 and corporate-action catalogue run 41318960367 completed successfully.
+- Corrected the interpretation of the corporate-action cache miss: the restored cache came from daily raw-bhavcopy work and did not yet contain the action parquet partitions. The corporate-action run saved those nine partitions; a true cache round-trip regression is being added.
+- Located official NSE corporate-action filings page and daily report specification; also reviewed NSE F&O adjustment methodology and retained the distinction between derivative contract adjustment and cash-equity return adjustment.
+- Corporate-action catalogue: 18,393 rows, 18,361 deduplicated, 711 point-in-time member matches; no adjustment factors applied. C1 and C2 remain gated.
