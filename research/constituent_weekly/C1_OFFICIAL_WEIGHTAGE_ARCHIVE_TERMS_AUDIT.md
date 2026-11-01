@@ -121,3 +121,44 @@ SEBI's 2024 market-data sharing policy also establishes a research-data sharing 
 | Binary/equal-weight membership projects | Member/non-member only | Not numerical IWF | Membership cross-check only |
 
 **Gate remains:** no admissible official point-in-time IWF series is yet present. Do not begin confirmatory stock-panel modelling, weighted aggregation, or trading validation until the rights issue and weight reconstruction/reconciliation gates pass. The BUP-01 v1.1 plan remains locked; no research-plan amendment has been made.
+
+
+## Further official-source exhaustion: SEBI/NSE research data policy, BSE, historical EOD repo and public partial weights — 2026-11-01
+
+### 6. SEBI / NSE data-sharing-policy route
+
+The official NSE [Data List Under The NSE Data Sharing Policy for Research and Analysis (28-Jul-2025)](https://nsearchives.nseindia.com/web/sites/default/files/inline-files/Data%20list%20under%20NSE%20Data%20Sharing%20Policy%20for%20Research%20and%20Analysis_20250728.pdf) explicitly lists:
+- **First Basket (Freely Available Research Data):** listed-company data includes quarterly shareholding pattern, corporate announcements, consolidated pledge and other SEBI regulatory disclosures (pp. 4–5 of the PDF).
+- **First Basket (Voluminous data; >2 GB; chargeable):** corporate data including shareholding pattern, historical EOD data, security masters and other data may be chargeable for large-volume requests (p. 6).
+- The list is expressly described as the minimum data for non-commercial academic research under SEBI Circular 2024/178. Data list status is an official research-access pathway, but is not a blanket commercial trading licence or permission to scrape/redistribute the NSE website.
+
+The official NSE [Research Initiatives / Data Access page](https://www.nseindia.com/static/research/research-initiatives) says research data is **strictly limited to academic and non-commercial use** and requires a Data Seeking Request Form to `nseri@nse.co.in`. The NSE Data Sharing & Usage Policy (updated 11-Dec-2025) further defines a Research Activity as research by non-commercial users for purposes **other than trading or profit**; researchers must route requests through Economic Policy & Research, sign the relevant documentation/confidentiality declaration, and agree to the usage limitations. For subscribers accessing data commercially, a relevant agreement is required and prices are set on an arm's-length basis. These terms do not provide a safe non-commercial route for this project's intended internal algorithmic trading/strategy use.
+
+The generic NSE website Terms of Use also expressly prohibit systematic or automated data collection on/in relation to the website and prohibit copying/storing/disseminating content absent permission; although downloadable items and specific SEBI/NSE first-basket policies require reading together, we do not infer a scraping exemption where the intended use is commercial trading.
+
+**Conclusion:** quarterly shareholding pattern records exist as regulatory disclosure data, but for this project's algorithmic trading purpose the practical route is a written commercial-use agreement / explicit authorization for retrieval, caching, computation and internal trading use. Ask NSE Data / NSE Indices to identify the appropriate corporate-data / IWF constituent data product and licence terms. Do not scrape the website or re-use the academic research route for trading. Contact links:
+- NSE Indices data subscription: `indices@nse.co.in` (official Index products page).
+- NSE Research Initiatives (academic/non-commercial only): `nseri@nse.co.in`; not suitable for the stated trading-use objective unless NSE confirms otherwise in writing.
+- NSE Data & Analytics subscription/data-use page: https://www.nseindia.in/static/market-data/nse-data-policy
+
+### 7. BSE as a separate filings source
+
+SEBI's official Corporate Filings curation page links the BSE Shareholding Patterns portal. A web access attempt to the BSE portal returned HTTP 403 in this audit. Even where an individual filing is publicly viewable, this does not establish a bulk export, point-in-time broadcast-time archive, complete NSE constituent coverage, automated collection right or commercial algorithmic-use licence. BSE data therefore remains a candidate for individual spot checks or a separately authorised feed, not an admitted substitute for a complete 22-exclusion IWF series. No BSE requests or records were bulk downloaded.
+
+### 8. Public NSE historical-EOD / corporate-action GitHub mirror
+
+The MIT-licensed code repository [floyds1995/Auto-Index-Constituents-Tracker](https://github.com/floyds1995/Auto-Index-Constituents-Tracker) documents a cached historical NSE bhavcopy corpus (1995 onward), index membership change logs, NSE symbol changes and a corporate-action file. However, the MIT licence applies to code, not to the NSE-derived market datasets; the README identifies official NSE endpoints as their source and does not provide an independent redistribution licence for the data. The NIFTY membership file is described as a change-tracking record generated by polling the current snapshot, so observation dates may lag effective dates. Its EOD OHLCV data cannot supply the intraday 10:00 anchor or 15:14 expiry proxy. We did not copy its raw data. This is a possible source for provenance-led cross-check design, not an admitted data source until data rights/effective dates are established.
+
+### 9. Public weight subsets and false positives
+
+- [Nifty Chronicles index corpus](https://niftychronicles.com/index-corpus/) states explicitly that it uses the official NIFTY 50 weight factsheet only for the top 10; the residual weight is split equally among the other 40 and labelled estimated. This is not a 50-stock point-in-time official weight series and is not admitted.
+- The [NSE NIFTY 50 factsheet](https://www.niftyindices.com/Factsheet/ind_nifty50.pdf) publishes weight information for selected holdings/top names and sector summaries on a monthly snapshot. This is valuable as a dated independent top-name spot-check, not a complete long historical series.
+- The 2026 NIFTY 50 white paper includes a 50-name weight snapshot dated 2026-02-27. It is a single date, not a back history. Do not extrapolate it backward or use it as a full time series.
+
+### 10. Final free-source search decision for the IWF gate
+
+The free-source sweep now includes official NSE/Nifty Indices reports and terms, the SEBI data-sharing policy and NSE first/second-basket data list, NSE company filing/XBRL links, BSE shareholding portal, detailed open-source category XBRL reconstructions, historical constituents repositories, public fact sheets/white papers, and public historical-weight datasets.
+- No free, licence-cleared source was found that simultaneously supplies (a) complete point-in-time historical numeric IWF/constituent weights for the full point-in-time NIFTY 50, (b) all 22 exclusions or an official certified IWF, (c) disclosure/publication timestamps before the model forecast time, (d) corporate-action/identifier identity across all dates, and (e) rights for automated collection/cache and intended algorithmic trading use.
+- The category XBRL dataset remains the technically richest candidate but its explicit licence glob does not clearly include the nested compressed CSV, and categories may not resolve every relationship/agreement exclusion.
+- The official monthly IWF / weight history is the correct data product to request for commercial trading research. A price quote, terms of cache retention, derivative features, derived-statistics publication, internal use, and any redistribution restrictions must be confirmed in writing before ingestion.
+- **No source data was added in this audit.** The research plan remains locked; C1 overall remains NOT PASSED until exact weight rights/completeness and a 98%-coverage basket-to-index reconstruction pass.
