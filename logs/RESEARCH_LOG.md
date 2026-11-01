@@ -496,3 +496,12 @@
 - **Rights rule:** amcs.fund reuse rights for commercial/trading-research extraction, caching and redistribution remain unverified. Treat it only as a source locator pending licence review. Do not import holdings or train.
 - **Plan:** Locked BUP-01 plan v1.2 unchanged.
 - **Next gate:** Inspect the automated API metadata report; if it resolves a specific original Nippon disclosure link, test link availability via HEAD only, record disclosure date separately from first-publication date, and review source rights before any file body is downloaded.
+
+
+## 2026-11-01 — AMC metadata probe regression fixture corrected
+
+- **Phase:** C1 source-discovery automation.
+- **Run:** [41276748532](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41276748532) failed in the offline tests: 3 passed, 1 failed; the network probe was skipped.
+- **Diagnosis:** A single test fixture mixed AMC-list and scheme-detail records. The recursive matcher correctly included both Nippon-related objects, but the test expected only the AMC record.
+- **Correction:** Separated the test fixture into the two distinct endpoint shapes. The metadata extraction code was not changed.
+- **Next action:** Push-triggered workflow rerun; inspect API metadata and only original-source HEAD results. Rights remain unverified and C1 remains blocked.
