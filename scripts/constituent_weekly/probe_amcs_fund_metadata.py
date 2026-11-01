@@ -138,6 +138,36 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
         shape["data_nested_types"] = {
             str(k): type(v).__name__ for k, v in list(data.items())[:30]
         }
+        for field in ("first_month", "prev_month", "unit"):
+            value = data.get(field)
+            if isinstance(value, (str, int, float, bool)):
+                shape[field] = value
+        history = data.get("history")
+        if isinstance(history, list):
+            shape["history_count"] = len(history)
+            if history:
+                first = history[0]
+                last = history[-1]
+                shape["history_item_type"] = type(first).__name__
+                if isinstance(first, dict):
+                    shape["history_item_keys"] = sorted(str(k) for k in first.keys())[:40]
+                    for key in ("m", "month", "date", "period"):
+                        if isinstance(first.get(key), str):
+                            shape["history_first_period"] = first[key]
+                            break
+                    if isinstance(last, dict):
+                        for key in ("m", "month", "date", "period"):
+                            if isinstance(last.get(key), str):
+                                shape["history_last_period"] = last[key]
+                                break
+                elif isinstance(first, str) and isinstance(last, str):
+                    shape["history_first_period"] = first
+                    shape["history_last_period"] = last
+        hold_hist = data.get("hold_hist")
+        if isinstance(hold_hist, dict):
+            shape["hold_hist_type"] = "object"
+            shape["hold_hist_entry_count"] = len(hold_hist)
+            shape["hold_hist_value_types"] = sorted({type(v).__name__ for v in hold_hist.values()})
         for field in ("history", "holdings", "events"):
             items = data.get(field)
             if isinstance(items, list):
@@ -312,6 +342,9 @@ def run_probe() -> dict[str, Any]:
         "tipsheet_manifest": None,
         "tipsheet_weight_candidates": [],
         "nippon_amc_matches": [],
+        "amc_catalog_records": [],
+        "amc_nifty50_schemes": [],
+        "amc_scheme_shapes": [],
         "nifty_bees_scheme_matches": [],
         "scheme_history_metadata": [],
         "month_source_metadata": [],
@@ -327,6 +360,7 @@ def run_probe() -> dict[str, Any]:
     report["amcs"] = amcs_meta
     amc_matches = _matching_records(amcs, ("nippon",)) if amcs is not None else []
     report["nippon_amc_matches"] = amc_matches
+    report["amc_catalog_records"] = _metadata_records(amcs) if amcs is not None else []
 
     amc_id = _first_identifier(amc_matches)
     amc_records: list[dict[str, Any]] = []
@@ -364,6 +398,35 @@ def run_probe() -> dict[str, Any]:
     report["tipsheet_manifest"] = tipsheet_meta
     if tipsheet_payload is not None:
         report["tipsheet_weight_candidates"] = _tipsheet_weight_candidates(tipsheet_payload)
+
+    # Discover other fund houses' NIFTY 50 index ETFs/funds. Retain only scheme
+    # identifiers and schema/date counts, never individual holdings values.
+    amc_probe_slugs = []
+    for rec in report["amc_catalog_records"]:
+        slug = rec.get("slug") or rec.get("id")
+        name = str(rec.get("name", "")).lower()
+        if isinstance(slug, str) and any(token in name for token in ("hdfc", "uti", "sbi", "icici", "nippon")):
+            amc_probe_slugs.append(slug)
+    for amc_slug in list(dict.fromkeys(amc_probe_slugs))[:8]:
+        amc_payload, amc_meta = _fetch_json(session, f"{API_BASE}/amc/{amc_slug}")
+        if amc_payload is None:
+            continue
+        schemes = _matching_records(amc_payload, ("nifty", "50"))
+        for scheme_rec in schemes[:8]:
+            scheme_slug = scheme_rec.get("slug") or scheme_rec.get("scheme_id")
+            if not isinstance(scheme_slug, str):
+                continue
+            scheme_payload, scheme_meta = _fetch_json(session, f"{API_BASE}/scheme/{scheme_slug}")
+            item = {
+                "amc_slug": amc_slug,
+                "scheme": scheme_rec,
+                "http_status": scheme_meta.get("http_status"),
+                "status": scheme_meta.get("status"),
+            }
+            if scheme_payload is not None:
+                item["shape"] = _payload_shape(scheme_payload)
+            report["amc_nifty50_schemes"].append(scheme_rec)
+            report["amc_scheme_shapes"].append(item)
 
     manifest, manifest_meta = _fetch_json(session, f"{API_BASE}/manifest")
     report["manifest"] = manifest_meta
@@ -441,6 +504,18 @@ def render_report(report: dict[str, Any]) -> str:
             lines.append("- " + json.dumps(item, sort_keys=True, ensure_ascii=False))
     else:
         lines.append("- No Nippon AMC metadata match was returned.")
+    lines += ["", "## AMC catalogue records", ""]
+    if report.get("amc_catalog_records"):
+        for item in report["amc_catalog_records"][:30]:
+            lines.append("- " + json.dumps(item, sort_keys=True, ensure_ascii=False))
+    else:
+        lines.append("- No AMC catalogue records found.")
+    lines += ["", "## Nifty 50 index schemes across fund houses", ""]
+    if report.get("amc_scheme_shapes"):
+        for item in report["amc_scheme_shapes"][:40]:
+            lines.append("- " + json.dumps(item, sort_keys=True, ensure_ascii=False))
+    else:
+        lines.append("- No cross-AMC NIFTY 50 scheme history was discovered.")
     lines += ["", "## Nifty BeES scheme metadata matches", ""]
     if report.get("nifty_bees_scheme_matches"):
         for item in report["nifty_bees_scheme_matches"][:20]:
