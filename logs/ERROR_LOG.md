@@ -673,3 +673,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Align the test import with key_for and increase synthetic history to 32 calendar days.
 - **Validation:** Corrective commit 392ff2b8c6bf3ecec513ae7dccad64d13260d012 triggered the rerun; the regression stage subsequently passed (22 tests). The Dhan panel reconstruction/model step is still running.
 - **Impact:** No market data, panel, model or result changed. The failed attempt is not counted as a prediction test.
+
+
+## E0080 — 2026-11-01 — Second C3-X regression attempt retained one stale helper reference
+
+- **Observed:** Actions run [41321315199](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321315199) passed 21 tests but failed one encrypted-cache test with `NameError: cache_key is not defined` at a test call site.
+- **Root cause:** The first repair changed the import to `key_for` but did not update every reference in the encrypted-cache test.
+- **Correction:** Replaced all remaining `cache_key` references with `key_for`; commit 392ff2b8c6bf3ecec513ae7dccad64d13260d012.
+- **Validation:** The next attempt, [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741), passed the entire regression suite (22 tests). Its live Dhan panel reconstruction/model step remains in progress.
+- **Impact:** No market-data request was made in the failed attempt; no prediction result was generated.
