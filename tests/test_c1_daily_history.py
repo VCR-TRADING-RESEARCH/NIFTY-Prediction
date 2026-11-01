@@ -10,6 +10,7 @@ from scripts.constituent_weekly.audit_c1_daily_history import (
     parse_daily_payload,
     summarise_daily_coverage,
     summarise_daily_universe,
+    daily_audit_status,
 )
 
 
@@ -144,3 +145,19 @@ def test_unresolved_security_id_is_also_zero_coverage():
     assert summary["symbols_with_unparseable_daily_responses"] == 1
     assert summary["symbols_with_unresolved_security_id"] == 1
     assert summary["weighted_ohlc_session_coverage_fraction"] == 0.0
+
+
+def test_daily_audit_status_uses_the_aggregate_summary():
+    complete = {
+        "expected_member_sessions": 100,
+        "valid_member_sessions_ohlc": 100,
+        "valid_member_sessions_ohlcv": 100,
+    }
+    with_gap = {
+        "expected_member_sessions": 100,
+        "valid_member_sessions_ohlc": 99,
+        "valid_member_sessions_ohlcv": 99,
+    }
+    assert daily_audit_status(complete, 0) == "COMPLETE"
+    assert daily_audit_status(with_gap, 0) == "COMPLETED_WITH_GAPS"
+    assert daily_audit_status(complete, 1) == "COMPLETED_WITH_GAPS"

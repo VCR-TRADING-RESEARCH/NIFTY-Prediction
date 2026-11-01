@@ -4,6 +4,7 @@ import hashlib
 import json
 import sys
 import time
+import traceback
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -306,6 +307,15 @@ def summarise_daily_universe(
     }
 
 
+def daily_audit_status(summary: dict[str, Any], unresolved_count: int) -> str:
+    expected = int(summary.get("expected_member_sessions", 0))
+    valid_ohlc = int(summary.get("valid_member_sessions_ohlc", 0))
+    valid_ohlcv = int(summary.get("valid_member_sessions_ohlcv", 0))
+    return "COMPLETED_WITH_GAPS" if (
+        unresolved_count > 0 or valid_ohlc < expected or valid_ohlcv < expected
+    ) else "COMPLETE"
+
+
 def main() -> int:
     started = time.monotonic()
     membership = pd.read_csv(MEMBERSHIP_CSV, low_memory=False)
@@ -418,7 +428,7 @@ def main() -> int:
             **summary,
             "daily_feature_coverage_disposition": "DESCRIPTIVE_REVIEW_REQUIRED",
         }
-        report["status"] = "COMPLETED_WITH_GAPS" if unresolved or total_valid < total_expected or total_volume < total_expected else "COMPLETE"
+        report["status"] = daily_audit_status(summary, len(unresolved))
         report["elapsed_seconds"] = round(time.monotonic() - started, 2)
         write_report(report)
         print("C1_DAILY_COVERAGE_STATUS", report["status"])
@@ -432,6 +442,14 @@ def main() -> int:
     except Exception as exc:
         report["status"] = "PARTIAL_OR_BLOCKED_RUNTIME_ERROR"
         report["fatal_error"] = type(exc).__name__
+        trace = traceback.extract_tb(exc.__traceback__)
+        if trace:
+            last = trace[-1]
+            report["fatal_error_location"] = {
+                "file": Path(last.filename).name,
+                "line": int(last.lineno),
+                "function": last.name,
+            }
         write_report(report)
         print("C1_DAILY_COVERAGE_RUNTIME_ERROR", type(exc).__name__)
         return 1
