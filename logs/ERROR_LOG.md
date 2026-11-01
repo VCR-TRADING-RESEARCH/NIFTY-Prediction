@@ -846,3 +846,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Run:** [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358).
 - **Observed:** Dependencies, compilation, offline tests, stale-report cleanup, and encrypted-cache restore passed. Panel construction remains in progress; no fresh report artifact is available. The previous FAILED JSON in branch history is stale and was removed by the current workflow before execution.
 - **Handling:** Keep this as the sole formal C2 execution. Do not launch an overlapping run or reuse the old report. C2 acceptance remains blocked until fresh output is published and passes all gates.
+
+
+## E0100 — 2026-11-02 — C2 accepted; metadata listed two derived features twice
+
+- **Severity:** Low — report metadata only; no duplicate data columns were created by this code path.
+- **Run:** [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358).
+- **Observed:** The JSON report's `feature_columns` list appended `cs_rank_ret5` and `cs_rank_ret20` even though both are already included in `FEATURES`. The panel dataframe creates each derived column once; the defect is confined to the manifest list.
+- **Correction required:** Report `FEATURES` directly and add a uniqueness regression assertion before the next phase consumes the manifest. Do not reinterpret this as duplicated model columns or invalidate C2 data acceptance.
+- **C2 result:** The formal workflow completed successfully; all 258/258 cycles passed the 47/94% rule, index targets were 100%, and both duplicate-row counts were zero. C2 PASS. The metadata correction is a documentation/manifest cleanup, not a threshold relaxation.

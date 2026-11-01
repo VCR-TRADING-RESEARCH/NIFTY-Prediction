@@ -893,3 +893,12 @@
 - Input manifest: 715623a04ff8e32a2a7b0a744a1e4b590d37f758c708eb5d7f5352d7dd00a553.
 - Encrypted panel cache metadata: {'encryption': 'AES-GCM; HF_TOKEN-derived BUP01 cache key; raw values not published', 'index': {'cache_relative_path': 'c2/frozen_panel/67e566b68a3eb1f50be07abbb2dc.aesgcm', 'ciphertext_bytes': 30334, 'ciphertext_sha256': '34b71b6151bb86b2248a5f55c74940b1fa1a89baa33b4ea1d1f73ace316a99aa'}, 'stock': {'cache_relative_path': 'c2/frozen_panel/def4acd72d6aadb62f1ae72bae80.aesgcm', 'ciphertext_bytes': 1654615, 'ciphertext_sha256': 'a1669465250c5cd223f57f28178449d8c75d17413237598632bc734335d83441'}}.
 - C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.
+
+
+## 2026-11-02 — C2 formal panel accepted; C3 handoff
+
+- Formal C2 workflow [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358) completed with success. It produced 258/258 valid NIFTY targets, 258/258 cycles meeting the 47/94% constituent rule, 12,807 constituent-cycle rows, 61 distinct symbols, zero duplicate cycle rows, and a frozen final-20% holdout boundary at cycle 206 (2025-10-29 anchor / 2025-11-04 expiry).
+- The encrypted panel is stored in AES-GCM Actions cache (stock ciphertext 1,654,615 bytes; index ciphertext 30,334 bytes). Raw values are not in the repository. C2 performed no model fitting.
+- Limitations remain visible: 292 identity-flagged rows, 3 known action-crossing rows, 92 stock daily-feature missing rows and 19 flat stock labels. User-authorized progression waiver is not certification of the unresolved historical identity/action catalogue.
+- A metadata-only defect was found: two derived cross-sectional feature names are repeated in the report's feature list, although the dataframe columns are generated once. Log as E0100; correct the manifest before C3 consumes it.
+- C3 confirmatory work is opened on its own branch. The encrypted panel must be transferred to C3 as ciphertext and decrypted only inside Actions. Chronological cycle-grouped folds, 104-cycle warm-up, and untouched holdout remain mandatory.

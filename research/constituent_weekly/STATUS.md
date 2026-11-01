@@ -2,16 +2,17 @@
 
 **Last updated:** 2026-11-02  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 ACCEPTED WITH LIMITATIONS FOR PROGRESSION by explicit user direction; C2 data-pipeline repair and rerun IN PROGRESS  
-**Prediction status:** C2 point-in-time panel is being constructed; no stock model or bottom-up NIFTY forecast is yet accepted  
+**Status:** C0 PASS; C1 ACCEPTED WITH LIMITATIONS FOR PROGRESSION by explicit user direction; C2 PASS — formal panel accepted  
+**Prediction status:** C2 frozen panel accepted (258/258 cycles); C3 stock modelling is next; no stock model or bottom-up NIFTY forecast is yet accepted  
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Locked v1.3 plan and governance checks passed |
 | C1 — Point-in-time universe/data audit | ACCEPTED WITH LIMITATIONS FOR C2 PROGRESSION | 258/258 intraday weekly target cycles pass; daily OHLCV is 106,392/106,392 across 70 symbols with zero gaps; all seven residual bars validated from official NSE archives and merged via encrypted cache; 711 point-in-time member action candidates still require independent issuer/exchange verification and event-specific treatment; dated historical identity checks remain under review |
-| C2 — Panel labels/features | IN PROGRESS | Formal panel-only build; freeze source hashes, 20% chronological holdout boundary, identity/action flags and exclusions |
-| C3 — Stock models/baselines | GATED | Separate branch after formal C2 panel acceptance |
+| C2 — Panel labels/features | PASS | 258/258 index targets; 258/258 cycles satisfy 47/94%; 12,807 rows; zero duplicate rows; encrypted panel frozen |
+| C3 — Stock models/baselines | READY TO START | Establish baseline and pooled logistic/regularised regression/ExtraTrees/HistGradientBoosting using cycle-grouped chronological OOF and untouched 20% holdout |
+
 | C4 — Index aggregation/uncertainty | GATED | Separate branch after C3 OOF stock forecasts are frozen |
 | C5 — Economic/execution gate | GATED | Contract-level fills and date-effective Paytm Money costs required before any strategy claim |
 | C6 — Manuscript/independent audit | GATED | Complete manuscript, plots, tables, appendices and formula/repository audit
@@ -733,3 +734,21 @@ See [C2 panel report](C2_PANEL_BUILD.md) and [panel manifest](C2_PANEL_BUILD.jso
 - Passed: dependency installation, Python compilation, offline regression tests, stale-report cleanup, and encrypted-cache restoration.
 - Active: point-in-time constituent panel construction. No fresh output is available yet. Do not treat the previous FAILED JSON report as this run's output.
 - C2 remains NOT PASSED pending the fresh panel report and registered acceptance gates.
+
+
+## C2 formal acceptance — 2026-11-02
+
+- 
+- Workflow: [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358)
+- Runner commit: [4f37920](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/4f37920c7dc2d719be2c310a1555962343c1616b)
+- Methodology: `bup01-c2-panel-v1`
+- Input manifest SHA-256: `715623a04ff8e32a2a7b0a744a1e4b590d37f758c708eb5d7f5352d7dd00a553`
+- Scheduled cycles: 258
+- Valid NIFTY targets: 258/258 (100%)
+- Cycles satisfying at least 47 valid members and at least 94% of point-in-time tradable members: 258/258
+- Constituent-cycle rows: 12,807; distinct symbols: 61
+- Duplicate index-cycle rows: 0; duplicate constituent-cycle rows: 0
+- Holdout boundary: cycle 206, anchor 2025-10-29, expiry 2025-11-04; final 20% holdout.
+- Identity-flagged rows: 292; known action-crossing rows: 3; primary-flagged rows: 293.
+- Full machine report: [C2_PANEL_BUILD.json](C2_PANEL_BUILD.json); [human report](C2_PANEL_BUILD.md).
+- Formal acceptance: [C2_ACCEPTANCE_REPORT.md](C2_ACCEPTANCE_REPORT.md).

@@ -515,3 +515,11 @@
 - Formal panel-only workflow executed on the plan-defined C2 branch.
 - Offline tests: success; panel step: success; result: COMPLETED.
 - The bundled pilot remains diagnostic only; C3/C4 model gates remain separate.
+
+
+## 2026-11-02 — C2 acceptance and C3 continuation
+
+- User said “Proceed”. Verified formal C2 run [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358) completed successfully and fetched its fresh machine report, not the stale prior failure report.
+- Confirmed 258/258 valid index targets, 258/258 cycles meeting the 47/94% rule, 12,807 constituent-cycle rows, 61 symbols, zero duplicate index/constituent rows, and a sealed final-20% holdout beginning cycle 206.
+- Confirmed raw panel is AES-GCM encrypted in Actions cache; C2 performed no model fitting. Identity/action flags and 92 missing daily-feature rows remain explicit limitations.
+- Created separate C3 confirmatory branch from accepted C2 head. C3 must consume encrypted panel via a secure artifact/cache handoff; no plaintext prices are to be committed.
