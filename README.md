@@ -610,6 +610,10 @@ The former combined C2 panel-and-model workflow has been retired because the loc
 - [C1 acceptance and C2 handoff](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c2-panel/research/constituent_weekly/C1_ACCEPTANCE_AND_C2_HANDOFF.md)
 
 
-## C2 live status — 2026-11-02
+## BUP-01 bottom-up research status — 2026-11-02
 
-Formal panel-only run [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358) passed setup, compile, offline regression tests, stale-report cleanup, and encrypted cache restoration. Panel construction remains in progress. C2 remains NOT PASSED pending fresh outputs and acceptance gates. [C2 phase status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c2-panel/research/constituent_weekly/STATUS.md).
+- **C2: PASS.** Formal run [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358): 258/258 valid NIFTY targets; 258/258 cycles pass 47/94% constituent coverage; 12,807 constituent-cycle rows; 61 symbols; zero duplicate rows. Final 20% holdout begins at cycle 206 (2025-10-29 anchor / 2025-11-04 expiry).
+- The row-level C2 panel remains AES-GCM encrypted. C2 did not fit models. 292 identity-flagged rows and 3 known action-crossing rows remain explicit exclusions/limitations; 92 daily-feature missing rows and 19 flat stock labels are disclosed.
+- C3 confirmatory stock modelling is registered on [its own branch](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c3-models). Registered methods and handoff: [C3_MODEL_SPEC.md](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-models/research/constituent_weekly/C3_MODEL_SPEC.md).
+- C2 workflow now attaches the encrypted frozen-panel ciphertext (not plaintext) to its artifact so C3 can verify hashes and decrypt only inside Actions. A fresh C2 run is required to produce that handoff artifact.
+- No stock-model prediction edge, bottom-up NIFTY forecast, or trading strategy is yet accepted. C5 remains gated on instrument-level fills and date-effective Paytm Money costs/slippage.
