@@ -147,3 +147,12 @@
 - Verified current repo/branch files, the latest Dhan preflight JSON, the last-success snapshot, the 2021 edge run logs and the main README.
 - Clarified that run 41263593605 passed 26 offline tests but its live Dhan preflight was blocked by missing access token / profile HTTP 401; its overall green job conclusion did not mean market-data QA passed.
 - Confirmed the earlier three bounded outcomes and preserved the 15:15 expiry-proxy convention. No private reasoning, tokens, secrets or raw provider data are recorded.
+
+## 2026-11-01 — Resume after 2021-edge QA screenshot
+
+- User sent a screenshot showing the ongoing investigation of TOTP failures and the 2021 historical-edge validator, then asked “Resume”.
+- Rechecked C1 branch status, the latest Dhan preflight, the previous successful preflight, research/error/conversation logs, the pre-registered plan, and the relevant workflow.
+- Verified the Muhurat/post-market counting regression was fixed and the offline suite passed 26/26. Verified the following live Dhan attempt did not reach any market-data endpoint: token generation returned HTTP 200 without an access token twice, and the fallback profile check returned HTTP 401.
+- Clarified that the run's green job conclusion did not mean the data gate passed. The current workflow has a fail-closed result step after committing sanitized diagnostics, but a later run is needed to prove runtime enforcement.
+- Kept prior successful 50/50 sample windows; did not claim continuous five-year coverage. C1 remains blocked and C2 remains gated.
+- Decision: no token-refresh loop. Next live attempt requires checking/correcting Dhan authentication secrets or adding API-key/secret OAuth credentials. No hidden reasoning or credentials are stored.
