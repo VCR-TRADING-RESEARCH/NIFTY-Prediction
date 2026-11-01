@@ -223,3 +223,12 @@
 - Added C1_DEVELOPER_GATE_REPORT.md with evidence, phase scoreboard, remaining hard gates and bounded next developer actions.
 - Updated the C1 status file and main README links.
 - Final disposition remains C1 PARTIAL PASS / RIGHTS-BLOCKED; no model or strategy is produced until authorised point-in-time weights, historical identity/coverage and weighted index reconstruction pass.
+
+
+## 2026-11-01 — User authorised available public web sources for BUP-01
+
+- User said: "Just use the available web sources", then "Ok Proceed".
+- Visible decision: use public ETF portfolio holdings as a separately labelled proxy route, rather than waiting for an NSE permission request. Keep official, ETF replica and reconstructed weights as distinct source classes. Do not label ETF data as official IWF.
+- One-date source calibration: Nippon India ETF Nifty 50 BeES portfolio date 2026-02-28 / NAV date 2026-02-27 compared with NSE Indices official weight snapshot 2026-02-27; 50/50 matched; MAE 0.002214 pp; RMSE 0.003204 pp; max absolute difference 0.008967 pp; Pearson r 0.99999895 after equity-only normalization.
+- Plan amended to v1.2 to add point-in-time ETF holdings snapshots and fixed-share weight drift between observations, with strict event reseeding, reporting-lag controls and a separate exploratory result track. Official confirmatory gates remain.
+- Only visible decisions and outcomes are logged; hidden private reasoning and credentials are not stored.
