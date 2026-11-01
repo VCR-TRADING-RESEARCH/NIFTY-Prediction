@@ -498,3 +498,11 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - **ETF route:** HDFC/UTI/Nippon NIFTY 50 ETF/index fund monthly portfolios are cross-checks/proxies only. The published Hugging Face 20-year weight dataset is CC BY-NC-SA 4.0 and is excluded absent a separate commercial licence.
 - Detailed ranking, formulas, acceptance tests and implementation order: [C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md](C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md).
 - **Overall status:** C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. Plan v1.2 is unchanged. No C2 work or constituent model training is authorised.
+
+ 
+## CC BY 4.0 membership-source cross-check — 2026-11-01
+
+- Added a separate NIFTY 50-only derived membership table under the upstream CC BY 4.0 data licence: [data/constituent_weekly/nifty50_membership_intervals_cc_by_4.csv](../../data/constituent_weekly/nifty50_membership_intervals_cc_by_4.csv). Attribution and limitations: [C1_MEMBERSHIP_ALTERNATIVE_SOURCE.md](C1_MEMBERSHIP_ALTERNATIVE_SOURCE.md).
+- Reconciled it against the project's independently maintained C1 interval ledger at **103/103 month-ends** from 2018-04-30 through 2026-10-31. Upstream symbol canonicalisation TMPV is mapped back to TATAMOTORS before 2025-10-24; temporary non-tradable DUMMYTATAM is excluded for the tradable membership comparison. The project ledger has 50 members at 102 dates and 51 on 2025-10-31 only because the temporary zero-price placeholder is counted.
+- Latest cross-check run [41289992040](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289992040) passed all selected regression tests. The separate authorised-source audit [41289991986](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289991986) also succeeded.
+- **Important:** this validates membership only. The CC BY table's historical numeric weightage cells are all blank. It is not an index-weight or IWF series and does not close the C1 weight/data gate.
