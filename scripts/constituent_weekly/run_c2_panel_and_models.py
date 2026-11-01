@@ -684,7 +684,7 @@ def main() -> int:
                 ],
             }
             OUT_PANEL_JSON.parent.mkdir(parents=True, exist_ok=True)
-            OUT_PANEL_JSON.write_text(json.dumps(panel_result, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            OUT_PANEL_JSON.write_text(json.dumps(panel_result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
             lines = [
                 "# C2 Point-in-Time Constituent Panel Build", "",
                 f"**Status:** {panel_result['status']}", "",
@@ -700,12 +700,12 @@ def main() -> int:
                 "- No model fitting occurred in C2.",
                 "", "See C2_PANEL_BUILD.json for hashes, acceptance details and encrypted cache references.",
             ]
-            OUT_PANEL_MD.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+            OUT_PANEL_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
             result["status"] = "PANEL_BUILT"
             result["panel_build"] = panel_result
             result["elapsed_seconds"] = round(time.monotonic() - started, 2)
             OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-            OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
             write_report(result)
             print("C2_PANEL_BUILT", len(panel), "rows", len(order), "eligible cycles")
             return 0
