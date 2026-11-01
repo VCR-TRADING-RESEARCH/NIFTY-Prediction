@@ -452,7 +452,7 @@ The screenshot's earlier handoff predates the latest C1 evidence. The full 50-st
 
 ## Bottom-up C1 continuation — 2026-11-01
 
-<badge label="Dhan bounded data QA passed" variant="success" /> **Overall C1 remains NOT PASSED / RIGHTS-BLOCKED.** The bottom-up index prediction track is separate from the index-only ExtraTrees results above; there is no bottom-up stock panel, model, forecast or approved strategy yet.
+**Dhan bounded data QA: PASS. Overall C1: NOT PASSED / RIGHTS-BLOCKED.** The bottom-up index prediction track is separate from the index-only ExtraTrees results above; there is no bottom-up stock panel, model, forecast or approved strategy yet.
 
 - Protected Dhan preflight [run 41266897788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266897788) passed its final fail-closed gate. TOTP refreshed on attempt one, the Data API plan was active, and the server/runner clock difference was -1 second.
 - Full 50-stock 90-day QA passed **50/50** for each of three separated windows: 2021-11-01–2022-01-29, 2022-10-03–2022-12-30 and 2026-06-29–2026-09-26. The 2026-10-29 one-session probe also passed 50/50. These windows do **not** establish continuous five-year coverage.
