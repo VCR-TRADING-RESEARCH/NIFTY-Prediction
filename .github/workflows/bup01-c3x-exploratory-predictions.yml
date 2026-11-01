@@ -99,23 +99,51 @@ jobs:
             echo "No result JSON was produced; inspect the preceding workflow step logs."
             exit 0
           fi
-          run_status="$(python -c 'import json,sys; print(json.load(open(sys.argv[1])).get("status","UNKNOWN"))' "$result")"
-          printf '\n\n## C3-X workflow run %s — %s\n\n- Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\n- Result status: %s\n' \
-            "${{ github.run_id }}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$run_status" >> logs/RESEARCH_LOG.md
-          if [ "$run_status" = "BLOCKED_OR_FAILED" ]; then
-            err="$(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d.get("error_type","unknown")+": "+d.get("error_message",""))' "$result")"
-            printf '\n\n## C3-X workflow error — run %s\n\n- Error: %s\n- Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\n' \
-              "${{ github.run_id }}" "$err" >> logs/ERROR_LOG.md
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add research/constituent_weekly/EXPLORATORY_RESULTS.json \
-                  research/constituent_weekly/EXPLORATORY_REPORT.md \
-                  research/constituent_weekly/EXPLORATORY_NIFTY_HOLDOUT.csv \
-                  research/constituent_weekly/EXPLORATORY_STATUS.md \
-                  research/constituent_weekly/STATUS.md \
-                  logs/RESEARCH_LOG.md logs/ERROR_LOG.md
-          if ! git diff --cached --quiet; then
+          mkdir -p "$RUNNER_TEMP/c3x-publish"
+          cp "$result" "$RUNNER_TEMP/c3x-publish/EXPLORATORY_RESULTS.json"
+          for file in EXPLORATORY_REPORT.md EXPLORATORY_NIFTY_HOLDOUT.csv EXPLORATORY_STATUS.md; do
+            if [ -s "research/constituent_weekly/$file" ]; then
+              cp "research/constituent_weekly/$file" "$RUNNER_TEMP/c3x-publish/$file"
+            fi
+          done
+          run_status="$(python -c 'import json,sys; print(json.load(open(sys.argv[1])).get("status","UNKNOWN"))' "$RUNNER_TEMP/c3x-publish/EXPLORATORY_RESULTS.json")"
+          for attempt in 1 2 3 4 5; do
+            echo "C3-X publication attempt $attempt of 5"
+            git fetch origin phase/constituent-weekly-outcomes-c3-exploratory
+            git reset --hard origin/phase/constituent-weekly-outcomes-c3-exploratory
+            cp "$RUNNER_TEMP/c3x-publish/EXPLORATORY_RESULTS.json" research/constituent_weekly/
+            for file in EXPLORATORY_REPORT.md EXPLORATORY_NIFTY_HOLDOUT.csv EXPLORATORY_STATUS.md; do
+              if [ -s "$RUNNER_TEMP/c3x-publish/$file" ]; then
+                cp "$RUNNER_TEMP/c3x-publish/$file" research/constituent_weekly/
+              fi
+            done
+            printf '\n\n## C3-X workflow run %s — %s\n\n- Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\n- Result status: %s\n' \
+              "${{ github.run_id }}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$run_status" >> logs/RESEARCH_LOG.md
+            if [ "$run_status" = "BLOCKED_OR_FAILED" ]; then
+              err="$(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d.get("error_type","unknown")+": "+d.get("error_message",""))' "$RUNNER_TEMP/c3x-publish/EXPLORATORY_RESULTS.json")"
+              printf '\n\n## C3-X workflow error — run %s\n\n- Error: %s\n- Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\n' \
+                "${{ github.run_id }}" "$err" >> logs/ERROR_LOG.md
+            fi
+            printf '\n\n## C3-X latest result — run %s\n\n- Result: %s\n- Report: [EXPLORATORY_REPORT.md](EXPLORATORY_REPORT.md)\n- Machine metrics: [EXPLORATORY_RESULTS.json](EXPLORATORY_RESULTS.json)\n- Prediction CSV: [EXPLORATORY_NIFTY_HOLDOUT.csv](EXPLORATORY_NIFTY_HOLDOUT.csv)\n- C1 remains PARTIAL; C2 confirmatory and trading remain LOCKED.\n' \
+              "${{ github.run_id }}" "$run_status" >> research/constituent_weekly/STATUS.md
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add research/constituent_weekly/EXPLORATORY_RESULTS.json \
+                    research/constituent_weekly/EXPLORATORY_REPORT.md \
+                    research/constituent_weekly/EXPLORATORY_NIFTY_HOLDOUT.csv \
+                    research/constituent_weekly/EXPLORATORY_STATUS.md \
+                    research/constituent_weekly/STATUS.md \
+                    logs/RESEARCH_LOG.md logs/ERROR_LOG.md
+            if git diff --cached --quiet; then
+              echo "No new C3-X publication content."
+              exit 0
+            fi
             git commit -m "Record C3-X exploratory NIFTY prediction results"
-            git push origin HEAD:phase/constituent-weekly-outcomes-c3-exploratory
-          fi
+            if git push origin HEAD:phase/constituent-weekly-outcomes-c3-exploratory; then
+              echo "C3-X sanitized result and audit logs published."
+              exit 0
+            fi
+            echo "Concurrent branch update; retrying from latest branch head."
+          done
+          echo "C3-X publication failed after five non-forced retries."
+          exit 1
