@@ -675,3 +675,10 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Result artifact: not yet created; no model metrics or directional conclusions are claimed at this checkpoint.
 - A second run [41321616749](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321616749) is queued with the concurrency-safe publisher and will reuse the encrypted panel cache if the active run completes the panel and saves it.
 - C1 remains PARTIAL; C2 confirmatory and trading-cost phases remain LOCKED.
+
+
+## C3-X regression pass — 2026-11-01 15:59 UTC
+
+- Run [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741): regression suite PASS (22 tests).
+- Live Dhan panel reconstruction/model evaluation remains in progress; no output metrics/artifact are available yet.
+- Earlier two workflow attempts failed during test collection before Dhan access; corrected import/fixture now pass.
