@@ -195,7 +195,11 @@ def _payload_arrays(body: Any) -> tuple[dict[str, Any] | None, str | None]:
     if str(body.get("status", "")).casefold() == "failure":
         return None, "PROVIDER_FAILURE"
     payload = body.get("data") if isinstance(body.get("data"), dict) else body
-    timestamps = payload.get("timestamp") or payload.get("start_Time") or payload.get("startTime")
+    timestamps = payload.get("timestamp")
+    if timestamps is None:
+        timestamps = payload.get("start_Time")
+    if timestamps is None:
+        timestamps = payload.get("startTime")
     arrays = {
         "timestamp": timestamps,
         "open": payload.get("open"),
