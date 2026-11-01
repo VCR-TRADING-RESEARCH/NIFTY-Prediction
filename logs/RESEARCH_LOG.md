@@ -368,3 +368,11 @@
 - Further free-source candidates assessed: NSE/BSE filing access, detailed XBRL category dataset, TejHQ daily EOD/corporate actions, floyds1995 NSE historical-EOD GitHub repository, Nifty Chronicles top-10 official weights plus equally-split estimated residual and the NSE factsheet/whitepaper snapshots. No candidate clears the required complete point-in-time IWF, 22 exclusions, historic identity, data rights and internal algorithmic trading use gates.
 - Added unsent [NSE_DATA_RIGHTS_REQUEST.md](../research/constituent_weekly/NSE_DATA_RIGHTS_REQUEST.md) to request the actual historical IWF/weight product plus licensed commercial use, automated access, private cache rights, identifier history and derivative-output rules. No request has been sent.
 - **Gate outcome:** C1 market-data sampling passes, but C1 overall is still NOT PASSED / RIGHTS-BLOCKED. No stock panel or model is built. BUP-01 v1.1 remains locked; C2-C6 remain gated.
+
+
+## 2026-11-01 — Requested external quant toolchain reviewed
+
+- Recorded repository-level README and licence review for QuantEvolve, TradingAgents, AstraQuant, PySR, arch, tick and MAPIE in [TOOLING_EVALUATION.md](../research/constituent_weekly/TOOLING_EVALUATION.md).
+- Decided not to import modelling/tooling dependencies in C1 because the registered plan requires C1 data/rights and C2 panel acceptance first. This avoids unnecessary dependencies and model/search leakage while no stock panel exists.
+- Phase allocation: arch/PySR in bounded C3; MAPIE in C4 only after sequential coverage checks; TradingAgents as sandboxed hypothesis reviewer; QuantEvolve in limited C5 search only; tick deferred until validated event/tick data exists. AstraQuant excluded from integration due to custom AGPL/Commons Clause/addenda and OKX-specific execution path.
+- No third-party source code was cloned or copied. No external exchange collectors or trading agents were run. BUP-01 v1.1 unchanged; overall C1 remains NOT PASSED / RIGHTS-BLOCKED.
