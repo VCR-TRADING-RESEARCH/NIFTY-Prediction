@@ -764,3 +764,16 @@
 
 - The direct NSE archive audit validates 3/3 special-session rows. A follow-up attempt to persist the raw rows into the encrypted cache exposed a missing runtime dependency (`pyotp`) from the shared cache-encryption module.
 - Updated the workflow dependency installation to use the project's runtime requirements plus cache dependencies. No raw values were committed; encrypted cache persistence remains pending rerun.
+
+
+## 2026-11-01T19:56:40.493291+00:00 — C1 Dhan daily OHLCV coverage
+
+- **Auditor status:** COMPLETE.
+- **Window:** 2018-04-01 to 2026-10-30.
+- **Calendar:** 1918 official NIFTY sessions plus 210 validated Dhan index sessions; combined sessions 2128.
+- **Coverage:** 69/70 parseable Dhan symbols; 106392/106392 valid OHLC member sessions; weighted OHLCV coverage 100.0000%.
+- **Fallback:** COMPLETED; 1302 validated member sessions added from the pinned encrypted-cache source.
+- **Residual gaps:** none.
+- **API/cache:** 1 requests; 70 symbols reused from the sanitized QA cache.
+- **Interpretation:** daily OHLCV coverage is reported independently from intraday target coverage, historical identity and action-adjusted return integrity. No model is trained and C2 remains gated.
+- **Artifacts:** C1_DAILY_COVERAGE.json and C1_DAILY_COVERAGE_REPORT.md.

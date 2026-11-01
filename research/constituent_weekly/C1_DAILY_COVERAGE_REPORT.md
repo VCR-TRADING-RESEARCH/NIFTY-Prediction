@@ -1,7 +1,7 @@
 # C1 Daily OHLCV Member-Session Coverage Report
 
-**Updated:** 2026-11-01T15:01:28.039610+00:00
-**Auditor status:** COMPLETED_WITH_GAPS
+**Updated:** 2026-11-01T19:56:40.493291+00:00
+**Auditor status:** COMPLETE
 
 ## Scope
 
@@ -23,8 +23,8 @@
 - Combined NIFTY daily sessions: 2128
 - Symbols with parseable Dhan daily responses: 69
 - Expected member sessions: 106392
-- OHLC coverage: 106385 / 106392 (99.99%)
-- OHLCV coverage: 106385 / 106392 (99.99%)
+- OHLC coverage: 106392 / 106392 (100.00%)
+- OHLCV coverage: 106392 / 106392 (100.00%)
 
 ## Per-symbol coverage
 
@@ -52,7 +52,7 @@
 | GAIL | 743 | 743 | 100.00% | 743 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
 | GRASIM | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
 | HCLTECH | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
-| HDFC | 1301 | 1295 | 99.54% | 1295 | 99.54% | 6 | 2018-11-07, 2019-10-27, 2020-02-01, 2020-11-14, 2021-11-04, 2022-10-24 | yes | PARTIAL_WITH_TEJHQ_FALLBACK |
+| HDFC | 1301 | 1301 | 100.00% | 1301 | 100.00% | 0 | — | yes | PASS_WITH_TEJHQ_FALLBACK |
 | HDFCBANK | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
 | HDFCLIFE | 1552 | 1552 | 100.00% | 1552 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
 | HEROMOTOCO | 1860 | 1860 | 100.00% | 1860 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
@@ -87,7 +87,7 @@
 | SHRIRAMFIN | 642 | 642 | 100.00% | 642 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
 | SUNPHARMA | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
 | TATACONSUM | 1385 | 1385 | 100.00% | 1385 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
-| TATAMOTORS | 1876 | 1875 | 99.95% | 1875 | 99.95% | 1 | 2025-10-21 | yes | PASS_RESPONSE |
+| TATAMOTORS | 1876 | 1876 | 100.00% | 1876 | 100.00% | 0 | — | yes | PASS_WITH_TEJHQ_FALLBACK |
 | TATASTEEL | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
 | TCS | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
 | TECHM | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
@@ -104,9 +104,9 @@
 ## Restricted fallback summary
 
 - Dataset: tejhq/indian-markets at revision f576704883fff86a6facdcde336db6ce19502063.
-- Fallback status: COMPLETED_WITH_GAPS.
-- Accepted symbols: HDFC.
-- Encrypted local cache hits: 0; encrypted cache downloads: 7.
+- Fallback status: COMPLETED.
+- Accepted symbols: HDFC, TATAMOTORS.
+- Encrypted local cache hits: 7; encrypted cache downloads: 0.
 - Raw exchange-derived parquet is never persisted in this repository or uploaded as a workflow artifact.
 
 ## Interpretation and limitations
@@ -122,4 +122,4 @@
 - Membership SHA-256: dda5d0aa6cb4feec5edaa53c9a7b099b5d9e46b6020c1ab69c5913f5402d2a08
 - Official daily-session SHA-256: 5fee1979958e96276e53054c3e76b3818aa6cc1b3abe0e88dd5647c2976104c7
 - Dhan scrip-master SHA-256: ad00a05b69606346a5e796bef8715a981242eab8063d615294ce8b3e54981a6a
-- Requests this run: 2; cached symbols reused: 70
+- Requests this run: 1; cached symbols reused: 70

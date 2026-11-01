@@ -567,8 +567,8 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 <!-- C1_DAILY_COVERAGE_START -->
 ## Daily OHLCV member-session coverage audit
 
-- Updated (UTC): 2026-11-01T15:01:28.039610+00:00
-- Auditor status: **COMPLETED_WITH_GAPS**
+- Updated (UTC): 2026-11-01T19:56:40.493291+00:00
+- Auditor status: **COMPLETE**
 - Window: 2018-04-01 to 2026-10-30
 - Official NIFTY daily sessions: 1918
 - Additional validated Dhan index sessions: 210
@@ -576,15 +576,15 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Point-in-time symbols: 70
 - Parseable Dhan daily API responses: 69
 - Expected member sessions: 106392
-- Valid OHLC member sessions: 106385 (99.99%)
-- Valid OHLCV member sessions: 106385 (99.99%)
+- Valid OHLC member sessions: 106392 (100.00%)
+- Valid OHLCV member sessions: 106392 (100.00%)
 - Unresolved security IDs: 0
-- Dhan requests in this run: 2
+- Dhan requests in this run: 1
 - Reused cached symbols: 70
-- TejHQ fallback disposition: COMPLETED_WITH_GAPS
-- TejHQ fallback symbols accepted: 1
-- TejHQ fallback member sessions added: 1295
-- Residual missing sessions by symbol: HDFC: 6 (2018-11-07, 2019-10-27, 2020-02-01, 2020-11-14, 2021-11-04, 2022-10-24; sample complete); TATAMOTORS: 1 (2025-10-21; sample complete)
+- TejHQ fallback disposition: COMPLETED
+- TejHQ fallback symbols accepted: 2
+- TejHQ fallback member sessions added: 1302
+- Residual missing sessions by symbol: none
 - Raw prices, OHLC arrays, volumes, security IDs and credentials are not published.
 - The plan does not set a separate daily-coverage percentage gate; this is descriptive evidence to support the C1 feature-data decision.
 <!-- C1_DAILY_COVERAGE_END -->

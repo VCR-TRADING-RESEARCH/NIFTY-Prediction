@@ -2,9 +2,9 @@
   "auth_method": "totp_refresh",
   "cache_reused_symbols": 70,
   "coverage_interpretation": "Descriptive daily OHLCV coverage; no unregistered percentage threshold is added. Dhan is primary. Restricted personal-use TejHQ raw NSE bhavcopy is a fallback only for Dhan-missing HDFC/Tata Motors sessions.",
-  "created_at_utc": "2026-11-01T15:01:00.835439+00:00",
+  "created_at_utc": "2026-11-01T19:56:35.680473+00:00",
   "dhan_profile_authorized": true,
-  "elapsed_seconds": 33.7,
+  "elapsed_seconds": 11.57,
   "fatal_error": null,
   "index_calendar_qa": {
     "dhan_duplicate_session_count": 0,
@@ -40,9 +40,9 @@
     "window_start": "2018-04-01"
   },
   "methodology_version": "bup01-c1-daily-feature-coverage-v2",
-  "requests_this_run": 2,
+  "requests_this_run": 1,
   "schema_version": 2,
-  "status": "COMPLETED_WITH_GAPS",
+  "status": "COMPLETE",
   "summary": {
     "daily_coverage_gate": "DESCRIPTIVE_ONLY_NO_UNREGISTERED_THRESHOLD",
     "daily_feature_coverage_disposition": "DESCRIPTIVE_REVIEW_REQUIRED",
@@ -51,22 +51,22 @@
     "expected_member_sessions": 106392,
     "median_symbol_ohlc_coverage_fraction": 1.0,
     "median_symbol_ohlcv_coverage_fraction": 1.0,
-    "minimum_symbol_ohlc_coverage_fraction": 0.9953881629515757,
-    "minimum_symbol_ohlcv_coverage_fraction": 0.9953881629515757,
+    "minimum_symbol_ohlc_coverage_fraction": 1.0,
+    "minimum_symbol_ohlcv_coverage_fraction": 1.0,
     "official_trading_session_count": 1918,
     "point_in_time_symbols_expected": 70,
-    "symbols_with_any_ohlc_gap": 2,
-    "symbols_with_any_ohlcv_gap": 2,
+    "symbols_with_any_ohlc_gap": 0,
+    "symbols_with_any_ohlcv_gap": 0,
     "symbols_with_parseable_daily_responses": 69,
-    "symbols_with_tejhq_fallback": 1,
+    "symbols_with_tejhq_fallback": 2,
     "symbols_with_unparseable_daily_responses": 1,
     "symbols_with_unresolved_security_id": 0,
-    "tejhq_fallback_member_sessions_added": 1295,
+    "tejhq_fallback_member_sessions_added": 1302,
     "union_trading_session_count": 2128,
-    "valid_member_sessions_ohlc": 106385,
-    "valid_member_sessions_ohlcv": 106385,
-    "weighted_ohlc_session_coverage_fraction": 0.999934,
-    "weighted_ohlcv_session_coverage_fraction": 0.999934,
+    "valid_member_sessions_ohlc": 106392,
+    "valid_member_sessions_ohlcv": 106392,
+    "weighted_ohlc_session_coverage_fraction": 1.0,
+    "weighted_ohlcv_session_coverage_fraction": 1.0,
     "window_end": "2026-10-30",
     "window_start": "2018-04-01"
   },
@@ -497,24 +497,19 @@
       "dhan_status": "KNOWN_DHAN_DH905",
       "dhan_valid_ohlc_session_count": 0,
       "dhan_valid_volume_session_count": 0,
+      "direct_nse_source_rows_added": 6,
+      "direct_nse_target_rows_added": 6,
       "expected_session_count": 1301,
       "fallback_dataset_revision": "f576704883fff86a6facdcde336db6ce19502063",
-      "fallback_source": "tejhq_raw_nse_bhavcopy",
+      "fallback_source": "composite_tejhq_plus_direct_nse_archive",
       "fallback_status": "PASS",
-      "fallback_valid_session_count": 1295,
-      "missing_session_count": 6,
-      "missing_session_sample": [
-        "2018-11-07",
-        "2019-10-27",
-        "2020-02-01",
-        "2020-11-14",
-        "2021-11-04",
-        "2022-10-24"
-      ],
+      "fallback_valid_session_count": 1301,
+      "missing_session_count": 0,
+      "missing_session_sample": [],
       "missing_session_sample_complete": true,
-      "ohlc_coverage_fraction": 0.995388,
+      "ohlc_coverage_fraction": 1.0,
       "source_crosscheck": null,
-      "status": "PARTIAL_WITH_TEJHQ_FALLBACK",
+      "status": "PASS_WITH_TEJHQ_FALLBACK",
       "tejhq_source_dataset_revision": "f576704883fff86a6facdcde336db6ce19502063",
       "tejhq_source_duplicate_session_count": 0,
       "tejhq_source_invalid_ohlc_row_count": 0,
@@ -527,11 +522,11 @@
         "2022": "23c40086ca1936f86957708c092b4a3ca777735522030060f20770925b6f143e",
         "2023": "b83d4a68ea1a8a8e5a277fccb5802c2535371c903a7dbc88bf6f0054c2f5e887"
       },
-      "tejhq_source_rows_found": 1295,
+      "tejhq_source_rows_found": 1301,
       "tejhq_source_unique_isin_count": 1,
-      "valid_ohlc_session_count": 1295,
-      "valid_volume_session_count": 1295,
-      "volume_coverage_fraction": 0.995388
+      "valid_ohlc_session_count": 1301,
+      "valid_volume_session_count": 1301,
+      "volume_coverage_fraction": 1.0
     },
     "HDFCBANK": {
       "available_session_count": 2128,
@@ -1184,49 +1179,24 @@
       "dhan_status": "PASS_RESPONSE",
       "dhan_valid_ohlc_session_count": 1875,
       "dhan_valid_volume_session_count": 1875,
+      "direct_nse_source_rows_added": 1,
+      "direct_nse_target_rows_added": 1,
       "duplicate_session_count": 1,
       "expected_session_count": 1876,
       "fallback_dataset_revision": "f576704883fff86a6facdcde336db6ce19502063",
-      "fallback_source": "tejhq_raw_nse_bhavcopy",
-      "fallback_status": "REJECTED_CROSS_SOURCE_MISMATCH_OR_INCOMPLETE",
-      "fallback_valid_session_count": 0,
+      "fallback_source": "composite_tejhq_plus_direct_nse_archive",
+      "fallback_status": "PASS",
+      "fallback_valid_session_count": 1,
       "first_daily_bar_date": "2018-04-02",
       "invalid_ohlc_row_count": 0,
       "invalid_volume_row_count": 0,
       "last_daily_bar_date": "2026-10-30",
-      "missing_session_count": 1,
-      "missing_session_sample": [
-        "2025-10-21"
-      ],
+      "missing_session_count": 0,
+      "missing_session_sample": [],
       "missing_session_sample_complete": true,
-      "ohlc_coverage_fraction": 0.999467,
-      "source_crosscheck": {
-        "comparison_dates_missing_from_dhan": [
-          "2025-10-22"
-        ],
-        "comparison_dates_missing_from_tejhq": [
-          "2025-10-22"
-        ],
-        "comparison_dates_present_in_dhan": [
-          "2025-10-20",
-          "2025-10-23"
-        ],
-        "comparison_dates_present_in_tejhq": [
-          "2025-10-20",
-          "2025-10-23"
-        ],
-        "date_sample": [
-          "2025-10-20",
-          "2025-10-22",
-          "2025-10-23"
-        ],
-        "dates_checked": 2,
-        "dates_matched": 2,
-        "dates_mismatched": 0,
-        "price_tolerance": "absolute 0.02 or relative 0.01%; volume exact",
-        "status": "FAIL_OR_INCOMPLETE"
-      },
-      "status": "PASS_RESPONSE",
+      "ohlc_coverage_fraction": 1.0,
+      "source_crosscheck": null,
+      "status": "PASS_WITH_TEJHQ_FALLBACK",
       "tejhq_source_dataset_revision": "f576704883fff86a6facdcde336db6ce19502063",
       "tejhq_source_duplicate_session_count": 0,
       "tejhq_source_invalid_ohlc_row_count": 0,
@@ -1234,11 +1204,11 @@
       "tejhq_source_raw_partition_sha256": {
         "2025": "d755f1ce1431dafaf2fc53880fcc09582dfb27b93bc9e88c2a4ad8589173cc94"
       },
-      "tejhq_source_rows_found": 2,
+      "tejhq_source_rows_found": 3,
       "tejhq_source_unique_isin_count": 1,
-      "valid_ohlc_session_count": 1875,
-      "valid_volume_session_count": 1875,
-      "volume_coverage_fraction": 0.999467
+      "valid_ohlc_session_count": 1876,
+      "valid_volume_session_count": 1876,
+      "volume_coverage_fraction": 1.0
     },
     "TATASTEEL": {
       "available_session_count": 2128,
@@ -1473,7 +1443,14 @@
     "cache_encryption": "AES-256-GCM keyed from HF_TOKEN; only encrypted files are eligible for cache",
     "dataset_repo": "tejhq/indian-markets",
     "dataset_revision": "f576704883fff86a6facdcde336db6ce19502063",
-    "encrypted_cache_hits": 0,
+    "direct_nse_supplemental_cache": {
+      "cache_present": true,
+      "encrypted_file_sha256": "b9855515b134fdc5ac1d997c67aecda314e57757fed595673ca53fd164ad9ea8",
+      "raw_csv_sha256": "728d10833a312475df4cd60cbb07be043a48329a0ddbe9c1fb6d9e5293afd52b",
+      "raw_values_published": false,
+      "rows": 7
+    },
+    "encrypted_cache_hits": 7,
     "license_scope": "PERSONAL_USE_ONLY; no client/business use; no raw redistribution; exchange terms apply independently",
     "partition_sha256": {
       "2018": "5107b627a08681514aa2597a7798e756f27daf849960cb5ae4bae44c257c5f66",
@@ -1486,59 +1463,38 @@
     },
     "raw_data_persisted_to_repo_or_artifact": false,
     "source_tree": "nse/year=YYYY/nse_YYYY.parquet (raw NSE EQ bhavcopy; not prices_adjusted)",
-    "status": "COMPLETED_WITH_GAPS",
+    "status": "COMPLETED",
     "symbols": {
       "HDFC": {
         "candidate_sessions_checked": 1301,
+        "direct_nse_source_rows": 6,
+        "direct_nse_target_rows": 6,
         "duplicate_session_count": 0,
         "expected_session_count": 1301,
-        "fallback_sessions_added": 1295,
+        "fallback_sessions_added": 1301,
         "invalid_ohlc_row_count": 0,
         "invalid_volume_row_count": 0,
         "source_crosscheck": null,
         "status": "PASS",
         "unique_isin_count": 1,
-        "valid_source_sessions": 1295
+        "valid_source_sessions": 1301
       },
       "TATAMOTORS": {
         "candidate_sessions_checked": 4,
+        "direct_nse_source_rows": 1,
+        "direct_nse_target_rows": 1,
         "duplicate_session_count": 0,
         "expected_session_count": 1876,
-        "fallback_sessions_added": 0,
+        "fallback_sessions_added": 1,
         "invalid_ohlc_row_count": 0,
         "invalid_volume_row_count": 0,
-        "source_crosscheck": {
-          "comparison_dates_missing_from_dhan": [
-            "2025-10-22"
-          ],
-          "comparison_dates_missing_from_tejhq": [
-            "2025-10-22"
-          ],
-          "comparison_dates_present_in_dhan": [
-            "2025-10-20",
-            "2025-10-23"
-          ],
-          "comparison_dates_present_in_tejhq": [
-            "2025-10-20",
-            "2025-10-23"
-          ],
-          "date_sample": [
-            "2025-10-20",
-            "2025-10-22",
-            "2025-10-23"
-          ],
-          "dates_checked": 2,
-          "dates_matched": 2,
-          "dates_mismatched": 0,
-          "price_tolerance": "absolute 0.02 or relative 0.01%; volume exact",
-          "status": "FAIL_OR_INCOMPLETE"
-        },
-        "status": "REJECTED_CROSS_SOURCE_MISMATCH_OR_INCOMPLETE",
+        "source_crosscheck": null,
+        "status": "PASS",
         "unique_isin_count": 1,
-        "valid_source_sessions": 2
+        "valid_source_sessions": 3
       }
     },
-    "year_partitions_downloaded": 7,
+    "year_partitions_downloaded": 0,
     "year_partitions_used": [
       2018,
       2019,
@@ -1551,5 +1507,5 @@
   },
   "token_refresh_status": "SUCCESS",
   "unresolved_symbols": [],
-  "updated_at_utc": "2026-11-01T15:01:28.039610+00:00"
+  "updated_at_utc": "2026-11-01T19:56:40.493291+00:00"
 }
