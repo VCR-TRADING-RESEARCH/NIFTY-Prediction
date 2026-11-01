@@ -1,0 +1,121 @@
+name: BUP-01 C3-X exploratory constituent prediction tests
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c3-exploratory
+    paths:
+      - "research/constituent_weekly/RESEARCH_PLAN.md"
+      - "scripts/constituent_weekly/run_exploratory_predictions.py"
+      - "tests/test_exploratory_predictions.py"
+      - "tests/test_constituent_weekly_plan.py"
+      - ".github/workflows/bup01-c3x-exploratory-predictions.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bup01-c3x-exploratory-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  exploratory-prediction-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exploratory phase branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c3-exploratory
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install project, Dhan and encryption dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r live_api/requirements.txt pytest cryptography
+
+      - name: Run leakage, cache and governance regression tests
+        run: |
+          python -m pytest -q \
+            tests/test_exploratory_predictions.py \
+            tests/test_constituent_weekly_plan.py \
+            tests/test_c1_continuous_dhan_coverage.py
+
+      - name: Restore authenticated encrypted constituent panel cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/bup01-dhan-exploratory
+          key: bup01-dhan-exp-panel-${{ runner.os }}-${{ hashFiles('data/constituent_weekly/nifty50_membership_intervals.csv', 'data/reconciliation/expiry_verification.csv', 'data/constituent_weekly/security_corporate_action_events.csv', 'research/constituent_weekly/C1_CONTINUOUS_COVERAGE.json') }}-v1
+          restore-keys: |
+            bup01-dhan-exp-panel-${{ runner.os }}-
+
+      - name: Build causal panel and run expanding-window prediction tests
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+          BUP01_CACHE_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+          BUP01_DHAN_CACHE_DIR: ${{ runner.temp }}/bup01-dhan-exploratory
+        run: python scripts/constituent_weekly/run_exploratory_predictions.py
+
+      - name: Save authenticated encrypted constituent panel cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/bup01-dhan-exploratory
+          key: bup01-dhan-exp-panel-${{ runner.os }}-${{ hashFiles('data/constituent_weekly/nifty50_membership_intervals.csv', 'data/reconciliation/expiry_verification.csv', 'data/constituent_weekly/security_corporate_action_events.csv', 'research/constituent_weekly/C1_CONTINUOUS_COVERAGE.json') }}-v1
+
+      - name: Upload sanitized exploratory result bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bup01-c3x-exploratory-${{ github.run_id }}
+          path: |
+            research/constituent_weekly/EXPLORATORY_RESULTS.json
+            research/constituent_weekly/EXPLORATORY_REPORT.md
+            research/constituent_weekly/EXPLORATORY_NIFTY_HOLDOUT.csv
+            research/constituent_weekly/EXPLORATORY_STATUS.md
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Record result, status and any error in the phase branch
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          result="research/constituent_weekly/EXPLORATORY_RESULTS.json"
+          if [ ! -s "$result" ]; then
+            echo "No result JSON was produced; inspect the preceding workflow step logs."
+            exit 0
+          fi
+          run_status="$(python -c 'import json,sys; print(json.load(open(sys.argv[1])).get("status","UNKNOWN"))' "$result")"
+          printf '\n\n## C3-X workflow run %s — %s\n\n- Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\n- Result status: %s\n' \
+            "${{ github.run_id }}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$run_status" >> logs/RESEARCH_LOG.md
+          if [ "$run_status" = "BLOCKED_OR_FAILED" ]; then
+            err="$(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d.get("error_type","unknown")+": "+d.get("error_message",""))' "$result")"
+            printf '\n\n## C3-X workflow error — run %s\n\n- Error: %s\n- Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\n' \
+              "${{ github.run_id }}" "$err" >> logs/ERROR_LOG.md
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/constituent_weekly/EXPLORATORY_RESULTS.json \
+                  research/constituent_weekly/EXPLORATORY_REPORT.md \
+                  research/constituent_weekly/EXPLORATORY_NIFTY_HOLDOUT.csv \
+                  research/constituent_weekly/EXPLORATORY_STATUS.md \
+                  research/constituent_weekly/STATUS.md \
+                  logs/RESEARCH_LOG.md logs/ERROR_LOG.md
+          if ! git diff --cached --quiet; then
+            git commit -m "Record C3-X exploratory NIFTY prediction results"
+            git push origin HEAD:phase/constituent-weekly-outcomes-c3-exploratory
+          fi
