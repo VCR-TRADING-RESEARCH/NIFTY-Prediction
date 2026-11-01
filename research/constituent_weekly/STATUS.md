@@ -370,3 +370,11 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Added [NSE_DATA_RIGHTS_REQUEST.md](NSE_DATA_RIGHTS_REQUEST.md) as an unsent request template. It asks NSE Indices/NSE Data for the appropriate product, exact coverage, commercial-use terms, cache retention and output restrictions.
 - Further alternatives exhausted: BSE historical filings portal returned 403 in web audit; public historical weight page only has official top-ten and equal-split estimated remainder; GitHub NSE EOD/constituent tracker has MIT code but no separate data licence and does not supply intraday targets or IWF. No third-party dataset met the rights + full 22-exclusion + point-in-time IWF + trading-use requirements.
 - **C1 overall remains NOT PASSED / RIGHTS-BLOCKED.** Price acquisition is no longer the live blocker. No C2 panel/model/forecast or C5 strategy work should start until written official data rights/completeness and the weighted basket-to-index reconciliation gate pass. Plan v1.1 remains unchanged.
+
+
+## Requested quant-toolchain evaluation — 2026-11-01
+
+- Added [TOOLING_EVALUATION.md](TOOLING_EVALUATION.md) to map all seven requested repositories to the registered BUP-01 phases and record licences / technical limitations.
+- Apache-2.0 references: QuantEvolve, TradingAgents and PySR. BSD-family: arch and tick; MAPIE declares BSD-3-Clause. AstraQuant declares a custom AGPL-3.0 + Commons Clause and additional terms, and its execution layer is OKX-specific; it is excluded from code import absent legal review and an India-market use case.
+- No tool was imported or cloned in C1. The locked plan explicitly defers them until the validated panel exists: arch/PySR in bounded C3 experiments, MAPIE in C4 after sequential coverage assumptions, TradingAgents as sandboxed hypothesis review, QuantEvolve only in bounded C5 research. tick requires licensed event/tick data which is not presently available. No Binance/crypto collector is permitted in the India Dhan/NSE data pipeline.
+- This is an evaluation artifact, not a change to plan v1.1. C1 overall remains NOT PASSED / RIGHTS-BLOCKED; C2–C6 remain gated.
