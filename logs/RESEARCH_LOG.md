@@ -622,3 +622,12 @@
 - **API/cache:** 1083 requests this run; reused 0 index and 0 stock-symbol chunks.
 - **Interpretation:** data coverage is assessed independently of security identity/corporate-action treatment. This audit does not train or evaluate a model and does not unlock C2.
 - **Artifacts:** C1_CONTINUOUS_COVERAGE.json and C1_CONTINUOUS_COVERAGE_REPORT.md.
+
+
+## 2026-11-01 — Full C1 intraday artifact retrieved; target coverage reconciliation
+
+- **Authoritative run:** [41309632317](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41309632317), artifact 13086220727. The complete sanitized JSON with all per-cycle and index-chunk date QA was downloaded and inspected.
+- **Result:** intraday target gate PASS; 258/258 weekly expiry cycles valid; 258/258 stock-input cycles meet 47 members and at least 94% coverage; 154 confirmatory cycles after 104 prior accepted cycles; 98% minimum member coverage; median 50 valid members; zero unresolved active symbols; 1,083 requests over 21 windows.
+- **Partial-window explanation:** the only partial date is 2024-04-26 at 15:14, while the 10:00 anchor passes. This was not an expiry day. The cycle anchored 2024-04-26 expires 2024-05-02; its actual expiry proxy, stock coverage and index target all pass.
+- **Reconciliation:** earlier 77/258 and 64 accepted-cycle values are from an earlier incomplete run and remain historical; they are superseded as current gate evidence by the later full artifact.
+- **C1 remains partial overall:** the first daily run found 98.85% OHLCV member-session coverage but HDFC legacy history and one TATAMOTORS date missing. The corrected TejHQ personal-use fallback is awaiting its live run. Full action-aware return validation remains open.
