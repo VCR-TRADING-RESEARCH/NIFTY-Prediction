@@ -409,3 +409,12 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Main limitation: only a single 50-stock calibration date has been fully cross-compared against official weights. Although a third-party source indexes 12 recent monthly AMC holdings and AMC factsheet archives exist, full historical snapshots, exact publication timestamps, historical membership/action reseeding and weighted basket-to-index reconciliation are not yet completed.
 - Plan v1.2 adds this exploratory proxy path while preserving the original official-weight confirmatory track and all point-in-time, 98% coverage, 47-stock, walk-forward and transaction-cost gates.
 - C1 current decision: **PARTIAL; proxy path enabled for bounded source acquisition/QA, not yet accepted for modelling**. C2–C6 have not started; no stock model, bottom-up prediction, trading strategy or final manuscript exists.
+
+
+## 2026-11-01 — Primary AMC disclosure archive discovery
+
+- The official Nippon India Mutual Fund disclosures page exposes monthly portfolio workbooks, with current listings through September 2026 and older reports extending into 2018/2019. A direct February 2026 workbook URL was confirmed from the page.
+- AMFI's separate monthly archive also exposes Excel files, but its terms of use restrict site use to personal/non-commercial purposes. This project supports trading research; AMFI-hosted files are therefore not admitted to automated bulk extraction or public caching without a separate rights review.
+- Independent sources report 90 months of Nippon India ETF Nifty 50 BeES portfolio holdings (April 2019–September 2026). They are secondary coverage checks, not primary model inputs.
+- A bounded metadata-only workflow is being added to probe September 2026, February 2026 and April 2019 AMC workbooks. It will store only URLs, file hashes/bytes, sheet/header detection and ISIN-row counts; it will not publish constituent-level values.
+- **C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.** Source-use rights, exact publication timestamps, historical security/action continuity and weight coverage/basket reconciliation remain unresolved.
