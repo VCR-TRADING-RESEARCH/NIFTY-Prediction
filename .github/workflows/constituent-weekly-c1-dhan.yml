@@ -19,7 +19,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: bup01-c1-dhan-${{ github.repository }}-${{ github.event_name }}
+  group: bup01-c1-market-data-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:
