@@ -55,7 +55,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}/bup01-dhan-exploratory
-          key: bup01-dhan-exp-panel-${{ runner.os }}-${{ hashFiles('data/constituent_weekly/nifty50_membership_intervals.csv', 'data/reconciliation/expiry_verification.csv', 'data/constituent_weekly/security_corporate_action_events.csv', 'research/constituent_weekly/C1_CONTINUOUS_COVERAGE.json') }}-v1
+          key: bup01-dhan-exp-panel-${{ runner.os }}-${{ hashFiles('data/constituent_weekly/nifty50_membership_intervals.csv', 'data/reconciliation/expiry_verification.csv', 'data/constituent_weekly/security_corporate_action_events.csv', 'research/constituent_weekly/C1_CONTINUOUS_COVERAGE.json') }}-v2
           restore-keys: |
             bup01-dhan-exp-panel-${{ runner.os }}-
 
@@ -74,7 +74,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: ${{ runner.temp }}/bup01-dhan-exploratory
-          key: bup01-dhan-exp-panel-${{ runner.os }}-${{ hashFiles('data/constituent_weekly/nifty50_membership_intervals.csv', 'data/reconciliation/expiry_verification.csv', 'data/constituent_weekly/security_corporate_action_events.csv', 'research/constituent_weekly/C1_CONTINUOUS_COVERAGE.json') }}-v1
+          key: bup01-dhan-exp-panel-${{ runner.os }}-${{ hashFiles('data/constituent_weekly/nifty50_membership_intervals.csv', 'data/reconciliation/expiry_verification.csv', 'data/constituent_weekly/security_corporate_action_events.csv', 'research/constituent_weekly/C1_CONTINUOUS_COVERAGE.json') }}-v2
 
       - name: Upload sanitized exploratory result bundle
         if: always()
