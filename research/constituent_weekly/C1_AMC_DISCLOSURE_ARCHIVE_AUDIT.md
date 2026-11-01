@@ -81,3 +81,13 @@ The direct URL candidate for April 2019 returned HTTP 404. The AMC archive page 
 - The research browser can read the API index but cannot retrieve the `/amcs` or `/manifest` JSON endpoints directly; CI is the bounded next check. The external API's commercial/trading-research licence remains unverified.
 
 **Gate impact:** Historical archive depth is better evidenced, but C1 remains **PARTIAL / NOT ACCEPTED FOR MODELLING**. Do not train or import third-party holdings until source rights, exact source-file lineage, publication/availability timestamps, point-in-time holdings/security identity, 98% weight coverage, 47-stock minimum and basket-to-index reconciliation all pass.
+
+## amcs.fund metadata probe result — 2026-11-01
+
+- Automated run [41277022940](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41277022940) completed **SUCCESS**. All four metadata-sanitisation tests passed, the API probe ran, and the sanitized report was committed.
+- API index, /amcs, Nippon AMC detail and /manifest all returned HTTP 200 with valid JSON. The AMC listing resolved to nippon-india; AMC detail listed Nifty BeES schemes for the current September 2026 period.
+- The manifest did **not** yield a whitelisted original-AMC or Internet Archive URL for a historical Nippon Nifty BeES monthly file. No HEAD source-link checks were available to run. The report is [C1_AMCS_API_DISCOVERY_REPORT.md](C1_AMCS_API_DISCOVERY_REPORT.md).
+- No scheme-level holdings endpoint was requested. No constituent holdings, ISINs, quantities, market values, weights or source workbook bytes were downloaded.
+- The API endpoint reachability is now established, but its data-reuse licence remains unverified and the exact April 2019 AMC attachment is still unresolved. Do not treat current scheme metadata as historical holdings evidence.
+
+**Gate impact:** Discovery route partially validated (API metadata reachable); it did not resolve historical file URLs. C1 remains **PARTIAL / NOT ACCEPTED FOR MODELLING**.
