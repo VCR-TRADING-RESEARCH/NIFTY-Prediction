@@ -751,3 +751,8 @@ The corrected C3-X workflow [41321327741](https://github.com/VCR-TRADING-RESEARC
 ## 2026-11-01 — C3-X second regression attempt repair
 
 Run [41321315199](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321315199) passed 21 tests and failed one cache test because one call site retained the obsolete `cache_key` name after the import had been renamed. Updated all references to `key_for` in commit 392ff2b8c6bf3ecec513ae7dccad64d13260d012. Corrected run [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741) subsequently passed all 22 regression tests before entering live Dhan panel reconstruction.
+
+
+## 2026-11-01 — C3-X feature-history performance correction
+
+Static review found repeated daily-history aggregation inside every constituent-cycle feature call. Updated the next-run implementation to compute each constituent's daily OHLCV history once and reuse it across weekly anchors, retaining strict pre-anchor slicing and identical feature definitions. Added an equivalence regression test. The active older runner remains untouched; next queued run will use the optimized branch code. No model metrics are available yet.
