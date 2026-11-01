@@ -73,6 +73,24 @@ jobs:
             echo "The phase status was updated; no token, security ID or raw price values are included." >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      - name: Commit compact Dhan diagnostics only
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f research/constituent_weekly/C1_DHAN_PREFLIGHT.json research/constituent_weekly/STATUS.md
+          git add -f research/constituent_weekly/C1_DHAN_LAST_SUCCESS.json 2>/dev/null || true
+          git add -f research/constituent_weekly/C1_NIFTY50_WEIGHT_AUDIT.json
+          git add -f data/constituent_weekly/nifty50_weights_monthly.csv 2>/dev/null || true
+          git status --short
+          git diff --cached --stat
+          if ! git diff --cached --quiet; then
+            target_branch="${{ github.head_ref || github.ref_name }}"
+            git commit -m "Update sanitized Dhan C1 diagnostics"
+            git pull --rebase origin "$target_branch"
+            git push origin "HEAD:$target_branch"
+          fi
+
       - name: Enforce live Dhan preflight result
         if: always() && github.event_name != 'pull_request'
         run: |
@@ -91,20 +109,3 @@ jobs:
               raise SystemExit(1)
           print("DHAN_PREFLIGHT_GATE_PASSED: all configured live equity preflight checks passed.")
           PY
-      - name: Commit compact Dhan diagnostics only
-        if: always() && github.event_name != 'pull_request'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f research/constituent_weekly/C1_DHAN_PREFLIGHT.json research/constituent_weekly/STATUS.md
-          git add -f research/constituent_weekly/C1_DHAN_LAST_SUCCESS.json 2>/dev/null || true
-          git add -f research/constituent_weekly/C1_NIFTY50_WEIGHT_AUDIT.json
-          git add -f data/constituent_weekly/nifty50_weights_monthly.csv 2>/dev/null || true
-          git status --short
-          git diff --cached --stat
-          if ! git diff --cached --quiet; then
-            target_branch="${{ github.head_ref || github.ref_name }}"
-            git commit -m "Update sanitized Dhan C1 diagnostics"
-            git pull --rebase origin "$target_branch"
-            git push origin "HEAD:$target_branch"
-          fi
