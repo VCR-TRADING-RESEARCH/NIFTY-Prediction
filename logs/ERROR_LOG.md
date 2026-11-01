@@ -698,3 +698,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Verification:** Rerun [41343953567](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41343953567) succeeded, restored the prior encrypted cache, validated 3/3 direct NSE rows, wrote the supplemental encrypted CSV cache, and saved the new cache key.
 - **Impact:** No raw data or token was committed. Cache persistence and daily feature-panel merge are now complete. Successful daily run 41344197015 reports 106,392/106,392 valid OHLCV sessions.
 
+
+
+## E0090 — 2026-11-02 — C2 offline regression used a too-strict Brier boundary
+
+- **Run:** [41347512132](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41347512132).
+- **Observed:** Five C2 offline tests passed; the metric test failed because the fixture's exact Brier score was 0.10 while the assertion required strictly less than 0.10.
+- **Root cause:** Test expectation used a strict inequality at an exact mathematical boundary; the model metric calculation was correct.
+- **Correction:** Changed the fixture assertion to accept a Brier score equal to 0.10. No model logic, input data or prediction target was changed.
+- **Status:** FIX COMMITTED; automatic rerun [41347616436](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41347616436) is in progress.
