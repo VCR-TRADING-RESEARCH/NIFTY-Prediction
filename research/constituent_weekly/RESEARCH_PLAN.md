@@ -1,7 +1,7 @@
 # Bottom-Up NIFTY 50 Weekly Expiry Prediction — Pre-Registered Plan
 
 **Track ID:** BUP-01  
-**Plan version:** 1.3  
+**Plan version:** 1.4  
 **Registered:** 2026-10-31  
 **Status:** Locked after user-directed v1.3 aggregation-scope amendment; first bounded research cycle  
 **Research branch:** phase/constituent-weekly-outcomes-c0
@@ -236,13 +236,15 @@ Forecast quality is not trading P&L. Any later NIFTY options/futures strategy mu
 
 ## 10. Phases, branches and gates
 
-Each phase has its own branch. Update status and logs after every phase step. The registered method may change only through a versioned amendment with dated user direction/rationale and a documented impact assessment. Plan v1.3 is locked for this bounded cycle.
+Each phase has its own branch. Update status and logs after every phase step. The registered confirmatory method may change only through a versioned amendment with dated user direction/rationale and a documented impact assessment. Plan v1.4 preserves all confirmatory gates and adds one bounded exploratory exception (C3-X) that does not waive C1/C2 acceptance.
 
 | Phase | Planned branch | Deliverables | Acceptance gate |
 |---|---|---|---|
 | C0 — Registration/governance | phase/constituent-weekly-outcomes-c0 | Locked plan, questions, sources, literature, status/logs, tests and workflow | Governance files committed; structural checks pass |
 | C1 — Point-in-time universe/data audit | phase/constituent-weekly-outcomes-c1-data | Membership/security master, identity/action ledger, 90-day chunk coverage report for stock and NIFTY index candles, source manifests and exclusion ledger | Dated member/security identity passes; confirmatory period fixed only where continuous stock anchor/expiry proxies and NIFTY target are present; ≥47/94% valid stocks per accepted cycle; ≥98% valid NIFTY labels across scheduled eligible cycles |
-| C2 — Panel labels/features | phase/constituent-weekly-outcomes-c2-panel | Stock-cycle panel, observed NIFTY targets, causal features, OOF split design, hashes and tests | No duplicate security-cycle, future leakage, identifier/action errors or fabricated member forecasts; exclusions documented |
+| C2 — Panel labels/features | phase/constituent-weekly-outcomes-c2-panel | Confirmatory stock-cycle panel, observed NIFTY targets, causal features, OOF split design, hashes and tests | Full C1 gate passed; no unresolved identity/action gaps, future leakage or fabricated member forecasts |
+| C3-X — Bounded exploratory prediction tests (new v1.4 exception) | phase/constituent-weekly-outcomes-c3-exploratory | Encrypted ephemeral feature cache; causal stock-cycle features; pooled Logistic/ExtraTrees stock tests; OOF constituent-signal NIFTY test; sanitized metrics and error log | Exploratory only; use cycles that pass the already measured target-coverage and 47/94% member thresholds after known structural-event exclusions; minimum 104 prior eligible cycles for first stock forecast; whole-cycle chronology; no raw bars in repo/artifacts; no final model/strategy claims |
+| C3 — Confirmatory stock models/baselines | phase/constituent-weekly-outcomes-c3-models | Confirmatory walk-forward stock forecasts, strictly OOF per-cycle forecast summaries, experiment registry and metrics | Only after C1 and C2 pass; untouched chronological holdout and registered statistical tests |
 | C3 — Stock models/baselines | phase/constituent-weekly-outcomes-c3-models | Walk-forward stock forecasts, strictly OOF per-cycle forecast summaries, experiment registry and metrics | Pre-registered candidates; chronological and cycle-clustered uncertainty; holdout sealed |
 | C4 — Index aggregation/uncertainty | phase/constituent-weekly-outcomes-c4-aggregation | Unweighted breadth/dispersion feature panel, calibrated NIFTY-direction meta-model, benchmark metrics and robustness charts | Only OOF stock summaries feed the meta-model; NIFTY target is actual observed index label; no equal-weight basket is represented as NIFTY return |
 | C5 — Economic/execution gate | phase/constituent-weekly-outcomes-c5-costs | Instrument specification, date-effective fees, fills, slippage and net P&L if feasible | Verified cost-adjusted positive result required for strategy claim; otherwise BLOCKED/no strategy |
@@ -251,7 +253,7 @@ Each phase has its own branch. Update status and logs after every phase step. Th
 
 ## 11. Stop rules
 
-1. Stop C1 if point-in-time membership/security identity, corporate-action handling, continuous stock anchor/expiry-proxy coverage or the observed NIFTY index target cannot be validated for the registered sample. Historical free-float weights and ETF holdings are not gates in v1.3.
+1. Stop confirmatory C2/C3 if point-in-time membership/security identity, corporate-action handling, continuous stock anchor/expiry-proxy coverage or the observed NIFTY index target cannot be validated for the registered sample. Historical free-float weights and ETF holdings are not gates in v1.4. A bounded C3-X exploratory run is permitted only on already validated cycle-level target data with known structural-event exclusions and the registered 47/94% threshold; its findings cannot satisfy C1/C2 or unlock confirmatory testing.
 2. Do not train a stock panel with future membership, unresolved security mapping, non-causal features, unhandled corporate actions or fabricated/missing-bar replacements.
 3. Do not fit the index meta-model on in-sample stock predictions. Every per-stock forecast that enters a cycle summary must be generated out of fold; all constituent rows from one cycle remain in the same fold.
 4. Do not call unweighted breadth, mean predicted return or an equal-weight basket the NIFTY 50 index return. The index target is always the observed NIFTY index series from Section 4.1.
@@ -287,7 +289,7 @@ Visible user conversations and decisions may be logged; hidden private chain-of-
 
 ## 14. Registration status
 
-At v1.3 registration, C0 governance remains PASS; C1 is still in progress because continuous five-year stock/index intraday coverage and historical security/action continuity are not yet validated. No constituent panel, trained stock model, out-of-fold forecast or bottom-up NIFTY prediction exists. The next empirical decision is the bounded Dhan 90-day chunk coverage audit, not model selection.
+At v1.4, C0 governance remains PASS. The C1 intraday target-data sub-gate has passed on 258 cycles, with 154 cycles after the 104-cycle warm-up; daily OHLCV remains 99.9934% with seven residual sessions and corporate-action verification remains incomplete. The user authorized a bounded exploratory stock/constituent-signal prediction test on eligible validated cycles, with known structural-event exclusions and no raw bars published. This is not a C1/C2 pass; confirmatory tests and trading remain locked.
 
 
 ## Version history and controlled amendment
@@ -296,3 +298,5 @@ At v1.3 registration, C0 governance remains PASS; C1 is still in progress becaus
 - **v1.1 — 2026-11-01:** User-directed expiry convention change. For both stock constituents and the NIFTY 50 index outcome, use the close of the latest valid one-minute candle whose timestamp is within 15:00–15:14 IST on the expiry session, label it the 15:15 expiry proxy, and store the actual timestamp. It is not the official 15:30 close. A 15:30 index close may be shown only as a separate sensitivity and cannot be mixed into the primary stock/index target. This replaces the earlier 15:25–15:29 stock-bar requirement. No other research question, hypothesis, entry time, feature policy, fold design or acceptance threshold is changed by this amendment.
 - **v1.2 — 2026-11-01:** User-directed public-source fallback. Added a separate exploratory ETF-replica proxy track based on Nippon India ETF Nifty 50 BeES holdings. No historical holdings series was admitted; the single-date calibration was discovery only.
 - **v1.3 — 2026-11-01:** User directed: “No comparison needed”. Removed ETF-versus-index weight comparison, free-float IWF reconstruction and weight/basket reconciliation from the active method and C1 gate. Replaced weighted index-return aggregation with a pre-registered, unweighted, strictly out-of-fold constituent forecast-signal meta-model (breadth, probability/return summaries, dispersion, sector breadth and member coverage) trained against the observed NIFTY 50 index-direction label. An equal-weight basket remains a diagnostic only and is never called the NIFTY index. Point-in-time membership, stable security identity, corporate actions, 47-member/94% per-cycle stock-forecast coverage, 98% valid index-label coverage, at least 104 prior cycles, leakage-safe walk-forward validation and Paytm Money execution-cost gates remain.
+
+- **v1.4 — 2026-11-01:** User approved proceeding with prediction experiments despite incomplete final C1 corporate-action review. This amendment creates C3-X, a bounded exploratory-only path using already validated intraday target windows, the registered 47-member/94% threshold, at least 104 prior eligible weekly cycles, point-in-time membership and known structural-event exclusions. The stock training panel is generated in-memory and cached only as authenticated encrypted data; repository reports contain aggregate metrics and cycle-level NIFTY forecasts, not raw constituent bars or per-stock price rows. This does not waive C1/C2 gates, resolve the 711-event catalogue, authorize confirmatory claims, alter the final holdout or trading-cost requirements, or unlock live trading. The normal C2/C3 confirmatory phases remain blocked until C1 passes.
