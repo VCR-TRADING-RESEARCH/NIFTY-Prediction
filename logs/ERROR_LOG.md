@@ -755,3 +755,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction attempt 2:** Added sanitized daily response-shape diagnostics (status, top-level/data keys, data type and array lengths only) to failure output. Commit `45839fa`.
 - **Validation:** Offline tests passed in the preceding run (7 passed). The ordered/diagnostic reruns [41350817688](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41350817688) and [41350828764](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41350828764) are queued/in progress; do not claim C2 complete until one publishes a passing panel report.
 - **Security:** No raw market values, access tokens, PINs or TOTP secrets were written to logs.
+
+
+## E0090 — 2026-11-02 — C2 daily-history response incompatibility
+- **Severity:** High — C2 panel construction blocker.
+- **Run:** [41349085435](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41349085435).
+- **Symptom:** Dhan authentication and 21 intraday chunk requests completed, but daily-history parsing returned `MISSING_DAILY_ARRAY` for all 62 symbols. Seven offline C2 tests passed; no model or panel result was produced.
+- **Root cause:** The C2 runner independently requested Dhan daily history using a response schema that did not match the returned payload. The project already had a pinned NSE EOD dataset and a C1-validated 100% composite daily coverage audit.
+- **Correction:** C2 now reuses the pinned TejHQ NSE EQ yearly partitions through the existing C1 AES-GCM cache helpers, merges the seven independently validated official-NSE residual sessions, filters to the point-in-time C2 universe, and stores only encrypted raw partitions in the Actions cache. The C2 workflow now runs on the plan-defined C2 panel branch and explicitly sets the personal-use source flag.
+- **Validation:** New workflow [41351049298](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351049298) was triggered by the correction; its result is pending at log update time. Do not mark C2 passed until panel QA and walk-forward gates complete.
+- **Security:** No raw prices, credentials, or hidden chain-of-thought are published.
