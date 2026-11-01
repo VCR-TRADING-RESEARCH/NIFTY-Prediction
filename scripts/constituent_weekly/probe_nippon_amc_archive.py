@@ -168,9 +168,12 @@ def workbook_probe(payload: bytes) -> dict[str, object]:
 
 def probe_file(session: requests.Session, month: str, url: str) -> dict[str, object]:
     result: dict[str, object] = {"month": month, "url": url, "status": "NOT_STARTED"}
+    response = None
+    payload = b""
     try:
         response = session.get(url, timeout=TIMEOUT, stream=True)
         result["http_status"] = response.status_code
+        result["content_type"] = response.headers.get("Content-Type", "")
         response.raise_for_status()
         chunks = []
         total = 0
@@ -188,8 +191,10 @@ def probe_file(session: requests.Session, month: str, url: str) -> dict[str, obj
         result.update(
             {
                 "http_status": response.status_code,
+                "content_type": response.headers.get("Content-Type", ""),
                 "bytes": len(payload),
                 "sha256": hashlib.sha256(payload).hexdigest(),
+                "magic_prefix_hex": payload[:12].hex(),
                 **meta,
             }
         )
@@ -199,6 +204,16 @@ def probe_file(session: requests.Session, month: str, url: str) -> dict[str, obj
             else "SCHEMA_UNRECOGNISED"
         )
     except Exception as exc:
+        if payload:
+            result.update(
+                {
+                    "bytes": len(payload),
+                    "sha256": hashlib.sha256(payload).hexdigest(),
+                    "magic_prefix_hex": payload[:12].hex(),
+                }
+            )
+        if response is not None:
+            result.setdefault("content_type", response.headers.get("Content-Type", ""))
         result.update({"status": "ERROR", "error_type": type(exc).__name__, "error": str(exc)[:240]})
     return result
 
@@ -214,17 +229,19 @@ def render_report(results: list[dict[str, object]]) -> str:
         f"- Overall: **{overall}**",
         "- Scope: metadata/schema validation only; no raw holdings are published.",
         "",
-        "| Month | Status | HTTP | Bytes | SHA-256 | Sheets | Scheme | Headers | ISIN rows |",
-        "|---|---:|---:|---:|---|---:|---|---|---:|",
+        "| Month | Status | HTTP | Content type | Bytes | SHA-256 | Magic prefix | Sheets | Scheme | Headers | ISIN rows |",
+        "|---|---:|---|---|---:|---|---|---:|---|---|---:|",
     ]
     for r in results:
         lines.append(
-            "| {month} | {status} | {http} | {size} | {digest} | {sheets} | {scheme} | {headers} | {rows} |".format(
+            "| {month} | {status} | {http} | {ctype} | {size} | {digest} | {magic} | {sheets} | {scheme} | {headers} | {rows} |".format(
                 month=r.get("month", ""),
                 status=r.get("status", ""),
                 http=r.get("http_status", ""),
+                ctype=r.get("content_type", ""),
                 size=r.get("bytes", ""),
                 digest=r.get("sha256", ""),
+                magic=r.get("magic_prefix_hex", ""),
                 sheets=r.get("sheet_count", ""),
                 scheme=r.get("scheme_found", ""),
                 headers=",".join(r.get("columns_detected", [])),
@@ -252,7 +269,13 @@ def main() -> int:
     )
     args = parser.parse_args()
     session = requests.Session()
-    session.headers.update({"User-Agent": "BUP-01 research metadata probe/1.0"})
+    session.headers.update(
+        {
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36",
+            "Accept": "application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/octet-stream,*/*",
+            "Referer": PAGE_URL,
+        }
+    )
     response = session.get(PAGE_URL, timeout=TIMEOUT)
     response.raise_for_status()
     links = discover_monthly_portfolio_links(response.text)
