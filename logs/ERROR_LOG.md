@@ -638,3 +638,19 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Added `resolve_tejhq_encrypted_cache_dir()` using `Path.expanduser().resolve()` and a regression test for both home-relative and explicit absolute paths.
 - **Validation:** Commit [021aac8](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/021aac89ce7d26d808e53fffc79fd7c1037ac669) triggered run [41317402483](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41317402483). The first corrected run had no previous cache to restore, downloaded seven partitions and successfully saved the encrypted cache (87,911,829 bytes) under the pinned revision/run-specific key. A subsequent run must confirm nonzero cache hits before reuse is declared verified.
 - **Impact:** No market-data values or daily coverage counts changed. This is a repeat-download/cache-location defect; raw market rows and credentials were not committed.
+
+
+## E0076 — 2026-11-01 — C1 workflow cache restore path inconsistent across runner and Python
+
+- **Observed:** The corporate-action workflow restored the prior daily cache key successfully, but the Python auditor reported zero corporate-action partition hits and downloaded all nine action-year partitions. The daily and action workflows still configured a tilde-prefixed path, while GitHub Actions cache path handling and Python path expansion did not provide a reliably identical location.
+- **Correction:** Both workflows now use the same explicit `${{ runner.temp }}/bup01-tejhq-encrypted` directory for cache restore, Python environment and cache save. Added regression assertions that both workflow YAML files use this exact absolute runner path and no tilde-prefixed path.
+- **Validation:** Workflow/configuration correction committed at [6ecc256](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/6ecc256a913d5dfb69bfb423cafb87de1a4f0b5e); regression guard and shared-cache helper committed at [d2e3844](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/d2e38445a49d8f175aee719eb936dd9ab6c389ee). A live post-fix workflow confirmation is still pending; do not claim cache reuse until logs show nonzero hits.
+- **Impact:** No event counts or market values changed. This is a cache reuse/performance issue only.
+
+## E0077 — 2026-11-01 — Corporate-action catalogue is not an adjustment ledger
+
+- **Observed:** The first pinned NSE candidate catalogue found 18,393 rows (18,361 deduplicated), including 711 point-in-time constituent-symbol matches.
+- **Risk:** Treating source labels as confirmed events or applying a generic factor could corrupt return targets, particularly for rights, merger/demerger, buyback and extraordinary dividends. NSE's listed F&O contract-adjustment rules are not a universal total-return adjustment recipe for cash-equity historical features.
+- **Correction/guard:** Keep all factors unapplied. Require per-event exchange/issuer confirmation, event terms, ISIN/security identity, effective/ex-date, prior raw close and event-family-specific formula checks. Rights must use TERP inputs; merger/demerger must be scheme-specific; buybacks remain event features, not mechanical scale factors.
+- **Validation:** Candidate catalogue workflow [41318287855](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318287855) succeeded; corporate-action gate remains NOT PASSED.
+- **Impact:** No stock label or target was adjusted. C2 remains locked.

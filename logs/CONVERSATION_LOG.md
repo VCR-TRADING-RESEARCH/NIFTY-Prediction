@@ -366,3 +366,14 @@
 - Identified and fixed the encrypted-cache path expansion defect. The first corrected run saved the encrypted cache; cache reuse awaits confirmation on the next compatible run.
 - C1 remains partial pending residual data and exhaustive corporate-action/adjusted-return validation. C2 modelling and all strategy claims remain locked.
 - This project log records user-visible requests, decisions and work outcomes; it does not include private model reasoning.
+
+
+## 2026-11-01 — User requested resume; corporate-action catalogue continuation
+
+- Resumed from C1 daily coverage checkpoint and inspected current branch, status, plan, logs, workflows and latest Actions runs.
+- Corporate-action catalogue workflow [41318287855](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318287855) passed. It catalogued 18,393 NSE rows, 18,361 unique event keys and 711 point-in-time constituent matches.
+- Matched-event breakdown: dividends 625, bonus 19, splits 9, rights 6, buybacks 20, merger/demerger 3, other 29.
+- No adjustments were applied. Official NSE F&O contract adjustment rules were reviewed and separated from the cash-equity total-return adjustment problem.
+- Both cache workflows were changed to use one absolute runner temporary directory; regression tests were added. Post-fix live cache hit verification remains outstanding.
+- C1 is not passed; daily coverage still has six HDFC and one TATAMOTORS missing member-sessions. Full event verification and action-adjusted return continuity remain open.
+- Only user-visible conversation summary and reproducible work outcomes are recorded; private chain-of-thought is not stored.

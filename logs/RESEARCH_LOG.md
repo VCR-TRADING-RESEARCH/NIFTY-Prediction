@@ -674,3 +674,13 @@
 - **Actions:** Offline suite [41317402493](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41317402493) passed; live daily workflow [41317402483](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41317402483) completed successfully.
 - **Cache:** First run after the correction had no valid prior cache and therefore downloaded seven pinned yearly partitions. The encrypted cache save step then stored 87,911,829 bytes under the new shared key. The next compatible workflow must verify cache hits; reuse is not yet claimed.
 - **Coverage:** No change to the last audited 106,385/106,392 (99.9934%) member-session coverage or seven residual dates. C1 remains PARTIAL; action-adjusted return audit remains open; no model trained.
+
+
+## 2026-11-01 — C1 corporate-action candidate catalogue
+
+- Live workflow [41318287855](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318287855) completed successfully, including offline action/identity tests, pinned-source download, encrypted-cache save and sanitized artifact publication.
+- Candidate catalogue: 18,393 NSE rows, 18,361 deduplicated events, 32 duplicates, 711 point-in-time constituent matches. Matched events: dividends 625, bonus 19, splits 9, rights 6, buybacks 20, merger/demerger 3, other 29.
+- No factor was calculated or applied. Official NSE derivatives adjustment methodology is documented separately and explicitly not treated as a blanket cash-equity adjustment method.
+- Cache directory mismatch was identified in both workflows and aligned to the absolute runner temporary directory. New workflow tests guard this path; live cache-hit verification remains pending.
+- Next C1 task: verify each matched member event against official NSE/BSE corporate-action records and issuer filings; build an event-specific adjustment/exclusion ledger with source links, formula inputs and reproducible checks. Only then re-audit daily/expiry return continuity.
+- C1 remains PARTIAL/NOT PASSED; no model trained and no C2 entry.
