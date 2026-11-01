@@ -20,11 +20,15 @@ SAFE_FIELDS = {
     "amc", "fund_house", "scheme_name", "display_name", "month",
     "period", "date", "disclosure_date", "published_at", "publication_date",
     "url", "source_url", "original_url", "file_url", "download_url",
-    "archive_url", "internet_archive_url", "archived_url",
+    "archive_url", "internet_archive_url", "archived_url", "original_file_url",
+    "archive_file_url", "report_url", "source_file", "source_file_url",
+    "report_date", "disclosure_month", "published_date", "publication_date",
+    "publication_timestamp", "disclosure_timestamp", "first_seen",
 }
 URL_FIELDS = {
     "url", "source_url", "original_url", "file_url", "download_url",
-    "archive_url", "internet_archive_url", "archived_url",
+    "archive_url", "internet_archive_url", "archived_url", "original_file_url",
+    "archive_file_url", "report_url", "source_file_url",
 }
 ALLOWED_HOSTS = {"amcs.fund", "mf.nipponindiaim.com", "web.archive.org", "archive.org"}
 OUTPUT = Path("research/constituent_weekly/C1_AMCS_API_DISCOVERY_REPORT.md")
@@ -137,6 +141,51 @@ def _first_identifier(records: list[dict[str, Any]]) -> str | None:
     return None
 
 
+def _metadata_records(payload: Any) -> list[dict[str, Any]]:
+    """Keep month/source metadata only; exclude individual ISIN holdings rows."""
+    records: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    metadata_keys = {
+        "id", "month", "period", "date", "disclosure_date", "report_date",
+        "published_at", "published_date", "publication_date", "source_url",
+        "original_url", "file_url", "download_url", "archive_url",
+        "internet_archive_url", "archived_url", "original_file_url",
+        "archive_file_url", "report_url", "source_file_url",
+    }
+    for record in _walk_dicts(payload):
+        if any(str(k).lower() == "isin" for k in record):
+            continue
+        summary = _record_summary(record)
+        if not (set(summary) & metadata_keys):
+            continue
+        fingerprint = json.dumps(summary, sort_keys=True, default=str)
+        if summary and fingerprint not in seen:
+            records.append(summary)
+            seen.add(fingerprint)
+    return records[:100]
+
+
+def _scheme_slug(records: list[dict[str, Any]]) -> str | None:
+    for record in records:
+        name = str(record.get("name") or record.get("scheme_name") or "").lower()
+        slug = record.get("slug") or record.get("scheme_id") or record.get("id")
+        if "nifty 50" in name and "bees" in name and isinstance(slug, str):
+            if re.fullmatch(r"[A-Za-z0-9_-]{1,120}", slug):
+                return slug
+    return None
+
+
+def _month_identifiers(records: list[dict[str, Any]]) -> list[str]:
+    ids: list[str] = []
+    for record in records:
+        value = record.get("id")
+        if value is not None and re.fullmatch(r"[A-Za-z0-9_-]{1,100}", str(value)):
+            candidate = str(value)
+            if candidate not in ids:
+                ids.append(candidate)
+    return ids[:4]
+
+
 def _source_links(records: list[dict[str, Any]]) -> list[dict[str, str]]:
     links = []
     seen = set()
@@ -166,9 +215,13 @@ def run_probe() -> dict[str, Any]:
         "api_index": None,
         "amcs": None,
         "amc_detail": None,
+        "scheme_detail": None,
+        "month_details": [],
         "manifest": None,
         "nippon_amc_matches": [],
         "nifty_bees_scheme_matches": [],
+        "scheme_history_metadata": [],
+        "month_source_metadata": [],
         "historical_source_matches": [],
         "source_links": [],
         "rights_status": "UNVERIFIED — API discovery does not grant reuse, extraction, caching, or redistribution rights.",
@@ -191,6 +244,25 @@ def run_probe() -> dict[str, Any]:
             amc_records = _matching_records(detail, ("nifty", "bees"))
             report["nifty_bees_scheme_matches"] = amc_records
 
+    # The published API catalog explicitly advertises /scheme/{id} and /month/{id}.
+    # Query the scheme-history route with the Nifty 50 BeES slug, but retain only
+    # source/month metadata and discard any per-ISIN holdings payload fields.
+    scheme_slug = _scheme_slug(report["nifty_bees_scheme_matches"])
+    scheme_records: list[dict[str, Any]] = []
+    if scheme_slug:
+        scheme_payload, scheme_meta = _fetch_json(session, f"{API_BASE}/scheme/{scheme_slug}")
+        report["scheme_detail"] = scheme_meta
+        if scheme_payload is not None:
+            scheme_records = _metadata_records(scheme_payload)
+            report["scheme_history_metadata"] = scheme_records
+
+    for month_id in _month_identifiers(scheme_records):
+        month_payload, month_meta = _fetch_json(session, f"{API_BASE}/month/{month_id}")
+        report["month_details"].append(month_meta)
+        if month_payload is not None:
+            report["month_source_metadata"].extend(_metadata_records(month_payload))
+    report["month_source_metadata"] = report["month_source_metadata"][:100]
+
     manifest, manifest_meta = _fetch_json(session, f"{API_BASE}/manifest")
     report["manifest"] = manifest_meta
     if manifest is not None:
@@ -200,6 +272,7 @@ def run_probe() -> dict[str, Any]:
 
     report["source_links"] = _source_links(
         report["historical_source_matches"] + report["nifty_bees_scheme_matches"]
+        + report["scheme_history_metadata"] + report["month_source_metadata"]
     )
 
     # Only HEAD links on the original AMC or Internet Archive hosts; never download a file.
@@ -245,7 +318,7 @@ def render_report(report: dict[str, Any]) -> str:
         "# C1 amcs.fund API metadata discovery",
         "",
         f"- Run time (UTC): {report['run_time_utc']}",
-        "- Scope: **metadata only**; this probe does not request a scheme holdings endpoint, download workbooks, or store constituent values.",
+        "- Scope: **metadata only**; the probe calls the documented scheme/month endpoints but retains only date/source metadata, discards ISIN-level holdings fields, does not download workbooks, and does not store portfolio values.",
         "- Rights: **UNVERIFIED**. Public API access is not treated as permission for commercial/trading-research extraction, caching, or redistribution.",
         "",
         "| Endpoint | Result | HTTP | Content type | Bytes | Top-level records |",
@@ -253,7 +326,9 @@ def render_report(report: dict[str, Any]) -> str:
         endpoint_row("API index", report.get("api_index")),
         endpoint_row("/amcs", report.get("amcs")),
         endpoint_row("Nippon AMC detail", report.get("amc_detail")),
+        endpoint_row("/scheme/{slug}", report.get("scheme_detail")),
         endpoint_row("/manifest", report.get("manifest")),
+        *[endpoint_row("/month/{id}", x) for x in report.get("month_details", [])],
         "",
         "## Nippon AMC metadata matches",
         "",
@@ -269,6 +344,19 @@ def render_report(report: dict[str, Any]) -> str:
             lines.append("- " + json.dumps(item, sort_keys=True, ensure_ascii=False))
     else:
         lines.append("- No scheme metadata match was returned from the AMC detail endpoint.")
+    lines += ["", "## Scheme-history metadata (source URLs and dates only)", ""]
+    if report.get("scheme_history_metadata"):
+        for item in report["scheme_history_metadata"][:50]:
+            lines.append("- " + json.dumps(item, sort_keys=True, ensure_ascii=False))
+    else:
+        lines.append("- No scheme-history metadata was returned by /scheme/{slug}.")
+    lines += ["", "## Month-level source metadata", ""]
+    if report.get("month_source_metadata"):
+        for item in report["month_source_metadata"][:50]:
+            lines.append("- " + json.dumps(item, sort_keys=True, ensure_ascii=False))
+    else:
+        lines.append("- No source metadata was returned by /month/{id}.")
+
     lines += ["", "## Historical source-file metadata matches", ""]
     if report.get("historical_source_matches"):
         for item in report["historical_source_matches"][:30]:
