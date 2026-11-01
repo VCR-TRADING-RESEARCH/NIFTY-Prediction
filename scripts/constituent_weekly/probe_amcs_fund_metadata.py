@@ -425,6 +425,129 @@ def _tipsheet_weight_candidates(payload: Any) -> list[dict[str, Any]]:
     return candidates[:100]
 
 
+
+HTML_PAGES = [
+    f"{BASE}/month",
+    f"{BASE}/methodology",
+    f"{BASE}/scheme/nippon-india-etf-nifty-50-bees",
+]
+ALLOWED_SOURCE_HOSTS = {
+    "mf.nipponindiaim.com", "hdfcfund.com", "www.hdfcfund.com",
+    "sbimf.com", "www.sbimf.com", "icicipruamc.com", "www.icicipruamc.com",
+    "utimf.com", "www.utimf.com", "archive.org", "web.archive.org",
+    "amcs.fund", "www.amcs.fund",
+}
+
+
+def _extract_html_metadata(html: str, page_url: str) -> dict[str, Any]:
+    """Extract only page/script/source links, not HTML text or portfolio values."""
+    script_srcs: list[str] = []
+    hrefs: list[str] = []
+    for match in re.findall(r"""<(?:script|link)\b[^>]*(?:src|href)\s*=\s*["']([^"']+)["'][^>]*>""", html, flags=re.I):
+        absolute = urljoin(page_url, match)
+        parsed = urlparse(absolute)
+        if parsed.scheme == "https" and parsed.hostname == "amcs.fund":
+            script_srcs.append(absolute)
+    for match in re.findall(r"""<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>(.*?)</a>""", html, flags=re.I | re.S):
+        target, label = match
+        absolute = urljoin(page_url, target)
+        parsed = urlparse(absolute)
+        label_text = re.sub(r"<[^>]+>", " ", label)
+        label_text = re.sub(r"\s+", " ", label_text).strip()[:120]
+        if parsed.scheme != "https":
+            continue
+        if parsed.hostname in ALLOWED_SOURCE_HOSTS:
+            hrefs.append({
+                "host": parsed.hostname,
+                "url": absolute,
+                "label": label_text,
+            })
+    inline_patterns = []
+    for needle in ("source", "archive", "portfolio", "holdings", "internetarchive", "wayback"):
+        count = len(re.findall(needle, html, flags=re.I))
+        if count:
+            inline_patterns.append({"term": needle, "count": count})
+    return {
+        "page_url": page_url,
+        "html_bytes": len(html.encode("utf-8")),
+        "sha256": hashlib.sha256(html.encode("utf-8")).hexdigest(),
+        "script_srcs": list(dict.fromkeys(script_srcs))[:30],
+        "source_links": hrefs[:50],
+        "pattern_counts": inline_patterns,
+    }
+
+
+def _fetch_html_metadata(session: requests.Session, url: str) -> dict[str, Any]:
+    response = None
+    try:
+        response = session.get(url, timeout=TIMEOUT, allow_redirects=True)
+        response.raise_for_status()
+        content_type = response.headers.get("Content-Type", "")
+        html = response.text
+        meta = _extract_html_metadata(html, response.url)
+        meta.update({
+            "status": "PASS_HTML",
+            "http_status": response.status_code,
+            "content_type": content_type,
+        })
+        return meta
+    except Exception as exc:
+        return {
+            "page_url": url,
+            "status": "ERROR",
+            "error_type": type(exc).__name__,
+            "error": str(exc)[:180],
+        }
+    finally:
+        if response is not None:
+            response.close()
+
+
+def _scan_amcs_script_metadata(session: requests.Session, script_urls: list[str]) -> list[dict[str, Any]]:
+    """Fetch same-origin UI scripts and retain only source endpoint/link patterns."""
+    results = []
+    for url in list(dict.fromkeys(script_urls))[:8]:
+        response = None
+        try:
+            response = session.get(url, timeout=TIMEOUT)
+            response.raise_for_status()
+            body = response.text
+            endpoint_hits = sorted(set(re.findall(
+                r"""(?:/api/v1/|/month/|/scheme/|/source/|/file/)[A-Za-z0-9_./{}<>-]{1,120}""",
+                body
+            )))[:100]
+            source_hosts = sorted(set(re.findall(
+                r"""https?://(?:www\.)?(?:mf\.nipponindiaim\.com|hdfcfund\.com|sbimf\.com|icicipruamc\.com|utimf\.com|archive\.org|web\.archive\.org)[^"'\\s<>]{0,200}""",
+                body, flags=re.I
+            )))[:50]
+            keyword_counts = {
+                term: len(re.findall(term, body, flags=re.I))
+                for term in ("originalUrl", "archiveUrl", "sourceUrl", "source_file", "archive.org", "wayback")
+                if re.search(term, body, flags=re.I)
+            }
+            results.append({
+                "script_url": url,
+                "status": "PASS_JS" if response.status_code == 200 else "HTTP_ERROR",
+                "http_status": response.status_code,
+                "bytes": len(body.encode("utf-8")),
+                "sha256": hashlib.sha256(body.encode("utf-8")).hexdigest(),
+                "endpoint_patterns": endpoint_hits,
+                "whitelisted_url_patterns": source_hosts,
+                "source_keyword_counts": keyword_counts,
+            })
+        except Exception as exc:
+            results.append({
+                "script_url": url,
+                "status": "ERROR",
+                "error_type": type(exc).__name__,
+                "error": str(exc)[:150],
+            })
+        finally:
+            if response is not None:
+                response.close()
+    return results
+
+
 def run_probe() -> dict[str, Any]:
     session = requests.Session()
     session.headers.update({
@@ -435,6 +558,8 @@ def run_probe() -> dict[str, Any]:
         "run_time_utc": datetime.now(timezone.utc).isoformat(),
         "scope": "Metadata-only source discovery. No holdings endpoint is requested and no holdings values are stored.",
         "api_index": None,
+        "amcs_html_pages": [],
+        "amcs_ui_scripts": [],
         "amcs": None,
         "amc_detail": None,
         "scheme_detail": None,
@@ -481,6 +606,13 @@ def run_probe() -> dict[str, Any]:
                 "docs_excerpt": index.get("docs", "")[:700] if isinstance(index.get("docs"), str) else None,
                 "endpoints_type": type(index.get("endpoints")).__name__,
             }
+
+    for page_url in HTML_PAGES:
+        report["amcs_html_pages"].append(_fetch_html_metadata(session, page_url))
+    scripts = []
+    for page in report["amcs_html_pages"]:
+        scripts.extend(page.get("script_srcs", []))
+    report["amcs_ui_scripts"] = _scan_amcs_script_metadata(session, scripts)
 
     amcs, amcs_meta = _fetch_json(session, f"{API_BASE}/amcs")
     report["amcs"] = amcs_meta
