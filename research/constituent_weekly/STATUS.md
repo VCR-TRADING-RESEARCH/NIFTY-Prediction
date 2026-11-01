@@ -3,16 +3,16 @@
 **Last updated:** 2026-11-01  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
 **Status:** C0 PASS; C1 intraday target-data sub-gate PASS; daily OHLCV is 99.9934% with seven dated residual sessions; overall C1 PARTIAL pending residual-gap and corporate-action validation  
-**Prediction status:** No constituent panel, trained stock model or bottom-up forecast exists  
+**Prediction status:** C3-X exploratory panel and chronological holdout completed; no reliable predictive edge demonstrated; confirmatory C2/C3/C4 remain locked  
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Actions workflow validated required files and plan structure; governance regression tests passed; report committed as 746d1b382e338e760b1cf4b3ee5ea6fa6b63bc85 |
 | C1 — Point-in-time universe/data audit | PARTIAL / RESIDUAL SESSIONS + ACTION REVIEW | 258/258 intraday weekly target cycles pass; daily OHLCV is 106,385/106,392 (99.9934%) with six HDFC and one TATAMOTORS session unresolved; exhaustive action-adjusted return review remains open; no weight/ETF comparison gate in v1.3 |
-| C2 — Panel labels/features | PENDING | Build only after C1 passes; validate target construction and freeze source hashes/split |
-| C3 — Stock models/baselines | PENDING | Pooled stock panel and bounded benchmarks only after C2 passes |
-| C4 — Index aggregation/uncertainty | PENDING | Train calibrated NIFTY-direction meta-model on strictly OOF unweighted stock forecast summaries; compare prediction metrics on matched cycles |
+| C2 — Confirmatory panel labels/features | LOCKED | C1 corporate-action and residual-session gates must pass; C3-X exploratory panel is not confirmatory |
+| C3 — Stock models/baselines | C3-X EXPLORATORY COMPLETE / CONFIRMATORY LOCKED | Exploratory ExtraTrees did not beat five-session momentum; no predictive edge demonstrated |
+| C4 — Index aggregation/uncertainty | C3-X EXPLORATORY COMPLETE / CONFIRMATORY LOCKED | OOF meta-model 50.98% accuracy, ROC-AUC 0.487; uncertainty wide; no reliable advantage |
 | C5 — Economic/execution gate | PENDING | Contract-level fills and date-effective Paytm Money costs required before any strategy claim |
 | C6 — Manuscript/independent audit | PENDING | Complete manuscript, plots, tables, appendices and formula/repository audit |
 
