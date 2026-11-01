@@ -1,0 +1,59 @@
+name: BUP-01 SHREECEM 2021 edge volume diagnostic
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c1-data
+    paths:
+      - "scripts/constituent_weekly/diagnose_shreecem_edge_volume.py"
+      - "tests/test_dhan_edge_volume_diagnostic.py"
+      - ".github/workflows/bup01-c1-shreecem-edge.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bup01-c1-shreecem-edge-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  diagnose-edge-volume:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout C1 branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install project and live API dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r live_api/requirements.txt pytest
+      - name: Validate offline diagnostic logic
+        run: python -m pytest -q tests/test_dhan_edge_volume_diagnostic.py
+      - name: Fetch one bounded SHREECEM edge window
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+        run: python scripts/constituent_weekly/diagnose_shreecem_edge_volume.py
+      - name: Commit sanitized diagnostic only
+        if: always()
+        run: |
+          if [ -f research/constituent_weekly/C1_SHREECEM_EDGE_DIAGNOSTIC.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add research/constituent_weekly/C1_SHREECEM_EDGE_DIAGNOSTIC.json
+            if ! git diff --cached --quiet; then
+              target_branch="${{ github.head_ref || github.ref_name }}"
+              git commit -m "Record sanitized SHREECEM edge volume diagnostic"
+              git pull --rebase origin "$target_branch"
+              git push origin "HEAD:$target_branch"
+            fi
+          fi
