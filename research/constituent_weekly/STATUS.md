@@ -706,3 +706,12 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - **Resume behavior:** each stock's validated raw bars are keyed by source-manifest hash, symbol, security ID and chunk set; successful chunks are persisted immediately. Existing completed symbol data can be reused without another Dhan download.
 - **Validation:** pending the next workflow run; no prediction metrics are claimed.
 - **Important:** workflow cache-save condition still needs to be changed to preserve checkpoints after a later model-stage failure; current workflow only saves on full-step success.
+
+
+## C3-X latest result — run 41325350069
+
+- Result: EXPLORATORY_COMPLETE_NOT_CONFIRMATORY
+- Report: [EXPLORATORY_REPORT.md](EXPLORATORY_REPORT.md)
+- Machine metrics: [EXPLORATORY_RESULTS.json](EXPLORATORY_RESULTS.json)
+- Prediction CSV: [EXPLORATORY_NIFTY_HOLDOUT.csv](EXPLORATORY_NIFTY_HOLDOUT.csv)
+- C1 remains PARTIAL; C2 confirmatory and trading remain LOCKED.

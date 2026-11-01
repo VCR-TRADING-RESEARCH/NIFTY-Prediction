@@ -1,0 +1,146 @@
+{
+  "track": "BUP-01-C3X",
+  "status": "EXPLORATORY_COMPLETE_NOT_CONFIRMATORY",
+  "created_at_utc": "2026-11-01T18:25:20.048525+00:00",
+  "plan_version": "1.4",
+  "cache_hit": false,
+  "input_manifest": {
+    "membership": "dda5d0aa6cb4feec5edaa53c9a7b099b5d9e46b6020c1ab69c5913f5402d2a08",
+    "expiry_calendar": "a1a37949278934fbddebd7ea61092930eb7f25ba171c95fca1421e5ae098eaa5",
+    "structural_actions": "0c9231a144a0ba16e03e99658fd6300d588bb498f8557a95886bd77a2b9e45a7",
+    "c1_qa": "5e3d3dce25454297b0577f19d991ee129a09601ae3ea97c6932ad10d934783ac",
+    "cache_schema": 1
+  },
+  "data": {
+    "c1_target_coverage_status": "PASS",
+    "c1_coverage_cycles": 258,
+    "eligible_model_cycles": 252,
+    "stock_cycle_rows": 12560,
+    "unique_member_symbols": 62,
+    "structural_action_events_considered": 6,
+    "structural_action_excluded_stock_rows": 18,
+    "dhan_requests_this_run": 1095,
+    "holdout_start_cycle_index": 201,
+    "holdout_start_anchor_date": "2025-11-06",
+    "holdout_cycles": 51,
+    "stock_holdout_rows": 2543,
+    "nifty_meta_holdout_cycles": 51,
+    "minimum_prior_cycles": 104,
+    "model_refit_block_cycles": 4,
+    "raw_bars_published": false,
+    "plaintext_stock_panel_published": false
+  },
+  "stock_holdout_metrics": {
+    "ExtraTreesClassifier": {
+      "n": 2543,
+      "up_fraction": 0.44199764058198976,
+      "accuracy": 0.48289421942587496,
+      "balanced_accuracy": 0.4909608791715885,
+      "mcc": -0.018137837863823163,
+      "brier_un_calibrated_score": 0.2514449852935051,
+      "roc_auc": 0.48496071364978094,
+      "confusion_tn_fp_fn_tp": [
+        598,
+        821,
+        494,
+        630
+      ]
+    },
+    "LogisticRegression": {
+      "n": 2543,
+      "up_fraction": 0.44199764058198976,
+      "accuracy": 0.49587101848210774,
+      "balanced_accuracy": 0.5055481154339054,
+      "mcc": 0.011175527810708595,
+      "brier_un_calibrated_score": 0.2511096885101779,
+      "roc_auc": 0.5099432210042159,
+      "confusion_tn_fp_fn_tp": [
+        599,
+        820,
+        462,
+        662
+      ]
+    },
+    "five_session_momentum_sign": {
+      "n": 2543,
+      "up_fraction": 0.44199764058198976,
+      "accuracy": 0.5151395988989382,
+      "balanced_accuracy": 0.509681771785554,
+      "mcc": 0.019322699023171127,
+      "brier_un_calibrated_score": 0.4848604011010617,
+      "roc_auc": 0.509681771785554,
+      "confusion_tn_fp_fn_tp": [
+        790,
+        629,
+        604,
+        520
+      ]
+    }
+  },
+  "nifty_holdout_metrics": {
+    "oof_constituent_signal_logistic_meta": {
+      "n": 51,
+      "up_fraction": 0.37254901960784315,
+      "accuracy": 0.5098039215686274,
+      "balanced_accuracy": 0.5345394736842105,
+      "mcc": 0.06786208925382961,
+      "brier_un_calibrated_score": 0.26808565700936804,
+      "roc_auc": 0.4868421052631579,
+      "confusion_tn_fp_fn_tp": [
+        14,
+        18,
+        7,
+        12
+      ]
+    },
+    "constituent_breadth_baseline": {
+      "n": 51,
+      "up_fraction": 0.37254901960784315,
+      "accuracy": 0.43137254901960786,
+      "balanced_accuracy": 0.48273026315789475,
+      "mcc": -0.036649716975523355,
+      "brier_un_calibrated_score": 0.32894270524536345,
+      "roc_auc": 0.4457236842105263,
+      "confusion_tn_fp_fn_tp": [
+        9,
+        23,
+        6,
+        13
+      ]
+    },
+    "previous_eligible_cycle_direction": {
+      "n": 51,
+      "up_fraction": 0.37254901960784315,
+      "accuracy": 0.49019607843137253,
+      "balanced_accuracy": 0.45476973684210525,
+      "mcc": -0.09046052631578948,
+      "brier_un_calibrated_score": 0.5098039215686274,
+      "roc_auc": 0.45476973684210525,
+      "confusion_tn_fp_fn_tp": [
+        19,
+        13,
+        13,
+        6
+      ]
+    },
+    "meta_vs_lag_accuracy_block_bootstrap": {
+      "replicates": 2000,
+      "block_length_cycles": 4,
+      "mean_difference": 0.019607843137254888,
+      "ci95": [
+        -0.25490196078431376,
+        0.2549019607843137
+      ],
+      "seed": 20261031
+    }
+  },
+  "limitations": [
+    "Exploratory only; C1 corporate-action review and C2 confirmatory panel gate remain incomplete.",
+    "Only structural events in the checked-in action ledger were excluded; unresolved 711-event catalogue may still contaminate other windows.",
+    "Model scores are uncalibrated; Brier score is a diagnostic only.",
+    "NIFTY meta-model inputs are strictly OOF constituent summaries; cycle rows were kept together.",
+    "This first run is price-only; no options, FII/DII, global markets, news or volatility derivatives.",
+    "No trading P&L, fees, slippage, fills or profitability claims."
+  ],
+  "runtime_seconds": 3372.88
+}
