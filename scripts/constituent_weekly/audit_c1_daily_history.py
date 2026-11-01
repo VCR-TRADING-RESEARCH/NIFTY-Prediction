@@ -432,6 +432,37 @@ def decrypt_tejhq_cache_bytes(payload: bytes, token: str, associated_data: bytes
     return AESGCM(tejhq_cache_key(token)).decrypt(payload[:12], payload[12:], associated_data)
 
 
+def load_direct_nse_special_cache(token: str, encrypted_cache_dir: Path) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Decrypt the bounded official-NSE residual-session cache; never publish raw rows."""
+    from cryptography.exceptions import InvalidTag
+    path = encrypted_cache_dir / "direct_nse_special_sessions.csv.aesgcm"
+    if not path.is_file():
+        return pd.DataFrame(columns=["session_date", "symbol", "series", "isin", "open", "high", "low", "close", "volume"]), {
+            "cache_present": False, "rows": 0
+        }
+    aad = b"bup01:nse-direct-special-sessions:v1"
+    try:
+        raw = decrypt_tejhq_cache_bytes(path.read_bytes(), token, aad)
+    except (InvalidTag, ValueError) as exc:
+        raise ValueError("Direct NSE supplemental encrypted cache could not be authenticated.") from exc
+    frame = pd.read_csv(io.BytesIO(raw), dtype=str, keep_default_na=False)
+    required = {"date", "symbol", "series", "isin", "open", "high", "low", "close", "volume"}
+    if required - set(frame.columns):
+        raise ValueError("Direct NSE supplemental cache schema is incomplete.")
+    frame = frame.rename(columns={"date": "session_date"})
+    frame["session_date"] = pd.to_datetime(frame["session_date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    for col in ("symbol", "series", "isin"):
+        frame[col] = frame[col].astype("string").str.strip().str.upper()
+    for col in ("open", "high", "low", "close", "volume"):
+        frame[col] = pd.to_numeric(frame[col], errors="coerce")
+    return frame, {
+        "cache_present": True, "rows": int(len(frame)),
+        "encrypted_file_sha256": sha256_bytes(path.read_bytes()),
+        "raw_csv_sha256": sha256_bytes(raw),
+        "raw_values_published": False,
+    }
+
+
 def load_tejhq_nse_year(
     year: int, token: str, encrypted_cache_dir: Path
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
@@ -892,6 +923,11 @@ def _run_daily_audit() -> int:
             "encrypted_cache_hits": 0,
             "year_partitions_downloaded": 0,
         }
+        direct_nse_rows, direct_nse_cache_meta = load_direct_nse_special_cache(hf_token, encrypted_cache_dir) if hf_token else (
+            pd.DataFrame(columns=["session_date", "symbol", "series", "isin", "open", "high", "low", "close", "volume"]),
+            {"cache_present": False, "rows": 0},
+        )
+        fallback_run["direct_nse_supplemental_cache"] = direct_nse_cache_meta
         fallback_symbols = [
             symbol for symbol in sorted(TEJHQ_FALLBACK_SYMBOLS)
             if symbol in expected_by_symbol
@@ -937,6 +973,17 @@ def _run_daily_audit() -> int:
 
                 selected = pd.concat([partitions[year] for year in years], ignore_index=True)
                 source_summary, source_rows = inspect_tejhq_member_rows(selected, symbol, requested_dates)
+                direct_selected = direct_nse_rows.loc[
+                    direct_nse_rows["symbol"].eq(symbol.upper())
+                    & direct_nse_rows["series"].eq("EQ")
+                    & direct_nse_rows["session_date"].isin(set(requested_dates))
+                ].copy() if not direct_nse_rows.empty else direct_nse_rows.copy()
+                if not direct_selected.empty:
+                    source_summary, source_rows = inspect_tejhq_member_rows(
+                        pd.concat([source_rows, direct_selected], ignore_index=True),
+                        symbol, requested_dates,
+                    )
+                direct_target_dates = set(direct_selected["session_date"].astype(str)) & set(target_dates)
                 fallback_status = "PASS" if (
                     source_summary["unique_isin_count"] == 1
                     and source_summary["isin_non_null_row_count"] == source_summary["source_rows_found"]
@@ -947,7 +994,7 @@ def _run_daily_audit() -> int:
                 ) else "REJECTED_IDENTITY_OR_ROW_QA"
 
                 crosscheck = None
-                require_crosscheck = symbol == "TATAMOTORS"
+                require_crosscheck = symbol == "TATAMOTORS" and not direct_target_dates
                 if require_crosscheck:
                     # Keep Dhan as the primary source; compare three neighbouring
                     # sessions before accepting the single missing-date fallback.
@@ -971,6 +1018,10 @@ def _run_daily_audit() -> int:
                     source_crosscheck=crosscheck,
                     require_crosscheck=require_crosscheck,
                 )
+                if not direct_selected.empty:
+                    merged["fallback_source"] = "composite_tejhq_plus_direct_nse_archive"
+                merged["direct_nse_source_rows_added"] = int(len(direct_selected))
+                merged["direct_nse_target_rows_added"] = int(len(direct_target_dates))
                 merged["tejhq_source_rows_found"] = source_summary["source_rows_found"]
                 merged["tejhq_source_unique_isin_count"] = source_summary["unique_isin_count"]
                 merged["tejhq_source_duplicate_session_count"] = source_summary["duplicate_session_count"]
@@ -992,6 +1043,8 @@ def _run_daily_audit() -> int:
                     "invalid_ohlc_row_count": source_summary["invalid_ohlc_row_count"],
                     "invalid_volume_row_count": source_summary["invalid_volume_row_count"],
                     "source_crosscheck": crosscheck,
+                    "direct_nse_source_rows": int(len(direct_selected)),
+                    "direct_nse_target_rows": int(len(direct_target_dates)),
                 }
                 write_report(report)
 
