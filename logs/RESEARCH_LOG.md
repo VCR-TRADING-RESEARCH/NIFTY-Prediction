@@ -395,3 +395,15 @@
 - Created [C1_DEVELOPER_GATE_REPORT.md](../research/constituent_weekly/C1_DEVELOPER_GATE_REPORT.md) after the final independent C1 repository review.
 - Developer disposition: C1 PARTIAL PASS / RIGHTS-BLOCKED. Dhan bounded data QA and IWF arithmetic harness pass. Official point-in-time IWF rights/completeness, continuous five-year stock coverage, historical security identity/corporate-action mapping and weighted basket-to-index reconstruction remain open.
 - C1 status file and main README now link the handoff. Plan v1.1 remains locked. No model, forecast, strategy or manuscript is claimed.
+
+
+## 2026-11-01 — Public ETF portfolio holdings proxy discovery and calibration
+
+- User approved use of available public web sources rather than making a separate NSE data-rights request a prerequisite.
+- Located Nippon India ETF Nifty 50 BeES portfolio disclosures. AMC strategy statement says it invests in NIFTY 50 securities in the same proportion as the index; the February 2026 holdings PDF contains all 50 stock positions and 0.08% cash, with portfolio date 2026-02-28 and NAV date 2026-02-27.
+- Compared those 50 stock holdings with the NSE Indices official white-paper weight snapshot dated 2026-02-27. After separately normalizing the 50 equity rows to 100%: 50/50 matched; MAE 0.002214 percentage points; RMSE 0.003204 pp; maximum absolute difference 0.008967 pp; Pearson correlation 0.99999895. This confirms a very close one-date calibration, not a historical time-series result.
+- Reviewed the NSE FAQ describing self-weighting between events and the SEBI passive-scheme disclosure circular. The circular changes equity passive portfolio disclosure to within 10 days after each quarter, effective 2025-03-16. Actual publication dates remain necessary for strict look-ahead control; a +15-day imputed availability convention is included only as an explicitly flagged exploratory fallback with +10/+20-day sensitivity.
+- Added public-source proxy audit, aggregate calibration summary, fixed-share weight-drift and comparison helper, 8 unit tests, and wired those tests into the C1 offline source-audit workflow.
+- Updated BUP-01 plan to v1.2. Official index weights and ETF proxy weights remain separate. The original confirmatory standard is not silently relaxed; a proxy-only model, if later run, must be labelled exploratory and pass point-in-time membership, corporate-action, 98% weight coverage and basket/index reconciliation.
+- No public raw intraday bars, named shareholder records or third-party licensed dataset have been imported. The proxy calibration is a small derived QA summary.
+- Current result: C1 PARTIAL; ETF proxy source has passed one-date calibration but a historical series and point-in-time validation are not complete. C2 is not started; no bottom-up forecast or strategy has been produced.
