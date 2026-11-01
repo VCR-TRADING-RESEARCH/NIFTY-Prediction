@@ -134,6 +134,11 @@ def build_expiry_cycles(
     return cycles
 
 
+def is_stock_coverage_acceptable(valid_count: int, member_count: int) -> bool:
+    fraction = valid_count / member_count if member_count > 0 else 0.0
+    return valid_count >= MIN_VALID_MEMBERS and fraction >= MIN_MEMBER_FRACTION
+
+
 def evaluate_cycle_coverage(cycle_results: list[dict[str, Any]]) -> dict[str, Any]:
     """Calculate the registered thresholds using only previously accepted expiry cycles."""
     total = len(cycle_results)
@@ -634,7 +639,7 @@ def main() -> int:
                     missing_members.append(symbol)
             member_count = len(members)
             fraction = valid_members / member_count if member_count else 0.0
-            stock_ok = len(valid_members) >= MIN_VALID_MEMBERS and fraction >= MIN_MEMBER_FRACTION
+            stock_ok = is_stock_coverage_acceptable(len(valid_members), member_count)
             cycle_results.append({
                 "previous_expiry": cycle["previous_expiry"],
                 "anchor_date": anchor_date,
