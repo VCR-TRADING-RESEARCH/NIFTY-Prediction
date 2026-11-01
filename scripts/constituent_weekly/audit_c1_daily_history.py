@@ -277,10 +277,14 @@ def main() -> int:
     resolved = apply_historical_security_aliases(symbols, resolved, alias_ids)
     unresolved = sorted(set(symbols) - set(resolved))
 
+    expected_total = sum(len(expected_by_symbol[symbol]) for symbol in symbols)
     manifest = {
         "membership_sha256": file_sha256(MEMBERSHIP_CSV),
         "official_daily_session_sha256": file_sha256(INDEX_DAILY_CSV),
         "dhan_scrip_master_sha256": master_sha,
+        "daily_endpoint": DAILY_URL,
+        "official_session_count": len(session_dates),
+        "expected_member_session_count": expected_total,
         "window_start": START_DATE,
         "window_end": window_end,
     }
@@ -354,10 +358,22 @@ def main() -> int:
         total_expected = sum(len(expected_by_symbol[s]) for s in symbols)
         total_valid = sum(results.get(s, {}).get("valid_ohlc_session_count", 0) for s in symbols)
         total_volume = sum(results.get(s, {}).get("valid_volume_session_count", 0) for s in symbols)
+        per_symbol_ohlc = [
+            results[symbol].get("ohlc_coverage_fraction", 0.0)
+            for symbol in symbols
+            if symbol in results and results[symbol].get("status") == "PASS_RESPONSE"
+        ]
+        per_symbol_ohlcv = [
+            results[symbol].get("volume_coverage_fraction", 0.0)
+            for symbol in symbols
+            if symbol in results and results[symbol].get("status") == "PASS_RESPONSE"
+        ]
         report["summary"] = {
             "window_start": START_DATE,
             "window_end": window_end,
+            "official_trading_session_count": len(session_dates),
             "point_in_time_symbols_expected": len(symbols),
+            "expected_member_sessions": total_expected,
             "symbols_with_parseable_daily_responses": len(valid_symbols),
             "expected_member_sessions": total_expected,
             "valid_member_sessions_ohlc": total_valid,
@@ -365,6 +381,12 @@ def main() -> int:
             "weighted_ohlc_session_coverage_fraction": round(total_valid / total_expected, 6) if total_expected else 0.0,
             "weighted_ohlcv_session_coverage_fraction": round(total_volume / total_expected, 6) if total_expected else 0.0,
             "symbols_with_unresolved_security_id": len(unresolved),
+            "symbols_with_any_ohlc_gap": sum(value < 1.0 for value in per_symbol_ohlc),
+            "symbols_with_any_ohlcv_gap": sum(value < 1.0 for value in per_symbol_ohlcv),
+            "minimum_symbol_ohlc_coverage_fraction": min(per_symbol_ohlc, default=0.0),
+            "median_symbol_ohlc_coverage_fraction": float(np.median(per_symbol_ohlc)) if per_symbol_ohlc else 0.0,
+            "minimum_symbol_ohlcv_coverage_fraction": min(per_symbol_ohlcv, default=0.0),
+            "median_symbol_ohlcv_coverage_fraction": float(np.median(per_symbol_ohlcv)) if per_symbol_ohlcv else 0.0,
             "daily_feature_coverage_disposition": "DESCRIPTIVE_REVIEW_REQUIRED",
         }
         report["status"] = "COMPLETED_WITH_GAPS" if unresolved or total_valid < total_expected or total_volume < total_expected else "COMPLETE"
