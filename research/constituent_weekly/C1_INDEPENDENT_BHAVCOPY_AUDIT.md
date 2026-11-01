@@ -1,6 +1,6 @@
 # C1 Independent NSE Bhavcopy Mirror Cross-check
 
-Updated: 2026-11-01T19:22:14.652536+00:00
+Updated: 2026-11-01T19:26:48.558816+00:00
 Status: PARTIAL_SOURCE_COVERAGE
 
 ## Result

@@ -1,5 +1,5 @@
 {
-  "github_actions_run_id": "41341364731",
+  "github_actions_run_id": "41341734222",
   "limitations": [
     "Independent public mirror, not a direct exchange response or a second broker feed.",
     "The source collector enumerates weekdays only; absence on 2019-10-27, 2020-02-01 and 2020-11-14 is structural and cannot resolve those genuine special sessions.",
@@ -122,5 +122,5 @@
     "target_security_date_pairs": 7,
     "valid_independent_eq_ohlcv_rows": 4
   },
-  "updated_at_utc": "2026-11-01T19:22:14.652536+00:00"
+  "updated_at_utc": "2026-11-01T19:26:48.558816+00:00"
 }

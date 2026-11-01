@@ -402,3 +402,4 @@
 - Added a bounded independent-source check against a pinned public NSE bhavcopy mirror; it validates exact EQ rows and publishes no raw price/volume values.
 - Result: 4/7 valid rows; 3 no-row cases are not treated as missing exchange data because the mirror collector is weekday-only and omits weekend special sessions.
 - All seven sessions remain in the denominator; C1 remains partial and the corporate-action gate remains open. No hidden reasoning or credentials are written to this log.
+

@@ -750,3 +750,4 @@
 - The mirror collector enumerates weekdays only, so no-row on 2019-10-27, 2020-02-01 and 2020-11-14 is inconclusive for those special sessions.
 - No raw prices/volumes were copied, no bar was fabricated, and the daily coverage denominator was unchanged. Corporate-action review remains open.
 - Evidence: C1_INDEPENDENT_BHAVCOPY_AUDIT.md and C1_INDEPENDENT_BHAVCOPY_AUDIT.json.
+

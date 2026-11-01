@@ -680,3 +680,4 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Limitation: the mirror collector enumerates weekdays only. It cannot prove absence for Sunday 2019-10-27 or Saturdays 2020-02-01 / 2020-11-14, all genuine special sessions.
 - Correction: treat mirror no-row as INCONCLUSIVE; retain all seven dates in the denominator; use a source with explicit special-session capture for remaining dates. No price was imputed.
 - Impact: no change to 106,385/106,392 daily coverage. C1 remains PARTIAL and C2 remains gated.
+
