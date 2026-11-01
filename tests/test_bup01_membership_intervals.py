@@ -146,12 +146,12 @@ def normalized_members(rows, on: date, *, alternative: bool):
     return names
 
 
-def test_cc_by_4_membership_source_matches_project_at_79_month_ends():
+def test_cc_by_4_membership_source_matches_project_at_103_month_ends():
     project_rows = load_rows()
     alternative_rows = load_alternative_rows()
     dates = list(month_ends(date(2018, 4, 1), date(2026, 10, 31)))
     assert len(alternative_rows) == 84
-    assert len(dates) == 79
+    assert len(dates) == 103
 
     for on in dates:
         project = normalized_members(project_rows, on, alternative=False)
