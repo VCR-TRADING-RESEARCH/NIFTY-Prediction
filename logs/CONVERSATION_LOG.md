@@ -280,3 +280,13 @@
 - Visible findings: official NSE Indices historical monthly weightage reports are the strongest candidate for exact weights; a CC BY 4.0 open-source NSE membership history is a credible membership comparator (not a weight series); NSE/BSE quarterly XBRL can support an independent IWF reconstruction if all 22 NSE exclusion categories and publication timestamps are handled; multi-AMC ETFs are proxies/cross-checks only; the Hugging Face 20-year weights dataset is CC BY-NC-SA 4.0 and excluded without separate commercial permission.
 - NSE Indices website terms restrict automated collection absent express written consent and state personal/non-commercial use, so no automated download/cache is enabled. A subscription/licence is a last resort after free/permissioned paths.
 - Full source ranking, methodology, rights and gates are recorded in research/constituent_weekly/C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md. Hidden private chain-of-thought is not stored.
+
+ 
+## 2026-11-01 — Non-official source route: membership cross-check and weights search
+
+- User instruction: “No official path needed when mother sources are there. Proceed”. Interpreted as prioritising non-official/independently maintained data sources and not making NSE Indices report collection a prerequisite.
+- Imported CC BY 4.0 NIFTY 50 membership intervals from aditya-jha/nse-historical-membership, applied the 2026-09-30 BSE/WIPRO correction from a secondary circular reprint and fund-portfolio cross-check, and validated membership against the project ledger at 103/103 month-ends after explicit symbol and dummy normalizations.
+- The first regression test incorrectly expected 79 months; corrected to 103 and logged E0063. Latest full test run [41289992040](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289992040) passed.
+- Began a non-official weight search using Tipsheet's public downloadable data catalogue and multi-AMC monthly portfolio sources. Tipsheet says its dataset files are free to fetch with attribution, but upstream source terms remain applicable; no weight file has yet been admitted.
+- HDFC NIFTY 50 ETF holdings pages provide a monthly historical table (last 12 months displayed) and full 50-stock holdings for Sep-2026, while AMCS describes source archives linking back to original AMC files and Internet Archive copies. ETF weights remain a proxy, not index IWF.
+- No model training or strategy backtest started; plan v1.2 remains unchanged.
