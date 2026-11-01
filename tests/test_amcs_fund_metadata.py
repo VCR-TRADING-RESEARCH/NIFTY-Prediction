@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from scripts.constituent_weekly.probe_amcs_fund_metadata import (
     _extract_html_metadata,
+    _mfdata_family_summaries,
+    _mfdata_months,
     _first_identifier,
     _matching_records,
     _metadata_records,
@@ -152,3 +154,45 @@ def test_amcs_html_extractor_keeps_only_same_site_scripts_and_whitelisted_source
         "mf.nipponindiaim.com", "web.archive.org"
     }
     assert "html_bytes" in meta and "sha256" in meta
+
+
+
+def test_mfdata_family_search_keeps_only_nifty50_scheme_metadata():
+    payload = {
+        "status": "success",
+        "data": [
+            {
+                "family_id": 8721,
+                "family_name": "UTI Nifty 50 Index Fund",
+                "amc": "UTI Mutual Fund",
+                "category": "Index Funds",
+                "has_holdings": True,
+                "variants": [{"scheme_code": 120716}],
+            },
+            {
+                "family_id": 8722,
+                "family_name": "UTI Nifty Next 50 Index Fund",
+                "amc": "UTI Mutual Fund",
+                "has_holdings": True,
+            },
+            {
+                "family_id": 8723,
+                "family_name": "UTI Nifty 50 Fund",
+                "amc": "UTI Mutual Fund",
+                "has_holdings": False,
+            },
+        ],
+    }
+    records = _mfdata_family_summaries(payload)
+    assert len(records) == 2
+    assert records[0]["family_id"] == 8721
+    assert records[0]["has_holdings"] is True
+    assert "variants" not in str(records)
+
+
+def test_mfdata_month_parser_only_keeps_valid_year_month_labels():
+    payload = {
+        "status": "success",
+        "data": ["2019-04", "2022-09", "2026-09", "2019-13", "not-a-month"],
+    }
+    assert _mfdata_months(payload) == ["2019-04", "2022-09", "2026-09"]
