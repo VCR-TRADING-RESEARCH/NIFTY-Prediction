@@ -7,6 +7,7 @@ from scripts.constituent_weekly.probe_nippon_amc_archive import (
     find_target_section,
     month_key,
     monthly_portfolio_url,
+    workbook_engine,
 )
 
 BASE = "https://mf.nipponindiaim.com/investor-service/downloads/factsheet-portfolio-and-other-disclosures"
@@ -61,7 +62,7 @@ def test_find_target_section_detects_scheme_headers_and_isin_rows_without_exposi
 
 
 def test_find_target_section_fails_closed_when_scheme_or_header_missing():
-    frame = pd.DataFrame([["Some unrelated scheme"], ["Name", "ISIN", "Units"]])
+    frame = pd.DataFrame([["Some unrelated scheme", None, None], ["Name", "ISIN", "Units"]])
     result = find_target_section(frame)
     assert result["scheme_found"] is False
     assert result["header_found"] is False
@@ -77,3 +78,15 @@ def test_monthly_portfolio_url_matches_officially_observed_month_end_pattern():
     assert monthly_portfolio_url("2019-04").endswith(
         "/NIMF-MONTHLY-PORTFOLIO-30-Apr-19.xls"
     )
+
+
+def test_workbook_engine_detects_xlsx_and_legacy_xls_signatures():
+    assert workbook_engine(b"PK\\x03\\x04payload") == "openpyxl"
+    assert workbook_engine(b"\\xd0\\xcf\\x11\\xe0payload") == "xlrd"
+
+
+def test_workbook_engine_rejects_unknown_file_signatures():
+    import pytest
+
+    with pytest.raises(ValueError, match="Unrecognised Excel container signature"):
+        workbook_engine(b"not-an-excel-file")
