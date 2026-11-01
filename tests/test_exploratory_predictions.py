@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from scripts.constituent_weekly.run_exploratory_predictions import (
-    action_excluded, cache_read, cache_write, key_for, causal_features,
+    action_excluded, cache_read, cache_write, key_for, causal_features, causal_features_from_history, daily_history,
     metrics, bootstrap_diff, FEATURES,
 )
 
@@ -65,3 +65,12 @@ def test_metrics_and_cycle_block_bootstrap_are_reproducible():
     assert r1==r2
     assert r1["replicates"]==2000
     assert len(r1["ci95"])==2
+
+
+def test_precomputed_daily_history_reuses_same_causal_features():
+    frame=synthetic_frame(32,110.0)
+    stamp=sorted(frame.day.unique())[-1]
+    history=daily_history(frame)
+    cached=causal_features_from_history(frame,history,stamp)
+    direct=causal_features(frame,stamp)
+    assert cached==direct
