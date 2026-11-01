@@ -418,3 +418,10 @@
 - **Result at commit time:** workflow not yet executed; no historical weight series or C2 panel is claimed.
 - Streamlined Actions: C0 governance now triggers only on the C0 branch; C1 offline regression and source-audit workflows use PR/manual triggers to avoid duplicate push+PR execution; duplicate IWF test command removed.
 - C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.
+
+
+## 2026-11-01 — AMC metadata probe dependency correction
+
+- The initial workflow run [41274822097](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274822097) installed the parser dependencies but omitted pytest, so the regression step failed before the workbook probe. No AMC workbook was downloaded in that attempt.
+- Added pytest explicitly to the dedicated workflow's install command. Corrected run and archive/schema evidence are pending.
+- This is a workflow setup failure only; the C1 source/rights and basket reconciliation gates remain unchanged.
