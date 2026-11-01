@@ -19,7 +19,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: bup01-c1-market-data-${{ github.repository }}
+  group: bup01-c1-market-data-${{ github.repository }}-${{ github.event_name == 'pull_request' && github.workflow || 'push' }}
   cancel-in-progress: false
 
 jobs:
