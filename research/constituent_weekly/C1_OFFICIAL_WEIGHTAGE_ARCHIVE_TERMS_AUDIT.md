@@ -75,3 +75,49 @@ Additional references:
 - NSE official shareholding-pattern filings page: https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern
 - NSE IWF guideline PDF: https://nsearchives.nseindia.com/web/sites/default/files/inline-files/Guideline_Investible_Weight_Factors.pdf
 - Quarterly shareholding candidate dataset: https://github.com/aditya-jha/nse-historical-membership
+
+
+## Additional free-source candidates and technical IWF feasibility — 2026-11-01
+
+### 1. Official IWF rule: exact exclusions, not a promoter-percentage proxy
+
+The current NSE Indices guideline describes IWF as the fraction of company shares expected to be available for trading, based on quarterly exchange-reported shareholding patterns. It requires subtraction, where separately identifiable, of 22 categories: promoter category; promoter/promoter-group DRs; associate/group cross-holdings; promoter family; promoter-managed trusts; employee trusts; directors; public holders with board nomination/representation rights; KMP; first-refusal rights; strategic corporate holdings; direct/indirect government holdings (two cases); FDI; PE investors; PE funds; foreign VC; SWFs; public lock-in; IEPF; and persons acting in concert with promoters. Its worked example calculates (total shares − identified excluded shares) / total shares and rounds IWF to six decimals. See the [official two-page guideline](https://nsearchives.nseindia.com/web/sites/default/files/inline-files/Guideline_Investible_Weight_Factors.pdf).
+
+The implication for this project is that `1 - promoter_pct`, `public_pct`, FII/DII ownership, or an ownership-category roll-up cannot automatically be labelled official IWF. Each exclusion must be mapped to its shareholding fact, with overlap/double-count controls and an explicit “not separately identified” state. The denominator must follow the exact share-base rule in the applicable historical taxonomy. Publication time and filing period must be stored separately; only a filing broadcast before the 10:00 forecast timestamp is admissible.
+
+### 2. Detailed quarterly XBRL category dataset — promising, but not admitted
+
+Repository: [yurukatsu/nse-historical-membership](https://github.com/yurukatsu/nse-historical-membership), folder `shareholding_history/`. Its README describes 2,316 symbols and 62,850 filings from 2001-03 through 2026-08, with a `_categories.csv.gz` table containing approximately 70 filing-by-category observations. The documented columns include category shares, voting rights, demat shares, locked-in shares, pledged/encumbered shares, DR shares, warrants and sub-category share counts. The filing keys include `filing_date`, `submission_date` and `broadcast_date`; its documentation reports broadcast time at 100% coverage and says it differs from submission date on 18% of filings (90th percentile 79 days). The separate `_shareholders.csv.gz` contains named shareholder rows.
+
+This is materially richer than the simpler 47-column promoter/FII/DII/public roll-up and is a candidate for a category-to-IWF reconstruction experiment. However:
+- The upstream `LICENSE-DATA` text explicitly lists `*/data/*.csv`, `*/data/parsed/*.json` and `*/data/manual_overrides/*.json`. The detailed output is `shareholding_history/data/parsed/_categories.csv.gz`; the advertised licence path patterns do not unambiguously include that nested compressed CSV, nor the nested `_flat.csv`. The README's general “Data: CC BY 4.0” statement and the detailed licence globs are not perfectly aligned. Do not copy/cache/import these files until the maintainer confirms that the specific compressed and parsed CSV paths are CC BY 4.0 (or supplies a corrected explicit licence).
+- The 70 categories can potentially identify several IWF exclusions (promoter, government, FDI, PE/FPI/SWF categories, directors/KMP, IEPF, lock-in, DR), but aggregate category rows cannot by themselves prove holder relationships or agreements such as group cross-holdings, promoter family/PAC status, board representation, first-refusal rights and strategic control. A mapping completeness matrix and independent spot-check against official XBRL examples are required.
+- Point-in-time use must use `broadcast_date`, not merely quarter-end `period` or `submission_date`; revisions must be ordered by publication timestamp. Use the latest revision broadcast before each forecast time, retaining the as-of period and source filing identity.
+- Do **not** ingest or publish `_shareholders.csv.gz` as part of this project. It contains named individual shareholders. The intended research dataset is category aggregates only; no names, PANs or personal identifiers are needed.
+- No file from this repository was downloaded, imported or copied into this project during this audit.
+
+**Decision:** retain as a high-priority candidate, but **not admitted** pending written path-specific licence confirmation and a 22-category mapping/completeness test. Even after those checks, any missing relationship/agreement categories must remain explicitly unresolved and be tested against official monthly weights; do not silently treat them as zero.
+
+### 3. TejHQ daily EOD and corporate-action data — useful secondary cross-check
+
+The [TejHQ Indian Markets dataset](https://huggingface.co/datasets/tejhq/indian-markets) documents NSE daily OHLCV from 2010-01-04 onward and includes raw bhavcopy, adjusted-price, corporate-action and ISIN/symbol-history trees. Its publisher's [data terms, updated 2026-10-30](https://tejhq.dev/data-terms), explicitly permit personal research, backtesting, model training, personal trading decisions and private local storage; they prohibit redistribution/public mirroring of raw data and say the publisher holds no NSE/BSE licence, so exchange terms independently apply. The code's MIT licence does not cover the market data. Keyless OHLCV, snapshots and corporate actions are offered by its API; the terms document a 120-request/minute keyless rate limit.
+
+This is admitted as a **candidate secondary EOD/corporate-action/symbol-history cross-check only**, subject to source provenance and exchange-term review. It is not 1-minute data, an official NIFTY 50 membership ledger, or a numerical IWF series. Its top-500 liquidity universe must not be mistaken for official NIFTY 50 membership. Because this repository is public and GitHub cache contents can be extracted by people able to open a pull request, raw TejHQ data must not be committed or put in a public Actions cache; retain only non-reconstructive QA summaries/manifests in this public repo. A secure private store would be required to retain its raw files here without redistribution risk.
+
+### 4. Official exchange public shareholding/XBRL access
+
+NSE's current shareholding-pattern page displays quarter-end date, submission date, revision date, XBRL link and broadcast date/time. The XBRL filing-information page publishes the Regulation 31 Shareholding Pattern taxonomy and sample. This supports the existence of a structured primary filing route, but does not override the Nifty Indices restriction on automated collection of its website. The current Nifty Indices Terms of Use prohibit systematic/automated collection without express written consent; the monthly ZIP listing is therefore discovery, not permission to scrape, cache or republish. NSE Indices offers licensed constituent products with identifiers, market cap, weights and prices and lists `indices@nse.co.in` for licensing enquiries.
+
+SEBI's 2024 market-data sharing policy also establishes a research-data sharing framework, including a first-basket of mandated public disclosures; the enhanced MII data-access route is directed to accredited academic institutions. This project has not established accredited-institution status or a data-sharing arrangement, so that policy is not treated as blanket authorization for this repo to automate XBRL extraction.
+
+### 5. Current source-gate decision
+
+| Candidate | What it can supply | Rights / quality decision | BUP-01 use |
+|---|---|---|---|
+| Official NSE Indices monthly weight ZIPs | Official monthly weightage / market-cap snapshots | Exact automated access, caching and intended use require permission/licence decision | Preferred IWF reconciliation source after permission |
+| `yurukatsu/nse-historical-membership` category-level XBRL parse | ~70 category aggregates, broadcast timestamps and 2001–2026-08 history | Specific nested `.csv.gz` licence scope unclear; some of 22 exclusions need holder/agreement context | High-priority candidate, not admitted |
+| TejHQ daily EOD/corporate-actions/symbol history | Daily prices from 2010, event and ISIN-symbol history | Publisher allows personal research and private storage; no raw redistribution and exchange rights remain independently applicable | Secondary daily/corporate-action QA; no IWF or intraday target |
+| AMP4010 HF historical weights | Monthly approximate weights to 2025-08 | CC BY-NC-SA 4.0, estimated/extrapolated rebalance values | Not admitted for primary/commercial track |
+| Binary/equal-weight membership projects | Member/non-member only | Not numerical IWF | Membership cross-check only |
+
+**Gate remains:** no admissible official point-in-time IWF series is yet present. Do not begin confirmatory stock-panel modelling, weighted aggregation, or trading validation until the rights issue and weight reconstruction/reconciliation gates pass. The BUP-01 v1.1 plan remains locked; no research-plan amendment has been made.
