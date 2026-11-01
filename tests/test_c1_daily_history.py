@@ -415,4 +415,12 @@ def test_tata_crosscheck_exposes_missing_comparison_date_without_prices():
     assert result["comparison_dates_missing_from_tejhq"] == ["2025-10-23"]
     assert "open" not in result and "close" not in result
 
+def test_tejhq_cache_directory_expands_home_path(tmp_path):
+    from scripts.constituent_weekly.audit_c1_daily_history import resolve_tejhq_encrypted_cache_dir
+
+    home_path = resolve_tejhq_encrypted_cache_dir("~/.cache/bup01-test-cache")
+    assert home_path == (Path.home() / ".cache" / "bup01-test-cache").resolve()
+    explicit_path = resolve_tejhq_encrypted_cache_dir(str(tmp_path / "encrypted"))
+    assert explicit_path == (tmp_path / "encrypted").resolve()
+
 

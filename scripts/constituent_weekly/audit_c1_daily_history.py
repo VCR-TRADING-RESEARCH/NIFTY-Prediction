@@ -411,6 +411,14 @@ def tejhq_cache_key(token: str) -> bytes:
     return hashlib.sha256(b"BUP01-TejHQ-EOD-cache-v1:" + token.strip().encode()).digest()
 
 
+def resolve_tejhq_encrypted_cache_dir(configured_path: str | None = None) -> Path:
+    """Resolve the encrypted cache location, including shell-style home paths."""
+    raw = (configured_path or "").strip()
+    if not raw:
+        raw = str(Path.home() / ".cache" / "bup01-tejhq-encrypted")
+    return Path(raw).expanduser().resolve()
+
+
 def encrypt_tejhq_cache_bytes(payload: bytes, token: str, associated_data: bytes) -> bytes:
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     nonce = os.urandom(12)
@@ -868,11 +876,8 @@ def _run_daily_audit() -> int:
             )
 
         hf_token = os.environ.get("HF_TOKEN", "").strip()
-        encrypted_cache_dir = Path(
-            os.environ.get(
-                "TEJHQ_ENCRYPTED_CACHE_DIR",
-                str(Path.home() / ".cache" / "bup01-tejhq-encrypted"),
-            )
+        encrypted_cache_dir = resolve_tejhq_encrypted_cache_dir(
+            os.environ.get("TEJHQ_ENCRYPTED_CACHE_DIR")
         )
         fallback_run: dict[str, Any] = {
             "status": "NOT_NEEDED",
