@@ -139,7 +139,7 @@ The research target is on the spot index. Any executable strategy must separatel
 - Time-series momentum paper: https://doi.org/10.1016/j.jfineco.2011.11.003
 - Probability of Backtest Overfitting: https://doi.org/10.21314/jcf.2016.322
 
-Last repository status update: 2026-10-31.
+Last repository status update: 2026-11-01.
 
 
 ## Free GitHub Actions + Pages prediction flow
@@ -428,3 +428,23 @@ The subsequent status/validator correction was also pushed and validated: [run 4
 - The 2021-11-01–2022-01-29 Dhan check resolved all 50 security IDs and returned 1,233,597 bars, but strict QA initially failed due to one shared anchor-session gap and after-hours OHLCV flags.
 - NSE confirms 4 November 2021 was an evening-only Muhurat session (18:15–19:15). The validator also included rows after 15:30 in OHLCV checks. Both issues have been corrected and regression tests added.
 - Corrected run: [41252703953](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41252703953), pending final outcome. Do not treat the oldest edge as passed until the corrected report is published.
+
+
+## BUP-01 latest verified state — 2026-11-01
+
+The screenshot's earlier handoff predates the latest C1 evidence. The full 50-stock/90-day check is no longer a single pending run: two separated full-universe windows have passed, but this does **not** establish uninterrupted five-year coverage.
+
+- **2026Q3 window:** [Actions run 41251346795](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251346795) passed 50/50 point-in-time constituents for 2026-06-29–2026-09-26 (64 regular sessions per symbol, 64/64 anchors and 15:14 expiry proxies, no duplicate timestamps or OHLCV invariant failures).
+- **2022Q4 window:** [Actions run 41251808946](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41251808946) passed 50/50 constituents for 2022-10-03–2022-12-30 (61 regular sessions per symbol, 61/61 anchors and expiry proxies, no duplicate timestamps or OHLCV invariant failures).
+- **One-session current universe:** [Actions run 41249642409](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41249642409) passed 50/50 for 2026-10-29. These independent samples must not be presented as complete continuous five-year coverage.
+- **Latest workflow [41263593605](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41263593605):** offline tests passed 26/26, but the live Dhan preflight was **BLOCKED_PROFILE_HTTP_401**. Dhan's token endpoint returned HTTP 200 twice without an access token; the sanitized diagnostic category was TOTP rejected/invalid, and the provided-token fallback failed the profile check with HTTP 401. No market-data endpoints ran. The green workflow conclusion was therefore not a live data pass.
+- **2021 five-year edge:** [run 41252703953](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41252703953) originally stopped at an offline counter assertion (Muhurat exclusion miscounted as post-market). The code/test correction is now covered by the 26/26 passing suite, but the 2021 live data request is still untested because authentication is blocked.
+- **Weights:** the cached third-party 216-row monthly candidate ends 2025-08-31, is CC BY-NC-SA 4.0 (non-commercial), and includes estimated/extrapolated event weights. It is not accepted as official point-in-time IWF for a trading workflow. Automated NSE Indices scraping remains disabled pending written permission/licensing.
+- **Gate decision:** C0 PASS; **C1 NOT PASSED / RIGHTS + DATA BLOCKED**; C2–C6 remain gated. No constituent panel, stock model, bottom-up NIFTY forecast, or executable strategy is certified.
+
+**Next dependency:** verify/correct the organization GitHub Actions Dhan credentials (do not post secret values in chat), then perform one bounded protected retry. Do not repeat TOTP attempts while credentials remain rejected. After authentication succeeds, first finish the 2021 edge window and historical identity checks, then test continuous intervals; only after authorized point-in-time weights, complete coverage and basket-to-index reconciliation pass may C2 begin.
+
+- [Detailed C1 status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md)
+- [C1 research log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/RESEARCH_LOG.md)
+- [C1 error log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/ERROR_LOG.md)
+- [C1 continuation / workflow correction commit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8e31a7d813019733ccf23b07129f24d2a7cb7884)
