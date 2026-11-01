@@ -217,3 +217,9 @@
 - A CI wiring omission initially left the new test module out of pytest despite the path filter; corrected it and recorded E0049. Corrected push [41269516064](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269516064) and PR [41269519499](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269519499) passed 50 tests.
 - C1 remains NOT PASSED / RIGHTS-BLOCKED because no legally admitted point-in-time official IWF source, complete 22-exclusion evidence and weighted basket-to-index reconciliation exist. No C2 panel/model/forecast or strategy created.
 - The repo is public; raw market bars, named shareholder information and unlicensed source data are not committed. Visible decisions/outcomes only are logged.
+
+
+## 2026-11-01 — C1 developer handoff created
+- Added C1_DEVELOPER_GATE_REPORT.md with evidence, phase scoreboard, remaining hard gates and bounded next developer actions.
+- Updated the C1 status file and main README links.
+- Final disposition remains C1 PARTIAL PASS / RIGHTS-BLOCKED; no model or strategy is produced until authorised point-in-time weights, historical identity/coverage and weighted index reconstruction pass.
