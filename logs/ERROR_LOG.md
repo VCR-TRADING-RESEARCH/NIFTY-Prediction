@@ -423,3 +423,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Appended a controlled v1.2 version-history entry documenting the user's public-source ETF-proxy amendment. No pre-registered statistical thresholds or original outcome definitions were removed.
 - **Verification:** Corrected push/PR governance validation is pending; no empirical test or model was run under the failed plan validation.
 - **Status:** FIX APPLIED — close after the corrected workflow passes.
+
+
+## E0053 — 2026-11-01 — BUP-01 plan tests still asserted the previous protocol version
+
+- **Run:** [41272427814](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272427814).
+- **Observed:** After the v1.2 validator fix, structural validation passed, but two legacy assertions in `tests/test_constituent_weekly_plan.py` still expected plan version 1.1 and the old stop-rule wording ("Stop at C1").
+- **Correction:** Updated the assertions to require v1.2, retain the v1.1 expiry-proxy history, verify the v1.2 ETF-replica amendment, and check the new split between the confirmatory and exploratory gates.
+- **Impact:** The plan methodology was not invalid; this was stale regression-test text.
+- **Status:** FIX APPLIED — close after the current governance workflow passes.
