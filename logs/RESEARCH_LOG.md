@@ -316,3 +316,14 @@
 - Added the dependencies explicitly. Follow-up [41266377005](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266377005) passed **12/12**: 6 existing membership tests plus 6 Dhan token/helper tests (including raw/otpauth TOTP parity, HOTP rejection and clock-skew sign tests).
 - The live preflight [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250) was still executing its protected Dhan preflight at last check. Do not claim authentication or coverage until its final sanitized JSON and fail-closed job conclusion are inspected.
 - Current follow-up PR Dhan validation runs are pull-request/offline-only and cannot prove live-secret authentication.
+
+
+## 2026-11-01 — Protected Dhan preflight recovered and five-year edge narrowed
+
+- Protected Actions run [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250) completed its live data step. Fresh TOTP token generation succeeded on attempt 1 (HTTP 200; access-token field present); profile confirmed Data API active; server-minus-runner UTC clock skew was **0 seconds**.
+- Current NIFTY 50 universe resolved **50/50**; historical aliases resolved against the current master **79/84**. A single day (2026-10-29) had **50/50** anchor/15:14-expiry-proxy results.
+- 3-stock 2022Q4 90-day test passed **3/3**; full 50-stock range tests passed **50/50** for 2026Q3 and **50/50** for 2022Q4. Reliance daily history returned 22 bars for Jan 2018 (existence check only).
+- 2021-11-01–2022-01-29 full-universe range: 50/50 IDs resolved; 49/50 passed strict OHLCV checks. The 50 stocks all had 61 sessions, 61 anchor sessions and 61 expiry-proxy sessions with no missing days, duplicate timestamps, invalid numeric rows or OHLC violations. SHREECEM had one negative volume row, the only strict invariant failure.
+- The new final workflow gate ran after the sanitized report was committed and deliberately failed the job on PARTIAL_OR_BLOCKED; no further false-green conclusion. E0032 (live token/profile auth blocker) and E0033 (status gate ordering/runtime) are now closed; E0045 tracks the single SHREECEM volume anomaly.
+- Added a bounded single-stock SHREECEM diagnostic (one 90-day API request) to get the bad row timestamp, not its price or volume. Initial offline test exposed unsupported pandas .dt.isoformat; fixed to call Timestamp.isoformat() on row objects. Corrected diagnostic run is pending.
+- **Gate outcome:** authentication and most sampled price-history gates pass, but C1 remains NOT PASSED due to the SHREECEM strict QA item, incomplete continuous five-year backfill, and the decisive unresolved official/licensed point-in-time IWF series and basket reconciliation. C2 remains gated. No stock model or forecast run.
