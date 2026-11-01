@@ -608,3 +608,8 @@ The former combined C2 panel-and-model workflow has been retired because the loc
 - [C2 phase status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c2-panel/research/constituent_weekly/STATUS.md)
 - [C2 research log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c2-panel/logs/RESEARCH_LOG.md) · [error log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c2-panel/logs/ERROR_LOG.md)
 - [C1 acceptance and C2 handoff](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c2-panel/research/constituent_weekly/C1_ACCEPTANCE_AND_C2_HANDOFF.md)
+
+
+## C2 live status — 2026-11-02
+
+Formal panel-only run [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358) passed setup, compile, offline regression tests, stale-report cleanup, and encrypted cache restoration. Panel construction remains in progress. C2 remains NOT PASSED pending fresh outputs and acceptance gates. [C2 phase status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c2-panel/research/constituent_weekly/STATUS.md).
