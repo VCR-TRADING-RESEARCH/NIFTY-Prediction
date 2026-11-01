@@ -478,3 +478,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction/investigation:** Added a browser-style User-Agent, Accept and Referer header; the next run records only response content type, byte count, SHA-256 and the first 12 bytes as hex. No response body, workbook rows or holdings values are emitted.
 - **Impact:** No constituent holdings or weights were parsed or admitted. A 200 status alone is not treated as successful file retrieval.
 - **Status:** INVESTIGATING — require actual supported workbook container and schema confirmation before using the archive.
+
+
+## E0059 — 2026-11-01 — XLSX signature predicate was double-escaped in the first container-detection implementation
+
+- **Run:** [41275096839](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275096839).
+- **Observed:** The run's report showed content type application/vnd.ms-excel, 1,352,141 bytes and ZIP magic prefix 504b03041400060008000000 for September 2026, and 1,206,358 bytes with the same ZIP prefix for February 2026. Yet workbook_engine rejected both because its Python bytes literal contained double-escaped backslashes rather than the ZIP bytes.
+- **Correction:** Replaced string-style signature literals with bytes.fromhex("504b0304") for XLSX and bytes.fromhex("d0cf11e0") for legacy XLS; updated unit fixtures accordingly. The same commit adds the pull --rebase command to the report-commit step (the earlier run used the workflow version before that correction).
+- **Impact:** No raw workbook body or holdings values were recorded. The direct archive URL works at the transport layer, but actual schema is still unverified. April 2019 candidate remains HTTP 404.
+- **Status:** FIX COMMITTED — validate with the next run; close after both recent workbooks parse and the sanitized report push succeeds.
