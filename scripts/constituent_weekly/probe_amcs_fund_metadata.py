@@ -186,10 +186,31 @@ def _payload_shape(payload: Any) -> dict[str, Any]:
                         if isinstance(nested_key, str) and re.fullmatch(r"20\\d{2}-\\d{2}", nested_key):
                             hist_month_keys.append(nested_key)
             shape["hold_hist_container_counts"] = hist_counts
+            shape["hold_hist_key_count"] = len(hold_hist)
+            shape["hold_hist_key_names"] = [
+                str(key) for key in list(hold_hist.keys())[:10]
+                if re.fullmatch(r"[A-Za-z_]{1,40}", str(key))
+                or re.fullmatch(r"20\\d{2}-\\d{2}", str(key))
+            ]
             if hist_list_lengths:
                 shape["hold_hist_list_lengths"] = hist_list_lengths[:20]
             if hist_object_key_sets:
                 shape["hold_hist_list_item_keys"] = hist_object_key_sets[:3]
+            for key, value in hold_hist.items():
+                if isinstance(value, dict):
+                    shape["hold_hist_dict_value_key_count"] = len(value)
+                    shape["hold_hist_dict_value_types"] = sorted({type(v).__name__ for v in value.values()})
+                    shape["hold_hist_dict_value_key_samples"] = [
+                        str(k) for k in list(value.keys())[:10]
+                        if re.fullmatch(r"[A-Za-z_]{1,40}", str(k))
+                        or re.fullmatch(r"20\\d{2}-\\d{2}", str(k))
+                    ]
+                    break
+                if isinstance(value, list) and value:
+                    shape["hold_hist_list_item_type"] = type(value[0]).__name__
+                    if isinstance(value[0], dict):
+                        shape["hold_hist_list_item_keys_detail"] = sorted(str(k) for k in value[0].keys())[:40]
+                    break
             if hist_month_keys:
                 shape["hold_hist_month_key_count"] = len(set(hist_month_keys))
                 shape["hold_hist_first_month_key"] = min(hist_month_keys)
