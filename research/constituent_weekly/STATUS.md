@@ -699,3 +699,10 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Added a feature-equivalence regression test; latest optimized workflow [41324416830](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41324416830) is queued.
 - Superseded queued workflows [41321616749](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321616749) and [41324403823](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41324403823) were cancelled by newer commits; these are workflow queue replacements, not data/model failures.
 - Prediction outputs are still absent; no metrics are claimed.
+
+
+## C3-X checkpoint improvement — 2026-11-01
+- **Code committed:** `4f83a38eac9ae704cd9e8b5be2071d25ed7ab460` adds authenticated AES-GCM encrypted per-symbol and per-index-chunk checkpoints under the Actions cache directory.
+- **Resume behavior:** each stock's validated raw bars are keyed by source-manifest hash, symbol, security ID and chunk set; successful chunks are persisted immediately. Existing completed symbol data can be reused without another Dhan download.
+- **Validation:** pending the next workflow run; no prediction metrics are claimed.
+- **Important:** workflow cache-save condition still needs to be changed to preserve checkpoints after a later model-stage failure; current workflow only saves on full-step success.
