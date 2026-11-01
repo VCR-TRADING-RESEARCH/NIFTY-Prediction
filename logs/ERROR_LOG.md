@@ -707,3 +707,20 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Root cause:** Test expectation used a strict inequality at an exact mathematical boundary; the model metric calculation was correct.
 - **Correction:** Changed the fixture assertion to accept a Brier score equal to 0.10. No model logic, input data or prediction target was changed.
 - **Status:** FIX COMMITTED; automatic rerun [41347616436](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41347616436) is in progress.
+
+
+## E0091 — 2026-11-02 — C2 encrypted-cache writer dependency was absent
+
+- **Run:** [41347616436](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41347616436).
+- **Observed:** C2 authentication and the 258-cycle calendar build succeeded, then execution stopped with ModuleNotFoundError in the shared AES-GCM cache helper.
+- **Root cause:** The workflow installed project and live API requirements but neither dependency set included `cryptography`, required by AES-GCM cache writes.
+- **Correction:** Add `cryptography>=42` to the workflow install command. The updated run [41347849285](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41347849285) passed offline tests and entered live model-data acquisition.
+- **Impact:** No model fitting occurred in the failed run. No raw data or credentials were published.
+
+## E0092 — 2026-11-02 — C2 output publisher lost a push race
+
+- **Run:** [41347616436](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41347616436).
+- **Observed:** The model step wrote a sanitized failure report, but publication was rejected because a separate error-log commit advanced the branch during the job.
+- **Root cause:** The initial publisher committed against its checkout snapshot and had no fetch/rebase/rebuild retry loop.
+- **Correction:** Replaced it with `publish_c2_run.py`, which snapshots generated outputs, fetches the latest branch, reapplies outputs/status/log updates and retries non-forced pushes up to five times. A follow-up correction deletes stale prior-run outputs before a new execution.
+- **Status:** CORRECTED IN C2 WORKFLOW; retry-safe publisher is used by current run [41347849285](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41347849285).
