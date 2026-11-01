@@ -716,3 +716,13 @@
 - Added a test that verifies encrypted action partition cache round-trip, with the first call downloading and the second reusing cached ciphertext.
 - Next: run the action workflow to verify cache hits; then build the official NSE event cross-check adapter, match by symbol/series/ISIN and ex-date, and manually classify the 711 constituent events. Do not use unverified events or factors in target construction.
 - C1 remains PARTIAL/NOT PASSED; no C2 model training or trading strategy.
+
+
+## 2026-11-01 — Corporate-action encrypted cache reuse verified
+
+- The new encrypted partition round-trip test passed within the corporate-action workflow: 13/13 action and identity tests passed.
+- Live corporate-action run [41319736877](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319736877) restored the prior encrypted cache created by run 41318960367.
+- All nine action-year partitions (2018–2026) were decrypted from cache: 9/9 cache hits; zero downloads. Cache reuse is now verified, not merely inferred from cache step success.
+- Candidate event count and matching remained unchanged at 18,361 deduplicated events and 711 PIT member matches.
+- Official NSE Market Activity Report documentation describes `Bcddmmyy.csv` within daily `nuprddmmyy.zip` as the daily corporate-action detail file. It is the next candidate primary-source cross-check route; archive URL/date coverage/schema still require live validation.
+- No factor was calculated/applied; C1 corporate-action gate remains NOT PASSED; C2 remains locked.

@@ -386,3 +386,12 @@
 - Corrected the interpretation of the corporate-action cache miss: the restored cache came from daily raw-bhavcopy work and did not yet contain the action parquet partitions. The corporate-action run saved those nine partitions; a true cache round-trip regression is being added.
 - Located official NSE corporate-action filings page and daily report specification; also reviewed NSE F&O adjustment methodology and retained the distinction between derivative contract adjustment and cash-equity return adjustment.
 - Corporate-action catalogue: 18,393 rows, 18,361 deduplicated, 711 point-in-time member matches; no adjustment factors applied. C1 and C2 remain gated.
+
+
+## 2026-11-01 — Verified encrypted cache reuse and identified official daily source
+
+- Added encrypted action-partition round-trip regression to corporate-action tests.
+- Live corporate-action run 41319736877 passed 13/13 tests and reused all 9/9 yearly action partitions from encrypted cache (zero downloads).
+- Corrected E0076 interpretation: initial action-cache miss was a cold cache namespace because the previous cache came from daily OHLCV source partitions, not an encryption/path failure.
+- Identified NSE Market Activity Report documentation for daily Bcddmmyy.csv corporate-action detail files inside nuprddmmyy.zip. This is the next primary-source route; live archive validation remains pending.
+- No factors applied; candidate catalogue remains 18,361 events / 711 member matches. C1 partial, C2 locked.
