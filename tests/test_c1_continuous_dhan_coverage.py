@@ -193,3 +193,67 @@ def test_known_action_crossing_cycle_has_audit_dates():
         "HDFC": "2023-07-01",
         "TATAMOTORS": "2025-10-14",
     }
+
+
+def test_request_intraday_window_retries_malformed_success_shape(monkeypatch):
+    import scripts.constituent_weekly.audit_c1_continuous_dhan_coverage as audit
+
+    calls = {"count": 0}
+
+    class Response:
+        status_code = 200
+        ok = True
+        headers = {}
+
+        def __init__(self, body):
+            self.body = body
+
+        def json(self):
+            return self.body
+
+    good = {
+        "open": [100.0, 101.0],
+        "high": [101.0, 102.0],
+        "low": [99.0, 100.0],
+        "close": [100.5, 101.5],
+        "volume": [1000, 1100],
+        "timestamp": [epoch_ist("2023-05-11T10:00:00"), epoch_ist("2023-05-11T15:14:00")],
+    }
+
+    def fake_post(*args, **kwargs):
+        calls["count"] += 1
+        return Response({"status": "failure"} if calls["count"] == 1 else good)
+
+    monkeypatch.setattr(audit.requests, "post", fake_post)
+    monkeypatch.setattr(audit.time, "sleep", lambda *_: None)
+    body, attempts = audit.request_intraday_window(
+        "123", "NSE_EQ", "EQUITY", "token", "client",
+        "2023-05-06", "2023-08-03",
+    )
+    assert attempts == 2
+    assert calls["count"] == 2
+    assert body == good
+
+
+def test_request_intraday_window_returns_sanitizable_schema_after_three_malformed_shapes(monkeypatch):
+    import scripts.constituent_weekly.audit_c1_continuous_dhan_coverage as audit
+
+    class Response:
+        status_code = 200
+        ok = True
+        headers = {}
+
+        def json(self):
+            return {"status": "failure", "remarks": "private provider text"}
+
+    monkeypatch.setattr(audit.requests, "post", lambda *_args, **_kwargs: Response())
+    monkeypatch.setattr(audit.time, "sleep", lambda *_: None)
+    body, attempts = audit.request_intraday_window(
+        "123", "NSE_EQ", "EQUITY", "token", "client",
+        "2023-05-06", "2023-08-03",
+    )
+    inspected = audit.inspect_target_dates(body, ["2023-05-11"], require_volume=True)
+    assert attempts == 3
+    assert inspected["status"] == "INVALID_RESPONSE"
+    assert inspected["response_schema"]["response_top_level_keys"] == ["remarks", "status"]
+    assert "private provider text" not in str(inspected)

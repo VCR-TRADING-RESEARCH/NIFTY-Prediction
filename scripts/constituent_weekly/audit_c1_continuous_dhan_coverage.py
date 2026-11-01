@@ -33,7 +33,7 @@ EXPIRY_CSV = ROOT / "data" / "reconciliation" / "expiry_verification.csv"
 INDEX_DAILY_CSV = ROOT / "data" / "reconciliation" / "nifty50_official_daily.csv"
 OUTPUT = ROOT / "research" / "constituent_weekly" / "C1_CONTINUOUS_COVERAGE.json"
 CHUNK_DAYS = 90
-REQUEST_DELAY_SECONDS = 0.25
+REQUEST_DELAY_SECONDS = 0.5
 REQUEST_TIMEOUT_SECONDS = 120
 MIN_VALID_MEMBERS = 47
 MIN_MEMBER_FRACTION = 0.94
@@ -263,7 +263,20 @@ def inspect_target_dates(
                 "expiry_ok": False,
                 "status": shape_error or "INVALID_RESPONSE",
             }
-        return {"status": "INVALID_RESPONSE", "bar_count": 0, "dates": results}
+        schema = {}
+        if isinstance(body, dict):
+            payload = body.get("data") if isinstance(body.get("data"), dict) else body
+            schema = {
+                "response_top_level_keys": sorted(str(key) for key in body.keys())[:40],
+                "response_data_type": type(body.get("data")).__name__ if "data" in body else "TOP_LEVEL_ARRAYS",
+                "response_payload_keys": sorted(str(key) for key in payload.keys())[:40] if isinstance(payload, dict) else [],
+                "response_array_types": {
+                    key: type(payload.get(key)).__name__ if key in payload else "MISSING"
+                    for key in ("timestamp", "open", "high", "low", "close", "volume")
+                } if isinstance(payload, dict) else {},
+                "provider_status_value": str(body.get("status"))[:32] if isinstance(body.get("status"), (str, int, float, bool)) else None,
+            }
+        return {"status": "INVALID_RESPONSE", "bar_count": 0, "dates": results, "response_schema": schema}
 
     count = len(arrays["timestamp"])
     if count == 0:
@@ -341,30 +354,56 @@ def request_intraday_window(
         "toDate": f"{end} 15:15:00",
     }
     attempts = 0
-    for attempt in range(2):
+    last_body: dict[str, Any] = {"status": "NO_RESPONSE", "bar_count": 0, "dates": {}}
+    for attempt in range(3):
         attempts += 1
         try:
             response = requests.post(INTRADAY_URL, headers=headers, json=payload, timeout=REQUEST_TIMEOUT_SECONDS)
         except requests.RequestException as exc:
-            return {"status": "NETWORK_ERROR", "error_type": type(exc).__name__, "bar_count": 0, "dates": {}}, attempts
+            last_body = {"status": "NETWORK_ERROR", "error_type": type(exc).__name__, "bar_count": 0, "dates": {}}
+            if attempt < 2:
+                time.sleep(1.0)
+                continue
+            return last_body, attempts
         if response.status_code in (401, 403):
             raise FatalAccessError(f"Dhan historical-data authorization failed with HTTP {response.status_code}.")
-        if response.status_code == 429 and attempt == 0:
-            retry_header = response.headers.get("Retry-After", "2")
-            try:
-                wait = min(max(float(retry_header), 1.0), 10.0)
-            except ValueError:
-                wait = 2.0
-            time.sleep(wait)
-            continue
+        if response.status_code == 429:
+            last_body = {"status": "HTTP_429", "bar_count": 0, "dates": {}}
+            if attempt < 2:
+                retry_header = response.headers.get("Retry-After", "2")
+                try:
+                    wait = min(max(float(retry_header), 1.0), 10.0)
+                except ValueError:
+                    wait = 2.0
+                time.sleep(wait)
+                continue
+            return last_body, attempts
         if not response.ok:
             return {"status": f"HTTP_{response.status_code}", "bar_count": 0, "dates": {}}, attempts
         try:
             body = response.json()
         except ValueError:
-            return {"status": "INVALID_JSON", "bar_count": 0, "dates": {}}, attempts
+            last_body = {"status": "INVALID_JSON", "bar_count": 0, "dates": {}}
+            if attempt < 2:
+                time.sleep(1.0)
+                continue
+            return last_body, attempts
+
+        arrays, shape_error = _payload_arrays(body)
+        retryable_shape_errors = {
+            "INVALID_JSON_SHAPE",
+            "MISSING_REQUIRED_ARRAY",
+            "ARRAY_LENGTH_MISMATCH",
+            "VOLUME_LENGTH_MISMATCH",
+            "PROVIDER_FAILURE",
+        }
+        if arrays is None and shape_error in retryable_shape_errors and attempt < 2:
+            last_body = body if isinstance(body, dict) else {"status": "INVALID_JSON_SHAPE"}
+            time.sleep(1.0)
+            continue
         return body, attempts
-    return {"status": "HTTP_429", "bar_count": 0, "dates": {}}, attempts
+
+    return last_body, attempts
 
 
 def _empty_report(input_manifest: dict[str, Any], settings: dict[str, Any]) -> dict[str, Any]:
