@@ -290,3 +290,14 @@
 - Began a non-official weight search using Tipsheet's public downloadable data catalogue and multi-AMC monthly portfolio sources. Tipsheet says its dataset files are free to fetch with attribution, but upstream source terms remain applicable; no weight file has yet been admitted.
 - HDFC NIFTY 50 ETF holdings pages provide a monthly historical table (last 12 months displayed) and full 50-stock holdings for Sep-2026, while AMCS describes source archives linking back to original AMC files and Internet Archive copies. ETF weights remain a proxy, not index IWF.
 - No model training or strategy backtest started; plan v1.2 remains unchanged.
+
+
+
+## 2026-11-01 — User resumed screenshot-interrupted mfdata.in source audit
+
+- User shared a screenshot showing the prior assistant work was interrupted and said: “Proceed”.
+- Resumed the BUP-01 C1 check by re-reading the branch research plan, status, error/research logs, existing metadata script, workflow and prior discovery report.
+- Corrected the month-label parser and added a bounded documented-route discovery sequence plus monthly gap/coverage calculation.
+- [Actions run 41297143071](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41297143071) passed the offline tests and completed the probe. All three mfdata discovery requests returned HTTP 522, so no family ID or history endpoint result was obtained.
+- Visible conclusion: this is an external access timeout, not proof that historical records are absent. No holdings values were fetched, no model run was started, and C1 remains blocked. The locked plan v1.2 is unchanged.
+- Only visible conversation summaries and outcomes are recorded; hidden private reasoning, credentials and raw holdings data are not stored.
