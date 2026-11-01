@@ -484,3 +484,15 @@
 - Attempted to open the advertised API index successfully; it lists those route names. The /amcs JSON endpoint itself was inaccessible through the present browser fetch path, so no API payload, scheme id or historical URL was obtained. This is a source-discovery lead only, not an admitted dataset.
 - The public-use/reuse licence of amcs.fund data is not verified. No holdings values or raw source workbook have been copied.
 - C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. Rights, exact attachment links, availability timestamps, historical ISIN/action continuity, weight coverage and weighted basket-index reconciliation remain gates.
+
+
+## 2026-11-01 — Official archive lower bound corrected; API metadata-only probe committed
+
+- **Phase:** C1 — point-in-time universe and data-source feasibility.
+- **Step/status:** Historical archive source discovery advanced; API metadata probe implementation committed; runtime API result pending.
+- **Finding:** The rendered official Nippon India archive shows monthly portfolio index entries back to 30 September 2012, not just September 2013, and explicitly lists April 2019. The previously guessed April 2019 modern filename returned 404; this remains a wrong/unresolved link, not a missing-data finding.
+- **Independent method/source lead:** amcs.fund's published methodology says it links each monthly row to the AMC's original source file and an Internet Archive copy, and takes the period from the date printed in the disclosure. Its API index lists /amcs and /manifest among the metadata routes. No API records or holdings were imported.
+- **Implementation:** Added a metadata-only probe that requests the API index, AMC listing/detail and manifest only; it does not call a scheme holdings endpoint or download portfolio files. It filters output to whitelisted metadata fields/hosts and HEAD-checks only whitelisted original-AMC/Internet Archive links. Added offline sanitisation tests and a push/manual Actions workflow with bounded report publication retries.
+- **Rights rule:** amcs.fund reuse rights for commercial/trading-research extraction, caching and redistribution remain unverified. Treat it only as a source locator pending licence review. Do not import holdings or train.
+- **Plan:** Locked BUP-01 plan v1.2 unchanged.
+- **Next gate:** Inspect the automated API metadata report; if it resolves a specific original Nippon disclosure link, test link availability via HEAD only, record disclosure date separately from first-publication date, and review source rights before any file body is downloaded.
