@@ -85,3 +85,22 @@ def test_no_daily_bars_is_reported_as_missing_not_fabricated():
     assert result["status"] == "NO_DAILY_BARS"
     assert result["valid_ohlc_session_count"] == 0
     assert result["missing_session_sample"] == ["2026-10-27"]
+
+
+def test_duplicate_daily_session_is_not_double_counted():
+    body = {
+        "open": [100.0, 100.0, 101.0],
+        "high": [102.0, 102.0, 103.0],
+        "low": [99.0, 99.0, 100.0],
+        "close": [101.0, 101.0, 102.0],
+        "volume": [1000, 1100, 1200],
+        "timestamp": [
+            epoch_ist("2026-10-27T00:00:00"),
+            epoch_ist("2026-10-27T00:00:00"),
+            epoch_ist("2026-10-28T00:00:00"),
+        ],
+    }
+    result = summarise_daily_coverage(body, ["2026-10-27", "2026-10-28"])
+    assert result["valid_ohlc_session_count"] == 1
+    assert result["duplicate_session_count"] == 1
+    assert result["missing_session_count"] == 1
