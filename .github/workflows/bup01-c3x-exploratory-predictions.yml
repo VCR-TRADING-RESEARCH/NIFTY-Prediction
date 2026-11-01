@@ -70,7 +70,7 @@ jobs:
         run: python scripts/constituent_weekly/run_exploratory_predictions.py
 
       - name: Save authenticated encrypted constituent panel cache
-        if: success()
+        if: always()
         uses: actions/cache/save@v4
         with:
           path: ${{ runner.temp }}/bup01-dhan-exploratory
