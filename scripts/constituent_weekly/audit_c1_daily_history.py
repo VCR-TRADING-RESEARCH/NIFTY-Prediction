@@ -644,7 +644,7 @@ def merge_daily_fallback_coverage(
     return merged
 
 
-def main() -> int:
+def _run_daily_audit() -> int:
     started = time.monotonic()
     membership = pd.read_csv(MEMBERSHIP_CSV, low_memory=False)
     official_calendar = pd.read_csv(INDEX_DAILY_CSV, low_memory=False)
@@ -998,6 +998,79 @@ def main() -> int:
             fallback_run["status"],
         )
         return 0
+    except FatalAccessError as exc:
+        report["status"] = "BLOCKED_AUTH_OR_ENTITLEMENT"
+        report["fatal_error"] = "FATAL_ACCESS_ERROR"
+        trace = traceback.extract_tb(exc.__traceback__)
+        if trace:
+            last = trace[-1]
+            report["fatal_error_location"] = {
+                "file": Path(last.filename).name,
+                "line": int(last.lineno),
+                "function": last.name,
+            }
+        report["elapsed_seconds"] = round(time.monotonic() - started, 2)
+        write_report(report)
+        print("C1_DAILY_COVERAGE_BLOCKED", type(exc).__name__)
+        return 1
+    except Exception as exc:
+        report["status"] = "PARTIAL_OR_BLOCKED_RUNTIME_ERROR"
+        report["fatal_error"] = type(exc).__name__
+        trace = traceback.extract_tb(exc.__traceback__)
+        if trace:
+            last = trace[-1]
+            report["fatal_error_location"] = {
+                "file": Path(last.filename).name,
+                "line": int(last.lineno),
+                "function": last.name,
+            }
+        report["elapsed_seconds"] = round(time.monotonic() - started, 2)
+        write_report(report)
+        print("C1_DAILY_COVERAGE_RUNTIME_ERROR", type(exc).__name__)
+        return 1
+
+
+def main() -> int:
+    wrapper_started = datetime.now(timezone.utc)
+    try:
+        return _run_daily_audit()
+    except Exception as exc:
+        report: dict[str, Any] = {
+            "schema_version": 2,
+            "methodology_version": METHODOLOGY_VERSION,
+            "created_at_utc": wrapper_started.isoformat(),
+            "status": "IN_PROGRESS",
+            "symbol_results": {},
+            "summary": {},
+        }
+        try:
+            if OUTPUT.exists():
+                candidate = json.loads(OUTPUT.read_text(encoding="utf-8"))
+                created = candidate.get("created_at_utc")
+                if created and datetime.fromisoformat(created) >= wrapper_started:
+                    report = candidate
+        except (OSError, ValueError, TypeError):
+            pass
+        report["status"] = (
+            "BLOCKED_AUTH_OR_ENTITLEMENT"
+            if isinstance(exc, FatalAccessError)
+            else "PARTIAL_OR_BLOCKED_RUNTIME_ERROR"
+        )
+        report["fatal_error"] = type(exc).__name__
+        trace = traceback.extract_tb(exc.__traceback__)
+        if trace:
+            last = trace[-1]
+            report["fatal_error_location"] = {
+                "file": Path(last.filename).name,
+                "line": int(last.lineno),
+                "function": last.name,
+            }
+        report["elapsed_seconds"] = round(
+            (datetime.now(timezone.utc) - wrapper_started).total_seconds(), 2
+        )
+        write_report(report)
+        print("C1_DAILY_COVERAGE_EARLY_FAILURE", type(exc).__name__)
+        return 1
 
 
 if __name__ == "__main__":
