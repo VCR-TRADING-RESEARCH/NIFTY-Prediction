@@ -59,6 +59,8 @@ def restore_outputs(snapshot: Path) -> None:
         if source.exists():
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, destination)
+        else:
+            destination.unlink(missing_ok=True)
 
 
 def snapshot_outputs(snapshot: Path) -> None:
