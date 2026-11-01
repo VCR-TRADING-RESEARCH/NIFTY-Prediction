@@ -441,3 +441,10 @@
 - Updated the probe to detect Excel container signatures and choose openpyxl for XLSX and xlrd for legacy XLS. Added signature regression tests and removed an unrelated pandas fixture warning.
 - The same Actions run created the sanitized report but its push raced with other C1 commits and was rejected. The workflow now rebases the report commit onto the latest C1 head before pushing.
 - No holdings were extracted successfully in the failed run, and no raw data were stored. C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.
+
+
+## 2026-11-01 — AMC workbook response-type diagnostic
+
+- Run [41275027813](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275027813) passed seven tests, but HTTP 200 responses for the Sep-2026 and Feb-2026 URLs did not begin with recognised XLSX or XLS file signatures; guessed Apr-2019 URL returned 404.
+- Updated the probe to use browser-like headers and report only content type, bytes, SHA-256 and a 12-byte hexadecimal magic prefix. No body text or holdings data are logged. A 200 response will not pass until its payload is a real parseable workbook.
+- Current result remains PARTIAL / BLOCKED; investigate the response type and exact archive download mechanism before admitting any holdings.
