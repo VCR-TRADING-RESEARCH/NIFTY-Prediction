@@ -91,3 +91,37 @@ At handoff:
 **C1 is not accepted.** The market-data acquisition component passed on the bounded Dhan samples, and the IWF arithmetic harness is tested, but source rights, complete exclusion evidence, continuous historical coverage, stable historical identity and weighted basket reconstruction are unresolved. The next gating event is a documented data-rights resolution and secure data-access/storage arrangement—not another unbounded search or model-training attempt.
 
 BUP-01 v1.1 remains locked. C2–C6 remain pending. No trading recommendation is implied.
+
+
+
+## Addendum — public ETF-replica weight path (2026-11-01; supersedes rights-only next step)
+
+User direction is to proceed with available public web sources and not wait for a separate NSE permission request before doing exploratory work. The data-source strategy has therefore been broadened without changing the official-weight confirmatory standard.
+
+### New evidence
+
+- Nippon India ETF Nifty 50 BeES publicly discloses a portfolio intended to replicate NIFTY 50 constituent weights.
+- February 2026 AMC portfolio (28-Feb-2026 portfolio; NAV date 27-Feb-2026) has 50 equity constituents plus 0.08% cash.
+- Compared with NSE Indices' official white-paper weight snapshot dated 2026-02-27: 50/50 constituents matched; equity-only normalized MAE 0.002214 percentage points; RMSE 0.003204 pp; max absolute difference 0.008967 pp; Pearson correlation 0.99999895.
+- This is one-date calibration evidence only. The underlying official and ETF inputs are rounded to 0.01 pp, and a single observation cannot validate a multi-year historical proxy.
+
+### Method and guardrails
+
+- Plan amended to v1.2: a separate exploratory ETF-replica proxy track is now permitted.
+- The new utility implements equity-only normalization, fixed-share price drift and normalized cross-source comparison. Drift is valid only on unchanged membership/share-capital/IWF/corporate-action intervals.
+- A published holdings snapshot cannot be used before its actual publication time. Where actual timestamp cannot be verified, period-end +15 calendar days is explicitly imputed for exploratory analysis, with +10/+20 day sensitivities. SEBI's post-16-Mar-2025 rule is quarterly disclosure within 10 days after quarter; it does not support assuming monthly disclosure automatically.
+- At each NIFTY reconstitution, IWF/float change, share-capital event or corporate action, reseed from dated evidence or exclude affected cycles. Keep minimum 98% weight and 47 valid-name thresholds.
+- The AMC holdings are proxy weights, never "official weights" or official IWF. Official, ETF and reconstructed weights remain separately stored/reported.
+- Raw market bars and individual shareholder details are not committed to this public repository.
+
+### Updated gate status
+
+C1 remains **PARTIAL / NOT YET ACCEPTED**. The proxy source passes a one-date calibration test, but the historical full holdings series, actual publication timestamps, historical constituent identity/corporate-action reseeding and weighted basket-to-index reconstruction are still outstanding. C2 model training has not started. No bottom-up prediction, strategy or full manuscript is claimed.
+
+### New artifacts
+
+- [ETF proxy calibration and data rules](C1_ETF_PROXY_CALIBRATION.md)
+- [Aggregate calibration metrics](../../data/constituent_weekly/etf_proxy_calibration_2026-02-27.csv)
+- [Weight-proxy utilities](../../scripts/constituent_weekly/weight_proxy.py)
+- [Eight regression tests](../../tests/test_constituent_weekly_weight_proxy.py)
+- [Plan v1.2](RESEARCH_PLAN.md)
