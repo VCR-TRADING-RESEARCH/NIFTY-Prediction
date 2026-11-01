@@ -96,3 +96,11 @@ def test_public_summary_excludes_raw_event_fields():
     forbidden = {"symbol", "isin", "company", "cash_amount", "ratio_num", "ratio_den", "raw_subject"}
     assert not (forbidden & set(result))
     assert result["raw_event_rows_published"] is False
+
+def test_corporate_action_audit_uses_shared_expanded_cache_directory():
+    from scripts.constituent_weekly.audit_c1_daily_history import resolve_tejhq_encrypted_cache_dir
+
+    configured = "${{ runner.temp }}/bup01-tejhq-encrypted"
+    resolved = resolve_tejhq_encrypted_cache_dir(configured)
+    assert resolved.is_absolute()
+    assert resolved.name == "bup01-tejhq-encrypted"

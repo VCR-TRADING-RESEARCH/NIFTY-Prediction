@@ -423,4 +423,15 @@ def test_tejhq_cache_directory_expands_home_path(tmp_path):
     explicit_path = resolve_tejhq_encrypted_cache_dir(str(tmp_path / "encrypted"))
     assert explicit_path == (tmp_path / "encrypted").resolve()
 
+def test_encrypted_cache_workflow_paths_are_absolute_and_shared():
+    from pathlib import Path
 
+    root = Path(__file__).resolve().parents[1]
+    workflows = [
+        root / ".github/workflows/bup01-c1-daily-coverage.yml",
+        root / ".github/workflows/bup01-c1-corporate-actions.yml",
+    ]
+    for workflow in workflows:
+        source = workflow.read_text(encoding="utf-8")
+        assert "${{ runner.temp }}/bup01-tejhq-encrypted" in source
+        assert "~/.cache/bup01-tejhq-encrypted" not in source

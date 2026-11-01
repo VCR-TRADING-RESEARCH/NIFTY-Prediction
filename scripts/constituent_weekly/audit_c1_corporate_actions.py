@@ -60,6 +60,7 @@ def load_member_intervals(path: Path = MEMBERSHIP) -> pd.DataFrame:
 
 
 def load_action_year(year: int, token: str, cache_dir: Path) -> tuple[pd.DataFrame, dict]:
+    # The cache directory is resolved by the shared C1 helper used by daily OHLCV.
     from cryptography.exceptions import InvalidTag
 
     filename = f"actions/nse_{year}.parquet"
