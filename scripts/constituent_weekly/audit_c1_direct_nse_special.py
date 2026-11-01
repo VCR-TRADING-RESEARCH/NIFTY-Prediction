@@ -32,7 +32,7 @@ def parse_archive(blob,item,url):
    except ValueError: pass
   if parsed==item["date"]: matches.append(r)
  if len(matches)!=1:
-  return {"status":"NO_EQ_ROW_IN_DIRECT_NSE_ARCHIVE" if not matches else "DUPLICATE_EQ_ROWS_IN_DIRECT_NSE_ARCHIVE","row_count":len(matches),"ohlc_valid":False,"volume_valid":False}
+  return {"status":"NO_EQ_ROW_IN_DIRECT_NSE_ARCHIVE" if not matches else "DUPLICATE_EQ_ROWS_IN_DIRECT_NSE_ARCHIVE","row_count":len(matches),"ohlc_valid":False,"volume_valid":False,"source_url":url,"source_archive_sha256":hashlib.sha256(blob).hexdigest(),"csv_member":names[0],"csv_headers":[norm(x) for x in (reader.fieldnames or [])]}
  r=matches[0]
  def num(*keys):
   for k in keys:
