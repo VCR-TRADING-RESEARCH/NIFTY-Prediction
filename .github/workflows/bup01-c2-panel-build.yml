@@ -115,6 +115,7 @@ jobs:
           path: |
             research/constituent_weekly/C2_PANEL_BUILD.json
             research/constituent_weekly/C2_PANEL_BUILD.md
+            ${{ runner.temp }}/bup01-tejhq-encrypted/c2/frozen_panel/*.aesgcm
           if-no-files-found: warn
           retention-days: 90
 
