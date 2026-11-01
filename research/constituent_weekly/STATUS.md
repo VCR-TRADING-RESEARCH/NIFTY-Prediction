@@ -664,3 +664,14 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - **Exclusions:** point-in-time C1 valid members only; known structural-event windows from the repo ledger excluded; each retained cycle must still have at least 47 members and at least 94% of point-in-time constituents. Unresolved candidate corporate actions remain a limitation.
 - **Security:** minute bars and per-stock panel stay in memory / authenticated encrypted Actions cache. Only sanitized aggregate metrics, forecasts and reproducibility metadata may be published.
 - **Status:** IMPLEMENTATION IN PROGRESS; results not yet available. C1 PARTIAL; C2 confirmatory LOCKED; C5 trading LOCKED.
+
+
+## C3-X live-run checkpoint — 2026-11-01 15:55 UTC
+
+- Active Actions run: [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741).
+- Regression gate: PASS — 22 tests across exploratory leakage/cache/governance and C1 continuous-coverage checks.
+- Active step: reconstruct the temporary point-in-time constituent panel from Dhan 90-day intraday chunks and run the fixed expanding-window stock/meta-model tests.
+- Runtime at checkpoint: approximately 27 minutes for the live data/model step. This is comparable to the prior C1 continuous-history Dhan fetch, which took 29 minutes.
+- Result artifact: not yet created; no model metrics or directional conclusions are claimed at this checkpoint.
+- A second run [41321616749](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321616749) is queued with the concurrency-safe publisher and will reuse the encrypted panel cache if the active run completes the panel and saves it.
+- C1 remains PARTIAL; C2 confirmatory and trading-cost phases remain LOCKED.
