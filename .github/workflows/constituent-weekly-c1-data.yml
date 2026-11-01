@@ -1,19 +1,9 @@
 name: BUP-01 C1 authorised-source audit
 
 on:
-  push:
-    branches:
-      - "phase/constituent-weekly-outcomes-c1-data"
-    paths:
-      - "research/constituent_weekly/**"
-      - "scripts/constituent_weekly/**"
-      - "tests/test_constituent_weekly_source_fetch.py"
-      - "tests/test_constituent_weekly_weight_proxy.py"
-      - "scripts/constituent_weekly/weight_proxy.py"
-      - ".github/workflows/constituent-weekly-c1-data.yml"
   pull_request:
     branches:
-      - "phase/constituent-weekly-outcomes-c0"
+      - phase/constituent-weekly-outcomes-c0
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
@@ -29,7 +19,7 @@ jobs:
       - name: Checkout C1 branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          ref: phase/constituent-weekly-outcomes-c1-data
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -51,5 +41,5 @@ jobs:
           fi
           if [ -f research/constituent_weekly/C1_OFFICIAL_WEIGHT_MANIFEST.json ]; then
             echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "Machine-readable manifest generated. It contains no raw price bars or individual constituent weight values." >> "$GITHUB_STEP_SUMMARY"
+            echo "Machine-readable manifest generated; it contains no raw price bars or individual constituent weight values." >> "$GITHUB_STEP_SUMMARY"
           fi
