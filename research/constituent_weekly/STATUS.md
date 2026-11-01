@@ -441,3 +441,10 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - The latest metadata probe (run [41275027813](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275027813)) passed seven offline tests, but recent URLs returned HTTP 200 with unrecognised content signatures; the guessed Apr-2019 URL returned 404.
 - Added browser-style request headers and a sanitised diagnostic of Content-Type, byte count, SHA-256 and file magic prefix. No workbook contents or constituent holdings are recorded.
 - C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. Historical weights have not been sourced or parsed.
+
+
+## 2026-11-01 — XLSX signature predicate correction
+
+- The latest source response diagnostic showed valid XLSX ZIP signatures (504b0304) on the two recent AMC workbooks. The parser rejected them due to a double-escaped signature literal.
+- Corrected the predicate to compare exact bytes via bytes.fromhex; included an explicit workflow pull/rebase before publishing the sanitized report. Parser verification pending.
+- No raw workbook data or holdings are in the repository. No C1 modelling gate has passed.
