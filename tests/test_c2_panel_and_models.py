@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 import numpy as np
 import pandas as pd
 
@@ -11,6 +13,8 @@ from scripts.constituent_weekly.run_c2_panel_and_models import (
     metrics,
     parse_target_bars,
     stock_features,
+    summarize_cycle_coverage,
+    write_json_report,
 )
 
 
@@ -111,3 +115,23 @@ def test_index_features_accept_official_nifty_daily_column_names():
         "idx_vol_10d", "idx_vol_20d", "idx_vol_60d", "idx_range_10d", "idx_range_20d",
     }
     assert np.isfinite(list(result.values())).all()
+
+
+def test_write_json_report_emits_one_valid_json_document(tmp_path):
+    path = tmp_path / "nested" / "failure.json"
+    payload = {"status": "FAILED", "fatal_error_message": "synthetic diagnostic"}
+    write_json_report(path, payload)
+    text = path.read_text(encoding="utf-8")
+    assert text.endswith("\n")
+    assert not text.endswith("\\n")
+    assert json.loads(text) == payload
+
+
+def test_cycle_coverage_summary_applies_both_member_thresholds():
+    index_panel = pd.DataFrame({"cycle_idx": [1, 2, 3]})
+    eligible_counts = pd.Series({1: 48, 2: 47, 3: 46})
+    member_count = {1: 50, 2: 50, 3: 50}
+    result = summarize_cycle_coverage(index_panel, eligible_counts, member_count)
+    assert result["cycles_with_valid_index_targets"] == 3
+    assert result["cycles_passing_47_94_rule"] == 2
+    assert result["eligible_stock_count_histogram"] == {"46": 1, "47": 1, "48": 1}

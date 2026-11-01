@@ -79,6 +79,100 @@ def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def write_json_report(path: Path, payload: dict) -> None:
+    """Write one standards-compliant JSON document with a real trailing newline."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def summarize_cycle_coverage(index_panel: pd.DataFrame, eligible_counts: pd.Series, member_count: dict[int, int]) -> dict:
+    """Summarise per-cycle eligible constituent counts without exposing market values."""
+    cycle_ids = (
+        sorted(index_panel["cycle_idx"].dropna().astype(int).unique().tolist())
+        if isinstance(index_panel, pd.DataFrame) and "cycle_idx" in index_panel
+        else []
+    )
+    counts, denominators, passed = [], [], 0
+    histogram: dict[str, int] = defaultdict(int)
+    for cycle_id in cycle_ids:
+        total = int(member_count.get(cycle_id, 0))
+        valid = int(eligible_counts.get(cycle_id, 0)) if eligible_counts is not None else 0
+        counts.append(valid)
+        denominators.append(total)
+        histogram[str(valid)] += 1
+        if total > 0 and valid >= MIN_MEMBERS and valid / total >= MIN_FRACTION:
+            passed += 1
+    return {
+        "cycles_with_valid_index_targets": len(cycle_ids),
+        "cycles_passing_47_94_rule": int(passed),
+        "eligible_stock_count_min": int(min(counts)) if counts else 0,
+        "eligible_stock_count_median": float(np.median(counts)) if counts else 0.0,
+        "eligible_stock_count_max": int(max(counts)) if counts else 0,
+        "point_in_time_member_count_min": int(min(denominators)) if denominators else 0,
+        "point_in_time_member_count_max": int(max(denominators)) if denominators else 0,
+        "eligible_stock_count_histogram": dict(sorted(histogram.items(), key=lambda item: int(item[0]))),
+    }
+
+
+def panel_failure_diagnostics(local_state: dict) -> dict:
+    """Collect value-free acquisition and member-coverage diagnostics on a failed build."""
+    diagnostics: dict = {}
+    cycles = local_state.get("cycles")
+    if isinstance(cycles, list):
+        diagnostics["scheduled_cycles"] = len(cycles)
+    index_panel, stock_panel = local_state.get("idx_panel"), local_state.get("panel")
+    if isinstance(index_panel, pd.DataFrame):
+        diagnostics["valid_index_target_cycles"] = int(len(index_panel))
+    if isinstance(stock_panel, pd.DataFrame):
+        diagnostics["constituent_target_rows"] = int(len(stock_panel))
+        diagnostics["identity_flagged_rows"] = int(stock_panel.get("identity_review_flag", pd.Series(dtype=int)).sum())
+        diagnostics["action_crossing_flagged_rows"] = int(stock_panel.get("action_crossing_flag", pd.Series(dtype=int)).sum())
+        if "primary_flag" in stock_panel:
+            diagnostics["primary_eligible_stock_rows_before_cycle_gate"] = int(stock_panel["primary_flag"].sum())
+    eligible_counts, member_count = local_state.get("eligible_counts"), local_state.get("member_count")
+    if isinstance(index_panel, pd.DataFrame) and isinstance(member_count, dict):
+        diagnostics["cycle_coverage"] = summarize_cycle_coverage(index_panel, eligible_counts, member_count)
+    failures = local_state.get("failures")
+    if failures is not None:
+        diagnostics["failure_counts"] = {str(k): int(v) for k, v in failures.items()}
+    resolved, unresolved = local_state.get("resolved"), local_state.get("unresolved")
+    if isinstance(resolved, dict):
+        diagnostics["resolved_symbol_count"] = len(resolved)
+    if isinstance(unresolved, list):
+        diagnostics["unresolved_symbols"] = sorted(str(x) for x in unresolved)
+    for name in ("daily_requests", "daily_hits", "intraday_requests", "intraday_hits"):
+        if name in local_state:
+            diagnostics[name] = int(local_state[name])
+    daily_frames = local_state.get("daily_frames")
+    if isinstance(daily_frames, dict):
+        row_counts = {str(s): (int(len(df)) if isinstance(df, pd.DataFrame) else 0) for s, df in daily_frames.items()}
+        diagnostics["daily_symbols_with_at_least_62_rows"] = sum(v >= 62 for v in row_counts.values())
+        diagnostics["daily_symbols_with_fewer_than_62_rows"] = sorted(s for s, n in row_counts.items() if n < 62)
+    targets, stock_snap = local_state.get("targets"), local_state.get("stock_snap")
+    if isinstance(targets, dict) and isinstance(stock_snap, dict):
+        by_symbol = {}
+        for symbol, requested in sorted(targets.items()):
+            saved = stock_snap.get(symbol, {})
+            anchors, expiries = requested.get("anchor", set()), requested.get("expiry", set())
+            by_symbol[str(symbol)] = {
+                "anchor_required": int(len(anchors)),
+                "anchor_valid": int(sum(bool(saved.get(day, {}).get("anchor_ok")) for day in anchors)),
+                "expiry_required": int(len(expiries)),
+                "expiry_valid": int(sum(bool(saved.get(day, {}).get("expiry_ok")) for day in expiries)),
+            }
+        diagnostics["stock_intraday_target_coverage_by_symbol"] = by_symbol
+    index_snap = local_state.get("index_snap")
+    if isinstance(index_snap, dict):
+        anchors, expiries = local_state.get("idx_a", set()), local_state.get("idx_e", set())
+        diagnostics["index_intraday_target_coverage"] = {
+            "anchor_required": int(len(anchors)),
+            "anchor_valid": int(sum(bool(index_snap.get(day, {}).get("anchor_ok")) for day in anchors)),
+            "expiry_required": int(len(expiries)),
+            "expiry_valid": int(sum(bool(index_snap.get(day, {}).get("expiry_ok")) for day in expiries)),
+        }
+    return diagnostics
+
+
 def cache_file(cache_dir: Path, family: str, key: str) -> Path:
     digest = hashlib.sha256(key.encode()).hexdigest()[:28]
     path = cache_dir / "c2" / family / f"{digest}.aesgcm"
@@ -734,7 +828,7 @@ def main() -> int:
                 ],
             }
             OUT_PANEL_JSON.parent.mkdir(parents=True, exist_ok=True)
-            OUT_PANEL_JSON.write_text(json.dumps(panel_result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            write_json_report(OUT_PANEL_JSON, panel_result)
             lines = [
                 "# C2 Point-in-Time Constituent Panel Build", "",
                 f"**Status:** {panel_result['status']}", "",
@@ -931,7 +1025,7 @@ def main() -> int:
         result["status"] = "COMPLETED_EXPLORATORY"
         result["elapsed_seconds"] = round(time.monotonic() - started, 2)
         OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-        OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        write_json_report(OUT_JSON, result)
         write_report(result)
         print("C2_STATUS", result["status"], "STOCK_OOF", result["panel"]["stock_oof_cycles"], "META_OOF", result["panel"]["meta_oof_cycles"])
         return 0
@@ -941,50 +1035,53 @@ def main() -> int:
         if trace:
             last = trace[-1]
             location = {"file": Path(last.filename).name, "line": int(last.lineno), "function": last.name}
-        if os.environ.get("C2_PANEL_ONLY") == "1":
-            failed = {
-                "schema_version": 1, "status": "FAILED",
-                "created_at_utc": datetime.now(timezone.utc).isoformat(),
-                "fatal_error_category": type(exc).__name__,
-                "fatal_error_location": location,
-                "input_manifest": result.get("input_manifest", {}),
-                "limitations": result.get("limitations", []),
-            }
-            OUT_PANEL_JSON.parent.mkdir(parents=True, exist_ok=True)
-            OUT_PANEL_JSON.write_text(json.dumps(failed, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-            OUT_PANEL_MD.write_text(
-                "# C2 Point-in-Time Constituent Panel Build\\n\\n"
-                f"**Status:** FAILED\\n\\n- Error category: {type(exc).__name__}\\n"
-                f"- Source location: {location}\\n",
-                encoding="utf-8",
-            )
-        else:
-            result["status"] = "FAILED"
-            result["fatal_error_category"] = type(exc).__name__
-            result["fatal_error_location"] = location
-            result["elapsed_seconds"] = round(time.monotonic() - started, 2)
-            OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-            OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-            write_report(result)
-        # Preserve actionable diagnostics without exposing credentials or provider payloads.
         safe_message = str(exc)[:500]
         for secret_name in ("DHAN_ACCESS_TOKEN", "DHAN_CLIENT_ID", "DHAN_PIN", "DHAN_TOTP_SECRET", "HF_TOKEN"):
             secret_value = os.environ.get(secret_name, "")
             if secret_value:
                 safe_message = safe_message.replace(secret_value, "[REDACTED]")
         safe_message = safe_message.replace("\\n", " ")[:500]
+        diagnostics = panel_failure_diagnostics(locals())
         if os.environ.get("C2_PANEL_ONLY") == "1":
-            failed["fatal_error_message"] = safe_message
-            OUT_PANEL_JSON.write_text(json.dumps(failed, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
-            OUT_PANEL_MD.write_text(
-                "# C2 Point-in-Time Constituent Panel Build\\n\\n"
-                f"**Status:** FAILED\\n\\n- Error category: {type(exc).__name__}\\n"
-                f"- Error message: {safe_message}\\n- Source location: {location}\\n",
-                encoding="utf-8",
-            )
+            failed = {
+                "schema_version": 1,
+                "status": "FAILED",
+                "created_at_utc": datetime.now(timezone.utc).isoformat(),
+                "fatal_error_category": type(exc).__name__,
+                "fatal_error_message": safe_message,
+                "fatal_error_location": location,
+                "input_manifest": result.get("input_manifest", {}),
+                "diagnostics": diagnostics,
+                "limitations": result.get("limitations", []),
+            }
+            write_json_report(OUT_PANEL_JSON, failed)
+            coverage = diagnostics.get("cycle_coverage", {})
+            report_lines = [
+                "# C2 Point-in-Time Constituent Panel Build",
+                "",
+                "**Status:** FAILED",
+                "",
+                f"- Error category: {type(exc).__name__}",
+                f"- Error message: {safe_message}",
+                f"- Source location: {location}",
+                f"- Scheduled cycles: {diagnostics.get('scheduled_cycles', 'not reached')}",
+                f"- Valid NIFTY target cycles: {diagnostics.get('valid_index_target_cycles', 'not reached')}",
+                f"- Constituent target rows: {diagnostics.get('constituent_target_rows', 'not reached')}",
+                f"- Cycles meeting 47/94%: {coverage.get('cycles_passing_47_94_rule', 'not reached')}",
+                f"- Eligible constituent-count distribution: {coverage.get('eligible_stock_count_histogram', {})}",
+                f"- Build failure counts: {diagnostics.get('failure_counts', {})}",
+                "- Detailed value-free diagnostics are in C2_PANEL_BUILD.json.",
+            ]
+            OUT_PANEL_MD.parent.mkdir(parents=True, exist_ok=True)
+            OUT_PANEL_MD.write_text("\n".join(report_lines) + "\n", encoding="utf-8")
         else:
+            result["status"] = "FAILED"
+            result["fatal_error_category"] = type(exc).__name__
             result["fatal_error_message"] = safe_message
-            OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            result["fatal_error_location"] = location
+            result["elapsed_seconds"] = round(time.monotonic() - started, 2)
+            result["diagnostics"] = diagnostics
+            write_json_report(OUT_JSON, result)
             write_report(result)
         print("C2_FAILED", type(exc).__name__, safe_message)
         return 1
