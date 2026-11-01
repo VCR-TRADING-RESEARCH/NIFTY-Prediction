@@ -612,3 +612,13 @@
 - **API/cache:** 69 requests; 0 symbols reused from the sanitized QA cache.
 - **Interpretation:** daily OHLCV coverage is reported independently from intraday target coverage, historical identity and action-adjusted return integrity. No model is trained and C2 remains gated.
 - **Artifacts:** C1_DAILY_COVERAGE.json and C1_DAILY_COVERAGE_REPORT.md.
+
+
+## 2026-11-01 — C1 continuous stock/index target coverage
+
+- **Auditor status:** PARTIAL_OR_BLOCKED_TARGET_COVERAGE; data-coverage gate: FAIL; identity/action gate: SYMBOL_MAPPING_RESOLVED_KNOWN_AND_UNIVERSAL_CORPORATE_ACTION_REVIEW_PENDING.
+- **Window:** 2021-11-12 to 2026-10-27.
+- **Coverage:** 77/258 valid NIFTY targets; 64 cycles meet the stock and index data rules; 0 confirmatory cycles after the 104-cycle warm-up.
+- **API/cache:** 1083 requests this run; reused 0 index and 0 stock-symbol chunks.
+- **Interpretation:** data coverage is assessed independently of security identity/corporate-action treatment. This audit does not train or evaluate a model and does not unlock C2.
+- **Artifacts:** C1_CONTINUOUS_COVERAGE.json and C1_CONTINUOUS_COVERAGE_REPORT.md.

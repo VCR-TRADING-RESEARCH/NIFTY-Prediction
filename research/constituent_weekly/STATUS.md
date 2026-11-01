@@ -581,3 +581,25 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Raw prices, OHLC arrays, volumes, security IDs and credentials are not published.
 - The plan does not set a separate daily-coverage percentage gate; this is descriptive evidence to support the C1 feature-data decision.
 <!-- C1_DAILY_COVERAGE_END -->
+
+<!-- C1_CONTINUOUS_COVERAGE_START -->
+## Latest continuous Dhan stock + NIFTY target coverage audit
+
+- Updated (UTC): 2026-11-01T12:06:48.217023+00:00
+- Auditor status: **PARTIAL_OR_BLOCKED_TARGET_COVERAGE**
+- Stock/index data-coverage gate: **FAIL**
+- Security/action identity gate: **SYMBOL_MAPPING_RESOLVED_KNOWN_AND_UNIVERSAL_CORPORATE_ACTION_REVIEW_PENDING**
+- Window: 2021-11-12 to 2026-10-27
+- Scheduled expiry cycles: 258
+- Valid observed NIFTY anchor/expiry targets: 77 / 258 (29.84%)
+- Cycles meeting the 47-stock / 94% member coverage gate: 64
+- Cycles accepted for data coverage (including the observed NIFTY target): 64
+- Confirmatory cycles after 104 prior accepted cycles: 0
+- Minimum cycle member coverage: 0.00%
+- Median valid member count: 0.0
+- Dhan requests in this run: 1083
+- Reused cached 90-day chunks: index=0, stock-symbol=0
+- Unresolved security symbols: 0
+- Raw market bars, prices, volumes, Dhan security IDs and credentials are not included in this report.
+- A passing market-data coverage sub-gate does not complete corporate-action review or unlock C2 by itself.
+<!-- C1_CONTINUOUS_COVERAGE_END -->
