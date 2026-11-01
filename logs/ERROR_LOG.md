@@ -792,3 +792,15 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Error category: pre-panel workflow failure.
 - Source location: {}.
 - No panel acceptance is claimed for this run.
+
+
+## E0095 — 2026-11-02 — C2 panel workflow omitted dataset-use opt-in and duplicated C3/C4 modelling
+
+- **Severity:** High — C2 phase execution blocker and duplicate-workflow defect.
+- **Failed panel-only run:** [41351790740](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790740).
+- **Observed:** Compilation and offline tests passed, but panel construction stopped before acquisition with `TEJHQ_PERSONAL_USE_ONLY=1 is required for this personal-use dataset.` The published report was therefore a pre-panel failure, not a dataset or model result.
+- **Root cause:** The legacy panel-only workflow set `C2_PANEL_ONLY=1` but omitted the required personal-use opt-in. A second workflow watched the same C2 runner and launched the combined panel/stock-model/index-meta-model path, creating overlapping C2 executions and violating the locked v1.3 phase boundary (C2=panel, C3=stock models, C4=index aggregation).
+- **Correction:** The retained panel-only workflow now sets `TEJHQ_PERSONAL_USE_ONLY=1`, retains `C2_PANEL_ONLY=1`, removes stale model outputs before execution, and shares the combined workflow's concurrency group so in-flight work is serialized. The combined C2 workflow has been retired; the panel-only workflow retains `workflow_dispatch`.
+- **Run handling:** Runs [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) and [41351806101](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351806101) belong to the retired combined workflow. Their output is not C2 acceptance evidence, regardless of eventual completion.
+- **Status:** C2 remains NOT PASSED until a corrected panel-only run passes data, label, coverage, feature-causality and duplicate-row gates. C3/C4 remain gated. No prediction or trading strategy is accepted.
+- **Security:** No credentials, raw market payloads or access-token values were added to logs.

@@ -469,3 +469,11 @@
 - Formal panel-only workflow executed on the plan-defined C2 branch.
 - Offline tests: success; panel step: failure; result: INVALID_RESULT_JSON.
 - The bundled pilot remains diagnostic only; C3/C4 model gates remain separate.
+
+
+## 2026-11-02 — User resumed C2 from diagnostic status screenshot
+
+- The user supplied a screenshot stating that the previous C2 run did not complete, offline tests had passed, the data/model stage failed before producing a new panel, the diagnostic report was stale, and the repair response had committed diagnostic cleanup while a rerun was reported in progress. The screenshot explicitly stated that C2 remained unaccepted and C3–C6 were gated.
+- Rechecked the registered BUP-01 v1.3 plan, operating rules, C2 workflows, branch status, latest reports and logs. Confirmed C2 is panel-only; C3 owns stock models and C4 owns index aggregation.
+- Found the panel-only workflow failure was caused by its missing `TEJHQ_PERSONAL_USE_ONLY=1` environment flag. A separate combined workflow also launched modelling in the C2 branch. Corrected the panel-only workflow, aligned concurrency, removed the combined workflow and documented the phase boundary.
+- C2 remains NOT PASSED until the corrected panel-only workflow produces and passes a fresh panel report. No prediction or strategy is represented as valid. No hidden chain-of-thought, credentials or raw market prices are stored here.

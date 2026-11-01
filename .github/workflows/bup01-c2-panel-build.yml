@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: bup01-c2-panel-${{ github.ref_name }}
+  group: bup01-c2-models-${{ github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -57,6 +57,11 @@ jobs:
         run: |
           rm -f research/constituent_weekly/C2_PANEL_BUILD.json
           rm -f research/constituent_weekly/C2_PANEL_BUILD.md
+          rm -f research/constituent_weekly/C2_MODEL_RESULTS.json
+          rm -f research/constituent_weekly/C2_MODEL_RESULTS.md
+          rm -f research/constituent_weekly/C2_INDEX_OOF_FORECASTS.csv
+          rm -f research/constituent_weekly/C2_STOCK_OOF_FORECASTS.csv
+          rm -f research/constituent_weekly/C2_CYCLE_FEATURE_SUMMARIES.csv
 
       - name: Prepare encrypted cache directory
         run: mkdir -p ${{ runner.temp }}/bup01-tejhq-encrypted
@@ -80,6 +85,7 @@ jobs:
           DHAN_PIN: ${{ secrets.DHAN_PIN }}
           DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TEJHQ_PERSONAL_USE_ONLY: "1"
           BUP01_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/bup01-tejhq-encrypted
         run: python scripts/constituent_weekly/run_c2_panel_and_models.py
 

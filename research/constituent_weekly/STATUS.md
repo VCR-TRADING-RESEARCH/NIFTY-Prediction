@@ -707,21 +707,21 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Daily OHLCV: 106,392/106,392 (100%); weekly intraday target coverage: 258/258 cycles.
 - C2 work must carry unresolved identity/action flags, avoid unverified adjustment factors, and include a conservative sensitivity panel excluding affected observations.
 - Handoff record: [C1 acceptance and C2 handoff](C1_ACCEPTANCE_AND_C2_HANDOFF.md).
-- Active phase branch: [phase/constituent-weekly-outcomes-c2-models](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c2-models).
+- Active phase branch: [phase/constituent-weekly-outcomes-c2-panel](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c2-panel).
 
 
 <!-- BUP01_C2_LATEST_START -->
-## C2 modelling update
+## C2 status — 2026-11-02
 
-**C2 latest run:** No sanitized result JSON was produced; inspect the workflow run.
+**C2 gate: NOT PASSED.** The last panel-only run [41351790740](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790740) stopped before data acquisition because the workflow omitted the required `TEJHQ_PERSONAL_USE_ONLY=1` flag. The workflow is corrected; a fresh panel-only run must still pass the registered data, target, member-coverage, causality and duplicate-row checks.
 
-See [C2 results](C2_MODEL_RESULTS.md) and [C2 machine results](C2_MODEL_RESULTS.json).
+The combined runs [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) and [41351806101](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351806101) are outside the registered C2 scope and are not acceptance evidence. Stock modelling remains C3; index aggregation remains C4. No prediction or strategy is accepted.
 <!-- BUP01_C2_LATEST_END -->
 
 <!-- BUP01_C2_PANEL_START -->
 ## Formal C2 panel update
 
-**Formal C2 panel run 41351790740:** INVALID_RESULT_JSON; 0 scheduled cycles; 0 valid NIFTY targets (0.00%); 0 cycles pass the 47/94% stock rule; 0 constituent-cycle rows. C2 is not accepted; see the workflow run and error log.
+**Latest formal panel-only attempt:** run [41351790740](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790740) failed before the panel build because the dataset-use opt-in was absent. The workflow correction is committed; C2 remains NOT PASSED pending a fresh run that satisfies the v1.3 panel acceptance gate.
 
-See [C2 panel report](C2_PANEL_BUILD.md) and [panel manifest](C2_PANEL_BUILD.json).
+See [C2 panel report](C2_PANEL_BUILD.md), [panel manifest](C2_PANEL_BUILD.json), [registered plan](RESEARCH_PLAN.md), and [error log](../../logs/ERROR_LOG.md).
 <!-- BUP01_C2_PANEL_END -->

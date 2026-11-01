@@ -839,3 +839,13 @@
 - Input manifest: not available.
 - Encrypted panel cache metadata: {}.
 - C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.
+
+
+## 2026-11-02 — C2 workflow phase-boundary and dataset opt-in correction
+
+- Resumed from the visible status that the prior C2 attempt had not completed and its diagnostics were stale. Re-read the registered v1.3 phase plan, operating rules, C2 branch status, workflows and current logs before changing the workflow.
+- Confirmed the formal plan assigns panel/labels/features to C2, stock walk-forward models to C3, and index aggregation/meta-models to C4. The combined panel-and-model workflow was therefore not a valid C2 acceptance path.
+- Formal panel-only run [41351790740](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790740) passed compilation and offline tests but failed before panel acquisition because its workflow omitted `TEJHQ_PERSONAL_USE_ONLY=1`; the runner's fail-closed guard behaved as designed.
+- Runs [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) and [41351806101](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351806101) were found in the separate combined workflow (one in progress, one pending at inspection). They are not valid C2 acceptance evidence and must not be used to claim an accepted C2 panel.
+- Corrected the retained panel-only workflow to set the explicit personal-use flag, keep `C2_PANEL_ONLY=1`, clear stale model result/forecast files, and share the C2 concurrency group. Retired the combined workflow so stock modelling and index meta-modelling remain in their registered phases. Manual dispatch remains available on the panel-only workflow.
+- C2 gate remains NOT PASSED pending a new panel-only run and its full data/label/feature acceptance checks. No prediction, stock model, index meta-model or strategy is certified by this correction.
