@@ -442,3 +442,7 @@
 - Formal panel-only workflow executed on the plan-defined C2 branch.
 - Offline tests: success; panel step: failure; result: FAILED.
 - The bundled pilot remains diagnostic only; C3/C4 model gates remain separate.
+
+
+## User requested resume — 2026-11-02
+- User said “Resume”. We inspected formal C2 workflow and report. It failed after 7 offline tests passed because all 62 Dhan daily payloads were missing expected arrays. Explained this is a response compatibility/acquisition issue and not a failure of C1's 100% daily coverage. Reordered requests and added sanitized response-shape diagnostics; no raw values or credentials logged.
