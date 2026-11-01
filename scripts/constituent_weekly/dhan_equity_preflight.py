@@ -17,6 +17,7 @@ import pyotp
 import requests
 import time
 
+from scripts.dhan_auth import build_totp, server_clock_skew_seconds
 from live_api.app import MASTER_URL, PublicPredictionError
 OUTPUT = ROOT / "research" / "constituent_weekly" / "C1_DHAN_PREFLIGHT.json"
 MEMBERSHIP_CSV = ROOT / "data" / "constituent_weekly" / "nifty50_membership_intervals.csv"
@@ -137,7 +138,7 @@ def acquire_access_token() -> tuple[str, str, str, str, dict]:
     if client_id and pin and totp_secret:
         for attempt in range(2):
             try:
-                otp = pyotp.TOTP(totp_secret).now()
+                otp = build_totp(totp_secret).now()
                 response = requests.post(
                     AUTH_URL,
                     params={"dhanClientId": client_id, "pin": pin, "totp": otp},
@@ -147,6 +148,9 @@ def acquire_access_token() -> tuple[str, str, str, str, dict]:
                 diagnostics = auth_response_diagnostics(body)
                 diagnostics["http_status"] = int(response.status_code)
                 diagnostics["refresh_attempts"] = attempt + 1
+                diagnostics["server_minus_runner_clock_skew_seconds"] = server_clock_skew_seconds(
+                    getattr(response, "headers", {}).get("Date")
+                )
                 candidate = None
                 if isinstance(body, dict):
                     candidate = body.get("accessToken") or body.get("access_token")
