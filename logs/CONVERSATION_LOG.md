@@ -203,3 +203,9 @@
 - Added a non-sent NSE data-rights request template covering official weights/IWF, effective and publication timestamps, 22 exclusions, automated collection, private storage, internal model/backtest/trading use and permitted aggregate publication.
 - C1 remains blocked only by required official weight/rights/completeness and basket-reconciliation gates after the bounded Dhan price checks passed. No C2 model/forecast or strategy has been fabricated.
 - This log contains visible decisions and results only, not hidden reasoning or secrets.
+
+
+## 2026-11-01 — Requested repository toolchain evaluation
+- Reviewed the seven repositories requested for research tooling and created research/constituent_weekly/TOOLING_EVALUATION.md with licence, fitness, risks and phase allocation.
+- No modelling tools were imported during C1 because the registered plan gates them on point-in-time data rights/coverage and panel acceptance. AstraQuant is not integrated due to its custom licence and OKX-specific execution path; tick is deferred until licensed event-level data exists.
+- No plan amendment; no bottom-up model, forecast or strategy produced.
