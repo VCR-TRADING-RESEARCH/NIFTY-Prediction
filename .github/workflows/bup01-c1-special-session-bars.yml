@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: bup01-c1-special-session-bars-\${{ github.ref }}
+  group: bup01-c1-special-session-bars-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -42,17 +42,17 @@ jobs:
       - name: Query exact seven symbol/date pairs
         run: python scripts/constituent_weekly/probe_c1_special_session_bars.py
       - name: Upload sanitised cross-check report
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: c1-special-session-bars-\${{ github.run_id }}
+          name: c1-special-session-bars-${{ github.run_id }}
           path: |
             research/constituent_weekly/C1_SPECIAL_SESSION_BAR_CROSSCHECK.json
             research/constituent_weekly/C1_SPECIAL_SESSION_BAR_CROSSCHECK_REPORT.md
           if-no-files-found: warn
           retention-days: 90
       - name: Publish sanitised results to C1 branch
-        if: always()
+        if: success()
         shell: bash
         run: |
           set -euo pipefail
