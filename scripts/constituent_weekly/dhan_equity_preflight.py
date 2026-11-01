@@ -327,11 +327,15 @@ def analyse_intraday_range(body: dict, symbol: str, start_date: str, end_date: s
     special_session_dates = {"2021-11-04", "2022-10-24"}
     special_dates_in_response = sorted(set(dates).intersection(special_session_dates))
     special_mask = day.isin(special_session_dates)
-    regular_hours_mask = clock.between("09:15", "15:30")
-    regular_mask = regular_hours_mask & ~special_mask
-    regular_frame = frame.loc[regular_mask].copy()
-    regular_day = day.loc[regular_mask]
-    regular_clock = clock.loc[regular_mask]
+    exchange_regular_hours_mask = clock.between("09:15", "15:30")
+    # Target observations are only those stamped before the registered 15:15 cutoff.
+    target_window_mask = clock.between("09:15", "15:14")
+    post_expiry_cutoff_mask = clock.between("15:15", "15:30") & ~special_mask
+    target_mask = target_window_mask & ~special_mask
+    regular_frame = frame.loc[target_mask].copy()
+    post_cutoff_frame = frame.loc[post_expiry_cutoff_mask].copy()
+    regular_day = day.loc[target_mask]
+    regular_clock = clock.loc[target_mask]
     regular_dates = sorted(regular_day.unique().tolist())
     non_standard_dates = sorted(set(dates) - set(regular_dates))
 
