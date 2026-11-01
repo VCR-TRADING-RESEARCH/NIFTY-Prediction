@@ -240,3 +240,12 @@
 - Repository re-check found the latest C1 commit f1aa72f and successful source-audit, Dhan PR-preflight/offline, and governance Actions runs. The latest Dhan job was a PR/offline run; its live Dhan request steps were correctly skipped.
 - User then said “Proceed”. The agent continued the bounded C1 source/rights audit, found the Nippon India AMC monthly portfolio archive and documented the AMFI non-commercial website terms. No hidden reasoning, credentials or raw market data are recorded.
 - Current decision: implement a metadata-only probe of three AMC workbooks; keep C2 blocked pending source-use rights, publication timing, corporate-action identity, coverage and basket reconciliation.
+
+
+## 2026-11-01 — User said “Proceed”; AMC recent-month schema validation completed
+
+- The probe dependency issue and AMC HTML link-discovery issue were corrected and recorded in the error log. The .xls filename suffix mismatch was corrected by detecting XLSX ZIP signatures using exact bytes.
+- Successful probe run [41275178244](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275178244) passed 7/7 tests and validated the recent Sep-2026 and Feb-2026 Nifty BeES scheme sections with 50 ISIN-bearing rows each and expected ISIN/quantity/weight columns.
+- The guessed direct Apr-2019 file path returned 404 although the AMC page lists that month; no historical value is inferred or substituted.
+- The automated report commit raced with parallel C1 updates; the successful sanitised report is now committed by the research controller. No raw files or holdings have been published.
+- C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. No constituent panel, trained stock model, bottom-up forecast or trading strategy exists.
