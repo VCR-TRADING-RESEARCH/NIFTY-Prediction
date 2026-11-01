@@ -1,5 +1,8 @@
 # NIFTY Weekly Expiry Direction Research
 
+> **BUP-01 status — 2026-11-01:** C0 PASS; C1 PARTIAL / NOT ACCEPTED FOR MODELLING. Dhan stock-minute coverage passed three separate 90-day windows, plus bounded sample checks; the ETF proxy has one-date calibration. A primary Nippon India AMC monthly portfolio archive has now been located and a metadata-only archive probe has been added. AMFI-hosted files are restricted to personal/non-commercial use under AMFI's site terms and are not admitted to this trading-research pipeline without rights clearance. No constituent panel/model/forecast or trading strategy exists. See [BUP-01 status](research/constituent_weekly/STATUS.md), [locked plan v1.2](research/constituent_weekly/RESEARCH_PLAN.md), and [developer gate report](research/constituent_weekly/C1_DEVELOPER_GATE_REPORT.md).
+
+
 **Purpose:** Predict whether the NIFTY 50 spot index at the close of a weekly options expiry is higher or lower than its value at **10:00 IST on the next trading day after the preceding weekly expiry**. This project researches a binary directional forecast, not a generic return-maximization system.
 
 > **Research status (2026-10-25):** Research and deployment remain in progress; no strategy is certified for live trading. No live or historical out-of-sample strategy is certified yet. A strategy is accepted only after leakage checks, walk-forward evaluation, robustness tests, and date-aware costs/slippage are passed. A workflow run or model score is not proof of profitability.
