@@ -552,11 +552,14 @@ The shared-cache path correction has passed PR regression checks [41319075705](h
 
 The latest completed corporate-action candidate audit is [Actions run 41318960367](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318960367). It found 18,393 candidate rows and 18,361 deduplicated event keys, of which 711 matched point-in-time NIFTY constituent symbols (625 dividends, 19 bonuses, 9 splits, 6 rights, 20 buybacks, 3 merger/demerger and 29 other/AGM events). This is a candidate catalogue only; no adjustment factors were applied.
 
-The restored cache for that run came from the daily-history workflow and did not yet contain corporate-action parquet partitions. The action run therefore downloaded and saved nine encrypted action-year partitions. A true cache round-trip regression has now been added; see the pending [cache verification run](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319736877) and [offline regression run](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319736774).
+The restored cache for that run came from the daily-history workflow and did not yet contain corporate-action parquet partitions. The action run downloaded and saved nine encrypted action-year partitions. The follow-up [cache verification run 41319736877](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319736877) passed 13/13 action/identity tests and restored **9/9** action-year partitions from encrypted cache, with zero partition downloads.
 
 Official cross-check sources identified:
 - [NSE Corporate Filings — Corporate Actions](https://www.nseindia.com/companies-listing/corporate-filings-actions) exposes symbol/company, purpose, ex-date, record-date and CSV controls.
-- [NSE All Reports — Equity Market Data Reports](https://www.nseindia.com/static/products-services/equity-market-data-reports-download) documents the daily corporate-action report with symbol/series, record/book-closure, no-delivery and ex-date fields.
+- [NSE All Reports — Equity Market Data Reports](https://www.nseindia.com/static/products-services/equity-market-data-reports-download) documents the daily corporate-action report with symbol/series, record/book-closure, no-delivery and ex-date fields. NSE's [Market Activity Reports description](https://www.nseindia.com/static/market-data/description-of-market-activity-reports) further identifies `Bcddmmyy.csv` inside daily `nuprddmmyy.zip` as the corporate-action detail file; its historical archive route and schema are the next live validation target.
 - [NSE adjustments in case of corporate actions](https://www.nseindia.com/static/products-services/equity-derivatives-corporate-actions-adjustments) describes F&O contract adjustments; these rules are not treated as a blanket cash-equity adjusted-close formula.
 
-The daily feature panel remains at 106,385/106,392 valid member-sessions (99.9934%), with six HDFC and one TATAMOTORS sessions unresolved. C1 remains PARTIAL/NOT PASSED; C2 modelling remains locked.
+The daily feature panel remains at 106,385/106,392 valid member-sessions (99.9934%), with six HDFC and one TATAMOTORS sessions unresolved. Encrypted cache reuse is verified at 9/9 action partitions. C1 remains PARTIAL/NOT PASSED; C2 modelling remains locked.
+
+
+Latest phase status, error log and research log are maintained on the [C1 data branch](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly).
