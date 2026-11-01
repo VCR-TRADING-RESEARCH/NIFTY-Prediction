@@ -2,14 +2,14 @@
 
 **Last updated:** 2026-11-01  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 data feasibility IN PROGRESS / RIGHTS-BLOCKED  
+**Status:** C0 PASS; C1 market-data preflight PASS on bounded samples; overall C1 NOT PASSED / RIGHTS-BLOCKED  
 **Prediction status:** No constituent panel, trained stock model or bottom-up forecast exists  
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Actions workflow validated required files and plan structure; governance regression tests passed; report committed as 746d1b382e338e760b1cf4b3ee5ea6fa6b63bc85 |
-| C1 — Point-in-time universe/data audit | IN PROGRESS / BLOCKED | 15:15 expiry proxy accepted and sample validation passed; historical-weight candidate cached; close 2025-09 onward weight gap, historical corporate-action identity, full stock OHLCV coverage and basket reconciliation under review |
+| C1 — Point-in-time universe/data audit | PARTIAL PASS / RIGHTS-BLOCKED | Dhan 50/50 passes across three separate 90-day windows plus one session; overall C1 blocked until authorised official PIT IWF weights, continuous coverage/identity evidence and basket reconciliation pass |
 | C2 — Panel labels/features | PENDING | Build only after C1 passes; validate target construction and freeze source hashes/split |
 | C3 — Stock models/baselines | PENDING | Pooled stock panel and bounded benchmarks only after C2 passes |
 | C4 — Index aggregation/uncertainty | PENDING | Weighted expected return and dependence-aware probability; compare on matched cycles |
@@ -346,3 +346,17 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Reliance daily history probe: **22 bars** for 2018-01; this is only a one-stock daily-history existence test, not a daily 50-name panel.
 - The live job's final fail-closed gate executed after committing its sanitized report and correctly returned failure because overall result was `PARTIAL_OR_BLOCKED`. This is not an authentication failure.
 - **C1 remains NOT PASSED.** In addition to closing the SHREECEM anomaly, C1 still needs a licensed/authorised point-in-time official IWF weight series and a validated weighted constituent-basket reconstruction. The cached 216-month candidate remains non-commercial, contains estimated/extrapolated events and ends 2025-08; it cannot be used for commercial trading validation. No C2 model/forecast or strategy is authorised.
+
+
+## Superseding C1 checkpoint — Dhan price QA passes bounded windows; IWF rights unresolved (2026-11-01)
+
+- Protected Dhan run [41266897788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266897788) completed **SUCCESS**, including the post-commit fail-closed gate. Machine status: `PASS_ACTIVE_EQUITIES`.
+- Fresh TOTP token generated on attempt 1; profile confirmed active Data API. Dhan HTTP Date minus runner UTC was **-1 second** (HTTP Date is second-resolution; no material clock offset observed).
+- Current NIFTY 50 security-master IDs: **50/50**. Historical member aliases found in today's master: **79/84**. Absence from today's master is not treated as proof that historic data is unavailable.
+- Dhan 1-minute QA: current session **50/50** for 2026-10-29; full 50-stock 90-day sample **50/50** for 2026-06-29–2026-09-26; full 50-stock 90-day sample **50/50** for 2022-10-03–2022-12-30; full 50-stock 90-day edge sample **50/50** for 2021-11-01–2022-01-29. All 61 sessions in the edge window had an anchor and a 15:00–15:14 expiry-proxy observation. These are three separated 90-day windows plus one day, not a continuous five-year backfill.
+- SHREECEM's anomalous negative-volume bar was timestamped 2021-12-30 15:29 IST, outside the pre-registered 15:15 target cutoff. The checker now applies strict OHLCV invariants only to 09:15–15:14 and records later bars/anomalies separately. The 15:29 anomaly no longer invalidates the target-scope panel; an equivalent negative volume at 15:14 remains a failure.
+- Offline regression suite [41266922851](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266922851): **43 passed**. The separate five-symbol/range checks and final gate behaviour are verified.
+- Historical NIFTY weights remain blocked. A detailed 62,850-filing / ~70-category XBRL candidate is under licence-scope and IWF-category-mapping review; the nested `_categories.csv.gz` path is not unambiguously covered by the repository's explicit licence globs. No rows were imported. The official IWF guideline has 22 exclusion categories; several require relationship/agreement data beyond aggregate categories.
+- TejHQ daily EOD/corporate-action/symbol-history data is documented as usable for personal research/backtesting and private storage, but not raw redistribution; public-repository or public Actions-cache storage is therefore disallowed. It is a secondary daily cross-check candidate only—not intraday data, official NIFTY membership, or IWF.
+- **Overall C1 remains NOT PASSED / RIGHTS-BLOCKED.** No stock panel, model, bottom-up forecast, index aggregation, or strategy has been built. C2–C6 remain gated by the locked plan until point-in-time IWF rights and completeness, continuous coverage, historic identity mapping and weighted basket-to-index reconciliation are demonstrated.
+- Next action: obtain written permission/licence for official NSE Indices historical constituent weights and intended research/cache use, or obtain explicit path-specific licence confirmation for an admissible category dataset and validate all 22 exclusions. Do not substitute approximate weights or majority vote.
