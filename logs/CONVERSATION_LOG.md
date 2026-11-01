@@ -310,3 +310,14 @@
 - The page states it uses fund houses' own monthly disclosure files, dates each file by its printed date, links to original AMC files and archived copies, and flags partial fund-house months.
 - Decision: retain it as an original-source locator/cross-check only. Do not treat monthly ETF portfolio weights as official NIFTY IWF; do not cache raw disclosures before rights review.
 - This is a visible source finding, not a C1 pass. Model training remains gated.
+
+
+
+## 2026-11-01 — User removed the need for ETF/index-weight comparison
+
+- User said: “No comparison needed. Proceed”.
+- Decision implemented as BUP-01 plan v1.3: no ETF holdings versus official NIFTY weight comparison, no official IWF/weight series required, and no weight reconstruction or basket-to-index weight reconciliation gate.
+- New method: forecast each point-in-time tradable NIFTY 50 constituent; generate stock predictions strictly out of fold; summarize each expiry cycle with unweighted predicted breadth, probability/return summaries, dispersion, sector breadth, concentration and valid member count; fit a chronological meta-model to predict the observed NIFTY index direction.
+- The observed NIFTY index series remains the target. Equal-weight stock-basket statistics are diagnostics only and are not called NIFTY returns.
+- Updated plan, validator/tests, C1 status, user-decision record, source register and developer handoff. Removed the historical weight-cache refresh from Dhan workflow and paused bulk AMC workbook downloads, keeping offline parser tests.
+- C1 still requires continuous stock/index 90-day-chunk coverage, verified expiries, dated security IDs/ISINs and corporate actions. C2 modelling remains gated. Only visible decisions/outcomes are recorded; no hidden reasoning or credentials are stored.
