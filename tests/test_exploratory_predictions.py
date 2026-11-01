@@ -4,11 +4,11 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from scripts.constituent_weekly.run_exploratory_predictions import (
-    action_excluded, cache_read, cache_write, cache_key, causal_features,
+    action_excluded, cache_read, cache_write, key_for, causal_features,
     metrics, bootstrap_diff, FEATURES,
 )
 
-def synthetic_frame(days=24, post_anchor_close=110.0):
+def synthetic_frame(days=32, post_anchor_close=110.0):
     rows=[]
     start=datetime(2026,1,1)
     for i in range(days):
@@ -36,8 +36,8 @@ def test_known_event_exclusion_covers_pre_anchor_feature_window_and_cycle():
     assert not action_excluded("AAA","2026-03-01","2026-03-05",events)
 
 def test_features_are_causal_and_anchor_open_is_used():
-    f1=synthetic_frame(24,110.0)
-    f2=synthetic_frame(24,900.0)
+    f1=synthetic_frame(32,110.0)
+    f2=synthetic_frame(32,900.0)
     stamp=sorted(f1.day.unique())[-1]
     x1=causal_features(f1,stamp); x2=causal_features(f2,stamp)
     assert set(x1)==set(FEATURES)
