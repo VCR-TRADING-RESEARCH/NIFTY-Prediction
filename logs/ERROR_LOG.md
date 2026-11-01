@@ -662,7 +662,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** The C1 intraday audit downloaded minute-level bars to validate anchor and expiry windows, but intentionally discarded all prices after emitting coverage flags. It therefore could not serve as a constituent training panel. The repository's existing `weekly_labels_features.csv` is the legacy direct-index benchmark, not a constituent-by-cycle panel.
 - **Root cause:** C1 was implemented as a sanitized coverage audit, while no dedicated exploratory panel builder/model workflow had yet been added. Model testing was postponed unnecessarily while corporate-action verification continued.
 - **Correction:** Added a versioned C3-X exploratory-only workflow. It rebuilds the required sample from Dhan, constructs causal features in memory, excludes available structural-event windows, enforces the registered per-cycle 47/94% threshold and 104-cycle warm-up, and stores the derived panel only in authenticated encrypted Actions cache. Confirmatory C1/C2 acceptance remains unchanged.
-- **Validation:** Pending the first live workflow and its regression suite.
+- **Validation:** The corrected live workflow's regression stage passed (22 tests). The Dhan panel reconstruction/model step remains active; final live result is pending.
 - **Impact:** No prior result is re-labelled or reused as a bottom-up model result. No strategy or profitability claim is made.
 
 
@@ -671,5 +671,5 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** Actions run 41321180592 failed during pytest collection. The exploratory test imported cache_key, while the runner exposed the helper as key_for. The synthetic causal-feature fixture also supplied only 24 calendar days, fewer than the 21 prior trading sessions required.
 - **Root cause:** A test/implementation naming mismatch and inadequate synthetic fixture; no live market-data request was made and no prediction result was produced.
 - **Correction:** Align the test import with key_for and increase synthetic history to 32 calendar days.
-- **Validation:** Corrective commit 392ff2b8c6bf3ecec513ae7dccad64d13260d012 triggered the rerun. Awaiting regression and live workflow results.
+- **Validation:** Corrective commit 392ff2b8c6bf3ecec513ae7dccad64d13260d012 triggered the rerun; the regression stage subsequently passed (22 tests). The Dhan panel reconstruction/model step is still running.
 - **Impact:** No market data, panel, model or result changed. The failed attempt is not counted as a prediction test.
