@@ -301,3 +301,12 @@
 - [Actions run 41297143071](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41297143071) passed the offline tests and completed the probe. All three mfdata discovery requests returned HTTP 522, so no family ID or history endpoint result was obtained.
 - Visible conclusion: this is an external access timeout, not proof that historical records are absent. No holdings values were fetched, no model run was started, and C1 remains blocked. The locked plan v1.2 is unchanged.
 - Only visible conversation summaries and outcomes are recorded; hidden private reasoning, credentials and raw holdings data are not stored.
+
+
+
+## 2026-11-01 — Public AMC mother-source locator identified
+
+- After mfdata.in discovery was blocked by HTTP 522, reviewed amcs.fund's monthly archive and method page.
+- The page states it uses fund houses' own monthly disclosure files, dates each file by its printed date, links to original AMC files and archived copies, and flags partial fund-house months.
+- Decision: retain it as an original-source locator/cross-check only. Do not treat monthly ETF portfolio weights as official NIFTY IWF; do not cache raw disclosures before rights review.
+- This is a visible source finding, not a C1 pass. Model training remains gated.
