@@ -1,5 +1,5 @@
 {
-  "github_actions_run_id": "41343868685",
+  "github_actions_run_id": "41343953567",
   "limitations": [
     "Legacy CSV may omit ISIN; identity is then symbol/series/date only.",
     "HTTP 404 is unavailable, not proof of no trade.",
@@ -59,12 +59,12 @@
   },
   "status": "PASS_ALL_THREE",
   "summary": {
-    "encrypted_cache_sha256": "5fe3dfbf69e9b30bd151d7f16eeebf0f46171c9276ff68da2bcbb74358105991",
+    "encrypted_cache_sha256": "98c5c1e5e08064184a966780a8dd5d827df475f5b4220381b54bb5c41c64cf26",
     "encrypted_supplemental_cache_written": true,
     "raw_feature_cache_integration": "PERSISTED_NOT_YET_MERGED",
     "raw_prices_or_volume_published": false,
     "special_sessions": 3,
     "valid_direct_nse_rows": 3
   },
-  "updated_at_utc": "2026-11-01T19:52:15.131541+00:00"
+  "updated_at_utc": "2026-11-01T19:52:56.829739+00:00"
 }
