@@ -315,3 +315,12 @@ The BUP-01 v1.3 track now stores:
 The alias ledger relies on published exchange circulars and company/exchange announcements. Dated aliases resolve the market symbol only; they do not confer price adjustment or prove that raw bars are total-return consistent. HDFC Ltd remains a separate security from HDFCBANK. The LTIMindtree member interval must be read as LTIM until the Feb 27, 2026 symbol change to LTM. The Zomato member interval begins March 28, 2025, when the actual ticker remained ZOMATO until April 9, 2025.
 
 The major-event file is not an exhaustive issuer corporate-action ledger. Splits, bonuses, rights, dividends, demergers and other return-affecting events still require a complete action-aware adjusted-return review before C2 labels are admitted.
+
+
+## 2026-11-01 — daily OHLCV history is a separate C1 gate
+
+The registered plan requires daily OHLCV for causal stock features. The minute-history audit covers weekly 10:00 and 15:14 target bars only; it does not prove daily feature-history coverage. A separate [daily audit](../../scripts/constituent_weekly/audit_c1_daily_history.py) checks point-in-time member sessions from 2018-04-01 through the latest cached official NIFTY session, with OHLC and OHLCV validity measured separately. It adds no unregistered daily pass threshold.
+
+## 2026-11-01 — intraday target coverage result
+
+Live Dhan run [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865) passed the intraday stock/index target sub-gate: 258/258 weekly cycles, 154 confirmatory cycles after warm-up, zero unresolved active symbols and 1,083 requests across 21 windows. One index window returned PARTIAL_TARGET_DATES although final cycle target pairs were 258/258. The final commit conflicted on status/log changes, so detailed per-cycle flags were not retained. Aggregate evidence is in [C1_CONTINUOUS_COVERAGE_RESULT.json](C1_CONTINUOUS_COVERAGE_RESULT.json) and [report](C1_CONTINUOUS_COVERAGE_REPORT.md).
