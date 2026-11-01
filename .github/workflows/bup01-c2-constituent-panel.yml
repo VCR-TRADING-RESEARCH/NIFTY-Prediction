@@ -3,7 +3,7 @@ name: BUP-01 C2 constituent panel and walk-forward models
 on:
   push:
     branches:
-      - phase/constituent-weekly-outcomes-c2-models
+      - phase/constituent-weekly-outcomes-c2-panel
     paths:
       - "scripts/constituent_weekly/run_c2_panel_and_models.py"
       - "scripts/constituent_weekly/publish_c2_run.py"
@@ -28,7 +28,7 @@ jobs:
       - name: Checkout C2 branch
         uses: actions/checkout@v4
         with:
-          ref: phase/constituent-weekly-outcomes-c2-models
+          ref: phase/constituent-weekly-outcomes-c2-panel
           fetch-depth: 0
 
       - name: Set up Python
@@ -81,6 +81,7 @@ jobs:
           DHAN_PIN: ${{ secrets.DHAN_PIN }}
           DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TEJHQ_PERSONAL_USE_ONLY: "1"
           BUP01_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/bup01-tejhq-encrypted
         run: python scripts/constituent_weekly/run_c2_panel_and_models.py
 
