@@ -441,3 +441,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** No data, labels or model output was affected. The correction reduces redundant runs and prevents C1 changes from being misrepresented as C0 registration activity.
 - **Verification:** Latest pre-correction runs [41272606532](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272606532), [41272606507](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272606507) and [41272606502](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272606502) all succeeded. Corrected workflow validation is pending.
 - **Status:** FIX COMMITTED — close only after the new workflow push/PR checks complete.
+
+
+## E0055 — 2026-11-01 — AMC metadata probe workflow omitted pytest
+
+- **Run:** [41274822097](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274822097).
+- **Observed:** Python dependency installation succeeded, but the parser-regression step stopped before source retrieval because the dedicated probe workflow installed requests, BeautifulSoup, pandas and xlrd but not pytest.
+- **Correction:** Added pytest explicitly to the workflow dependency install command. The source-probe step will run only after its tests execute.
+- **Impact:** No AMC workbook was requested or parsed by this failed run; it does not indicate a source-access or data-availability failure.
+- **Status:** FIX COMMITTED — close after the corrected run completes.
