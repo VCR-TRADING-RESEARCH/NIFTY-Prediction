@@ -334,3 +334,27 @@
 - Corrected diagnostic timestamp formatting; offline test run [41266604463](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266604463) then passed 2/2.
 - The same run failed before network access because direct execution from the script subdirectory did not place repository root on sys.path (E0046). Added explicit repository-root insertion before project imports in commit 34e067d.
 - The corrected push-triggered one-symbol run is pending. No extra full-universe data request is scheduled by this diagnostic workflow.
+
+
+## 2026-11-01 — C1 bounded Dhan market-data gate passed; official IWF remains blocking
+
+### Market-data and validation result
+- Protected Dhan preflight [41266897788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266897788) completed **SUCCESS** with final machine status `PASS_ACTIVE_EQUITIES`. The workflow committed its sanitized result and then passed its final fail-closed status gate.
+- Dhan token refresh succeeded on attempt one; profile confirmed active Data API. HTTP Date minus runner UTC was **-1 second** (Date header second precision; immaterial).
+- Current NIFTY 50 security master resolved 50/50. Historical membership aliases resolved against the current master 79/84.
+- One-session all-constituent probe (2026-10-29): 50/50. Full 50-name 90-day tests: 2026-06-29–2026-09-26, 50/50; 2022-10-03–2022-12-30, 50/50; 2021-11-01–2022-01-29, 50/50. Each of the 61 regular sessions in the 2021 edge window had a valid 10:00–10:03 anchor and a 15:00–15:14 expiry proxy. These are three disjoint 90-day windows plus one session, not continuous five-year coverage.
+- SHREECEM diagnostic [41266690449](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266690449) located the one negative-volume row at 2021-12-30 15:29 IST. It is after the locked 15:15 cutoff. QA now applies strict OHLCV validation only through 15:14 and separately reports 15:15–15:30 records. The corrected 50-stock edge sample passed 50/50; negative volume within the target interval still fails.
+- Offline tests [41266922851](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266922851) passed **43/43**. E0045–E0048 have been resolved/closed in the error log.
+
+### Point-in-time weight / data-rights source audit
+- Read the current two-page official IWF guideline. It defines IWF from quarterly public shareholding and lists 22 exclusions. Some are simple categories (promoter, FDI, government, PE, SWF, locked-in, IEPF), while others need relationship or agreement context (cross-holdings, family, board rights, first-refusal, strategic control, PAC). An aggregate roll-up cannot be presumed to cover all of them.
+- The official Nifty Indices monthly page lists two monthly weight ZIP families. The current Terms of Use prohibit systematic/automated collection without express written consent; no scraping or ZIP ingestion was attempted. NSE Index Data Subscription is the preferred licensed route and publishes a licensing contact.
+- New category-level candidate assessed: [yurukatsu/nse-historical-membership](https://github.com/yurukatsu/nse-historical-membership), documenting 2,316 symbols, 62,850 filings, 2001-03 to 2026-08 and ~70 filing-by-category rows with broadcast timestamps, share counts, lock-in, DR, pledge and related fields. However the explicit `LICENSE-DATA` globs do not unambiguously include the nested parsed `_categories.csv.gz` or `_flat.csv` files. Several IWF exclusions also require holder/relationship/agreement evidence that category totals alone may not provide. No dataset file was copied/imported; no named-shareholder file will be used.
+- TejHQ daily EOD/corporate-action/symbol-history data (NSE from 2010) has publisher terms updated 2026-10-30 allowing personal research, backtesting, model training and private local storage, but prohibits raw redistribution and says exchange terms apply independently. It is useful only as a secondary daily/identity/corporate-action cross-check, not intraday or IWF. Because this repo is public and Actions caches are extractable by people able to open PRs, no raw TejHQ dataset is committed/cached in this repo. Store only non-reconstructive QA summaries.
+- The AMP4010 approximate weights remain non-commercial CC BY-NC-SA 4.0, estimated at rebalance transitions, ending 2025-08; not admitted.
+
+### Gate decision
+- **Dhan bounded intraday data QA: PASS.** Do not misstate this as full continuous five-year coverage.
+- **C1 overall: NOT PASSED / RIGHTS-BLOCKED.** No admissible complete point-in-time official IWF series, verified mapping of all 22 exclusions, and weighted basket-to-index reconciliation exist yet.
+- C2–C6 remain gated by the locked BUP-01 v1.1 plan. No constituent panel/model/forecast/strategy was created. No change was made to the locked plan.
+- Remaining external path: written rights for official monthly weights, or explicit path-specific CC BY confirmation for the category dataset plus an independently passing 22-exclusion mapping/reconciliation. Do not replace missing IWF with equal weights, promoter complement or majority vote.
