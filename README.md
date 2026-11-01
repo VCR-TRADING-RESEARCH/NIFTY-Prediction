@@ -335,3 +335,13 @@ The sole partial flag was the 15:14 check on **26 April 2024**. This was an anch
 The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is retained as historical evidence; it is superseded by the full 258-cycle artifact. See [corrected result JSON](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_RESULT.json), [report](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_REPORT.md), and [full Actions QA artifact](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41309632317).
 
 **Overall C1 remains NOT PASSED.** The first daily OHLCV audit measured 98.85% valid member sessions and left the HDFC legacy history and one TATAMOTORS session unresolved; the corrected personal-use fallback is being validated. Exhaustive corporate-action/adjusted-return review remains open. C2 stays locked.
+
+<!-- C1_INDEPENDENT_BHAVCOPY_START -->
+## C1 independent NSE bhavcopy mirror audit — 2026-11-02
+
+The pinned independent source returned 4/7 valid exact-date EQ OHLCV rows. Remaining mirror no-row results are inconclusive because its collector enumerates weekdays only and does not capture Sunday/Saturday special sessions. No values were imputed or republished; C1 remains PARTIAL / NOT PASSED and the corporate-action gate remains open.
+
+- Full audit report: https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_INDEPENDENT_BHAVCOPY_AUDIT.md
+- Machine result: https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_INDEPENDENT_BHAVCOPY_AUDIT.json
+- Method note: https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_INDEPENDENT_BHAVCOPY_METHOD.md
+<!-- C1_INDEPENDENT_BHAVCOPY_END -->

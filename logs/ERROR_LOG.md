@@ -672,3 +672,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Split ISO dates from non-ISO dates and parse the ISO subset with explicit `%Y-%m-%d`; retain day-first parsing only for exchange text formats. Add the regression assertion and make artifact/publish steps success-gated so precheck failures do not create cascading publish failures.
 - **Status:** Correction committed; rerun required. No prices were changed, no missing bars were imputed, and no coverage credit was granted.
 - **Prevention:** Keep regression tests for legacy CM, modern sec_bhavdata_full and UDIFF date schemas; require offline tests to pass before any network request.
+
+## E0086 — 2026-11-02 — Independent-source calendar coverage limitation
+
+- Class: Data-source coverage limitation, not a market-data disagreement.
+- Observed: pinned independent NSE bhavcopy mirror returned 4/7 valid exact-date EQ OHLCV rows; 3 dates had no EQ row in that mirror.
+- Limitation: the mirror collector enumerates weekdays only. It cannot prove absence for Sunday 2019-10-27 or Saturdays 2020-02-01 / 2020-11-14, all genuine special sessions.
+- Correction: treat mirror no-row as INCONCLUSIVE; retain all seven dates in the denominator; use a source with explicit special-session capture for remaining dates. No price was imputed.
+- Impact: no change to 106,385/106,392 daily coverage. C1 remains PARTIAL and C2 remains gated.

@@ -742,3 +742,11 @@
 - Raw exchange bars are temporary-only. The committed output will contain row status, validity flags and hashes, not numerical prices or volumes. The mirror's MIT software licence is not treated as a market-data licence.
 - First preflight run 41340624209 stopped before network data retrieval: five tests passed and one ISO-date parser test failed. Logged as E0086; corrected the parser and success-gated result publication.
 - **Status:** targeted source audit implementation committed; live rerun pending. Existing C1 daily coverage remains 99.9934% with seven unresolved bars; C1 remains PARTIAL and C2/confirmatory modelling remain LOCKED.
+
+## 2026-11-02 — Independent NSE bhavcopy mirror cross-check
+
+- Audited seven exact security/date pairs using the pinned public NSE bhavcopy mirror.
+- Valid EQ OHLCV rows: 4/7; mirror no-row: 3; duplicate rows: 0; unavailable source partitions: 0.
+- The mirror collector enumerates weekdays only, so no-row on 2019-10-27, 2020-02-01 and 2020-11-14 is inconclusive for those special sessions.
+- No raw prices/volumes were copied, no bar was fabricated, and the daily coverage denominator was unchanged. Corporate-action review remains open.
+- Evidence: C1_INDEPENDENT_BHAVCOPY_AUDIT.md and C1_INDEPENDENT_BHAVCOPY_AUDIT.json.

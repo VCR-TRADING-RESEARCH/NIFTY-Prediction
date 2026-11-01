@@ -1,6 +1,6 @@
 # BUP-01 Research Status
 
-**Last updated:** 2026-11-01  
+**Last updated:** 2026-11-02  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
 **Status:** C0 PASS; C1 intraday target-data sub-gate PASS; daily OHLCV is 99.9934% with seven dated residual sessions; overall C1 PARTIAL pending residual-gap and corporate-action validation  
 **Prediction status:** No constituent panel, trained stock model or bottom-up forecast exists  
@@ -661,3 +661,13 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - All seven residual security/date gaps are confirmed to fall on actual exchange trading sessions: five HDFC Muhurat dates plus HDFC's 2020-02-01 full-day Budget session, and TATAMOTORS' 2025-10-21 Muhurat session.
 - These dates remain in the expected-session denominator. Special-session hours are now documented; no missing bar is imputed or waived.
 - Daily coverage remains 106,385/106,392 (99.9934%). C1 remains PARTIAL / NOT PASSED; corporate-action verification remains incomplete; C2 remains locked.
+
+<!-- C1_INDEPENDENT_BHAVCOPY_START -->
+## C1 independent bhavcopy mirror cross-check — 2026-11-02
+
+- Independent mirror returned 4/7 valid exact-date NSE EQ OHLCV rows.
+- 3 target dates have no row in this mirror; its weekday-only collector cannot resolve the Sunday/Saturday special sessions.
+- No raw values were republished and no missing bars were inferred. Original daily coverage remains 106,385/106,392 until every residual session is independently resolved or handled by a registered exclusion rule.
+- Full audit report: C1_INDEPENDENT_BHAVCOPY_AUDIT.md; machine result: C1_INDEPENDENT_BHAVCOPY_AUDIT.json.
+- Overall C1 remains PARTIAL / NOT PASSED; corporate-action verification remains incomplete; C2 stays locked.
+<!-- C1_INDEPENDENT_BHAVCOPY_END -->

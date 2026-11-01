@@ -1,0 +1,126 @@
+{
+  "github_actions_run_id": "41341364731",
+  "limitations": [
+    "Independent public mirror, not a direct exchange response or a second broker feed.",
+    "The source collector enumerates weekdays only; absence on 2019-10-27, 2020-02-01 and 2020-11-14 is structural and cannot resolve those genuine special sessions.",
+    "The newer source schema may omit ISIN; missing ISIN is reported explicitly, not silently inferred.",
+    "A valid daily bar does not complete the separate corporate-action adjustment ledger.",
+    "No raw OHLCV values, security prices or volume observations are copied into the report."
+  ],
+  "methodology_version": "bup01-c1-independent-bhavcopy-mirror-v1",
+  "results": [
+    {
+      "date": "2018-11-07",
+      "expected_isin": "INE001A01036",
+      "identity_status": "MATCH",
+      "isin_available": true,
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
+      "session": "Diwali Muhurat",
+      "source_file_sha256": "e46d30d4d13e0ac9380e4f3ad87b14b207967a8f7b4e532fce58544ecde1c238",
+      "status": "VALID_EQ_OHLCV_ROW",
+      "symbol": "HDFC",
+      "volume_valid": true
+    },
+    {
+      "date": "2019-10-27",
+      "expected_isin": "INE001A01036",
+      "identity_status": "NOT_CHECKED",
+      "ohlc_valid": false,
+      "row_count": 0,
+      "session": "Diwali Muhurat (Sunday)",
+      "source_file_sha256": "ffb7067c3f3710197c03b0113a5df046e3d58cce52a8ba844aa1c8d208a7a013",
+      "status": "NO_EQ_ROW_IN_MIRROR",
+      "symbol": "HDFC",
+      "volume_valid": false
+    },
+    {
+      "date": "2020-02-01",
+      "expected_isin": "INE001A01036",
+      "identity_status": "NOT_CHECKED",
+      "ohlc_valid": false,
+      "row_count": 0,
+      "session": "Union Budget special session",
+      "source_file_sha256": "88525b34243582b19630d65ca1e298723480f51e0c4efaca57664b145979d349",
+      "status": "NO_EQ_ROW_IN_MIRROR",
+      "symbol": "HDFC",
+      "volume_valid": false
+    },
+    {
+      "date": "2020-11-14",
+      "expected_isin": "INE001A01036",
+      "identity_status": "NOT_CHECKED",
+      "ohlc_valid": false,
+      "row_count": 0,
+      "session": "Diwali Muhurat (Saturday)",
+      "source_file_sha256": "f03c7861967e24a90aa16931eeb553bff320104ac81732e7b948da76d024f252",
+      "status": "NO_EQ_ROW_IN_MIRROR",
+      "symbol": "HDFC",
+      "volume_valid": false
+    },
+    {
+      "date": "2021-11-04",
+      "expected_isin": "INE001A01036",
+      "identity_status": "MATCH",
+      "isin_available": true,
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
+      "session": "Diwali Muhurat",
+      "source_file_sha256": "d3a0e9ef35bac8610f0b3e4cfaffce0a06d00b805d255335b6108645b34e3119",
+      "status": "VALID_EQ_OHLCV_ROW",
+      "symbol": "HDFC",
+      "volume_valid": true
+    },
+    {
+      "date": "2022-10-24",
+      "expected_isin": "INE001A01036",
+      "identity_status": "ISIN_NOT_PUBLISHED_IN_MIRROR",
+      "isin_available": false,
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
+      "session": "Diwali Muhurat",
+      "source_file_sha256": "6378ae28df3482fbcdb9aeba26929f437572401b1278dce6688b56581b077dc5",
+      "status": "VALID_EQ_OHLCV_ROW",
+      "symbol": "HDFC",
+      "volume_valid": true
+    },
+    {
+      "date": "2025-10-21",
+      "expected_isin": "INE155A01022",
+      "identity_status": "ISIN_NOT_PUBLISHED_IN_MIRROR",
+      "isin_available": false,
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
+      "session": "Diwali Muhurat (13:45-14:45)",
+      "source_file_sha256": "1084887d80358e747411fd582405c1166cce44a18eebef8902baea75e6a1b243",
+      "status": "VALID_EQ_OHLCV_ROW",
+      "symbol": "TATAMOTORS",
+      "volume_valid": true
+    }
+  ],
+  "schema_version": 1,
+  "source": {
+    "market_data_license": "No separate data licence identified; raw data are processed only in runner temporary storage and are not redistributed in this project.",
+    "readme": "https://github.com/floyds1995/Auto-Index-Constituents-Tracker/blob/aa57b1050383c33e436f81844230ad2a4d52c949/README.md",
+    "repository": "floyds1995/Auto-Index-Constituents-Tracker",
+    "revision": "aa57b1050383c33e436f81844230ad2a4d52c949",
+    "software_license": "MIT (repository code)",
+    "source_provenance": "Repository README states NSE equity daily bhavcopy is collected from NSE archive endpoints and stored by month as Parquet.",
+    "updater": "https://github.com/floyds1995/Auto-Index-Constituents-Tracker/blob/aa57b1050383c33e436f81844230ad2a4d52c949/NSE/RawDataOHLCV/update_ohlcv.py"
+  },
+  "status": "PARTIAL_SOURCE_COVERAGE",
+  "summary": {
+    "coverage_interpretation": "Mirror no-row is not proof of no exchange bar. Its README describes a weekday-only collection loop; weekend Muhurat and Saturday Budget sessions are outside its reliable absence coverage.",
+    "duplicate_eq_rows": 0,
+    "mirror_has_no_eq_row": 3,
+    "raw_prices_or_volume_published": false,
+    "source_partitions_unavailable": 0,
+    "target_security_date_pairs": 7,
+    "valid_independent_eq_ohlcv_rows": 4
+  },
+  "updated_at_utc": "2026-11-01T19:22:14.652536+00:00"
+}
