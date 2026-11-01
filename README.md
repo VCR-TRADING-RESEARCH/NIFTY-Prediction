@@ -448,3 +448,12 @@ The screenshot's earlier handoff predates the latest C1 evidence. The full 50-st
 - [C1 research log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/RESEARCH_LOG.md)
 - [C1 error log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/ERROR_LOG.md)
 - [C1 continuation / workflow correction commit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/45714d20000c307684bca06efa46c09458689475)
+
+
+## BUP-01 resumed checkpoint — 2026-11-01 (live authentication blocker)
+
+The resumed review confirms that the **26/26 offline test pass in run [41263593605](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41263593605) did not pass the live Dhan data gate**. Token generation returned HTTP 200 without an access-token field on two bounded attempts; the fallback token failed the profile check with HTTP 401. No market-data endpoint was called. The Actions job concluded SUCCESS because its executed workflow revision did not yet contain the final fail-closed gate; the current C1 workflow source now places that gate after sanitized diagnostics are committed, but runtime verification remains pending.
+
+Prior bounded data successes remain valid only for their sample windows: 50/50 current constituents for one session, 50/50 for 2026-06-29–2026-09-26, and 50/50 for 2022-10-03–2022-12-30. The corrected 2021-11-01–2022-01-29 edge request remains untested. **C1 remains NOT PASSED and C2 remains gated.** No stock model, reconstructed index forecast, or strategy has been produced.
+
+Next step is to verify the Dhan client ID, six-digit PIN and TOTP setup/seed in the organization secrets, or configure Dhan's documented API-key/secret OAuth route. Avoid repeated TOTP retries and do not use the expired fallback token. See [C1 status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md), [research log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/RESEARCH_LOG.md), [error log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/ERROR_LOG.md), and [conversation log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/CONVERSATION_LOG.md).
