@@ -223,3 +223,13 @@ The HF dataset's exact row-sum validation is useful as a structural check, but i
 - Secondary discovery candidate: amcs.fund describes use of original AMC disclosure files, ISIN, quantity, market value and % to net assets, and archive links. Verify its API schema, file lineage and terms before use.
 - A metadata-only probe is being added in scripts/constituent_weekly/probe_nippon_amc_archive.py. No raw workbook rows or holdings are intended to be committed/cached.
 - Rights, point-in-time publication dates and basket reconciliation remain open; no modelling gate is passed by the source discovery.
+
+
+## 2026-11-01 — AMC workbook schema verified for two recent months
+
+- Primary source: Nippon India AMC monthly disclosures page and direct month-end portfolio workbooks.
+- Probe [41275178244](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275178244) returned HTTP 200 for Sep-2026 and Feb-2026. Both files carry XLSX ZIP signatures despite .xls suffixes and parse successfully.
+- Schema: target Nifty BeES scheme found; generic ISIN, quantity and portfolio-weight columns detected; 50 ISIN-bearing rows in each target scheme section. The Sep-2026 and Feb-2026 file hashes, bytes and parser counts are stored in [C1_AMC_ARCHIVE_PROBE_REPORT.md](C1_AMC_ARCHIVE_PROBE_REPORT.md).
+- The guessed April-2019 modern filename path returned 404 even though the AMC archive page lists an April-2019 monthly portfolio record. The correct historic direct URL remains to be identified; no substitute data are inferred.
+- AMFI remains excluded without rights clearance due personal/non-commercial website terms. Nippon AMC use rights for automated extraction/trading research also remain unresolved.
+- This proves recent schema only, not a historical time series, point-in-time availability or official index IWF. C1 remains PARTIAL; no C2 modelling.
