@@ -469,3 +469,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Detect workbook type by file signature (XLSX ZIP signature -> openpyxl; legacy OLE XLS -> xlrd), install openpyxl in the workflow, and rebase the sanitized report commit onto the latest branch before pushing.
 - **Impact:** No constituent holdings values were published. Two recent AMC files are reachable, but schema parsing and the historical URL remain unverified.
 - **Status:** FIX COMMITTED — validate in the next probe run; close only after successful schema parsing and a successful report push.
+
+
+## E0058 — 2026-11-01 — Recent AMC download responses returned unrecognised file signatures
+
+- **Run:** [41275027813](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275027813).
+- **Observed:** Seven offline parser and file-signature tests passed. The September 2026 and February 2026 requests both returned HTTP 200, but the downloaded bytes did not begin with either the XLSX ZIP signature or the legacy XLS OLE signature; the guessed April 2019 URL returned HTTP 404. The metadata probe therefore failed closed before reading workbook contents.
+- **Correction/investigation:** Added a browser-style User-Agent, Accept and Referer header; the next run records only response content type, byte count, SHA-256 and the first 12 bytes as hex. No response body, workbook rows or holdings values are emitted.
+- **Impact:** No constituent holdings or weights were parsed or admitted. A 200 status alone is not treated as successful file retrieval.
+- **Status:** INVESTIGATING — require actual supported workbook container and schema confirmation before using the archive.
