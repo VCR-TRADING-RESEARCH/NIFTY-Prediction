@@ -110,23 +110,23 @@ No model training until point-in-time membership, numeric free-float weights, se
 <!-- C1_DHAN_STATUS_START -->
 ## Latest Dhan equity preflight
 
-- Recorded at (UTC): 2026-10-31T23:27:02.354099+00:00
-- Dhan auth method/status: totp_refresh / SUCCESS
+- Recorded at (UTC): 2026-11-01T02:05:00.670635+00:00
+- Dhan auth method/status: provided_token_fallback / FAILED_FALLBACK_USED
 - Profile HTTP status: NOT_RECORDED
-- Status: PARTIAL_OR_BLOCKED
+- Status: BLOCKED_PROFILE_HTTP_401
 - Last successful Dhan preflight: PASS_ACTIVE_EQUITIES at 2026-10-31T23:19:20.601101+00:00; preserved separately from latest attempt.
-- Data plan active: True
-- Current NIFTY 50 universe resolved in current Dhan master: 50/50
-- Historical membership symbol aliases matched in current Dhan master: 79/84
-- Five-symbol one-minute anchor/expiry-proxy checks: 10/10
-- Full point-in-time NIFTY 50 probe: 50/50 passed; resolved 50; date 2026-10-29
-- 90-day Dhan one-minute range: 3/3 symbols passed; date range [('2022-10-03', '2022-12-30')]; standard-session counts [61]; non-standard session dates ['2022-10-24']
-- Full-universe 90-day Dhan range: 50/50 passed; security IDs 50/50; dates {'from': '2026-06-29', 'to': '2026-09-26'}
-- Historical 2022 point-in-time 90-day range: 50/50 passed; security IDs 50/50; dates {'from': '2022-10-03', 'to': '2022-12-30'}
-- Five-year edge 2021 90-day range: 0/50 passed; security IDs 50/50; dates {'from': '2021-11-01', 'to': '2022-01-29'}
-- Accepted expiry proxy: last returned one-minute candle at/before 15:15:00 IST; sample proxy timestamp(s): 2022-10-31T15:14:00+05:30, 2026-10-29T15:14:00+05:30
-- Historic HDFC Ltd legacy-security-ID probes: 2/2 passed
-- Deep daily-history probe: PASS
+- Data plan active: None
+- Current NIFTY 50 universe resolved in current Dhan master: NOT_RUN/NOT_RUN
+- Historical membership symbol aliases matched in current Dhan master: NOT_RUN/NOT_RUN
+- Five-symbol one-minute anchor/expiry-proxy checks: 0/0
+- Full point-in-time NIFTY 50 probe: NOT_RUN/NOT_RUN passed; resolved NOT_RUN; date NOT_RUN
+- 90-day Dhan one-minute range: 0/0 symbols passed; date range NOT_RUN; standard-session counts NOT_RUN; non-standard session dates none recorded
+- Full-universe 90-day Dhan range: 0/0 passed; security IDs 0/0; dates NOT_RUN
+- Historical 2022 point-in-time 90-day range: 0/0 passed; security IDs 0/0; dates NOT_RUN
+- Five-year edge 2021 90-day range: 0/0 passed; security IDs 0/0; dates NOT_RUN
+- Accepted expiry proxy: last returned one-minute candle at/before 15:15:00 IST; sample proxy timestamp(s): NOT_RECORDED
+- Historic HDFC Ltd legacy-security-ID probes: 0/0 passed
+- Deep daily-history probe: NOT_RUN
 - Historical-weight candidate cache: CACHE_VALIDATED; 216 rows, 100 ticker columns, 2008-01-31 to 2025-08-31
 - Weight candidate licence: CC BY-NC-SA 4.0; commercial use permitted: False
 - The one-day 50-stock probe and three-symbol 90-day batch probe are not a complete five-year point-in-time constituent panel.
