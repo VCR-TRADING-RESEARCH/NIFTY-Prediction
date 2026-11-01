@@ -613,3 +613,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Causes:** the common offline workflow did not install `cryptography`, required by the AES-GCM cache test; the synthetic NSE fixture incorrectly counted a BE-series row as EQ; and the test module omitted the `Path` import.
 - **Corrections:** install `cryptography` in the common offline workflow; count only the matching ticker and EQ series in the fixture expectation; add the missing `Path` import.
 - **Interpretation:** these were test harness/fixture defects, not evidence of a live data-source failure. No live TejHQ/HDFC fallback result is claimed until the corrected test gate passes.
+
+## E0073 — 2026-11-01 — Earlier incomplete intraday coverage summary superseded by full artifact
+
+- **Observed:** The interim result JSON retained a prior incomplete run summary (77/258 NIFTY targets; 64 accepted cycles) even though a later full run had been uploaded as a sanitized artifact.
+- **Evidence:** Full run [41309632317](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41309632317), artifact 13086220727, contains all 258 cycle results and date-level index chunk QA. It reports 258/258 NIFTY target pairs and 258/258 stock-input cycles accepted; 154 confirmatory cycles after warm-up; 98% minimum member coverage; zero unresolved active symbols; and 1,083 requests.
+- **Partial-window root cause:** 2024-04-26's 15:14 check failed while its 10:00 anchor passed. 26-Apr was an anchor-only date for the cycle ending 2024-05-02; the actual 2-May expiry proxy passed. The generic 15:14 check on every day in the 90-day window incorrectly made the window appear partial for a date that was not an expiry target.
+- **Correction:** Updated the authoritative result JSON, coverage report, status and README to identify the later full artifact as current evidence. The earlier 77/258 run remains historical evidence but is superseded.
+- **Impact:** Intraday target-data sub-gate PASS. Overall C1 remains NOT PASSED pending daily OHLCV gap resolution and exhaustive corporate-action/adjusted-return validation.
