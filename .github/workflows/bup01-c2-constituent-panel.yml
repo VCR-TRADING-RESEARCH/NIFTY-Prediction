@@ -48,6 +48,14 @@ jobs:
       - name: Compile C2 runner and publisher
         run: python -m py_compile scripts/constituent_weekly/run_c2_panel_and_models.py scripts/constituent_weekly/publish_c2_run.py
 
+      - name: Clear stale C2 result snapshots
+        run: |
+          rm -f research/constituent_weekly/C2_MODEL_RESULTS.json
+          rm -f research/constituent_weekly/C2_MODEL_RESULTS.md
+          rm -f research/constituent_weekly/C2_INDEX_OOF_FORECASTS.csv
+          rm -f research/constituent_weekly/C2_STOCK_OOF_FORECASTS.csv
+          rm -f research/constituent_weekly/C2_CYCLE_FEATURE_SUMMARIES.csv
+
       - name: Run C2 offline regression tests
         id: offline
         run: python -m pytest -q tests/test_c2_panel_and_models.py
