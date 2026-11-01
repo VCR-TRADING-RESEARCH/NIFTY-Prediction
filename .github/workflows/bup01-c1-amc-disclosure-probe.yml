@@ -1,4 +1,4 @@
-name: BUP-01 Nippon AMC archive metadata probe
+name: BUP-01 Nippon AMC offline parser tests (bulk retrieval paused)
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: bup01-c1-amc-disclosure-probe
@@ -20,7 +20,7 @@ concurrency:
 jobs:
   probe-primary-amc-archive:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     steps:
       - name: Checkout C1 branch
         uses: actions/checkout@v4
@@ -35,35 +35,5 @@ jobs:
         run: python -m pip install --disable-pip-version-check requests beautifulsoup4 pandas xlrd openpyxl pytest
       - name: Run offline parser regressions
         run: python -m pytest -q tests/test_nippon_amc_archive_probe.py
-      - name: Probe latest, calibration and early archive workbooks
-        run: python scripts/constituent_weekly/probe_nippon_amc_archive.py
-      - name: Publish metadata-only summary
-        if: always()
-        run: |
-          if [ -f research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md ]; then
-            cat research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md >> "$GITHUB_STEP_SUMMARY"
-          fi
-      - name: Commit sanitised probe report with bounded retry
-        if: always()
-        run: |
-          target_branch="phase/constituent-weekly-outcomes-c1-data"
-          if [ -f research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md
-            if ! git diff --cached --quiet; then
-              git commit -m "Record sanitised AMC disclosure archive probe"
-              for attempt in 1 2 3 4 5; do
-                git fetch origin "$target_branch"
-                git rebase "origin/$target_branch"
-                if git push origin "HEAD:$target_branch"; then
-                  exit 0
-                fi
-                echo "Concurrent branch update during publish attempt $attempt; retrying."
-                git rebase --abort || true
-                sleep 2
-              done
-              echo "Could not publish sanitised probe report after five non-forced attempts."
-              exit 1
-            fi
-          fi
+      - name: Record v1.3 source-use restriction
+        run: echo "Bulk AMC workbook downloads are paused. This workflow runs offline parser tests only; no network source collection is performed." >> "$GITHUB_STEP_SUMMARY"
