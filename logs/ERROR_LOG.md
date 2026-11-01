@@ -505,3 +505,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Re-opened and searched the full rendered official archive. It explicitly lists monthly portfolio files down to 30 September 2012 (lines 555–561 of the source page), including the April 2019 entry elsewhere in the same index.
 - **Impact:** The archive discovery range is corrected to September 2012. This does not imply every file in the range is downloadable, legally reusable, or present without gaps.
 - **Status:** CLOSED — audit, status, source register and README summaries updated. No model input or empirical data were altered.
+
+
+## E0062 — 2026-11-01 — AMC metadata probe regression test mixed AMC and scheme records
+
+- **Run:** [41276748532](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41276748532).
+- **Observed:** Three of four metadata sanitisation tests passed. One fixture placed both AMC and scheme records in the same list; the generic recursive matcher correctly returned the scheme record for the “Nippon” filter as well, while the test incorrectly expected an AMC-only result.
+- **Root cause:** The fixture did not reflect the actual distinct `/amcs` and `/amc/{id}` endpoint payloads.
+- **Correction:** Split the test into independent AMC-list and scheme-detail payload fixtures. Keep the recursive matcher unchanged; it is intentionally designed to search nested manifest structures.
+- **Impact:** The failure occurred before any network probe. No API data or holdings files were requested, and no source or model result was affected.
+- **Status:** FIX COMMITTED — rerun the push workflow and close only after the sanitisation suite and metadata request complete.
