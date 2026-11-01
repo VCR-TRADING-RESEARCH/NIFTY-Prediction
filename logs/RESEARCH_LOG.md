@@ -726,3 +726,8 @@
 - Candidate event count and matching remained unchanged at 18,361 deduplicated events and 711 PIT member matches.
 - Official NSE Market Activity Report documentation describes `Bcddmmyy.csv` within daily `nuprddmmyy.zip` as the daily corporate-action detail file. It is the next candidate primary-source cross-check route; archive URL/date coverage/schema still require live validation.
 - No factor was calculated/applied; C1 corporate-action gate remains NOT PASSED; C2 remains locked.
+
+
+## 2026-11-01 — C3-X exploratory prediction track authorized
+
+The user approved proceeding with prediction tests before final C1 closure. During implementation review, we found the C1 intraday workflow retains only coverage flags, not a training panel, and the older weekly labels file is a direct-index benchmark. Created a separate C3-X branch from the C1 evidence branch and amended the registered plan to v1.4. The exploratory run will reconstruct Dhan minute bars, produce causal pooled stock features, generate expanding-window out-of-fold forecasts and test the unweighted constituent-signal NIFTY aggregator. It will preserve the 104-cycle warm-up and 47/94% per-cycle threshold after known structural-event exclusions. It cannot pass C1/C2 or authorize trading. Results pending.
