@@ -558,3 +558,14 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** The metadata API probe was skipped by the workflow's test gate; no live source request was made.
 - **Validation:** Follow-up [Actions run 41298336318](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41298336318) completed SUCCESS; the offline metadata-sanitisation tests, live metadata probe, job summary and sanitized report commit all completed.
 - **Status:** CLOSED — missing import fixed and workflow rerun passed.
+
+
+
+## E0067 — 2026-11-01 — v1.3 plan regression fixtures retained two obsolete strings
+
+- **Runs:** [41299407476](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41299407476) and [41299414057](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41299414057).
+- **Observed:** The shared offline regression step reported 43 passed and 2 failed. Both failures were assertion text mismatches: the membership bullet begins with a capital letter, and the legacy assertion expected the v1.2 phrase "exploratory gate" after v1.3 had retired the ETF proxy path.
+- **Root cause:** Unit-test strings were not aligned with the final v1.3 wording; no mathematical, data, authentication or prediction-code failure was observed.
+- **Impact:** The Dhan live test step was correctly skipped because its preceding offline test gate failed. These runs do **not** indicate a Dhan authentication/API failure.
+- **Correction:** Updated assertions to match the current plan wording and to check the explicit v1.3 exclusion of historical free-float/ETF weights from the active gates.
+- **Status:** FIX COMMITTED — awaiting automatic offline validation.
