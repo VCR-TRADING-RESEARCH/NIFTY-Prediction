@@ -128,4 +128,6 @@ def test_tipsheet_manifest_rejects_off_host_urls():
             }
         ]
     }
-    assert _tipsheet_weight_candidates(payload) == []
+    records = _tipsheet_weight_candidates(payload)
+    assert len(records) == 1
+    assert "url" not in records[0]
