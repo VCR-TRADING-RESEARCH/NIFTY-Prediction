@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-11-02  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 ACCEPTED WITH LIMITATIONS FOR PROGRESSION by explicit user direction; formal C2 panel-only build IN PROGRESS  
+**Status:** C0 PASS; C1 ACCEPTED WITH LIMITATIONS FOR PROGRESSION by explicit user direction; C2 data-pipeline repair and rerun IN PROGRESS  
 **Prediction status:** C2 point-in-time panel is being constructed; no stock model or bottom-up NIFTY forecast is yet accepted  
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
@@ -15,6 +15,14 @@
 | C4 — Index aggregation/uncertainty | GATED | Separate branch after C3 OOF stock forecasts are frozen |
 | C5 — Economic/execution gate | GATED | Contract-level fills and date-effective Paytm Money costs required before any strategy claim |
 | C6 — Manuscript/independent audit | GATED | Complete manuscript, plots, tables, appendices and formula/repository audit
+
+
+## C2 execution update — 2026-11-02
+
+- The first C2 daily-history attempt failed because Dhan's returned daily payload did not match the parser schema for any of 62 symbols. The prior run did not create a usable panel.
+- C2 was changed to use the same pinned NSE EQ yearly partitions as the C1 100%-coverage audit, plus the seven official-NSE supplemental rows; raw source data remains encrypted in the Actions cache.
+- The first rerun then exposed missing explicit workflow dependencies (`huggingface_hub`, `pyarrow`). Both were added to the C2 workflow. The corrected push-triggered run is pending validation.
+- C2 remains IN PROGRESS; no model performance or NIFTY forecast is accepted yet.
 
 ## Latest gate update — 2026-11-02
 
