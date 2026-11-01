@@ -163,3 +163,10 @@
 - Implemented shared TOTP input support for raw Base32 and otpauth TOTP provisioning URIs, plus sanitized Dhan HTTP Date vs runner clock-skew diagnostics. No secrets, OTPs, tokens or raw provider body values are stored.
 - PR #29 merged as cb7d304831f039bb994d819d5570a71f2bec0116. Post-merge C1 research/source-audit workflows passed; protected Dhan preflight run 41266155250 was still installing dependencies at last check.
 - This file records visible conversation decisions and actions only; hidden reasoning is not recorded.
+
+
+## 2026-11-01 — User said “Proceed without stopping”
+- User directed continuation through the research steps without stopping mid-run.
+- Continued C1 authentication work and closed E0044: corrected the offline CI runner dependencies after the first helper-test attempt failed collection due missing `pyotp`; follow-up Actions run 41266377005 passed all 12 membership + Dhan auth tests.
+- Protected Dhan live preflight run 41266155250 remains under inspection; no final live-auth or full-data coverage claim is made yet.
+- Continue to respect locked C1 data/rights gates; do not use unauthorized weights, equal-weight substitutes, or incomplete panels. Record visible decisions/outcomes only, not hidden reasoning or secrets.
