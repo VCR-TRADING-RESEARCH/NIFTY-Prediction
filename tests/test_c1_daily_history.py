@@ -352,3 +352,67 @@ def test_tejhq_fallback_requires_explicit_personal_use_only_flag():
     assert personal_use_fallback_authorized(None) is False
     assert personal_use_fallback_authorized("") is False
     assert personal_use_fallback_authorized("0") is False
+
+def test_tejhq_fallback_reports_only_residual_hdfc_missing_dates():
+    expected = [f"2018-04-{day:02d}" for day in range(2, 9)]
+    available = [day for day in expected if day not in {"2018-04-04", "2018-04-08"}]
+    dhan = {
+        "status": "KNOWN_DHAN_DH905",
+        "dhan_status": "KNOWN_DHAN_DH905",
+        "dhan_valid_ohlc_session_count": 0,
+        "dhan_valid_volume_session_count": 0,
+        "missing_session_count": len(expected),
+        "missing_session_sample": expected[:20],
+    }
+    result = merge_daily_fallback_coverage(dhan, expected, available, "PASS")
+    assert result["valid_ohlc_session_count"] == len(available)
+    assert result["missing_session_count"] == 2
+    assert result["missing_session_sample"] == ["2018-04-04", "2018-04-08"]
+    assert result["missing_session_sample_complete"] is True
+
+
+def test_tejhq_fallback_keeps_truncated_dhan_missing_sample_unresolved():
+    expected = [f"2025-10-{day:02d}" for day in range(1, 26)]
+    dhan = {
+        "status": "PASS_RESPONSE",
+        "dhan_status": "PASS_RESPONSE",
+        "dhan_valid_ohlc_session_count": 20,
+        "dhan_valid_volume_session_count": 20,
+        "valid_ohlc_session_count": 20,
+        "valid_volume_session_count": 20,
+        "missing_session_count": 5,
+        "missing_session_sample": ["2025-10-21"],
+    }
+    result = merge_daily_fallback_coverage(dhan, expected, expected, "PASS")
+    assert result["fallback_valid_session_count"] == 0
+    assert result["missing_session_sample"] == ["2025-10-21"]
+    assert result["missing_session_sample_complete"] is False
+
+
+def test_tata_crosscheck_exposes_missing_comparison_date_without_prices():
+    sample = ["2025-10-20", "2025-10-22", "2025-10-23"]
+    dhan = {
+        "open": [650.0, 652.0, 654.0],
+        "high": [660.0, 662.0, 664.0],
+        "low": [640.0, 642.0, 644.0],
+        "close": [655.0, 657.0, 659.0],
+        "volume": [1000, 1100, 1200],
+        "timestamp": [epoch_ist(f"{day}T00:00:00") for day in sample],
+    }
+    tejhq = pd.DataFrame({
+        "session_date": sample[:2],
+        "open": [650.0, 652.0],
+        "high": [660.0, 662.0],
+        "low": [640.0, 642.0],
+        "close": [655.0, 657.0],
+        "volume": [1000, 1100],
+    })
+    result = compare_dhan_and_tejhq_daily(dhan, tejhq, sample)
+    assert result["status"] == "FAIL_OR_INCOMPLETE"
+    assert result["dates_checked"] == 2
+    assert result["dates_matched"] == 2
+    assert result["comparison_dates_missing_from_dhan"] == []
+    assert result["comparison_dates_missing_from_tejhq"] == ["2025-10-23"]
+    assert "open" not in result and "close" not in result
+
+

@@ -543,7 +543,8 @@ def inspect_tejhq_member_rows(
 def compare_dhan_and_tejhq_daily(
     dhan_body: Any, tejhq_rows: pd.DataFrame, sample_dates: list[str]
 ) -> dict[str, Any]:
-    """Cross-check in-memory observations, retaining only match counts."""
+    """Cross-check in-memory observations and retain only date/count diagnostics."""
+    wanted = set(sample_dates)
     dhan_frame, error = parse_daily_payload(dhan_body)
     if dhan_frame is None or dhan_frame.empty:
         return {
@@ -551,16 +552,22 @@ def compare_dhan_and_tejhq_daily(
             "dates_checked": 0,
             "dates_matched": 0,
             "dates_mismatched": 0,
+            "date_sample": sample_dates,
+            "comparison_dates_missing_from_dhan": sorted(wanted),
+            "comparison_dates_missing_from_tejhq": sorted(
+                wanted - set(tejhq_rows.get("session_date", pd.Series(dtype=str)).astype(str))
+            ),
             "parse_error": error,
         }
-    wanted = set(sample_dates)
     dhan_frame = dhan_frame.loc[dhan_frame["session_date"].isin(wanted)]
-    tejhq_rows = tejhq_rows.loc[tejhq_rows["session_date"].isin(wanted)]
+    tejhq_rows = tejhq_rows.loc[tejhq_rows["session_date"].astype(str).isin(wanted)]
+    dhan_dates_present = sorted(set(dhan_frame["session_date"].astype(str)))
+    tejhq_dates_present = sorted(set(tejhq_rows["session_date"].astype(str)))
     matches = mismatches = checked = 0
 
     for day in sample_dates:
         left = dhan_frame.loc[dhan_frame["session_date"].eq(day)]
-        right = tejhq_rows.loc[tejhq_rows["session_date"].eq(day)]
+        right = tejhq_rows.loc[tejhq_rows["session_date"].astype(str).eq(day)]
         if len(left) != 1 or len(right) != 1:
             continue
         checked += 1
@@ -586,6 +593,10 @@ def compare_dhan_and_tejhq_daily(
         "dates_matched": matches,
         "dates_mismatched": mismatches,
         "date_sample": sample_dates,
+        "comparison_dates_present_in_dhan": dhan_dates_present,
+        "comparison_dates_present_in_tejhq": tejhq_dates_present,
+        "comparison_dates_missing_from_dhan": sorted(wanted - set(dhan_dates_present)),
+        "comparison_dates_missing_from_tejhq": sorted(wanted - set(tejhq_dates_present)),
         "price_tolerance": "absolute 0.02 or relative 0.01%; volume exact",
     }
 
@@ -605,12 +616,19 @@ def merge_daily_fallback_coverage(
     primary_ohlc = int(merged.get("dhan_valid_ohlc_session_count", merged.get("valid_ohlc_session_count", 0)))
     primary_volume = int(merged.get("dhan_valid_volume_session_count", merged.get("valid_volume_session_count", 0)))
     expected = set(expected_dates)
+    missing_sample_complete = True
     if dhan_status == "PASS_RESPONSE":
         missing_count = int(merged.get("missing_session_count", max(len(expected_dates) - primary_ohlc, 0)))
-        sample = set(merged.get("missing_session_sample", []))
-        # If the missing-date sample is truncated, do not infer or fill dates
-        # from a count alone: that could double-count already valid Dhan bars.
-        missing_dates = set() if missing_count == 0 else sample if missing_count <= len(sample) else set()
+        sample = set(merged.get("missing_session_sample", [])) & expected
+        # If the missing-date sample is truncated or internally inconsistent,
+        # do not infer or fill dates from a count alone.
+        if missing_count == 0:
+            missing_dates = set()
+        elif len(sample) == missing_count:
+            missing_dates = sample
+        else:
+            missing_dates = set()
+            missing_sample_complete = False
     else:
         missing_dates = expected
 
@@ -627,6 +645,12 @@ def merge_daily_fallback_coverage(
     combined_ohlc = min(expected_count, primary_ohlc + filled)
     combined_volume = min(expected_count, primary_volume + filled)
     remaining_count = max(expected_count - combined_ohlc, 0)
+    if missing_sample_complete:
+        remaining_sample = sorted(missing_dates - additions)
+        merged["missing_session_sample"] = remaining_sample[:20]
+        merged["missing_session_sample_complete"] = len(remaining_sample) <= 20
+    else:
+        merged["missing_session_sample_complete"] = False
     merged.update({
         "dhan_valid_ohlc_session_count": primary_ohlc,
         "dhan_valid_volume_session_count": primary_volume,

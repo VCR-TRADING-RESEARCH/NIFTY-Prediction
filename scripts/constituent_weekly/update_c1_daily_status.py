@@ -22,6 +22,16 @@ def main() -> int:
     updated = data.get("updated_at_utc") or datetime.now(timezone.utc).isoformat()
     status = data.get("status", "UNKNOWN")
     symbol_results = data.get("symbol_results", {})
+    residual_gap_details = []
+    for symbol, item in sorted(symbol_results.items()):
+        missing_count = int(item.get("missing_session_count", 0))
+        if missing_count:
+            sample = ", ".join(item.get("missing_session_sample", [])) or "date sample unavailable"
+            complete = bool(item.get("missing_session_sample_complete", False))
+            residual_gap_details.append(
+                f"{symbol}: {missing_count} ({sample}; sample {'complete' if complete else 'partial/unknown'})"
+            )
+    residual_gap_summary = "; ".join(residual_gap_details) or "none"
 
     block_lines = [
         START,
@@ -30,8 +40,11 @@ def main() -> int:
         f"- Updated (UTC): {updated}",
         f"- Auditor status: **{status}**",
         f"- Window: {summary.get('window_start', data.get('input_manifest', {}).get('window_start', 'NOT_SET'))} to {summary.get('window_end', data.get('input_manifest', {}).get('window_end', 'NOT_SET'))}",
+        f"- Official NIFTY daily sessions: {summary.get('official_trading_session_count', 0)}",
+        f"- Additional validated Dhan index sessions: {summary.get('dhan_index_daily_calendar_sessions_added', 0)}",
+        f"- Combined NIFTY daily sessions: {summary.get('union_trading_session_count', 0)}",
         f"- Point-in-time symbols: {summary.get('point_in_time_symbols_expected', 0)}",
-        f"- Parseable daily API responses: {summary.get('symbols_with_parseable_daily_responses', 0)}",
+        f"- Parseable Dhan daily API responses: {summary.get('symbols_with_parseable_daily_responses', 0)}",
         f"- Expected member sessions: {summary.get('expected_member_sessions', 0)}",
         f"- Valid OHLC member sessions: {summary.get('valid_member_sessions_ohlc', 0)} ({summary.get('weighted_ohlc_session_coverage_fraction', 0):.2%})",
         f"- Valid OHLCV member sessions: {summary.get('valid_member_sessions_ohlcv', 0)} ({summary.get('weighted_ohlcv_session_coverage_fraction', 0):.2%})",
@@ -41,6 +54,7 @@ def main() -> int:
         f"- TejHQ fallback disposition: {data.get('tejhq_fallback', {}).get('status', 'NOT_RECORDED')}",
         f"- TejHQ fallback symbols accepted: {sum(1 for item in data.get('tejhq_fallback', {}).get('symbols', {}).values() if item.get('status') == 'PASS')}",
         f"- TejHQ fallback member sessions added: {summary.get('tejhq_fallback_member_sessions_added', 0)}",
+        f"- Residual missing sessions by symbol: {residual_gap_summary}",
         "- Raw prices, OHLC arrays, volumes, security IDs and credentials are not published.",
         "- The plan does not set a separate daily-coverage percentage gate; this is descriptive evidence to support the C1 feature-data decision.",
         END,
@@ -58,13 +72,16 @@ def main() -> int:
     rows = []
     for symbol in sorted(symbol_results):
         item = symbol_results[symbol]
+        missing_sample = ", ".join(item.get("missing_session_sample", [])) or "—"
+        sample_complete = bool(item.get("missing_session_sample_complete", False))
         rows.append(
             f"| {symbol} | {item.get('expected_session_count', 0)} | "
             f"{item.get('valid_ohlc_session_count', 0)} | "
             f"{item.get('ohlc_coverage_fraction', 0):.2%} | "
             f"{item.get('valid_volume_session_count', 0)} | "
             f"{item.get('volume_coverage_fraction', 0):.2%} | "
-            f"{item.get('missing_session_count', 0)} | {item.get('status', 'UNKNOWN')} |"
+            f"{item.get('missing_session_count', 0)} | {missing_sample} | "
+            f"{'yes' if sample_complete else 'no/unknown'} | {item.get('status', 'UNKNOWN')} |"
         )
     report_lines = [
         "# C1 Daily OHLCV Member-Session Coverage Report",
@@ -87,15 +104,18 @@ def main() -> int:
         "## Aggregate results",
         "",
         f"- Symbols expected: {summary.get('point_in_time_symbols_expected', 0)}",
-        f"- Symbols with parseable daily responses: {summary.get('symbols_with_parseable_daily_responses', 0)}",
+        f"- Official NIFTY daily sessions: {summary.get('official_trading_session_count', 0)}",
+        f"- Additional validated Dhan index sessions: {summary.get('dhan_index_daily_calendar_sessions_added', 0)}",
+        f"- Combined NIFTY daily sessions: {summary.get('union_trading_session_count', 0)}",
+        f"- Symbols with parseable Dhan daily responses: {summary.get('symbols_with_parseable_daily_responses', 0)}",
         f"- Expected member sessions: {summary.get('expected_member_sessions', 0)}",
         f"- OHLC coverage: {summary.get('valid_member_sessions_ohlc', 0)} / {summary.get('expected_member_sessions', 0)} ({summary.get('weighted_ohlc_session_coverage_fraction', 0):.2%})",
         f"- OHLCV coverage: {summary.get('valid_member_sessions_ohlcv', 0)} / {summary.get('expected_member_sessions', 0)} ({summary.get('weighted_ohlcv_session_coverage_fraction', 0):.2%})",
         "",
         "## Per-symbol coverage",
         "",
-        "| Canonical member symbol | Expected sessions | Valid OHLC | OHLC coverage | Valid OHLCV | OHLCV coverage | Missing OHLC sessions | API status |",
-        "|---|---:|---:|---:|---:|---:|---:|---|",
+        "| Canonical member symbol | Expected sessions | Valid OHLC | OHLC coverage | Valid OHLCV | OHLCV coverage | Missing sessions | Residual date sample | Sample complete | API status |",
+        "|---|---:|---:|---:|---:|---:|---:|---|---|---|",
         *rows,
         "",
         "## Restricted fallback summary",
@@ -124,7 +144,7 @@ def main() -> int:
     REPORT.write_text("\n".join(report_lines) + "\n", encoding="utf-8")
 
     log = RESEARCH_LOG.read_text(encoding="utf-8") if RESEARCH_LOG.exists() else "# Research log\n"
-    log_key = f"## {updated[:10]} — C1 Dhan daily OHLCV coverage"
+    log_key = f"## {updated} — C1 Dhan daily OHLCV coverage"
     if log_key not in log:
         log += f"""
 
@@ -132,7 +152,10 @@ def main() -> int:
 
 - **Auditor status:** {status}.
 - **Window:** {summary.get('window_start', 'NOT_SET')} to {summary.get('window_end', 'NOT_SET')}.
-- **Coverage:** {summary.get('symbols_with_parseable_daily_responses', 0)}/{summary.get('point_in_time_symbols_expected', 0)} parseable symbols; {summary.get('valid_member_sessions_ohlc', 0)}/{summary.get('expected_member_sessions', 0)} valid OHLC member sessions; weighted OHLCV coverage {summary.get('weighted_ohlcv_session_coverage_fraction', 0):.2%}.
+- **Calendar:** {summary.get('official_trading_session_count', 0)} official NIFTY sessions plus {summary.get('dhan_index_daily_calendar_sessions_added', 0)} validated Dhan index sessions; combined sessions {summary.get('union_trading_session_count', 0)}.
+- **Coverage:** {summary.get('symbols_with_parseable_daily_responses', 0)}/{summary.get('point_in_time_symbols_expected', 0)} parseable Dhan symbols; {summary.get('valid_member_sessions_ohlc', 0)}/{summary.get('expected_member_sessions', 0)} valid OHLC member sessions; weighted OHLCV coverage {summary.get('weighted_ohlcv_session_coverage_fraction', 0):.4%}.
+- **Fallback:** {data.get('tejhq_fallback', {}).get('status', 'NOT_RECORDED')}; {summary.get('tejhq_fallback_member_sessions_added', 0)} validated member sessions added from the pinned encrypted-cache source.
+- **Residual gaps:** {residual_gap_summary}.
 - **API/cache:** {data.get('requests_this_run', 0)} requests; {data.get('cache_reused_symbols', 0)} symbols reused from the sanitized QA cache.
 - **Interpretation:** daily OHLCV coverage is reported independently from intraday target coverage, historical identity and action-adjusted return integrity. No model is trained and C2 remains gated.
 - **Artifacts:** C1_DAILY_COVERAGE.json and C1_DAILY_COVERAGE_REPORT.md.
