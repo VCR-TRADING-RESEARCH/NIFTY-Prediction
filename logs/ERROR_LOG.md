@@ -390,3 +390,19 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Constructed `post_cutoff_frame` and the corresponding 15:15–15:30 mask explicitly, with target QA restricted to 09:15–15:14.
 - **Verification:** Live protected preflight [41266897788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266897788) passed its 50-stock data gate; offline regressions [41266922851](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266922851) passed **43/43**.
 - **Status:** CLOSED — the target cutoff is covered by tests for both negative in-scope and out-of-scope volume cases.
+
+
+## E0049 — 2026-11-01 — IWF unit-test file initially omitted from pytest invocation
+
+- **Runs:** [41269416939](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269416939) and [41269424179](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269424179).
+- **Observed:** The workflow path filter included tests/test_iwf_math.py, but its pytest command still listed only the pre-existing test files. The run passed **43 tests**, but none of the seven newly added IWF tests were executed. This was a CI coverage gap, not a test failure.
+- **Correction:** Added tests/test_iwf_math.py explicitly to the pytest command in commit 12d997bf51c12a5780abcd6a9836d69853327bd0.
+- **Verification:** Corrected push run [41269516064](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269516064) and PR run [41269519499](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269519499) both passed **50 tests**, including the seven IWF cases.
+- **Status:** CLOSED — path trigger and test command now both include the IWF test module.
+
+## E0050 — 2026-11-01 — Potential share-capital denominator mismatch in third-party IWF reconstruction candidate
+
+- **Observed during mathematical audit:** The third-party parser documents its reported shareholding-percentage base as total shares less shares underlying depository receipts (A+B+C2). The official NSE IWF guideline's worked example explicitly calculates IWF using (Total Shares - excluded shares) / Total Shares, then rounds to six decimals. These are different denominators and must not be conflated.
+- **Impact:** No project IWF, constituent weight, model or forecast was calculated from the third-party parser, so no model result is affected. The issue was caught before any data import.
+- **Correction/guard:** Added the official example as a regression fixture; the arithmetic helper accepts full total share capital and a deduplicated list of unique excluded positions, not percentage rollups. Added a separate 22-item exclusion-coverage check. All tests pass in [run 41269516064](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269516064).
+- **Status:** OPEN as a source-reconciliation gate — verify denominator, share classes and C1/DR treatment against authoritative source records before any IWF reconstruction. No unlicensed source data was fetched.
