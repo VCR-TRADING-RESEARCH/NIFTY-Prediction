@@ -2,14 +2,14 @@
 
 **Last updated:** 2026-11-01  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 membership and bounded market-data preflight PASS; overall C1 PARTIAL / CONTINUOUS-COVERAGE GATE IN PROGRESS  
+**Status:** C0 PASS; C1 intraday stock/index target-data sub-gate PASS; overall C1 PARTIAL pending daily-feature and corporate-action gates  
 **Prediction status:** No constituent panel, trained stock model or bottom-up forecast exists  
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Actions workflow validated required files and plan structure; governance regression tests passed; report committed as 746d1b382e338e760b1cf4b3ee5ea6fa6b63bc85 |
-| C1 — Point-in-time universe/data audit | PARTIAL / COVERAGE IN PROGRESS | Membership and bounded stock-data checks pass; complete 90-day chunk coverage, index target calendar and historical identity/action panel still required; no weight/ETF comparison gate in v1.3 |
+| C1 — Point-in-time universe/data audit | PARTIAL / DAILY + ACTION REVIEW PENDING | 258/258 intraday weekly target cycles and the 47/94% stock-input gate pass; daily feature history and exhaustive action-adjusted return review remain open; no weight/ETF comparison gate in v1.3 |
 | C2 — Panel labels/features | PENDING | Build only after C1 passes; validate target construction and freeze source hashes/split |
 | C3 — Stock models/baselines | PENDING | Pooled stock panel and bounded benchmarks only after C2 passes |
 | C4 — Index aggregation/uncertainty | PENDING | Train calibrated NIFTY-direction meta-model on strictly OOF unweighted stock forecast summaries; compare prediction metrics on matched cycles |
@@ -557,7 +557,7 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 
 - **Data-coverage sub-gate: PASS.** Live Dhan job [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865) printed 258/258 valid observed NIFTY target pairs; 258/258 stock cycles meeting the registered 47-stock / at least 94% member rule; 154 confirmatory cycles after the 104-cycle warm-up; zero unresolved active symbols; 1,083 requests across 21 non-overlapping windows.
 - **Window:** first forecast anchor 2021-11-12; last expiry 2026-10-27.
-- **Chunk caveat:** 20 index windows returned PASS_RESPONSE; the 2024-01-31 to 2024-04-29 window was marked PARTIAL_TARGET_DATES. Despite that window-level partial response, the final cycle calculation reported all 258 scheduled weekly target pairs valid. The exact date behind the partial response was not preserved; this anomaly remains disclosed.
+- **Chunk caveat resolved from the full artifact:** the only partial flag was the 15:14 check on 2024-04-26, a non-expiry date used for the next cycle's 10:00 anchor. The 10:00 anchor on 26-Apr passed; the actual 2-May expiry proxy passed. All 258 scheduled weekly target pairs therefore remain valid.
 - **Publication incident:** the runner generated sanitized outputs, but the final commit step used git pull --rebase after concurrent edits to STATUS.md and RESEARCH_LOG.md. The rebase conflicted on those files. The final explicit gate step still printed C1_CONTINUOUS_COVERAGE_GATE_PASSED. Detailed per-cycle/per-symbol QA was not retained as an Actions artifact.
 - **Durable summary:** [C1 coverage result JSON](C1_CONTINUOUS_COVERAGE_RESULT.json) and [report](C1_CONTINUOUS_COVERAGE_REPORT.md) preserve aggregate evidence and the partial-window caveat. Detailed flags are not reconstructed.
 - **Identity/action gate:** still PARTIAL. Dated alias resolution is improved, but comprehensive split, bonus, dividend, rights and merger/demerger adjustment review remains open.
@@ -604,3 +604,14 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - A passing market-data coverage sub-gate does not complete corporate-action review or unlock C2 by itself.
 <!-- C1_CONTINUOUS_COVERAGE_END -->
 
+
+
+## Intraday target QA reconciliation — 2026-11-01
+
+The complete sanitized QA artifact from [Actions run 41309632317](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41309632317), artifact 13086220727, is the authoritative current intraday result: **258/258 weekly expiry cycles passed** the observed NIFTY anchor/expiry target check and the 47-stock / 94% constituent-input rule; 154 confirmatory cycles remain after the 104-cycle warm-up; minimum constituent coverage was 98%; no active symbols were unresolved; 1,083 requests covered 21 windows.
+
+The sole partial flag was the 15:14 check on **26 April 2024**. This was an anchor day, not an expiry day: the 10:00 anchor passed, and the actual expiry proxy for that cycle on **2 May 2024** passed. The generic chunk check of 15:14 on every calendar date does not invalidate the registered expiry target.
+
+The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is retained as historical evidence; it is superseded by the full 258-cycle artifact. See [corrected result JSON](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_RESULT.json), [report](research/constituent_weekly/C1_CONTINUOUS_COVERAGE_REPORT.md), and [full Actions QA artifact](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41309632317).
+
+**Overall C1 remains NOT PASSED.** The first daily OHLCV audit measured 98.85% valid member sessions and left the HDFC legacy history and one TATAMOTORS session unresolved; the corrected personal-use fallback is being validated. Exhaustive corporate-action/adjusted-return review remains open. C2 stays locked.
