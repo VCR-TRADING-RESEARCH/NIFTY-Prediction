@@ -4,6 +4,14 @@
 
 > **BUP-01 current method — 2026-11-02, locked plan v1.3:** C0 PASS; C1 data coverage PASS and **accepted with limitations for progression by explicit user instruction**. Verified inputs include 258/258 weekly intraday target cycles and daily OHLCV at **106,392/106,392 (100%)** across 70 point-in-time symbols. The remaining five historical alias matches and event-level verification of 711 action candidates are not being pursued as preconditions; they remain explicit limitations, not passed checks. No unverified corporate-action factors are applied. No ETF/IWF weight comparison is required under v1.3. Formal C2 panel-only construction is in progress on [the plan-defined C2 branch](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c2-panel); the bundled C2-models pilot branch is diagnostic only. No stock model, bottom-up NIFTY forecast or trading strategy is yet accepted. [Plan v1.3](research/constituent_weekly/RESEARCH_PLAN.md) · [C2 panel specification](research/constituent_weekly/C2_PANEL_SPEC.md) · [C1 progression decision](research/constituent_weekly/STATUS.md) · [C1 developer report](research/constituent_weekly/C1_DEVELOPER_GATE_REPORT.md)
 
+### C2 panel research files
+
+- [Panel specification and acceptance gate](research/constituent_weekly/C2_PANEL_SPEC.md)
+- [Feature and label dictionary](research/constituent_weekly/C2_DATA_DICTIONARY.md)
+- [Focused literature review](research/constituent_weekly/C2_RESEARCH_LITERATURE.md)
+- [Panel build report](research/constituent_weekly/C2_PANEL_BUILD.md) (published by the C2 workflow when complete)
+
+
 **Historical (superseded) weight-source assessment:** [C1 historical weights alternatives](research/constituent_weekly/C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md) — source ranking, licensing constraints, reconstruction formula and C1 acceptance gates.
 
 
