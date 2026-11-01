@@ -197,3 +197,12 @@ The live Dhan audit [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-
 - One index chunk (2024-01-31 to 2024-04-29) was marked PARTIAL_TARGET_DATES, while cycle-level count remained 258/258. The date-level flag was not retained due publication conflict.
 
 **Gate scope:** intraday target coverage sub-gate PASS. C1 overall remains NOT PASSED: daily feature history and exhaustive action-adjusted return validation remain open. C2 remains PENDING.
+
+
+## Corrected developer gate addendum — full intraday QA artifact inspected (2026-11-01)
+
+The later full artifact from [run 41309632317](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41309632317), artifact 13086220727, is the authoritative current intraday evidence: 258/258 weekly expiry cycles pass NIFTY anchor/expiry target validation; 258/258 cycles meet the 47-stock / 94% constituent-input rule; 154 confirmatory cycles remain after 104 prior accepted cycles; minimum member coverage is 98%; zero unresolved active symbols; 1,083 requests across 21 windows.
+
+The only window-level partial is the extra 15:14 check on 2024-04-26. The 10:00 anchor on that date passes; the date was not a weekly expiry. The cycle's actual expiry proxy on 2024-05-02 passes. The earlier 77/258 result is retained as an earlier incomplete run and is superseded by this full artifact.
+
+**Remaining C1 gates:** the daily first-pass result has 98.85% OHLCV member-session coverage, but the legacy HDFC daily series and one TATAMOTORS member session remain unresolved before the corrected personal-use fallback; exhaustive corporate-action/adjusted-return review is also open. Overall C1 NOT PASSED; C2 PENDING.
