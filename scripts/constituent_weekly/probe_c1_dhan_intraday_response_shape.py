@@ -129,7 +129,7 @@ def response_shape(response: requests.Response) -> dict[str, Any]:
     result["provider_message_category"] = classify_provider_text(message_text)
 
     payload = body.get("data")
-    result["data_field_type"] = type(payload).__name__ if payload is not None else "MISSING"
+    result["data_field_type"] = type(payload).__name__ if "data" in body else "MISSING"
     if isinstance(payload, dict):
         result["data_keys"] = sorted(str(k) for k in payload.keys())[:60]
         for key in ("open", "high", "low", "close", "volume", "timestamp", "start_Time", "startTime"):
