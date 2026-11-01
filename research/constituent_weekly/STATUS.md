@@ -715,3 +715,16 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Machine metrics: [EXPLORATORY_RESULTS.json](EXPLORATORY_RESULTS.json)
 - Prediction CSV: [EXPLORATORY_NIFTY_HOLDOUT.csv](EXPLORATORY_NIFTY_HOLDOUT.csv)
 - C1 remains PARTIAL; C2 confirmatory and trading remain LOCKED.
+
+
+## C3-X exploratory result — 2026-11-01 (run 41325350069)
+
+- **Execution:** SUCCESS. The bounded exploratory pipeline completed 252 eligible cycles from 258 target-coverage cycles, with 12,560 stock-cycle rows across 62 historical symbols. The chronological holdout contains 51 NIFTY cycles beginning 2025-11-06 and 2,543 stock forecasts.
+- **Runtime/data:** 3,372.88 seconds; 1,095 Dhan requests; encrypted cache saved (418,742,717 bytes). The run began with no cache hit; subsequent runs should restore this v2 cache if source hashes and cache key material remain unchanged.
+- **NIFTY meta-model:** 26/51 correct (50.98% accuracy), balanced accuracy 53.45%, MCC 0.068, ROC-AUC 0.487. This is weak and not evidence of reliable directional discrimination.
+- **Baselines:** constituent breadth 43.14% accuracy; previous eligible-cycle direction 49.02%. Meta-model advantage over lag baseline is only 1.96 percentage points; four-cycle moving-block bootstrap 95% interval is -25.49 to +25.49 percentage points (2,000 replicates). No statistically persuasive improvement is demonstrated.
+- **Stock ExtraTrees:** 48.29% accuracy, balanced accuracy 49.10%, MCC -0.018, ROC-AUC 0.485. It does not beat a simple five-session momentum sign baseline (51.51% accuracy), though that baseline is itself weak.
+- **Decision:** C3-X is COMPLETE as an exploratory experiment, but the current models are NOT useful prediction candidates on this evidence. Do not promote to a trading strategy or use as a live signal.
+- **Data-quality caveat:** only six structural action events were present in the applied exclusion ledger, while the wider candidate catalogue contains unresolved events. C1 remains PARTIAL; C2 confirmatory remains LOCKED. This run does not waive either gate.
+- **Artifacts:** [report](EXPLORATORY_REPORT.md), [metrics](EXPLORATORY_RESULTS.json), [51-cycle holdout CSV](EXPLORATORY_NIFTY_HOLDOUT.csv), [workflow](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41325350069).
+- **Next:** perform independent arithmetic/data/split audit and fix the stale phase-status summary. Then proceed to C1 remediation and later C2/C5 only within the registered plan; no broad model sweep or repeated full Dhan download is warranted.
