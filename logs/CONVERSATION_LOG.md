@@ -156,3 +156,10 @@
 - Clarified that the run's green job conclusion did not mean the data gate passed. The current workflow has a fail-closed result step after committing sanitized diagnostics, but a later run is needed to prove runtime enforcement.
 - Kept prior successful 50/50 sample windows; did not claim continuous five-year coverage. C1 remains blocked and C2 remains gated.
 - Decision: no token-refresh loop. Next live attempt requires checking/correcting Dhan authentication secrets or adding API-key/secret OAuth credentials. No hidden reasoning or credentials are stored.
+
+
+## 2026-11-01 — User said “Proceed” after confirming setup is correct
+- Visible exchange: user confirmed “All setup correctly”; assistant proceeded without asking for credential re-entry.
+- Implemented shared TOTP input support for raw Base32 and otpauth TOTP provisioning URIs, plus sanitized Dhan HTTP Date vs runner clock-skew diagnostics. No secrets, OTPs, tokens or raw provider body values are stored.
+- PR #29 merged as cb7d304831f039bb994d819d5570a71f2bec0116. Post-merge C1 research/source-audit workflows passed; protected Dhan preflight run 41266155250 was still installing dependencies at last check.
+- This file records visible conversation decisions and actions only; hidden reasoning is not recorded.
