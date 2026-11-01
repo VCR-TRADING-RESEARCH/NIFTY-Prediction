@@ -1,0 +1,92 @@
+name: BUP-01 C1 special-session OHLCV cross-check
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c1-data
+    paths:
+      - "scripts/constituent_weekly/probe_c1_special_session_bars.py"
+      - "tests/test_c1_special_session_bars.py"
+      - ".github/workflows/bup01-c1-special-session-bars.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bup01-c1-special-session-bars-\${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  special-session-bars:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout C1 data branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c1-data
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install narrow audit dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas pyarrow requests pytest
+      - name: Validate parser and OHLCV rules offline
+        run: python -m pytest -q tests/test_c1_special_session_bars.py
+      - name: Query exact seven symbol/date pairs
+        run: python scripts/constituent_weekly/probe_c1_special_session_bars.py
+      - name: Upload sanitised cross-check report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c1-special-session-bars-\${{ github.run_id }}
+          path: |
+            research/constituent_weekly/C1_SPECIAL_SESSION_BAR_CROSSCHECK.json
+            research/constituent_weekly/C1_SPECIAL_SESSION_BAR_CROSSCHECK_REPORT.md
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Publish sanitised results to C1 branch
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          json_path="research/constituent_weekly/C1_SPECIAL_SESSION_BAR_CROSSCHECK.json"
+          md_path="research/constituent_weekly/C1_SPECIAL_SESSION_BAR_CROSSCHECK_REPORT.md"
+          if [ ! -s "$json_path" ] || [ ! -s "$md_path" ]; then
+            echo "No completed cross-check report was generated."
+            exit 1
+          fi
+          cp "$json_path" "$RUNNER_TEMP/C1_SPECIAL_SESSION_BAR_CROSSCHECK.json"
+          cp "$md_path" "$RUNNER_TEMP/C1_SPECIAL_SESSION_BAR_CROSSCHECK_REPORT.md"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin phase/constituent-weekly-outcomes-c1-data
+            git reset --hard origin/phase/constituent-weekly-outcomes-c1-data
+            cp "$RUNNER_TEMP/C1_SPECIAL_SESSION_BAR_CROSSCHECK.json" "$json_path"
+            cp "$RUNNER_TEMP/C1_SPECIAL_SESSION_BAR_CROSSCHECK_REPORT.md" "$md_path"
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -f "$json_path" "$md_path"
+            if git diff --cached --quiet; then
+              echo "No changed cross-check result."
+              exit 0
+            fi
+            git commit -m "Record C1 special-session OHLCV cross-check"
+            if git push origin HEAD:phase/constituent-weekly-outcomes-c1-data; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Could not publish sanitized results after five attempts."
+          exit 1
+      - name: Add findings to Actions summary
+        if: always()
+        run: |
+          if [ -f research/constituent_weekly/C1_SPECIAL_SESSION_BAR_CROSSCHECK_REPORT.md ]; then
+            cat research/constituent_weekly/C1_SPECIAL_SESSION_BAR_CROSSCHECK_REPORT.md >> "$GITHUB_STEP_SUMMARY"
+          fi
