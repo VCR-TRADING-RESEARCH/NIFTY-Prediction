@@ -1,0 +1,144 @@
+name: BUP-01 C2 panel-only construction and QA
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c2-panel
+    paths:
+      - "scripts/constituent_weekly/run_c2_panel_and_models.py"
+      - "scripts/constituent_weekly/publish_c2_panel.py"
+      - "tests/test_c2_panel_and_models.py"
+      - "research/constituent_weekly/C2_PANEL_SPEC.md"
+      - ".github/workflows/bup01-c2-panel-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bup01-c2-panel-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  build-panel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout formal C2 panel branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c2-panel
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            live_api/requirements.txt
+
+      - name: Install research dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r live_api/requirements.txt "cryptography>=42"
+
+      - name: Compile C2 panel runner and publisher
+        run: python -m py_compile scripts/constituent_weekly/run_c2_panel_and_models.py scripts/constituent_weekly/publish_c2_panel.py
+
+      - name: Run C2 offline regression tests
+        id: offline
+        run: python -m pytest -q tests/test_c2_panel_and_models.py
+
+      - name: Clear stale panel reports
+        run: |
+          rm -f research/constituent_weekly/C2_PANEL_BUILD.json
+          rm -f research/constituent_weekly/C2_PANEL_BUILD.md
+
+      - name: Prepare encrypted cache directory
+        run: mkdir -p ${{ runner.temp }}/bup01-tejhq-encrypted
+
+      - name: Restore encrypted C2 source and panel cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-c2-panel-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: |
+            bup01-c2-panel-${{ runner.os }}-${{ github.ref_name }}-
+
+      - name: Build point-in-time constituent panel only
+        id: panel
+        if: steps.offline.outcome == 'success'
+        continue-on-error: true
+        env:
+          C2_PANEL_ONLY: "1"
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          BUP01_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/bup01-tejhq-encrypted
+        run: python scripts/constituent_weekly/run_c2_panel_and_models.py
+
+      - name: Detect encrypted C2 cache files
+        id: cache_state
+        if: always()
+        shell: bash
+        run: |
+          if find "${{ runner.temp }}/bup01-tejhq-encrypted" -type f -name '*.aesgcm' -print -quit | grep -q .; then
+            echo "has_files=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_files=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Save encrypted C2 cache
+        if: always() && steps.cache_state.outputs.has_files == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-c2-panel-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}
+
+      - name: Upload sanitized C2 panel report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bup01-c2-panel-${{ github.run_id }}
+          path: |
+            research/constituent_weekly/C2_PANEL_BUILD.json
+            research/constituent_weekly/C2_PANEL_BUILD.md
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Publish C2 panel result and phase status
+        if: always()
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          C2_TEST_OUTCOME: ${{ steps.offline.outcome }}
+          C2_PANEL_OUTCOME: ${{ steps.panel.outcome }}
+        run: python scripts/constituent_weekly/publish_c2_panel.py
+
+      - name: Enforce formal C2 panel acceptance
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("research/constituent_weekly/C2_PANEL_BUILD.json")
+          if not path.exists():
+              raise SystemExit("C2 panel failed: no panel report.")
+          result = json.loads(path.read_text())
+          if result.get("status") != "COMPLETED":
+              raise SystemExit(f"C2 panel failed: {result.get('status')} ({result.get('fatal_error_category', 'no category')}).")
+          acceptance = result.get("acceptance", {})
+          if acceptance.get("valid_index_target_fraction", 0) < 0.98:
+              raise SystemExit("C2 panel failed: NIFTY target coverage is below 98%.")
+          if acceptance.get("primary_eligible_cycles", 0) < 105:
+              raise SystemExit("C2 panel failed: fewer than 105 cycles meet the registered 47/94% rule.")
+          if acceptance.get("duplicate_constituent_cycle_rows") != 0 or acceptance.get("duplicate_index_cycle_rows") != 0:
+              raise SystemExit("C2 panel failed: duplicate cycle rows.")
+          print("Formal C2 panel build and acceptance checks passed.")
+          PY
