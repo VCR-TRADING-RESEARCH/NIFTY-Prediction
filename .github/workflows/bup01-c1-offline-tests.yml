@@ -9,9 +9,11 @@ on:
       - "scripts/refresh_dhan_token.py"
       - "scripts/constituent_weekly/dhan_equity_preflight.py"
       - "scripts/constituent_weekly/diagnose_shreecem_edge_volume.py"
+      - "scripts/constituent_weekly/iwf_math.py"
       - "tests/test_dhan_token_refresh_script.py"
       - "tests/test_constituent_weekly_dhan_preflight.py"
       - "tests/test_dhan_edge_volume_diagnostic.py"
+      - "tests/test_iwf_math.py"
       - "tests/test_nifty50_weight_source.py"
       - ".github/workflows/bup01-c1-offline-tests.yml"
   pull_request:
@@ -50,5 +52,6 @@ jobs:
             tests/test_dhan_token_refresh_script.py \
             tests/test_constituent_weekly_dhan_preflight.py \
             tests/test_dhan_edge_volume_diagnostic.py \
+            tests/test_iwf_math.py \
             tests/test_nifty50_weight_source.py \
             tests/test_bup01_membership_intervals.py
