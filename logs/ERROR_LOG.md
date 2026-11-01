@@ -496,3 +496,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** The successful sanitised report is committed through the repository Git data API. The workflow publisher is upgraded to bounded fetch/rebase/push retries; it never force-pushes.
 - **Impact:** No research result or raw data was lost. The report is now committed at C1; no raw holdings or workbook data are stored.
 - **Status:** CLOSED — bounded publisher verified by successful workflow [41275487989](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275487989); all probe steps and report publication completed successfully without force-push.
+
+
+## E0061 — 2026-11-01 — Official Nippon archive lower bound was under-reported
+
+- **Observed:** The initial historical archive note said the visible Nippon India monthly portfolio index began in September 2013.
+- **Root cause:** The earlier page inspection did not inspect the final older archive lines.
+- **Correction:** Re-opened and searched the full rendered official archive. It explicitly lists monthly portfolio files down to 30 September 2012 (lines 555–561 of the source page), including the April 2019 entry elsewhere in the same index.
+- **Impact:** The archive discovery range is corrected to September 2012. This does not imply every file in the range is downloadable, legally reusable, or present without gaps.
+- **Status:** CLOSED — audit, status, source register and README summaries updated. No model input or empirical data were altered.
