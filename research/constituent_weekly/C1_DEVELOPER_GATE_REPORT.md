@@ -185,3 +185,15 @@ Implement and test a rate-limited, cache-aware Dhan <=90-day chunk coverage runn
 - Added point-in-time mapping rows for ZOMATO→ETERNAL, TATAGLOBAL→TATACONSUM, and TATAMOTORS→TMPV, plus major issuer-event rules. HDFC Ltd remains separate from HDFCBANK. DUMMYTATAM remains excluded.
 - Offline tests now cover point-in-time symbol resolution and event dates.
 - **Gate:** identity mapping is improved but remains PARTIAL; the new ledger does not replace the exhaustive corporate-action/adjusted-return review. C1 is not passed; C2 remains pending.
+
+
+## Developer gate addendum — 2026-11-01 intraday target coverage
+
+The live Dhan audit [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865) printed C1_CONTINUOUS_COVERAGE_GATE_PASSED:
+- 258 scheduled expiry cycles; 258 valid observed NIFTY anchor/expiry target pairs.
+- 258 cycles met the at least 47 and at least 94% point-in-time constituent input rule.
+- 154 confirmatory cycles remain after the 104-cycle warm-up.
+- Zero unresolved active symbols; 1,083 Dhan requests across 21 windows.
+- One index chunk (2024-01-31 to 2024-04-29) was marked PARTIAL_TARGET_DATES, while cycle-level count remained 258/258. The date-level flag was not retained due publication conflict.
+
+**Gate scope:** intraday target coverage sub-gate PASS. C1 overall remains NOT PASSED: daily feature history and exhaustive action-adjusted return validation remain open. C2 remains PENDING.
