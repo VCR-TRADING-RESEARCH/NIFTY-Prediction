@@ -1,7 +1,7 @@
 # Bottom-Up NIFTY 50 Weekly Expiry Prediction — Pre-Registered Plan
 
 **Track ID:** BUP-01  
-**Plan version:** 1.1  
+**Plan version:** 1.2  
 **Registered:** 2026-10-31  
 **Status:** Locked for the first bounded research cycle  
 **Research branch:** phase/constituent-weekly-outcomes-c0
@@ -138,6 +138,24 @@ Numeric aggregation must use official point-in-time weight/IWF evidence or an au
 - Never commit or log Dhan tokens, client IDs, PINs, TOTP seeds, API keys or sensitive auth payloads.
 - Fail closed on authentication or data failure. Never reuse a stale successful prediction for a failed current request.
 
+## 4.4 Public ETF portfolio holdings proxy (version 1.2 amendment)
+
+Where a complete historical official constituent-weight/IWF series cannot be obtained from the available public sources, BUP-01 may run a separately reported **ETF-replica proxy** track using published holdings of Nippon India ETF Nifty 50 BeES. This is an exploratory fallback, not a relabelling of ETF holdings as official NIFTY 50 weights or IWF. The original official-weight confirmatory track remains separately identified wherever official data are available.
+
+The AMC describes a passive replication objective: hold the securities constituting NIFTY 50 in the same proportion as the index. A one-date calibration against an NSE Indices white-paper snapshot on 2026-02-27 matched 50/50 stocks. After independently normalising equity holdings to 100% and excluding 0.08% cash, mean absolute difference was 0.002214 percentage points, RMSE 0.003204 points, maximum absolute difference 0.008967 points and Pearson correlation 0.99999895. This single-date result is calibration only; it is not evidence of historic accuracy or exact daily replication.
+
+Rules for the proxy track:
+1. Keep source snapshot date, actual publication timestamp, period end, scheme, source URL, source hash, acquisition timestamp and source method in separate fields. A portfolio period-end date is not its publication date.
+2. Normalize only constituent equity holdings to 100%. Exclude cash, debt, collateral and non-equity assets from the equity denominator, and report their share of NAV separately. Do not treat an ETF position outside the point-in-time NIFTY universe as an index constituent.
+3. Use a snapshot only when it was published by the forecast timestamp. If an exact public publication timestamp is unavailable, use period-end + 15 calendar days as an explicitly imputed conservative availability proxy and report +10/+20 day sensitivities. Never use a not-yet-disclosed quarter/month snapshot.
+4. Between observed snapshots, weights may be drifted using the fixed-share basket identity: prior normalized equity weight multiplied by the stock's adjusted price relative, then renormalized over the unchanged universe. This is valid only while share quantities, IWF, membership and corporate-action status are unchanged. It is not an IWF calculation.
+5. Reseed after every known NIFTY constituent change, IWF/free-float update, share-capital change or corporate action. Use dated official index notices and corporate-action/ISIN records. If event effective date, new stock weight or security continuity is unresolved, exclude the affected cycle rather than carrying stale weights or using a future snapshot.
+6. SEBI Circular SEBI/HO/IMD/PoD2/P/CIR/2024/183 changed equity passive-scheme portfolio disclosure to within 10 days after each quarter, effective 2025-03-16. Do not assume monthly snapshots were legally required after that date; a voluntary monthly factsheet may be used only with its own verifiable publication timestamp. Prior periods require their then-applicable disclosure rule and source evidence.
+7. Maintain an explicit ETF tracking-difference, cash, trading, replication, corporate-action and stale-snapshot risk register. Proxy output must be labelled ETF-replica or ETF-holdings-derived, never official NIFTY IWF.
+8. Official weights, ETF proxy weights and reconstructed/provisional weights must be stored in separate source classes and tested side by side. Missing weight is never silently renormalized away. For any admitted cycle maintain at least 98% point-in-time weight coverage and at least 47 valid constituents.
+
+Proxy-track acceptance is a bounded, exploratory C1 sub-gate: complete point-in-time holdings/membership/security identity for the relevant cycles, leakage-safe availability timestamps, action-adjusted price drift, and matched-cycle basket-vs-index reconciliation must pass before C2 exploratory modelling. The original confirmatory C1 gate still requires official methodology/weight reconciliation. Results from proxy and confirmatory tracks must never be pooled without an explicit sensitivity analysis.
+
 ## 6. Causal feature families
 
 Every feature must be available by 10:00 IST. The 10:00 bar's open may be used as the anchor; its later high, low, close and volume must not enter the feature row. All transforms and cross-sectional ranks are fit within training folds.
@@ -206,7 +224,7 @@ Each phase has its own branch. Update status and logs after every phase step. Th
 | Phase | Planned branch | Deliverables | Acceptance gate |
 |---|---|---|---|
 | C0 — Registration/governance | phase/constituent-weekly-outcomes-c0 | Locked plan, questions, sources, literature, status/logs, tests and workflow | Governance files committed; structural checks pass |
-| C1 — Point-in-time universe/data audit | phase/constituent-weekly-outcomes-c1-data | Membership/security master, corporate actions, historical weights/IWF, price coverage and source manifest | Membership and numeric weights independently reconciled; causal timestamps and actions pass; 98% weight coverage for accepted cycles; weighted basket reconstruction within frozen tolerance |
+| C1 — Point-in-time universe/data audit | phase/constituent-weekly-outcomes-c1-data | Membership/security master, corporate actions, official weights/IWF where available, ETF holdings proxy and source manifest | For confirmatory track: official weights reconciled. For exploratory proxy track: published holdings point-in-time validated, 98% weight coverage, dated membership/actions pass and weighted basket reconstruction within frozen tolerance |
 | C2 — Panel labels/features | phase/constituent-weekly-outcomes-c2-panel | Stock-cycle panel, index targets, causal features, hashes, frozen split and tests | No duplicate security-cycle, future leakage, identifier/action errors; exclusions documented |
 | C3 — Stock models/baselines | phase/constituent-weekly-outcomes-c3-models | Walk-forward stock forecasts, baselines, experiment registry and metrics | Pre-registered candidates; comparison with baselines and clustered uncertainty; holdout sealed |
 | C4 — Index aggregation/uncertainty | phase/constituent-weekly-outcomes-c4-aggregation | Weighted expected-return forecast, joint probability, benchmark results, calibration and robustness charts | Matched-cycle bottom-up comparison; improvement with evidence or explicit negative/inconclusive result |
@@ -215,7 +233,7 @@ Each phase has its own branch. Update status and logs after every phase step. Th
 
 ## 11. Stop rules
 
-1. Stop at C1 if point-in-time membership, numeric free-float weights or required stock coverage cannot be independently established from free/available sources and the configured Dhan subscription. Publish the exact gaps; do not search endlessly or fabricate proxies.
+1. Stop confirmatory C1 if official point-in-time membership/weights cannot be independently established. The separately labelled ETF-replica proxy track may proceed through its own exploratory gate using public disclosed holdings, but only with point-in-time availability, event handling, 98% weight coverage and basket reconciliation. Do not fabricate proxies or merge them with official results.
 2. Stop confirmatory aggregation if the realised weighted constituent basket does not reconcile with official NIFTY under the tolerance frozen before modelling.
 3. Do not train on a panel with future membership, unresolved security mapping, non-causal features or unhandled corporate actions.
 4. Do not retune on the final holdout. No unbounded model or strategy search beyond the candidates above.
