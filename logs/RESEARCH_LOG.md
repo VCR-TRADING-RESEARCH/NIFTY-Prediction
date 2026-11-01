@@ -542,3 +542,17 @@
 - **CI:** Corrected membership regression run [41289992040](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289992040) SUCCESS. C1 authorised-source audit [41289991986](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289991986) SUCCESS. Dhan preflight run [41289992028](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289992028) SUCCESS for offline/cache steps; live Dhan steps were skipped because it was a pull-request event.
 - **Limitation:** All weights are blank in the imported CC BY source. Membership is now independently cross-checked, but historical numerical weights/IWF are not resolved.
 - **Error correction:** E0063 logs that the test originally expected 79 rather than 103 months; the corrected test and suite passed.
+
+
+
+## 2026-11-01 — mfdata.in historical-month endpoint probe (bounded attempt)
+
+- **Phase / step:** BUP-01 C1 — independent mutual-fund source discovery and archive-history coverage.
+- **Documentation reviewed:** [mfdata.in API docs](https://mfdata.in/docs) describe the no-auth /api/v1/search, /api/v1/families, and /api/v1/families/{family_id}/holdings/history routes. The history route returns available YYYY-MM labels; actual month-specific portfolio contents require a separate /holdings?month=YYYY-MM request, which was deliberately not called.
+- **Implementation:** Updated scripts/constituent_weekly/probe_amcs_fund_metadata.py with documented search + family-catalogue + legacy-schemes bounded fallbacks; limited family-ID detail resolution and history probes; recursive month parsing; month-gap/continuity metrics. No per-security holdings values or source workbooks are retained.
+- **Tests:** [Actions run 41297143071](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41297143071) passed 13/13 metadata parser/sanitisation tests and published the report.
+- **Live result:** /search, /families and /schemes discovery requests all returned HTTP 522. The run never discovered a family ID, so the monthly history endpoint was not reached. No historical coverage result can be reported; the route remains **INCONCLUSIVE**, not zero coverage.
+- **Rights/provenance:** Documentation says the API is free/no-auth and is rate limited; this does not establish a licence to extract, cache, redistribute or use aggregated upstream holdings in commercial trading research. No clear underlying financial-data licence, source-per-snapshot citation, or first-publication timestamp was established.
+- **Phase outcome:** This route is retained as a documented fallback candidate, but it is not an admitted data source. No holdings downloaded, no model training, no forecast. BUP-01 plan v1.2 unchanged; C1 remains NOT PASSED / RIGHTS-BLOCKED.
+- **Next bounded action:** No immediate network retry loop. Continue to an independently accessible AMC mother-source route only where access and data-use terms allow; reopen mfdata only when provider access is available.
+
