@@ -23,3 +23,14 @@ C2/model work remains gated until C1 acceptance conditions are met.
 - Keep official white-paper/official weights, ETF holdings, and reconstructed/drifted proxy weights in distinct source classes. Preserve actual publication timestamps or explicitly flagged imputed availability; do not introduce future snapshots.
 - Single-date 2026-02-27 calibration against the official NSE Indices weight snapshot: 50/50 matched; MAE 0.002214 pp; RMSE 0.003204 pp; max abs difference 0.008967 pp; Pearson r 0.99999895. Historical series and event reconciliation remain to be built.
 - Plan amended to v1.2. The official confirmatory gate remains separate; proxy results are exploratory until a point-in-time history and basket-to-index reconciliation pass.
+
+
+
+## 2026-11-01 — v1.3 aggregation-scope direction
+
+- User instruction: “No comparison needed. Proceed”.
+- Interpreted narrowly as: do not compare ETF portfolio holdings/weights with official NIFTY index weights; do not require a historical IWF/weight series or weight reconstruction to proceed.
+- Replaced the active weight-based aggregation with unweighted, strictly out-of-fold constituent forecast summaries (predicted breadth, stock UP probabilities/returns, dispersion, sector breadth, concentration and member coverage) feeding a chronological NIFTY-direction meta-model.
+- The target remains the observed NIFTY 50 index move from the 10:00 anchor to the latest valid 15:00–15:14 one-minute close (15:15 proxy). The equal-weight constituent basket is only a diagnostic and is never labelled the NIFTY index return.
+- Historical AMC/ETF data are not downloaded or compared; the Nippon bulk-download workflow is paused pending written reuse permission. Existing weight/ETF artifacts are historical audit records only and are excluded from v1.3 model inputs.
+- Plan v1.3 retains point-in-time membership/security identity, corporate actions, expiry verification, continuous stock/index bar coverage, leakage-safe walk-forward validation, minimum history, and the Paytm Money cost/slippage gate.
