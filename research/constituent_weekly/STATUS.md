@@ -541,3 +541,13 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - **ETF/AMC status:** no holdings rows were ingested. Bulk AMC workbook automation is paused because Nippon AMC terms do not affirmatively permit this reuse without prior written consent. The previous schema probes are discovery evidence only. mfdata.in's HTTP 522 result is inconclusive and is no longer a gate for v1.3.
 - **C2 remains PENDING** until the revised C1 data gate passes. No stock panel, model, forecast or strategy has been created. The Paytm Money cost/slippage gate remains mandatory for any later trading claim.
 - [Locked plan v1.3](RESEARCH_PLAN.md), [user decisions](C1_USER_DECISIONS.md), [data source register](DATA_SOURCE_REGISTER.md), [developer gate report](C1_DEVELOPER_GATE_REPORT.md).
+
+
+## Effective-dated security alias and corporate-action audit — 2026-11-01
+
+- Added [effective-dated security alias history](../../data/constituent_weekly/security_alias_history.csv), [major corporate-action event ledger](../../data/constituent_weekly/security_corporate_action_events.csv), and a tested resolver in [security_identity.py](../../scripts/constituent_weekly/security_identity.py).
+- **Important correction:** the membership ledger's canonical LTM entry for 2023-07-13 through 2024-09-30 was actually traded under NSE symbol LTIM. The alias resolver now returns LTIM for that period and LTM from 2026-02-27. The underlying issuer/security identity is the same; no predecessor LTI or Mindtree price history is stitched into the merged entity.
+- Also captured ZOMATO → ETERNAL (2025-04-09), TATAGLOBAL → TATACONSUM (2020-02-27), and TATAMOTORS → TMPV (2025-10-24), with separate price-continuity rules.
+- HDFC Ltd remains a distinct predecessor security (Dhan legacy ID 1330); it is not mapped to HDFCBANK. HDFC merger and Tata Motors demerger target-crossing stock cycles are excluded from that constituent's return target. DUMMYTATAM stays non-tradable.
+- **Limit:** this is a major issuer-identity/rename/merger/demerger ledger, not an exhaustive dividends/splits/bonus/rights/capital-restructuring adjustment ledger. Corporate-action governance therefore remains PARTIAL and does not unlock C2.
+- New offline identity tests are running in [Actions 41302695594](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41302695594). The continuous Dhan coverage job [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865) remains in its live request step at the time of this update.

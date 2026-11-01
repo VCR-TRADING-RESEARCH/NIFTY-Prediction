@@ -177,3 +177,11 @@ The historic ETF/IWF files and reports remain only as audit history; they are no
 ### Next bounded developer action
 
 Implement and test a rate-limited, cache-aware Dhan <=90-day chunk coverage runner for the point-in-time stock universe **and the NIFTY index target**, with separate source IDs, security identity/action manifests, missing-session diagnostics and sanitized output only. Validate a manageable date slice and request-count/runtime guards first, then continue across the registered confirmatory window without repeated token-generation loops. No C2 fitting until the C1 coverage panel and target calendar are accepted.
+
+
+## Developer addendum — dated symbol identity correction (2026-11-01)
+
+- Found that project membership rows use canonical symbol LTM for the 2023-07-13 to 2024-09-30 LTIMindtree interval. Exchange records show actual ticker LTIM throughout that interval, with LTIM→LTM effective 2026-02-27; the company entered NIFTY 50 on 2023-07-13 and exited effective 2024-09-30. The C2 identity resolver correctly returns LTIM for the membership interval and resolves it to the current LTM security identity.
+- Added point-in-time mapping rows for ZOMATO→ETERNAL, TATAGLOBAL→TATACONSUM, and TATAMOTORS→TMPV, plus major issuer-event rules. HDFC Ltd remains separate from HDFCBANK. DUMMYTATAM remains excluded.
+- Offline tests now cover point-in-time symbol resolution and event dates.
+- **Gate:** identity mapping is improved but remains PARTIAL; the new ledger does not replace the exhaustive corporate-action/adjusted-return review. C1 is not passed; C2 remains pending.

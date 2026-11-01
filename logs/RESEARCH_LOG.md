@@ -583,3 +583,13 @@
 - **Validation:** the preceding mother-source metadata workflow [41298336318](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41298336318) completed SUCCESS, including offline tests and metadata probe. The v1.3 plan/offline workflow is running on the amended branch; record its final result when complete.
 - **Current phase decision:** C0 PASS; C1 PARTIAL / CONTINUOUS-COVERAGE GATE IN PROGRESS. No C2 panel, stock model, forecast, strategy or final manuscript exists. Locked plan v1.3; no weight comparison is to be performed.
 
+
+
+## 2026-11-01 — C1 effective-dated security identity review
+
+- **Finding:** the membership ledger uses canonical LTM for the 2023-07-13 to 2024-09-30 LTIMindtree interval. Exchange records show actual ticker LTIM throughout that interval, with LTIM→LTM effective 2026-02-27. The C2 identity resolver now distinguishes point-in-time ticker from current/canonical security key.
+- **Additional aliases:** ZOMATO→ETERNAL from 2025-04-09; TATAGLOBAL→TATACONSUM from 2020-02-27; TATAMOTORS→TMPV from 2025-10-24. These are recorded as symbol history; scheme and demerger price discontinuities are not assumed adjusted.
+- **Security safeguards:** HDFC Ltd (legacy Dhan ID 1330) remains a distinct security from HDFCBANK. Tata Motors demerger ex-date 2025-10-14 is retained as an event where raw return continuity is invalid. The placeholder DUMMYTATAM remains non-tradable.
+- **Artifacts:** security_alias_history.csv, security_corporate_action_events.csv, security_identity.py, tests/test_c1_security_alias_history.py.
+- **Limitation:** this is a major identity/event ledger, not a complete dividend/split/bonus/rights adjustment series. C1 stays partial; no model or stock return label is built from these mappings yet.
+- **Workflow:** alias/identity regression run [41302695594](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41302695594) pending; continuous Dhan run [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865) was still processing at this log point.

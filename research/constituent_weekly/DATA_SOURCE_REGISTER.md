@@ -303,3 +303,15 @@ The user directed: “No comparison needed.” The active BUP-01 model no longer
 **Retired / not used in v1.3:** NSE historical weight ZIPs, XBRL-derived IWF, the AMP4010 non-commercial weight cache, and AMC ETF portfolio holdings. Existing files/reports are retained as historical audit material only; they are not model inputs, are not refreshed and must not be described as official index weights. The Nippon AMC bulk workbook workflow is paused under the AMC's published restrictions on aggregation/copying and reuse of proprietary site content without prior written consent.
 
 **C1 acquisition gates:** continuously test the full point-in-time stock and NIFTY intraday target coverage using <=90-day chunks; retain source and request manifests, hashes and sanitized QA; preserve all stock/member exclusions and corporate-action boundaries. Do not place raw broker bars, credentials or restricted source rows in the public repository. A cycle requires at least 47 valid stock forecasts and >=94% of its point-in-time tradable members; at least 98% of scheduled cycles must have a valid observed NIFTY target before the confirmatory sample is frozen.
+
+
+## 2026-11-01 — effective-dated security aliases and major issuer events
+
+The BUP-01 v1.3 track now stores:
+- [security_alias_history.csv](../../data/constituent_weekly/security_alias_history.csv): exchange-symbol valid-from/to intervals for LTIM/LTM, ZOMATO/ETERNAL, TATAGLOBAL/TATACONSUM, TATAMOTORS/TMPV and HDFC Ltd's separate legacy security.
+- [security_corporate_action_events.csv](../../data/constituent_weekly/security_corporate_action_events.csv): merger, demerger, scheme and symbol-change events plus stock-cycle exclusion/continuity rules.
+- [security_identity.py](../../scripts/constituent_weekly/security_identity.py): deterministic point-in-time symbol resolution used by the C2 panel and checked by unit tests.
+
+The alias ledger relies on published exchange circulars and company/exchange announcements. Dated aliases resolve the market symbol only; they do not confer price adjustment or prove that raw bars are total-return consistent. HDFC Ltd remains a separate security from HDFCBANK. The LTIMindtree member interval must be read as LTIM until the Feb 27, 2026 symbol change to LTM. The Zomato member interval begins March 28, 2025, when the actual ticker remained ZOMATO until April 9, 2025.
+
+The major-event file is not an exhaustive issuer corporate-action ledger. Splits, bonuses, rights, dividends, demergers and other return-affecting events still require a complete action-aware adjusted-return review before C2 labels are admitted.

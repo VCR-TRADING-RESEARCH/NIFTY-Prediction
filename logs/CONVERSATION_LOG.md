@@ -321,3 +321,12 @@
 - The observed NIFTY index series remains the target. Equal-weight stock-basket statistics are diagnostics only and are not called NIFTY returns.
 - Updated plan, validator/tests, C1 status, user-decision record, source register and developer handoff. Removed the historical weight-cache refresh from Dhan workflow and paused bulk AMC workbook downloads, keeping offline parser tests.
 - C1 still requires continuous stock/index 90-day-chunk coverage, verified expiries, dated security IDs/ISINs and corporate actions. C2 modelling remains gated. Only visible decisions/outcomes are recorded; no hidden reasoning or credentials are stored.
+
+
+## 2026-11-01 — user said “Ok proceed” (continuation of C1 coverage)
+
+- Continued the C1 Dhan stock + NIFTY index target coverage audit and inspected the security-identity blockers while the historical data request workflow runs.
+- Found the project canonical membership symbol LTM does not match the point-in-time exchange ticker LTIM during the 2023-07-13 to 2024-09-30 NIFTY member interval. Added an effective-dated alias resolver; it resolves the same LTIMindtree listed security and does not stitch LTI/Mindtree predecessor histories.
+- Added alias/action records for ZOMATO/ETERNAL, TATAGLOBAL/TATACONSUM, TATAMOTORS/TMPV, HDFC/HDFCBANK (explicitly separate), and the non-tradable TATAMOTORS placeholder.
+- The identity ledger is not yet exhaustive for splits, bonuses, dividends, rights or all issuer events. C1 remains partial and C2 stays gated.
+- Only visible decisions and outcomes are recorded; no hidden reasoning or credentials are stored.

@@ -310,3 +310,10 @@ The documented [mfdata.in API](https://mfdata.in/docs) advertises a no-key searc
 The current active method is weight-free. The user directed “No comparison needed”, so there will be **no ETF holdings versus official NIFTY index-weight comparison**. The model will use strictly out-of-fold stock forecasts and unweighted per-cycle breadth, probability/return summaries, dispersion, sector breadth and member coverage to predict the observed NIFTY 50 index label. The observed index series remains the outcome; an equal-weight constituent basket is never called the NIFTY return.
 
 Automated AMC workbook downloads are paused; the remaining AMC workflow runs parser tests only. The Dhan C1 workflow no longer fetches or refreshes the historical weight cache. C1 stays open on continuous stock/index candle coverage, expiry dates and dated security/action identity. [Plan v1.3](research/constituent_weekly/RESEARCH_PLAN.md) · [user decision](research/constituent_weekly/C1_USER_DECISIONS.md) · [C1 status](research/constituent_weekly/STATUS.md) · [research log](logs/RESEARCH_LOG.md) · [error log](logs/ERROR_LOG.md).
+
+
+## C1 identity audit update — 2026-11-01
+
+A dated security-alias layer now translates canonical membership symbols to the exchange ticker actually traded at each date. This corrects LTIMindtree's 2023–2024 NIFTY membership interval to the actual symbol LTIM (not later symbol LTM), and captures the ZOMATO/ETERNAL, TATAGLOBAL/TATACONSUM and TATAMOTORS/TMPV transitions. HDFC Ltd remains distinct from HDFCBANK, and the Tata Motors demerger ex-date is not treated as a continuous raw-price interval. See [security alias history](data/constituent_weekly/security_alias_history.csv), [major corporate-action events](data/constituent_weekly/security_corporate_action_events.csv), [identity resolver](scripts/constituent_weekly/security_identity.py), and [C1 identity review](research/constituent_weekly/C1_HISTORICAL_SYMBOL_IDENTITY.md).
+
+This is a major-identity correction, not the exhaustive adjustment ledger for dividends/splits/bonus/rights actions; C1 remains PARTIAL. [Latest C1 status](research/constituent_weekly/STATUS.md).
