@@ -16,7 +16,17 @@
 | C5 — Economic/execution gate | GATED | Contract-level fills and date-effective Paytm Money costs required before any strategy claim |
 | C6 — Manuscript/independent audit | GATED | Complete manuscript, plots, tables, appendices and formula/repository audit
 
-## Latest gate update — 2026-11-01
+## Latest gate update — 2026-11-02
+
+- **Daily OHLCV coverage: PASS.** 106,392/106,392 member sessions across 70 point-in-time symbols; zero OHLC/volume gaps; 100% minimum per-symbol coverage. The daily auditor restored the encrypted cache, downloaded zero TejHQ yearly partitions, and merged seven supplemental official-NSE rows.
+- **Official NSE residual archive audit: PASS.** All seven remaining symbol/date pairs (six HDFC sessions and TATAMOTORS 2025-10-21) passed exact symbol/date/EQ, OHLC, volume and ISIN validation using legacy CM and UDiFF archive formats. Raw rows are retained only in AES-GCM encrypted Actions cache.
+- **Intraday weekly target coverage: PASS on registered audit set.** 258/258 cycles pass the registered stock-member and NIFTY target coverage checks. Expiry proxy remains the latest valid 15:00–15:14 IST candle (15:15 proxy).
+- **Security identity: PARTIAL / REVIEW.** Historical alias resolution remains 79/84 against the current master; dated predecessor/successor identity needs closure for in-scope observations.
+- **Corporate actions: NOT PASSED.** 18,361 deduplicated discovery candidates include 711 point-in-time member events. Independent exchange/issuer verification, event-specific terms and affected-cycle adjusted-return/exclusion ledger remain open.
+- **Decision:** C1 overall remains PARTIAL; C2–C6 remain gated. ETF/IWF weight comparison and basket-to-index reconstruction are not C1 requirements under locked v1.3.
+- Evidence: [daily coverage run 41344197015](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41344197015), [direct NSE audit 41344104457](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41344104457), [offline regression run 41344196948](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41344196948).
+
+## Historical gate update — 2026-11-01 (superseded by 2026-11-02 evidence)
 
 - **Expiry proxy gate: PASS on the tested sample.** By user instruction, the expiry observation is the close of the latest one-minute candle timestamped 15:00 through 15:14 IST, treated as a 15:15 proxy and not mislabeled as the 15:30 exchange close. Protected run [41247509692](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41247509692) passed all 10 five-symbol/two-date anchor and expiry-proxy checks; all selected the 15:14 candle.
 - **Current universe: 50/50. Historical symbol master match: 79/84.** A separate legacy HDFC Ltd ID test passed on 2022-10-31 and 2023-06-30 (2/2). JPASSOCIAT, RANBAXY and MCDOWELL-N only appear in the ledger in 2014, before the confirmatory 2018-04 start. TATAMOTORS/TMPV remains a dated demerger/symbol boundary; pre/post prices must not be joined unadjusted.
@@ -46,7 +56,7 @@ No model training until point-in-time membership, numeric free-float weights, se
 - C1 remains IN PROGRESS / RIGHTS-BLOCKED: the one-time September 2026 CSV passed only a structural check; no licensed historic weights, certified membership history, constituent stock data or basket reconstruction has passed empirical validation.
 
 
-## C1 source-audit work started
+## Historical C1 source-audit work started (pre-v1.3; superseded)
 
 - Official report discovery: identified the NSE Indices monthly weightage ZIP families and the corresponding NSE India all-reports category.
 - Automated retrieval: initial one-time Actions test downloaded a sample before terms review. All subsequent remote retrieval and raw artifact uploads have been disabled; the workflow now inspects only separately authorised local archives.
@@ -64,7 +74,7 @@ No model training until point-in-time membership, numeric free-float weights, se
 - C1 acceptance: NOT PASSED until licensed/authorised point-in-time weights, membership, identifiers, corporate actions, equity bar coverage and basket reconciliation pass.
 <!-- C1_FETCH_STATUS_END -->
 
-## C1 decision update — 2026-10-31
+## Historical C1 decision update — 2026-10-31 (pre-v1.3; superseded)
 
 - Technical sample result: September 2026 NIFTY50 CSV has a title preamble, table header at row index 2, 50 unique symbol rows and displayed weight total 100.0%. No individual symbol/weight values are reproduced.
 - A third-party current-members CSV (project README dates it March 2026) differs from the September sample by one name each: candidate-only WIPRO, report-only BSE. Treat it as stale/date-mismatched, not ground truth.
