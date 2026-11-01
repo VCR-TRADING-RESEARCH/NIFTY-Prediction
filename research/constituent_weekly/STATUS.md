@@ -682,3 +682,11 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Run [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741): regression suite PASS (22 tests).
 - Live Dhan panel reconstruction/model evaluation remains in progress; no output metrics/artifact are available yet.
 - Earlier two workflow attempts failed during test collection before Dhan access; corrected import/fixture now pass.
+
+
+## C3-X feature runtime optimization — 2026-11-01
+
+- Reused one precomputed daily history per stock across all its weekly cycle feature rows.
+- Feature values remain strictly causal: prior daily rows only, plus same-day pre-anchor bars and the 10:00 anchor open.
+- Added test for equivalence between direct and precomputed feature paths.
+- Current active run [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741) uses the earlier checkout; subsequent queued run uses the optimization. Validation pending.
