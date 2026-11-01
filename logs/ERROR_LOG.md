@@ -742,3 +742,16 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Error category: RuntimeError.
 - Source location: {'file': 'run_c2_panel_and_models.py', 'function': 'main', 'line': 586}.
 - No panel acceptance is claimed for this run.
+
+
+
+## E0094 — 2026-11-02 — C2 Dhan daily responses contained no parseable OHLCV arrays
+
+- **Run:** [41349085435](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41349085435).
+- **Observed:** Authentication, Python compilation and seven offline tests passed. The C2 runner then completed 1,083 intraday requests before all 62 daily-history requests were rejected by the shared C1 parser as `MISSING_DAILY_ARRAY`. The primary panel consequently had insufficient feature rows and failed the 105-cycle acceptance gate.
+- **Important distinction:** C1's independently audited daily history remains 106,392/106,392 valid OHLCV member sessions. This C2 run did not disprove that evidence; it failed to retrieve/parse the same source class in its own acquisition sequence.
+- **Root cause status:** Not yet established. The current response diagnostics were insufficient to distinguish provider throttling/empty payload from a schema difference. No response values or secrets were logged.
+- **Correction attempt 1:** Reordered C2 acquisition to request the 62 daily histories before the 1,083 high-volume intraday requests, reducing the risk of Dhan request-budget interference. Commit `d37382c`.
+- **Correction attempt 2:** Added sanitized daily response-shape diagnostics (status, top-level/data keys, data type and array lengths only) to failure output. Commit `45839fa`.
+- **Validation:** Offline tests passed in the preceding run (7 passed). The ordered/diagnostic reruns [41350817688](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41350817688) and [41350828764](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41350828764) are queued/in progress; do not claim C2 complete until one publishes a passing panel report.
+- **Security:** No raw market values, access tokens, PINs or TOTP secrets were written to logs.
