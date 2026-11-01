@@ -1,8 +1,8 @@
 # C1 Continuous Dhan Stock and NIFTY Target Coverage Report
 
-**Updated:** 2026-11-01T12:06:48.217023+00:00
-**Status:** PARTIAL_OR_BLOCKED_TARGET_COVERAGE
-**Target coverage gate:** FAIL
+**Updated:** 2026-11-01T13:36:16.526004+00:00
+**Status:** DATA_COVERAGE_PASS_IDENTITY_ACTION_REVIEW_PENDING
+**Target coverage gate:** PASS
 **Security/action gate:** SYMBOL_MAPPING_RESOLVED_KNOWN_AND_UNIVERSAL_CORPORATE_ACTION_REVIEW_PENDING
 
 ## Registered scope
@@ -18,13 +18,13 @@
 | Metric | Result |
 |---|---:|
 | Scheduled cycles | 258 |
-| Valid NIFTY target cycles | 77 |
-| NIFTY target valid fraction | 29.84% |
-| Cycles meeting 47 / 94% stock rule | 64 |
-| Cycles meeting stock + index data gates | 64 |
-| Confirmatory cycles after 104 prior cycles | 0 |
-| Minimum constituent coverage fraction | 0.00% |
-| Median valid constituents | 0.0 |
+| Valid NIFTY target cycles | 258 |
+| NIFTY target valid fraction | 100.00% |
+| Cycles meeting 47 / 94% stock rule | 258 |
+| Cycles meeting stock + index data gates | 258 |
+| Confirmatory cycles after 104 prior cycles | 154 |
+| Minimum constituent coverage fraction | 98.00% |
+| Median valid constituents | 50.0 |
 
 ## Known corporate-action crossing exclusions
 
