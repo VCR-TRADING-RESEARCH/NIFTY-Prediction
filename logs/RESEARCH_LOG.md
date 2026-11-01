@@ -814,3 +814,8 @@
 - **Correction:** Replaced repeated per-symbol Dhan daily-history requests with the pinned NSE EQ yearly partitions already used in C1, using C1's authenticated AES-GCM cache helpers and the seven official-NSE supplemental residual rows. C2 now uses the same daily source lineage as the 100% C1 audit; source rows remain encrypted in Actions cache.
 - **Workflow correction:** Fixed C2 workflow trigger/checkout branch mismatch so the C2 panel workflow runs from `phase/constituent-weekly-outcomes-c2-panel`; personal-use dataset opt-in is explicit.
 - **Validation:** Rerun [41351049298](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351049298) started; awaiting its data, panel, and model results. The C2 gate remains IN PROGRESS until sanitized panel QA passes.
+
+
+## 2026-11-02 — C2 runtime dependency correction
+- Follow-up to the C2 daily-source correction: run [41351049298](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351049298) exited before data loading with `ModuleNotFoundError` because the C2 workflow omitted `huggingface_hub` and `pyarrow`.
+- Added both explicit dependencies, matching C1's working data-acquisition environment. Workflow commit: [8de2176](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8de2176dedca820dabbc20f26570de9958bb98b0). No panel result is claimed until the new run passes.
