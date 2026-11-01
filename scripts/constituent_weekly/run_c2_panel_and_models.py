@@ -475,6 +475,25 @@ def main() -> int:
         manifest_hash = sha256(json.dumps(manifest, sort_keys=True).encode())
         result["input_manifest"] = {**manifest, "hash": manifest_hash}
 
+        daily_frames = {}
+        daily_requests = daily_hits = 0
+        daily_from = "2018-04-01"
+        daily_to = (date.fromisoformat(manifest["last_expiry"]) + timedelta(days=1)).isoformat()
+        for n, symbol in enumerate(all_symbols, 1):
+            if symbol not in resolved:
+                daily_frames[symbol] = None
+                continue
+            frame, hit, attempts, error = fetch_daily(
+                symbol, str(resolved[symbol]), token, client_id, cache_dir, manifest_hash,
+                daily_from, daily_to,
+            )
+            daily_frames[symbol] = frame
+            daily_hits += int(hit)
+            daily_requests += attempts
+            if attempts:
+                time.sleep(REQUEST_DELAY)
+            print(f"C2_DAILY {n}/{len(all_symbols)} {symbol} {'PASS' if frame is not None else error}")
+
         chunks = make_chunks(manifest["first_anchor"], manifest["last_expiry"], CHUNK_DAYS)
         date_chunk = {}
         for ch in chunks:
@@ -516,25 +535,6 @@ def main() -> int:
                 if attempts:
                     time.sleep(REQUEST_DELAY)
             print(f"C2_INTRADAY {n}/{len(chunks)} cached={intraday_hits} requests={intraday_requests}")
-
-        daily_frames = {}
-        daily_requests = daily_hits = 0
-        daily_from = "2018-04-01"
-        daily_to = (date.fromisoformat(manifest["last_expiry"]) + timedelta(days=1)).isoformat()
-        for n, symbol in enumerate(all_symbols, 1):
-            if symbol not in resolved:
-                daily_frames[symbol] = None
-                continue
-            frame, hit, attempts, error = fetch_daily(
-                symbol, str(resolved[symbol]), token, client_id, cache_dir, manifest_hash,
-                daily_from, daily_to,
-            )
-            daily_frames[symbol] = frame
-            daily_hits += int(hit)
-            daily_requests += attempts
-            if attempts:
-                time.sleep(REQUEST_DELAY)
-            print(f"C2_DAILY {n}/{len(all_symbols)} {symbol} {'PASS' if frame is not None else error}")
 
         events = pd.read_csv(ACTIONS, dtype=str, keep_default_na=False)
         stock_rows, index_rows, failures = [], [], defaultdict(int)
