@@ -1,0 +1,30 @@
+{
+  "created_at_utc": "2026-11-01T21:09:25.673305+00:00",
+  "fatal_error_category": "RuntimeError",
+  "fatal_error_location": {
+    "file": "run_c2_panel_and_models.py",
+    "function": "main",
+    "line": 586
+  },
+  "input_manifest": {
+    "action_event_sha256": "0c9231a144a0ba16e03e99658fd6300d588bb498f8557a95886bd77a2b9e45a7",
+    "alias_sha256": "27b299b995bf59d08ab5b6a83d3fed0789c26363d842ae4b13acd6379e3985a3",
+    "cycle_count": 258,
+    "expiry_sha256": "a1a37949278934fbddebd7ea61092930eb7f25ba171c95fca1421e5ae098eaa5",
+    "first_anchor": "2021-11-12",
+    "hash": "715623a04ff8e32a2a7b0a744a1e4b590d37f758c708eb5d7f5352d7dd00a553",
+    "index_daily_sha256": "5fee1979958e96276e53054c3e76b3818aa6cc1b3abe0e88dd5647c2976104c7",
+    "last_expiry": "2026-10-27",
+    "membership_sha256": "dda5d0aa6cb4feec5edaa53c9a7b099b5d9e46b6020c1ab69c5913f5402d2a08",
+    "scrip_master_sha256": "ad00a05b69606346a5e796bef8715a981242eab8063d615294ce8b3e54981a6a",
+    "symbol_count": 62
+  },
+  "limitations": [
+    "The user explicitly waived the remaining historical identity and corporate-action checks as preconditions. This is a scope decision, not a claim that those checks passed.",
+    "No unverified corporate-action factor is applied; unadjusted event-exposed rows are flagged and excluded from the primary sensitivity panel.",
+    "The expiry target is the latest valid 15:00-15:14 one-minute candle close, treated as a 15:15 proxy, not the official 15:30 close.",
+    "No executable options/futures P&L or transaction-cost simulation is performed in C2."
+  ],
+  "schema_version": 1,
+  "status": "FAILED"
+}

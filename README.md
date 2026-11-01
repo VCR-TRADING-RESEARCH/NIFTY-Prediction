@@ -364,3 +364,7 @@ The pinned independent source returned 4/7 valid exact-date EQ OHLCV rows. Remai
 - [Direct NSE audit](research/constituent_weekly/C1_DIRECT_NSE_SPECIAL_SESSION_AUDIT.md) · [Composite evidence](research/constituent_weekly/C1_COMPOSITE_DAILY_COVERAGE.json) · [Daily coverage report](research/constituent_weekly/C1_DAILY_COVERAGE_REPORT.md)
 - C1 overall remains NOT PASSED because the corporate-action adjustment ledger and independent issuer/exchange verification are still incomplete; C2 remains locked.
 <!-- C1_DIRECT_NSE_SPECIAL_END -->
+
+<!-- BUP01_C2_PANEL_STATUS_START -->
+> **BUP-01 C2:** **Formal C2 panel run 41349085435:** FAILED; 0 scheduled cycles; 0 valid NIFTY targets (0.00%); 0 cycles pass the 47/94% stock rule; 0 constituent-cycle rows. C2 is not accepted; see the workflow run and error log. [panel report](research/constituent_weekly/C2_PANEL_BUILD.md) · [research status](research/constituent_weekly/STATUS.md)
+<!-- BUP01_C2_PANEL_STATUS_END -->

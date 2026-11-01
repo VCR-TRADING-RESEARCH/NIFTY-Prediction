@@ -733,3 +733,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Root cause:** The new C2 reader did not reuse the source's canonical field aliases.
 - **Correction:** Added explicit support for both source-native `official_*` fields and generic OHLC fields; added an offline regression using the exact official header.
 - **Status:** FIX COMMITTED in 76c2c47 and 780f214. Current in-flight run [41347849285](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41347849285) uses the pre-fix checkout and may stop at the feature-reader gate; the queued corrected run [41348608291](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41348608291) contains the corrected reader and regression.
+
+
+<!-- C2_PANEL_ERROR_41349085435 -->
+## C2 panel workflow 41349085435 — FAILED
+
+- Offline tests: success; panel step: failure.
+- Error category: RuntimeError.
+- Source location: {'file': 'run_c2_panel_and_models.py', 'function': 'main', 'line': 586}.
+- No panel acceptance is claimed for this run.
