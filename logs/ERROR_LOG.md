@@ -774,3 +774,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Root cause:** The C2 workflow did not install the optional `huggingface_hub` downloader and Parquet engine `pyarrow`, both explicitly installed by the successful C1 daily-data workflow.
 - **Correction:** Added both packages to the C2 workflow dependency installation. Push-triggered rerun is expected; validate the exact runtime and then inspect any subsequent data or panel failure.
 - **Status:** Corrected in workflow commit [8de2176](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8de2176dedca820dabbc20f26570de9958bb98b0); validation pending.
+
+
+<!-- C2_PANEL_ERROR_41350817688 -->
+## C2 panel workflow 41350817688 — FAILED
+
+- Offline tests: success; panel step: failure.
+- Error category: RuntimeError.
+- Source location: {'file': 'run_c2_panel_and_models.py', 'function': 'main', 'line': 609}.
+- No panel acceptance is claimed for this run.

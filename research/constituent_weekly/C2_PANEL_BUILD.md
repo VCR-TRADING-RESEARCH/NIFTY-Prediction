@@ -1,1 +1,1 @@
-# C2 Point-in-Time Constituent Panel Build\n\n**Status:** FAILED\n\n- Error category: RuntimeError\n- Source location: {'file': 'run_c2_panel_and_models.py', 'line': 586, 'function': 'main'}\n
+# C2 Point-in-Time Constituent Panel Build\n\n**Status:** FAILED\n\n- Error category: RuntimeError\n- Source location: {'file': 'run_c2_panel_and_models.py', 'line': 609, 'function': 'main'}\n

@@ -1,10 +1,10 @@
 {
-  "created_at_utc": "2026-11-01T21:09:25.673305+00:00",
+  "created_at_utc": "2026-11-01T21:24:59.980400+00:00",
   "fatal_error_category": "RuntimeError",
   "fatal_error_location": {
     "file": "run_c2_panel_and_models.py",
     "function": "main",
-    "line": 586
+    "line": 609
   },
   "input_manifest": {
     "action_event_sha256": "0c9231a144a0ba16e03e99658fd6300d588bb498f8557a95886bd77a2b9e45a7",

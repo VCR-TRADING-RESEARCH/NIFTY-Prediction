@@ -819,3 +819,13 @@
 ## 2026-11-02 — C2 runtime dependency correction
 - Follow-up to the C2 daily-source correction: run [41351049298](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351049298) exited before data loading with `ModuleNotFoundError` because the C2 workflow omitted `huggingface_hub` and `pyarrow`.
 - Added both explicit dependencies, matching C1's working data-acquisition environment. Workflow commit: [8de2176](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8de2176dedca820dabbc20f26570de9958bb98b0). No panel result is claimed until the new run passes.
+
+
+<!-- C2_PANEL_RUN_41350817688 -->
+## 2026-11-01T21:25:02.685078+00:00 — formal C2 panel run 41350817688
+
+- Status: FAILED.
+- Summary: **Formal C2 panel run 41350817688:** FAILED; 0 scheduled cycles; 0 valid NIFTY targets (0.00%); 0 cycles pass the 47/94% stock rule; 0 constituent-cycle rows. C2 is not accepted; see the workflow run and error log.
+- Input manifest: 715623a04ff8e32a2a7b0a744a1e4b590d37f758c708eb5d7f5352d7dd00a553.
+- Encrypted panel cache metadata: {}.
+- C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.

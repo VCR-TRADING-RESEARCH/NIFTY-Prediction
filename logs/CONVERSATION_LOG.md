@@ -453,3 +453,11 @@
 - Visible status shared: C2's prior attempt passed seven offline tests and authenticated, but Dhan daily history returned an unexpected response shape for all 62 symbols.
 - Decision: do not repeat the same 62 Dhan daily requests. Reuse the already audited pinned NSE daily source and the seven official-NSE residual rows from C1 through encrypted cache helpers; fix the C2 workflow's branch mismatch; rerun C2 automatically.
 - No hidden reasoning, secrets, or raw market prices are stored in this log.
+
+
+<!-- C2_PANEL_CONVERSATION_41350817688 -->
+## 2026-11-01T21:25:02.685078+00:00 — formal C2 panel run 41350817688
+
+- Formal panel-only workflow executed on the plan-defined C2 branch.
+- Offline tests: success; panel step: failure; result: FAILED.
+- The bundled pilot remains diagnostic only; C3/C4 model gates remain separate.
