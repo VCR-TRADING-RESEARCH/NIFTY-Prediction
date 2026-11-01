@@ -264,3 +264,11 @@
 - Assistant response: resume at the historical constituent-data gate; recheck repository files and PR, then continue resolving official archive links and free-source evidence; do not start modelling before point-in-time coverage and source lineage are defensible.
 - Visible research update: the official Nippon India archive index explicitly lists monthly portfolio records back to September 2012, including April 2019. The earlier 404 was from a guessed filename. The amcs.fund route is being tested only for metadata/source discovery.
 - This file records visible conversation summaries and decisions only; hidden private chain-of-thought is not stored.
+
+ 
+## 2026-11-01 — C1 metadata-probe repair and result
+
+- The first push run of the new metadata-only workflow failed before network access because one regression-test fixture mixed AMC-list and scheme-detail objects. The fixture was separated, the error was logged as E0062, and no source request occurred in the failed run.
+- Follow-up run [41277022940](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41277022940) passed all 4 tests and fetched the API index, AMC list, AMC detail and manifest successfully.
+- The manifest did not expose an original AMC / Internet Archive link for a historical Nifty BeES file. No holdings endpoint or raw workbook was downloaded; source use rights remain unverified.
+- C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING; BUP-01 plan v1.2 is unchanged.
