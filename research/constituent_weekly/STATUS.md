@@ -567,8 +567,8 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 <!-- C1_DAILY_COVERAGE_START -->
 ## Daily OHLCV member-session coverage audit
 
-- Updated (UTC): 2026-11-01T12:47:45.759152+00:00
-- Auditor status: **PARTIAL_OR_BLOCKED_RUNTIME_ERROR**
+- Updated (UTC): 2026-11-01T12:51:12.757236+00:00
+- Auditor status: **COMPLETED_WITH_GAPS**
 - Window: 2018-04-01 to 2026-10-30
 - Point-in-time symbols: 69
 - Parseable daily API responses: 68

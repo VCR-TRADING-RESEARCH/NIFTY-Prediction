@@ -1,7 +1,7 @@
 # C1 Daily OHLCV Member-Session Coverage Report
 
-**Updated:** 2026-11-01T12:47:45.759152+00:00
-**Auditor status:** PARTIAL_OR_BLOCKED_RUNTIME_ERROR
+**Updated:** 2026-11-01T12:51:12.757236+00:00
+**Auditor status:** COMPLETED_WITH_GAPS
 
 ## Scope
 

@@ -2,8 +2,9 @@
   "auth_method": "totp_refresh",
   "cache_reused_symbols": 69,
   "coverage_interpretation": "Descriptive daily OHLCV coverage only; the plan does not register a separate numeric daily-coverage acceptance threshold.",
-  "created_at_utc": "2026-11-01T12:47:44.031277+00:00",
-  "fatal_error": "NameError",
+  "created_at_utc": "2026-11-01T12:50:40.068109+00:00",
+  "elapsed_seconds": 37.11,
+  "fatal_error": null,
   "input_manifest": {
     "daily_endpoint": "https://api.dhan.co/v2/charts/historical",
     "dhan_scrip_master_sha256": "ad00a05b69606346a5e796bef8715a981242eab8063d615294ce8b3e54981a6a",
@@ -18,7 +19,7 @@
   "methodology_version": "bup01-c1-daily-feature-coverage-v1",
   "requests_this_run": 1,
   "schema_version": 1,
-  "status": "PARTIAL_OR_BLOCKED_RUNTIME_ERROR",
+  "status": "COMPLETED_WITH_GAPS",
   "summary": {
     "daily_feature_coverage_disposition": "DESCRIPTIVE_REVIEW_REQUIRED",
     "expected_member_sessions": 95900,
@@ -1172,5 +1173,5 @@
   "symbols_total": 1,
   "token_refresh_status": "SUCCESS",
   "unresolved_symbols": [],
-  "updated_at_utc": "2026-11-01T12:47:45.759152+00:00"
+  "updated_at_utc": "2026-11-01T12:51:12.757236+00:00"
 }
