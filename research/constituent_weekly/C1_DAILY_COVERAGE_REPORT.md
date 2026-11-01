@@ -1,6 +1,6 @@
 # C1 Daily OHLCV Member-Session Coverage Report
 
-**Updated:** 2026-11-01T14:27:03.642080+00:00
+**Updated:** 2026-11-01T14:34:44.970940+00:00
 **Auditor status:** COMPLETED_WITH_GAPS
 
 ## Scope
@@ -18,85 +18,88 @@
 ## Aggregate results
 
 - Symbols expected: 70
-- Symbols with parseable daily responses: 69
+- Official NIFTY daily sessions: 1918
+- Additional validated Dhan index sessions: 210
+- Combined NIFTY daily sessions: 2128
+- Symbols with parseable Dhan daily responses: 69
 - Expected member sessions: 106392
 - OHLC coverage: 106385 / 106392 (99.99%)
 - OHLCV coverage: 106385 / 106392 (99.99%)
 
 ## Per-symbol coverage
 
-| Canonical member symbol | Expected sessions | Valid OHLC | OHLC coverage | Valid OHLCV | OHLCV coverage | Missing OHLC sessions | API status |
-|---|---:|---:|---:|---:|---:|---:|---|
-| ADANIENT | 1012 | 1012 | 100.00% | 1012 | 100.00% | 0 | PASS_RESPONSE |
-| ADANIPORTS | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| APOLLOHOSP | 1137 | 1137 | 100.00% | 1137 | 100.00% | 0 | PASS_RESPONSE |
-| ASIANPAINT | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| AXISBANK | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| BAJAJ-AUTO | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| BAJAJFINSV | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| BAJFINANCE | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| BEL | 517 | 517 | 100.00% | 517 | 100.00% | 0 | PASS_RESPONSE |
-| BHARTIARTL | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| BPCL | 1735 | 1735 | 100.00% | 1735 | 100.00% | 0 | PASS_RESPONSE |
-| BRITANNIA | 1488 | 1488 | 100.00% | 1488 | 100.00% | 0 | PASS_RESPONSE |
-| BSE | 21 | 21 | 100.00% | 21 | 100.00% | 0 | PASS_RESPONSE |
-| CIPLA | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| COALINDIA | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| DIVISLAB | 995 | 995 | 100.00% | 995 | 100.00% | 0 | PASS_RESPONSE |
-| DRREDDY | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| EICHERMOT | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| ETERNAL | 393 | 393 | 100.00% | 393 | 100.00% | 0 | PASS_RESPONSE |
-| GAIL | 743 | 743 | 100.00% | 743 | 100.00% | 0 | PASS_RESPONSE |
-| GRASIM | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| HCLTECH | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| HDFC | 1301 | 1295 | 99.54% | 1295 | 99.54% | 6 | PARTIAL_WITH_TEJHQ_FALLBACK |
-| HDFCBANK | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| HDFCLIFE | 1552 | 1552 | 100.00% | 1552 | 100.00% | 0 | PASS_RESPONSE |
-| HEROMOTOCO | 1860 | 1860 | 100.00% | 1860 | 100.00% | 0 | PASS_RESPONSE |
-| HINDALCO | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| HINDPETRO | 247 | 247 | 100.00% | 247 | 100.00% | 0 | PASS_RESPONSE |
-| HINDUNILVR | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| ICICIBANK | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| INDIGO | 268 | 268 | 100.00% | 268 | 100.00% | 0 | PASS_RESPONSE |
-| INDUSINDBK | 1860 | 1860 | 100.00% | 1860 | 100.00% | 0 | PASS_RESPONSE |
-| INDUSTOWER | 616 | 616 | 100.00% | 616 | 100.00% | 0 | PASS_RESPONSE |
-| INFY | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| IOC | 991 | 991 | 100.00% | 991 | 100.00% | 0 | PASS_RESPONSE |
-| ITC | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| JIOFIN | 393 | 393 | 100.00% | 393 | 100.00% | 0 | PASS_RESPONSE |
-| JSWSTEEL | 2004 | 2004 | 100.00% | 2004 | 100.00% | 0 | PASS_RESPONSE |
-| KOTAKBANK | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| LT | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| LTM | 302 | 302 | 100.00% | 302 | 100.00% | 0 | PASS_RESPONSE |
-| LUPIN | 124 | 124 | 100.00% | 124 | 100.00% | 0 | PASS_RESPONSE |
-| M&M | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| MARUTI | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| MAXHEALTH | 268 | 268 | 100.00% | 268 | 100.00% | 0 | PASS_RESPONSE |
-| NESTLEIND | 1760 | 1760 | 100.00% | 1760 | 100.00% | 0 | PASS_RESPONSE |
-| NTPC | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| ONGC | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| POWERGRID | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| RELIANCE | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| SAMMAANCAP | 368 | 368 | 100.00% | 368 | 100.00% | 0 | PASS_RESPONSE |
-| SBILIFE | 1512 | 1512 | 100.00% | 1512 | 100.00% | 0 | PASS_RESPONSE |
-| SBIN | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| SHREECEM | 624 | 624 | 100.00% | 624 | 100.00% | 0 | PASS_RESPONSE |
-| SHRIRAMFIN | 642 | 642 | 100.00% | 642 | 100.00% | 0 | PASS_RESPONSE |
-| SUNPHARMA | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| TATACONSUM | 1385 | 1385 | 100.00% | 1385 | 100.00% | 0 | PASS_RESPONSE |
-| TATAMOTORS | 1876 | 1875 | 99.95% | 1875 | 99.95% | 1 | PASS_RESPONSE |
-| TATASTEEL | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| TCS | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| TECHM | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| TITAN | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| TMPV | 252 | 252 | 100.00% | 252 | 100.00% | 0 | PASS_RESPONSE |
-| TRENT | 517 | 517 | 100.00% | 517 | 100.00% | 0 | PASS_RESPONSE |
-| ULTRACEMCO | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | PASS_RESPONSE |
-| UPL | 1486 | 1486 | 100.00% | 1486 | 100.00% | 0 | PASS_RESPONSE |
-| VEDL | 576 | 576 | 100.00% | 576 | 100.00% | 0 | PASS_RESPONSE |
-| WIPRO | 2107 | 2107 | 100.00% | 2107 | 100.00% | 0 | PASS_RESPONSE |
-| YESBANK | 492 | 492 | 100.00% | 492 | 100.00% | 0 | PASS_RESPONSE |
-| ZEEL | 616 | 616 | 100.00% | 616 | 100.00% | 0 | PASS_RESPONSE |
+| Canonical member symbol | Expected sessions | Valid OHLC | OHLC coverage | Valid OHLCV | OHLCV coverage | Missing sessions | Residual date sample | Sample complete | API status |
+|---|---:|---:|---:|---:|---:|---:|---|---|---|
+| ADANIENT | 1012 | 1012 | 100.00% | 1012 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| ADANIPORTS | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| APOLLOHOSP | 1137 | 1137 | 100.00% | 1137 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| ASIANPAINT | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| AXISBANK | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| BAJAJ-AUTO | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| BAJAJFINSV | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| BAJFINANCE | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| BEL | 517 | 517 | 100.00% | 517 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| BHARTIARTL | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| BPCL | 1735 | 1735 | 100.00% | 1735 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| BRITANNIA | 1488 | 1488 | 100.00% | 1488 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| BSE | 21 | 21 | 100.00% | 21 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| CIPLA | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| COALINDIA | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| DIVISLAB | 995 | 995 | 100.00% | 995 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| DRREDDY | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| EICHERMOT | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| ETERNAL | 393 | 393 | 100.00% | 393 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| GAIL | 743 | 743 | 100.00% | 743 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| GRASIM | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| HCLTECH | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| HDFC | 1301 | 1295 | 99.54% | 1295 | 99.54% | 6 | 2018-11-07, 2019-10-27, 2020-02-01, 2020-11-14, 2021-11-04, 2022-10-24 | yes | PARTIAL_WITH_TEJHQ_FALLBACK |
+| HDFCBANK | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| HDFCLIFE | 1552 | 1552 | 100.00% | 1552 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| HEROMOTOCO | 1860 | 1860 | 100.00% | 1860 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| HINDALCO | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| HINDPETRO | 247 | 247 | 100.00% | 247 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| HINDUNILVR | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| ICICIBANK | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| INDIGO | 268 | 268 | 100.00% | 268 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| INDUSINDBK | 1860 | 1860 | 100.00% | 1860 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| INDUSTOWER | 616 | 616 | 100.00% | 616 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| INFY | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| IOC | 991 | 991 | 100.00% | 991 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| ITC | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| JIOFIN | 393 | 393 | 100.00% | 393 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| JSWSTEEL | 2004 | 2004 | 100.00% | 2004 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| KOTAKBANK | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| LT | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| LTM | 302 | 302 | 100.00% | 302 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| LUPIN | 124 | 124 | 100.00% | 124 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| M&M | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| MARUTI | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| MAXHEALTH | 268 | 268 | 100.00% | 268 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| NESTLEIND | 1760 | 1760 | 100.00% | 1760 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| NTPC | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| ONGC | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| POWERGRID | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| RELIANCE | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| SAMMAANCAP | 368 | 368 | 100.00% | 368 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| SBILIFE | 1512 | 1512 | 100.00% | 1512 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| SBIN | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| SHREECEM | 624 | 624 | 100.00% | 624 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| SHRIRAMFIN | 642 | 642 | 100.00% | 642 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| SUNPHARMA | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| TATACONSUM | 1385 | 1385 | 100.00% | 1385 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| TATAMOTORS | 1876 | 1875 | 99.95% | 1875 | 99.95% | 1 | 2025-10-21 | yes | PASS_RESPONSE |
+| TATASTEEL | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| TCS | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| TECHM | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| TITAN | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| TMPV | 252 | 252 | 100.00% | 252 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| TRENT | 517 | 517 | 100.00% | 517 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| ULTRACEMCO | 2128 | 2128 | 100.00% | 2128 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| UPL | 1486 | 1486 | 100.00% | 1486 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| VEDL | 576 | 576 | 100.00% | 576 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| WIPRO | 2107 | 2107 | 100.00% | 2107 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| YESBANK | 492 | 492 | 100.00% | 492 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
+| ZEEL | 616 | 616 | 100.00% | 616 | 100.00% | 0 | — | no/unknown | PASS_RESPONSE |
 
 ## Restricted fallback summary
 
@@ -119,4 +122,4 @@
 - Membership SHA-256: dda5d0aa6cb4feec5edaa53c9a7b099b5d9e46b6020c1ab69c5913f5402d2a08
 - Official daily-session SHA-256: 5fee1979958e96276e53054c3e76b3818aa6cc1b3abe0e88dd5647c2976104c7
 - Dhan scrip-master SHA-256: ad00a05b69606346a5e796bef8715a981242eab8063d615294ce8b3e54981a6a
-- Requests this run: 71; cached symbols reused: 0
+- Requests this run: 2; cached symbols reused: 70

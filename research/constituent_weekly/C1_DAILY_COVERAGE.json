@@ -1,10 +1,10 @@
 {
   "auth_method": "totp_refresh",
-  "cache_reused_symbols": 0,
+  "cache_reused_symbols": 70,
   "coverage_interpretation": "Descriptive daily OHLCV coverage; no unregistered percentage threshold is added. Dhan is primary. Restricted personal-use TejHQ raw NSE bhavcopy is a fallback only for Dhan-missing HDFC/Tata Motors sessions.",
-  "created_at_utc": "2026-11-01T14:26:11.430569+00:00",
+  "created_at_utc": "2026-11-01T14:34:14.554005+00:00",
   "dhan_profile_authorized": true,
-  "elapsed_seconds": 58.41,
+  "elapsed_seconds": 67.39,
   "fatal_error": null,
   "index_calendar_qa": {
     "dhan_duplicate_session_count": 0,
@@ -39,9 +39,8 @@
     "window_end": "2026-10-30",
     "window_start": "2018-04-01"
   },
-  "last_symbol_completed": "ZEEL",
   "methodology_version": "bup01-c1-daily-feature-coverage-v2",
-  "requests_this_run": 71,
+  "requests_this_run": 2,
   "schema_version": 2,
   "status": "COMPLETED_WITH_GAPS",
   "summary": {
@@ -505,27 +504,14 @@
       "fallback_valid_session_count": 1295,
       "missing_session_count": 6,
       "missing_session_sample": [
-        "2018-04-02",
-        "2018-04-03",
-        "2018-04-04",
-        "2018-04-05",
-        "2018-04-06",
-        "2018-04-09",
-        "2018-04-10",
-        "2018-04-11",
-        "2018-04-12",
-        "2018-04-13",
-        "2018-04-16",
-        "2018-04-17",
-        "2018-04-18",
-        "2018-04-19",
-        "2018-04-20",
-        "2018-04-23",
-        "2018-04-24",
-        "2018-04-25",
-        "2018-04-26",
-        "2018-04-27"
+        "2018-11-07",
+        "2019-10-27",
+        "2020-02-01",
+        "2020-11-14",
+        "2021-11-04",
+        "2022-10-24"
       ],
+      "missing_session_sample_complete": true,
       "ohlc_coverage_fraction": 0.995388,
       "source_crosscheck": null,
       "status": "PARTIAL_WITH_TEJHQ_FALLBACK",
@@ -1212,8 +1198,23 @@
       "missing_session_sample": [
         "2025-10-21"
       ],
+      "missing_session_sample_complete": true,
       "ohlc_coverage_fraction": 0.999467,
       "source_crosscheck": {
+        "comparison_dates_missing_from_dhan": [
+          "2025-10-22"
+        ],
+        "comparison_dates_missing_from_tejhq": [
+          "2025-10-22"
+        ],
+        "comparison_dates_present_in_dhan": [
+          "2025-10-20",
+          "2025-10-23"
+        ],
+        "comparison_dates_present_in_tejhq": [
+          "2025-10-20",
+          "2025-10-23"
+        ],
         "date_sample": [
           "2025-10-20",
           "2025-10-22",
@@ -1468,8 +1469,6 @@
       "volume_coverage_fraction": 1.0
     }
   },
-  "symbols_completed_this_run": 70,
-  "symbols_total": 70,
   "tejhq_fallback": {
     "cache_encryption": "AES-256-GCM keyed from HF_TOKEN; only encrypted files are eligible for cache",
     "dataset_repo": "tejhq/indian-markets",
@@ -1509,6 +1508,20 @@
         "invalid_ohlc_row_count": 0,
         "invalid_volume_row_count": 0,
         "source_crosscheck": {
+          "comparison_dates_missing_from_dhan": [
+            "2025-10-22"
+          ],
+          "comparison_dates_missing_from_tejhq": [
+            "2025-10-22"
+          ],
+          "comparison_dates_present_in_dhan": [
+            "2025-10-20",
+            "2025-10-23"
+          ],
+          "comparison_dates_present_in_tejhq": [
+            "2025-10-20",
+            "2025-10-23"
+          ],
           "date_sample": [
             "2025-10-20",
             "2025-10-22",
@@ -1538,5 +1551,5 @@
   },
   "token_refresh_status": "SUCCESS",
   "unresolved_symbols": [],
-  "updated_at_utc": "2026-11-01T14:27:03.642080+00:00"
+  "updated_at_utc": "2026-11-01T14:34:44.970940+00:00"
 }
