@@ -531,3 +531,14 @@
 - **Paid fallback:** NSE Indices data subscription describes historical constituent identifiers, market capitalisation, weights and prices and names quantitative research as a data-use category. Check only after free routes and rights/permission possibilities.
 - **Implementation:** full assessment saved at research/constituent_weekly/C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md. No model training or raw data ingestion occurred. Plan v1.2 remains unchanged.
 - **Decision:** C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. The preferred next path is permissioned NSE weight reports + CC BY 4.0 PIT membership comparator + Dhan price-drift reconstruction with event resets and official basket reconciliation.
+
+ 
+## 2026-11-01 — CC BY 4.0 membership alternative reconciled over 103 months
+
+- **Phase:** C1 point-in-time universe source validation.
+- **Source:** `aditya-jha/nse-historical-membership`, data licence CC BY 4.0. Copied the NIFTY 50-only subset with attribution and added the 2026-09-30 BSE/WIPRO transition supported by an independent reprint plus fund-portfolio cross-check.
+- **Comparison:** Matched the alternative effective-dated table to the project’s C1 membership ledger for all 103 calendar month-ends from 2018-04 to 2026-10. The exact member sets match after restoring upstream canonical TMPV to pre-rename TATAMOTORS before 2025-10-24 and excluding the temporary DUMMYTATAM zero-price placeholder from the tradable-stock set.
+- **Counts:** 50 members at 102 month-ends; 51 on 2025-10-31 only when the temporary dummy is included in the index ledger. This is not a mismatch.
+- **CI:** Corrected membership regression run [41289992040](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289992040) SUCCESS. C1 authorised-source audit [41289991986](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289991986) SUCCESS. Dhan preflight run [41289992028](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289992028) SUCCESS for offline/cache steps; live Dhan steps were skipped because it was a pull-request event.
+- **Limitation:** All weights are blank in the imported CC BY source. Membership is now independently cross-checked, but historical numerical weights/IWF are not resolved.
+- **Error correction:** E0063 logs that the test originally expected 79 rather than 103 months; the corrected test and suite passed.
