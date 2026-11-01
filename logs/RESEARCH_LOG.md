@@ -456,3 +456,14 @@
 - Replaced escaped literals with bytes.fromhex signature constants and added matching tests. The next run will assess whether the real workbook schema contains the expected Nifty BeES holdings table.
 - The previous report push raced with concurrent branch updates; the workflow now explicitly pulls/rebases before pushing. April 2019 guessed URL remains a 404 and is not used as source evidence.
 - C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.
+
+
+## 2026-11-01 — AMC recent-month schema gate passed
+
+- Corrected probe [run 41275178244](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275178244) passed all seven offline tests and both required source-schema checks.
+- September 2026 AMC workbook: HTTP 200, XLSX container, 108 sheets, Nifty BeES target found, ISIN/quantity/weight fields detected, 50 ISIN-bearing rows.
+- February 2026 AMC workbook: HTTP 200, XLSX container, 111 sheets, target found, same fields detected, 50 ISIN-bearing rows.
+- The older April 2019 archive record is shown on the AMC page but the guessed direct URL returned 404; this is recorded as link-discovery failure and not as missing historical data.
+- Exact hashes, sizes, HTTP status and file signatures are in the sanitised probe report. No raw holdings, names, quantities, values or workbooks were committed.
+- The automated report push raced with an independent C1 update. The report is now committed by the research controller and the workflow publisher uses bounded non-forced retries.
+- Overall C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. Rights, publication dates, complete historical series, identity/actions, 98%/47-stock coverage and basket reconciliation remain open.
