@@ -1,0 +1,57 @@
+name: BUP-01 Nippon AMC archive metadata probe
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c1-data
+    paths:
+      - "scripts/constituent_weekly/probe_nippon_amc_archive.py"
+      - "tests/test_nippon_amc_archive_probe.py"
+      - ".github/workflows/bup01-c1-amc-disclosure-probe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bup01-c1-amc-disclosure-probe
+  cancel-in-progress: false
+
+jobs:
+  probe-primary-amc-archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout C1 branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c1-data
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install metadata-probe dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 pandas xlrd
+      - name: Run offline parser regressions
+        run: python -m pytest -q tests/test_nippon_amc_archive_probe.py
+      - name: Probe latest, calibration and early archive workbooks
+        run: python scripts/constituent_weekly/probe_nippon_amc_archive.py
+      - name: Publish metadata-only summary
+        if: always()
+        run: |
+          if [ -f research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md ]; then
+            cat research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Commit sanitised probe report
+        if: always()
+        run: |
+          if [ -f research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md
+            if ! git diff --cached --quiet; then
+              git commit -m "Record sanitised AMC disclosure archive probe"
+              git push origin HEAD:phase/constituent-weekly-outcomes-c1-data
+            fi
+          fi
