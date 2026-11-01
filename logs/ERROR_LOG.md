@@ -406,3 +406,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** No project IWF, constituent weight, model or forecast was calculated from the third-party parser, so no model result is affected. The issue was caught before any data import.
 - **Correction/guard:** Added the official example as a regression fixture; the arithmetic helper accepts full total share capital and a deduplicated list of unique excluded positions, not percentage rollups. Added a separate 22-item exclusion-coverage check. All tests pass in [run 41269516064](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269516064).
 - **Status:** OPEN as a source-reconciliation gate — verify denominator, share classes and C1/DR treatment against authoritative source records before any IWF reconstruction. No unlicensed source data was fetched.
+
+
+## E0051 — 2026-11-01 — Partial multi-file create and duplicate retry during public-source proxy implementation
+
+- **Observed:** A batched file-create operation committed some of the requested new proxy artifacts before returning an interrupted/blocked response. A retry against the already-created utility file returned GitHub HTTP 422 because the path existed and the create operation did not include its current SHA.
+- **Correction:** Re-read the branch tree and fetched the existing utility/report/aggregate-summary files; verified their contents and blob SHAs. Created the one missing test file separately and then wired it into the workflow.
+- **Impact:** No existing file was overwritten, no data artifact was duplicated, and no research calculation was affected.
+- **Status:** CLOSED — all expected proxy files were individually read back. Workflow regression run is the next verification step.
