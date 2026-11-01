@@ -722,7 +722,7 @@ The combined run [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Pre
 <!-- BUP01_C2_PANEL_START -->
 ## Formal C2 panel update
 
-**Formal C2 panel run 41353406358:** COMPLETED; 258 scheduled cycles; 258 valid NIFTY targets (100.00%); 258 cycles pass the 47/94% stock rule; 12807 constituent-cycle rows. Full panel stored in encrypted Actions cache; no model fitting in C2.
+**Formal C2 panel run 41357141947:** COMPLETED; 258 scheduled cycles; 258 valid NIFTY targets (100.00%); 258 cycles pass the 47/94% stock rule; 12807 constituent-cycle rows. Full panel stored in encrypted Actions cache; no model fitting in C2.
 
 See [C2 panel report](C2_PANEL_BUILD.md) and [panel manifest](C2_PANEL_BUILD.json).
 <!-- BUP01_C2_PANEL_END -->

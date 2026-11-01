@@ -902,3 +902,13 @@
 - Limitations remain visible: 292 identity-flagged rows, 3 known action-crossing rows, 92 stock daily-feature missing rows and 19 flat stock labels. User-authorized progression waiver is not certification of the unresolved historical identity/action catalogue.
 - A metadata-only defect was found: two derived cross-sectional feature names are repeated in the report's feature list, although the dataframe columns are generated once. Log as E0100; correct the manifest before C3 consumes it.
 - C3 confirmatory work is opened on its own branch. The encrypted panel must be transferred to C3 as ciphertext and decrypted only inside Actions. Chronological cycle-grouped folds, 104-cycle warm-up, and untouched holdout remain mandatory.
+
+
+<!-- C2_PANEL_RUN_41357141947 -->
+## 2026-11-01T22:53:02.320232+00:00 — formal C2 panel run 41357141947
+
+- Status: COMPLETED.
+- Summary: **Formal C2 panel run 41357141947:** COMPLETED; 258 scheduled cycles; 258 valid NIFTY targets (100.00%); 258 cycles pass the 47/94% stock rule; 12807 constituent-cycle rows. Full panel stored in encrypted Actions cache; no model fitting in C2.
+- Input manifest: 715623a04ff8e32a2a7b0a744a1e4b590d37f758c708eb5d7f5352d7dd00a553.
+- Encrypted panel cache metadata: {'encryption': 'AES-GCM; HF_TOKEN-derived BUP01 cache key; raw values not published', 'index': {'cache_relative_path': 'c2/frozen_panel/67e566b68a3eb1f50be07abbb2dc.aesgcm', 'ciphertext_bytes': 30334, 'ciphertext_sha256': '899e60b3efe3b345919273681013420a179eae7da3e04b087cc4661acb28f3ba'}, 'stock': {'cache_relative_path': 'c2/frozen_panel/def4acd72d6aadb62f1ae72bae80.aesgcm', 'ciphertext_bytes': 1654615, 'ciphertext_sha256': '2c3e416e2681a526f307f092d67f517b747461adbe424c3b2a96ae6901d33408'}}.
+- C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.

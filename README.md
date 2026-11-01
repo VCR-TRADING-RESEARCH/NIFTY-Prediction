@@ -366,5 +366,5 @@ The pinned independent source returned 4/7 valid exact-date EQ OHLCV rows. Remai
 <!-- C1_DIRECT_NSE_SPECIAL_END -->
 
 <!-- BUP01_C2_PANEL_STATUS_START -->
-> **BUP-01 C2:** **Formal C2 panel run 41353406358:** COMPLETED; 258 scheduled cycles; 258 valid NIFTY targets (100.00%); 258 cycles pass the 47/94% stock rule; 12807 constituent-cycle rows. Full panel stored in encrypted Actions cache; no model fitting in C2. [panel report](research/constituent_weekly/C2_PANEL_BUILD.md) · [research status](research/constituent_weekly/STATUS.md)
+> **BUP-01 C2:** **Formal C2 panel run 41357141947:** COMPLETED; 258 scheduled cycles; 258 valid NIFTY targets (100.00%); 258 cycles pass the 47/94% stock rule; 12807 constituent-cycle rows. Full panel stored in encrypted Actions cache; no model fitting in C2. [panel report](research/constituent_weekly/C2_PANEL_BUILD.md) · [research status](research/constituent_weekly/STATUS.md)
 <!-- BUP01_C2_PANEL_STATUS_END -->

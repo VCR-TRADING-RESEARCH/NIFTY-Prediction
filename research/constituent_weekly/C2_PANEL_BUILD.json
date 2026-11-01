@@ -14,18 +14,18 @@
     "valid_index_target_cycles": 258,
     "valid_index_target_fraction": 1.0
   },
-  "created_at_utc": "2026-11-01T22:12:52.698347+00:00",
+  "created_at_utc": "2026-11-01T22:52:55.826376+00:00",
   "encrypted_panel_cache": {
     "encryption": "AES-GCM; HF_TOKEN-derived BUP01 cache key; raw values not published",
     "index": {
       "cache_relative_path": "c2/frozen_panel/67e566b68a3eb1f50be07abbb2dc.aesgcm",
       "ciphertext_bytes": 30334,
-      "ciphertext_sha256": "34b71b6151bb86b2248a5f55c74940b1fa1a89baa33b4ea1d1f73ace316a99aa"
+      "ciphertext_sha256": "899e60b3efe3b345919273681013420a179eae7da3e04b087cc4661acb28f3ba"
     },
     "stock": {
       "cache_relative_path": "c2/frozen_panel/def4acd72d6aadb62f1ae72bae80.aesgcm",
       "ciphertext_bytes": 1654615,
-      "ciphertext_sha256": "a1669465250c5cd223f57f28178449d8c75d17413237598632bc734335d83441"
+      "ciphertext_sha256": "2c3e416e2681a526f307f092d67f517b747461adbe424c3b2a96ae6901d33408"
     }
   },
   "input_manifest": {
