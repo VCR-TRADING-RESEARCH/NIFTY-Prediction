@@ -551,3 +551,15 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - HDFC Ltd remains a distinct predecessor security (Dhan legacy ID 1330); it is not mapped to HDFCBANK. HDFC merger and Tata Motors demerger target-crossing stock cycles are excluded from that constituent's return target. DUMMYTATAM stays non-tradable.
 - **Limit:** this is a major issuer-identity/rename/merger/demerger ledger, not an exhaustive dividends/splits/bonus/rights/capital-restructuring adjustment ledger. Corporate-action governance therefore remains PARTIAL and does not unlock C2.
 - New offline identity tests are running in [Actions 41302695594](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41302695594). The continuous Dhan coverage job [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865) remains in its live request step at the time of this update.
+
+
+## C1 intraday stock + NIFTY target coverage result — 2026-11-01
+
+- **Data-coverage sub-gate: PASS.** Live Dhan job [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865) printed 258/258 valid observed NIFTY target pairs; 258/258 stock cycles meeting the registered 47-stock / at least 94% member rule; 154 confirmatory cycles after the 104-cycle warm-up; zero unresolved active symbols; 1,083 requests across 21 non-overlapping windows.
+- **Window:** first forecast anchor 2021-11-12; last expiry 2026-10-27.
+- **Chunk caveat:** 20 index windows returned PASS_RESPONSE; the 2024-01-31 to 2024-04-29 window was marked PARTIAL_TARGET_DATES. Despite that window-level partial response, the final cycle calculation reported all 258 scheduled weekly target pairs valid. The exact date behind the partial response was not preserved; this anomaly remains disclosed.
+- **Publication incident:** the runner generated sanitized outputs, but the final commit step used git pull --rebase after concurrent edits to STATUS.md and RESEARCH_LOG.md. The rebase conflicted on those files. The final explicit gate step still printed C1_CONTINUOUS_COVERAGE_GATE_PASSED. Detailed per-cycle/per-symbol QA was not retained as an Actions artifact.
+- **Durable summary:** [C1 coverage result JSON](C1_CONTINUOUS_COVERAGE_RESULT.json) and [report](C1_CONTINUOUS_COVERAGE_REPORT.md) preserve aggregate evidence and the partial-window caveat. Detailed flags are not reconstructed.
+- **Identity/action gate:** still PARTIAL. Dated alias resolution is improved, but comprehensive split, bonus, dividend, rights and merger/demerger adjustment review remains open.
+- **Daily feature-history gate:** pending; a separate Dhan daily OHLCV audit is being built.
+- **Overall C1:** still NOT PASSED. C2 remains locked. No model, forecast or trading strategy has been trained or certified.
