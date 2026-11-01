@@ -434,3 +434,10 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Corrected the probe to detect XLSX versus legacy XLS by file signature, added openpyxl and regression tests, and made report commits rebase before push to handle concurrent C1 updates.
 - Corrected probe run pending. No holdings data or constituent panel has been admitted.
 - **C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.**
+
+
+## 2026-11-01 — AMC response-type investigation
+
+- The latest metadata probe (run [41275027813](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275027813)) passed seven offline tests, but recent URLs returned HTTP 200 with unrecognised content signatures; the guessed Apr-2019 URL returned 404.
+- Added browser-style request headers and a sanitised diagnostic of Content-Type, byte count, SHA-256 and file magic prefix. No workbook contents or constituent holdings are recorded.
+- C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. Historical weights have not been sourced or parsed.
