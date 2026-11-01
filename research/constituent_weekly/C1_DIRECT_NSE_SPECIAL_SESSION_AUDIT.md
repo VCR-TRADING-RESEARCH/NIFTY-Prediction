@@ -1,6 +1,6 @@
 # C1 Direct NSE Special-session Bhavcopy Audit
 
-Updated: 2026-11-01T19:46:28.089947+00:00
+Updated: 2026-11-01T19:47:14.132963+00:00
 Status: PARTIAL_DIRECT_ARCHIVE_COVERAGE
 
 Direct NSE EQ OHLCV rows validated: 0/3.
