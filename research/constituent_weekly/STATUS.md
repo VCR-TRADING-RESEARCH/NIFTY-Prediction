@@ -2,17 +2,17 @@
 
 **Last updated:** 2026-11-01  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 market-data preflight PASS on bounded samples; overall C1 NOT PASSED / RIGHTS-BLOCKED  
+**Status:** C0 PASS; C1 membership and bounded market-data preflight PASS; overall C1 PARTIAL / CONTINUOUS-COVERAGE GATE IN PROGRESS  
 **Prediction status:** No constituent panel, trained stock model or bottom-up forecast exists  
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Actions workflow validated required files and plan structure; governance regression tests passed; report committed as 746d1b382e338e760b1cf4b3ee5ea6fa6b63bc85 |
-| C1 — Point-in-time universe/data audit | PARTIAL PASS / RIGHTS-BLOCKED | Dhan 50/50 passes across three separate 90-day windows plus one session; overall C1 blocked until authorised official PIT IWF weights, continuous coverage/identity evidence and basket reconciliation pass |
+| C1 — Point-in-time universe/data audit | PARTIAL / COVERAGE IN PROGRESS | Membership and bounded stock-data checks pass; complete 90-day chunk coverage, index target calendar and historical identity/action panel still required; no weight/ETF comparison gate in v1.3 |
 | C2 — Panel labels/features | PENDING | Build only after C1 passes; validate target construction and freeze source hashes/split |
 | C3 — Stock models/baselines | PENDING | Pooled stock panel and bounded benchmarks only after C2 passes |
-| C4 — Index aggregation/uncertainty | PENDING | Weighted expected return and dependence-aware probability; compare on matched cycles |
+| C4 — Index aggregation/uncertainty | PENDING | Train calibrated NIFTY-direction meta-model on strictly OOF unweighted stock forecast summaries; compare prediction metrics on matched cycles |
 | C5 — Economic/execution gate | PENDING | Contract-level fills and date-effective Paytm Money costs required before any strategy claim |
 | C6 — Manuscript/independent audit | PENDING | Complete manuscript, plots, tables, appendices and formula/repository audit |
 
@@ -24,7 +24,7 @@
 - **Historical weight candidate: acquired and validated.** 216 dated rows, 100 ticker columns, 2008-01-31 to 2025-08-31; row sums within 4.3e-14 of 100%. Cache: data/constituent_weekly/nifty50_weights_monthly.csv; audit: [C1_NIFTY50_WEIGHT_AUDIT.json](C1_NIFTY50_WEIGHT_AUDIT.json). Licence is CC BY-NC-SA 4.0 and commercial use is not permitted; the source has estimated/extrapolated event weights and is not accepted as official daily IWF.
 - **Official source search:** NSE All Reports lists historical “Market Capitalisation, Weightage, Beta for NIFTY 50 & NIFTY Next 50” and “Indices - Market Capitalisation & Weightage” reports. NSE Market Pulse gives some recent sector-level weights but not a full stock-level point-in-time series. Automated NSE collection remains disabled pending rights/licence clearance. The candidate file does not cover 2025-09 onward.
 - Latest offline workflow regression validation: [run 41247674443](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41247674443), **18 passed**. The status renderer now reports the user's expiry rule, HDFC legacy sample, and weight-cache result.
-- **Overall C1 remains NOT PASSED.** The five-symbol sample is not a 50-stock data panel. Required next gates: authorised/official stock weights after 2025-08 and historical reconciliation, dated ISIN/security identities/corporate actions, full anchor/expiry-proxy OHLCV coverage, and constituent basket reconstruction against the official NIFTY 50 index.
+- **Overall C1 remains NOT PASSED.** Bounded 50-stock samples are not continuous history. Under v1.3, the remaining C1 gates are continuous 90-day-chunk stock and NIFTY index target coverage, verified expiry/session dates, dated ISIN/security identities and corporate-action continuity. Official weights, ETF holdings and basket-to-index weight reconciliation are no longer required.
 ## Initial source findings (document review only)
 
 - NIFTY 50 methodology uses free-float market-cap weights; a majority vote of stock directions is not the primary index aggregation rule.
@@ -527,3 +527,17 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Use this as an **original-source locator and independent cross-check**, not as official NIFTY free-float IWF. A NIFTY 50 ETF/index fund portfolio is affected by cash, derivatives, tracking, securities lending and sampling, so it cannot replace index-provider weights without a quantified reconciliation.
 - The best next bounded check is to identify the exact monthly AMC files through the archive's source links, then confirm their printed disclosure dates, security identifiers and month coverage directly at the AMC/Internet Archive. No raw files are to be cached or redistributed until the relevant terms/permission are clear.
 - [amcs.fund method and sources](https://amcs.fund/methodology) and [C1 sanitized metadata report](C1_AMCS_API_DISCOVERY_REPORT.md). Overall C1 remains **NOT PASSED / RIGHTS-BLOCKED**.
+
+
+
+## v1.3 method and C1 gate update — 2026-11-01
+
+**User decision:** “No comparison needed. Proceed.” No ETF-holdings-versus-index-weight comparison will be run. Historical official NIFTY IWF, ETF portfolio weights and weight reconstruction are removed from the active v1.3 method and C1 acceptance gates.
+
+- **Current method:** forecast each point-in-time tradable NIFTY 50 constituent's UP probability and continuous return from information available by 10:00 IST. Generate every stock forecast strictly out of fold. Summarise the cycle using unweighted breadth, probability/return means and medians, dispersion, sector breadth, signal concentration and valid-member count. Fit a chronological regularised logistic meta-model against the observed NIFTY 50 10:00-to-15:15-proxy direction label.
+- **Important interpretation:** this predicts the actual observed NIFTY index label; it does not construct a synthetic weighted NIFTY return. Equal-weight constituent-basket averages are diagnostics only.
+- **C1 evidence already passed:** 50/50 current-universe scrip master mapping on the checked date; membership reconciled over 103 month-ends; three separate 90-day data windows across 2021/2022/2026 and recent one-day 50-stock checks passed; 15:15 proxy rule was validated on tested samples. These are bounded samples, not continuous five-year coverage.
+- **C1 still in progress:** continuous 90-day-chunk coverage for all relevant stock and index candles; complete dated ISIN/security-ID/corporate-action mapping; expiry/session calendar coverage; and valid observed NIFTY target availability. A confirmatory cycle needs at least 47 valid constituent forecasts and at least 94% of point-in-time tradable members. At least 98% of scheduled eligible expiry cycles must have valid observed NIFTY target labels; the first confirmatory forecast requires at least 104 prior eligible cycles.
+- **ETF/AMC status:** no holdings rows were ingested. Bulk AMC workbook automation is paused because Nippon AMC terms do not affirmatively permit this reuse without prior written consent. The previous schema probes are discovery evidence only. mfdata.in's HTTP 522 result is inconclusive and is no longer a gate for v1.3.
+- **C2 remains PENDING** until the revised C1 data gate passes. No stock panel, model, forecast or strategy has been created. The Paytm Money cost/slippage gate remains mandatory for any later trading claim.
+- [Locked plan v1.3](RESEARCH_PLAN.md), [user decisions](C1_USER_DECISIONS.md), [data source register](DATA_SOURCE_REGISTER.md), [developer gate report](C1_DEVELOPER_GATE_REPORT.md).
