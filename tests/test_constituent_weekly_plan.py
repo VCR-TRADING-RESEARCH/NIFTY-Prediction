@@ -20,7 +20,7 @@ class ConstituentWeeklyPlanTests(unittest.TestCase):
 
     def test_bottom_up_is_point_in_time_and_uses_out_of_fold_signals(self):
         plan = (ROOT / "research" / "constituent_weekly" / "RESEARCH_PLAN.md").read_text(encoding="utf-8")
-        self.assertIn("point-in-time tradable NIFTY 50 constituent membership", plan)
+        self.assertIn("Point-in-time tradable NIFTY 50 constituent membership", plan)
         self.assertIn("cross-stock dependence", plan)
         self.assertIn("Today's membership must never be applied", plan)
         self.assertIn("unweighted cross-sectional forecast-signal aggregator", plan)
@@ -34,7 +34,7 @@ class ConstituentWeeklyPlanTests(unittest.TestCase):
         self.assertIn("- **v1.1 — 2026-11-01:**", plan)
         self.assertIn("- **v1.2 — 2026-11-01:**", plan)
         self.assertIn("- **v1.3 — 2026-11-01:**", plan)
-        self.assertIn("No comparison needed", plan)
+        self.assertIn("no ETF-holdings-versus-index-weight comparison is needed", plan)
         self.assertIn("actual NIFTY 50 index return remains the observed target", plan)
         self.assertIn("15:00 through 15:14 IST", plan)
         self.assertIn("15:15 expiry proxy", plan)
@@ -45,7 +45,7 @@ class ConstituentWeeklyPlanTests(unittest.TestCase):
         self.assertIn("Forecast quality is not trading P&L", plan)
         self.assertIn("Paytm Money", plan)
         self.assertIn("Stop C1 if point-in-time membership/security identity", plan)
-        self.assertIn("exploratory gate", plan)
+        self.assertIn("Historical free-float weights and ETF holdings are not gates in v1.3", plan)
 
     def test_equal_weight_diagnostics_are_not_called_nifty_return(self):
         plan = (ROOT / "research" / "constituent_weekly" / "RESEARCH_PLAN.md").read_text(encoding="utf-8")
