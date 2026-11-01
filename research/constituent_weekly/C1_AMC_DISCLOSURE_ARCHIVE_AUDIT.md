@@ -47,3 +47,15 @@ The one-date ETF/NSE calibration remains calibration only. Plan v1.2 is unchange
 - [AMFI terms of use](https://www.amfiindia.com/terms-of-use)
 - [FundTracker India Nifty BeES history](https://fundtrackerindia.com/scheme/nippon-india-etf-nifty-50-bees)
 - [amcs.fund method and source description](https://amcs.fund/month)
+
+
+## Metadata probe outcome — 2026-11-01
+
+The bounded probe passed on the two required recent dates:
+- September 2026: HTTP 200; 1,352,141 bytes; XLSX ZIP signature; 108 sheets; target scheme found; ISIN, quantity and weight columns detected; 50 ISIN-bearing target rows.
+- February 2026: HTTP 200; 1,206,358 bytes; XLSX ZIP signature; 111 sheets; target scheme found; ISIN, quantity and weight columns detected; 50 ISIN-bearing target rows.
+- Offline parser tests: 7 passed. See [sanitised probe report](C1_AMC_ARCHIVE_PROBE_REPORT.md) and [Actions run 41275178244](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275178244).
+
+The direct URL candidate for April 2019 returned HTTP 404. The AMC archive page does show a portfolio entry for that month; the modern filename pattern was not confirmed for older years. This is a link-discovery issue, not evidence of source absence. The April file has not been replaced with an inferred or third-party record.
+
+**Interpretation:** Recent source schema is verified, not the full historical series. No individual holding values or raw workbook files have been committed. Publication-time availability, use rights, historical security identity/actions, weight coverage and weighted basket reconciliation remain open. C1 stays PARTIAL / NOT ACCEPTED FOR MODELLING.
