@@ -867,3 +867,11 @@
 - Input manifest: not available.
 - Encrypted panel cache metadata: {}.
 - C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.
+
+
+## 2026-11-02 — C2 dependency, diagnostic and report-integrity corrections
+
+- Corrected panel-only run [41352799593](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41352799593) supplied the required personal-use opt-in and passed compilation/offline tests, but stopped before data acquisition because `huggingface_hub` was not installed. The panel workflow now installs `huggingface_hub` and `pyarrow`.
+- The earlier combined run [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) retrieved daily rows for 62 symbols and made 1,083 intraday requests but had zero cycles passing the primary 47/94% rule after flagged-row exclusions. It is not formal C2 evidence because that workflow crossed the C2/C3/C4 boundary.
+- Both old failure reports were invalid JSON due a second write with a literal backslash-n suffix. Replaced duplicate writes with a single tested JSON writer and added value-free diagnostics for per-cycle eligible counts, per-symbol intraday completeness, index targets, daily history and build failure counts.
+- Added regression tests for single-document JSON serialization and the exact 47/94% threshold. Corrected validation run [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358) is active; its data/panel result is still pending.

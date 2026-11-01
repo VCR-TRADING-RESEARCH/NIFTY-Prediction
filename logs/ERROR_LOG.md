@@ -813,3 +813,28 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Error category: pre-panel workflow failure.
 - Source location: {}.
 - No panel acceptance is claimed for this run.
+
+
+## E0096 — 2026-11-02 — Combined C2 workflow had zero primary-eligible cycles
+
+- **Severity:** High — point-in-time member target/coverage gate failure; diagnostic run was outside the formal C2 phase scope.
+- **Run:** [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810).
+- **Observed:** The combined workflow retrieved daily histories for all 62 symbols (the run log reported PASS rows for each symbol) and completed 1,083 intraday requests. It then failed because **0 cycles** met the registered 47-valid-member / 94% rule after identity/action-flagged rows were excluded; the combined workflow required 131 cycles for its stock-plus-meta-model walk-forward path.
+- **Interpretation:** This is evidence of a constituent target/feature coverage or exclusion issue in that run, not evidence that all daily data is unavailable. The run did not publish a valid panel/model artifact, and its workflow improperly combined C2, C3 and C4 work. Its coverage result is diagnostic only; C2 acceptance must be based on the dedicated panel-only workflow and a value-free per-cycle coverage report.
+- **Status:** The runner now emits index-target counts, per-symbol anchor/expiry coverage, stock-target rows, daily-feature history, failure counts, identity/action flags, and the distribution of eligible constituents per cycle. No thresholds are relaxed.
+
+## E0097 — 2026-11-02 — C2 panel-only workflow omitted Hugging Face/Parquet dependencies
+
+- **Severity:** Medium — pre-acquisition workflow dependency blocker.
+- **Run:** [41352799593](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41352799593).
+- **Observed:** Compilation and offline regression tests passed, the personal-use opt-in was present, and encrypted cache restore succeeded. The panel runner stopped before data acquisition with `ModuleNotFoundError: No module named 'huggingface_hub'`.
+- **Root cause:** The panel-only workflow omitted the explicit `huggingface_hub` downloader and `pyarrow` Parquet engine installed by the established C1 data environment.
+- **Correction:** Added both packages to the panel-only workflow install step. No market-data acquisition or panel result is claimed for this run.
+
+## E0098 — 2026-11-02 — C2 failure report appended a literal escape and discarded diagnostics
+
+- **Severity:** Medium — report-integrity/observability defect.
+- **Runs:** [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) and [41352799593](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41352799593).
+- **Observed:** Both failure handlers wrote the JSON report a second time with a literal backslash-n suffix. GitHub's formal acceptance step raised `JSONDecodeError: Extra data` (line 39 in the combined report; line 31 in the panel-only report). The publisher therefore could not parse the report.
+- **Correction:** Centralised JSON writing in a tested single-document writer; failure handling writes once and includes sanitized, value-free coverage diagnostics. Added regression tests for valid JSON output and the exact 47/94% member threshold.
+- **Status:** Corrected code and the missing dependencies are now under validation in [run 41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358). This run must pass the added tests and publish a parseable result before C2 can be accepted.

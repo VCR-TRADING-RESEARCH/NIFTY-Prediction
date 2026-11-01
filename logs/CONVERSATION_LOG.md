@@ -492,3 +492,10 @@
 - Formal panel-only workflow executed on the plan-defined C2 branch.
 - Offline tests: success; panel step: failure; result: INVALID_RESULT_JSON.
 - The bundled pilot remains diagnostic only; C3/C4 model gates remain separate.
+
+
+## 2026-11-02 — C2 workflow dependency and diagnostic follow-up
+
+- Run [41352799593](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41352799593) passed compilation and offline tests, restored the encrypted cache, but failed before data acquisition because `huggingface_hub` was missing. Added the missing downloader and Parquet engine.
+- The retired combined run [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) failed the 47/94% rule with zero eligible cycles after flagged-row exclusions, although daily histories were reported for 62 symbols and 1,083 intraday requests were made.
+- Fixed invalid failure-report JSON caused by a second escaped-newline write. Added regression tests and value-free coverage diagnostics. Corrected run [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358) is now active; no C2 result is accepted until its panel report passes all gates.
