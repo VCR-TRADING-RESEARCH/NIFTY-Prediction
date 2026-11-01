@@ -556,4 +556,5 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Root cause:** The test cases were appended after the import block without adding their helper to that block.
 - **Correction:** Import _payload_shape explicitly in tests/test_amcs_fund_metadata.py. No production code or source data were changed by the failed run.
 - **Impact:** The metadata API probe was skipped by the workflow's test gate; no live source request was made.
-- **Status:** FIX COMMITTED — validate in automatic rerun.
+- **Validation:** Follow-up [Actions run 41298336318](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41298336318) completed SUCCESS; the offline metadata-sanitisation tests, live metadata probe, job summary and sanitized report commit all completed.
+- **Status:** CLOSED — missing import fixed and workflow rerun passed.
