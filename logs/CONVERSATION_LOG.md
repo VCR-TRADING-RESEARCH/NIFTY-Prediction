@@ -249,3 +249,10 @@
 - The guessed direct Apr-2019 file path returned 404 although the AMC page lists that month; no historical value is inferred or substituted.
 - The automated report commit raced with parallel C1 updates; the successful sanitised report is now committed by the research controller. No raw files or holdings have been published.
 - C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. No constituent panel, trained stock model, bottom-up forecast or trading strategy exists.
+
+
+## 2026-11-01 — Follow-up AMC workflow run completed successfully
+
+- After the repository controller saved the recent-month schema results, the automatic follow-up run [41275487989](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275487989) completed SUCCESS.
+- All parser tests, source probe, summary publication and sanitised report commit passed. The report publisher's bounded fetch/rebase/push retry worked without force-pushing.
+- No new market-data panel or model was created; the C1 source-rights and historical basket gates remain open.
