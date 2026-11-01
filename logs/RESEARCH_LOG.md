@@ -505,3 +505,14 @@
 - **Diagnosis:** A single test fixture mixed AMC-list and scheme-detail records. The recursive matcher correctly included both Nippon-related objects, but the test expected only the AMC record.
 - **Correction:** Separated the test fixture into the two distinct endpoint shapes. The metadata extraction code was not changed.
 - **Next action:** Push-triggered workflow rerun; inspect API metadata and only original-source HEAD results. Rights remain unverified and C1 remains blocked.
+
+ 
+## 2026-11-01 — amcs.fund metadata workflow passed; no source URLs surfaced
+
+- **Phase:** C1 source discovery.
+- **Run:** [41277022940](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41277022940), **SUCCESS**; 4/4 metadata sanitisation tests passed.
+- **Observed:** API index, /amcs, Nippon AMC detail and /manifest all returned HTTP 200 / valid JSON. AMC record resolved to Nippon India; detail returned current Nifty BeES scheme metadata.
+- **Limitation:** The /manifest response did not yield any whitelisted original-AMC or Internet Archive source URL for historical Nifty BeES files. No HEAD checks could be made. The exact April 2019 attachment remains unresolved.
+- **Data/rights:** No scheme holdings route or source-file body was downloaded; no portfolio values were admitted. amcs.fund data-reuse rights for trading research remain unverified.
+- **Correction:** E0062 closed after the successful follow-up run; it was an incorrectly mixed offline test fixture, not an API/data error.
+- **Plan:** BUP-01 v1.2 remains locked. C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING.
