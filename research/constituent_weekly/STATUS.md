@@ -457,3 +457,10 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Sanitised report with byte counts and SHA-256 values: [C1 AMC archive probe report](C1_AMC_ARCHIVE_PROBE_REPORT.md). No raw holdings or workbook data were committed.
 - April 2019's archive entry is visible on the AMC page, but the guessed modern filename URL returned 404. This is not proof of missing source data; exact older link remains to be resolved.
 - **C1 decision:** PARTIAL / NOT ACCEPTED FOR MODELLING. The probe validates recent workbook schema only. Rights, actual publication timestamps, historical series coverage, membership/security-action alignment, 98%/47-stock coverage, and basket-to-index reconciliation remain open. C2 remains gated.
+
+
+## 2026-11-01 — AMC metadata workflow publication verified
+
+- Follow-up run [41275487989](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275487989) completed SUCCESS, including all seven parser tests, the recent-month workbook schema probe, job-summary publication and sanitised report commit.
+- The bounded branch fetch/rebase/push retry successfully resolved the earlier report publication race without force-pushing.
+- C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. Only recent schema was verified; rights, publication times, full history, security/corporate-action continuity, weight coverage and basket reconstruction remain open.
