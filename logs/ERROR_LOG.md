@@ -655,3 +655,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction/guard:** Keep all factors unapplied. Require per-event exchange/issuer confirmation, event terms, ISIN/security identity, effective/ex-date, prior raw close and event-family-specific formula checks. Rights must use TERP inputs; merger/demerger must be scheme-specific; buybacks remain event features, not mechanical scale factors.
 - **Validation:** Candidate catalogue workflow [41318287855](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318287855) succeeded; corporate-action gate remains NOT PASSED.
 - **Impact:** No stock label or target was adjusted. C2 remains locked.
+
+
+## E0078 — 2026-11-01 — C1 coverage audit did not retain model inputs
+
+- **Observed:** The C1 intraday audit downloaded minute-level bars to validate anchor and expiry windows, but intentionally discarded all prices after emitting coverage flags. It therefore could not serve as a constituent training panel. The repository's existing `weekly_labels_features.csv` is the legacy direct-index benchmark, not a constituent-by-cycle panel.
+- **Root cause:** C1 was implemented as a sanitized coverage audit, while no dedicated exploratory panel builder/model workflow had yet been added. Model testing was postponed unnecessarily while corporate-action verification continued.
+- **Correction:** Added a versioned C3-X exploratory-only workflow. It rebuilds the required sample from Dhan, constructs causal features in memory, excludes available structural-event windows, enforces the registered per-cycle 47/94% threshold and 104-cycle warm-up, and stores the derived panel only in authenticated encrypted Actions cache. Confirmatory C1/C2 acceptance remains unchanged.
+- **Validation:** Pending the first live workflow and its regression suite.
+- **Impact:** No prior result is re-labelled or reused as a bottom-up model result. No strategy or profitability claim is made.
