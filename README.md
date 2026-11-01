@@ -484,3 +484,9 @@ The [mfdata.in documentation](https://mfdata.in/docs) describes a no-key search 
 
 A complementary source path is [amcs.fund's monthly archive](https://amcs.fund/month) and [methodology](https://amcs.fund/methodology). The provider says it reads each AMC's original monthly file, takes the date printed inside the disclosure, links the original file and an Internet Archive copy, and flags partial months. Existing C1 probes reached amcs.fund metadata/month routes, but did not admit holdings values or prove continuous NIFTY 50 ETF history. Treat this as an original-source locator and cross-check, not official NIFTY IWF: ETF weights differ from the index and source-use rights remain to be checked. More detail is recorded in the [C1 phase status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md) and [research log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/RESEARCH_LOG.md).
 
+
+
+<!-- PHASE3_STATUS_START -->
+**Phase 3 source gate:** BLOCKED — checked 402 candidate expiry dates; official close mismatches >1 point: 1719.
+See [source reconciliation report](data/reconciliation/source_reconciliation_report.json) and [Phase 3 plan](docs/PHASE_3_SOURCE_RECONCILIATION.md).
+<!-- PHASE3_STATUS_END -->
