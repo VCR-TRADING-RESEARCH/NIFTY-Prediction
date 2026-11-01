@@ -11,6 +11,10 @@ on:
       - "tests/test_constituent_weekly_plan.py"
       - "scripts/constituent_weekly/audit_c1_continuous_dhan_coverage.py"
       - "tests/test_c1_continuous_dhan_coverage.py"
+      - "data/constituent_weekly/security_alias_history.csv"
+      - "data/constituent_weekly/security_corporate_action_events.csv"
+      - "scripts/constituent_weekly/security_identity.py"
+      - "tests/test_c1_security_alias_history.py"
       - ".github/workflows/bup01-c1-offline-tests.yml"
   pull_request:
     branches:
@@ -50,4 +54,5 @@ jobs:
             tests/test_dhan_edge_volume_diagnostic.py \
             tests/test_bup01_membership_intervals.py \
             tests/test_constituent_weekly_plan.py \
-            tests/test_c1_continuous_dhan_coverage.py
+            tests/test_c1_continuous_dhan_coverage.py \
+            tests/test_c1_security_alias_history.py
