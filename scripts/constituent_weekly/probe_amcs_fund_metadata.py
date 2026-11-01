@@ -18,6 +18,8 @@ TARGET_SCHEME_TOKENS = ("nifty", "bees")
 SAFE_FIELDS = {
     "id", "amc_id", "scheme_id", "slug", "code", "name", "title",
     "amc", "fund_house", "scheme_name", "display_name", "month",
+    "scheme_name", "scheme_id", "family_id", "family_name", "scheme_code",
+    "amc_slug", "category", "has_holdings", "variant_count", "plan_type",
     "period", "date", "disclosure_date", "published_at", "publication_date",
     "url", "source_url", "original_url", "file_url", "download_url",
     "archive_url", "internet_archive_url", "archived_url", "original_file_url",
@@ -606,6 +608,45 @@ def _scan_amcs_script_metadata(session: requests.Session, script_urls: list[str]
     return results
 
 
+
+def _mfdata_family_summaries(payload: Any) -> list[dict[str, Any]]:
+    """Retain only scheme family identifiers/labels from mfdata search metadata."""
+    allowed = {
+        "family_id", "family_name", "scheme_code", "scheme_name",
+        "amc", "amc_name", "category", "has_holdings", "variant_count",
+    }
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for record in _walk_dicts(payload):
+        name = str(record.get("family_name") or record.get("scheme_name") or record.get("name") or "")
+        if "nifty 50" not in name.lower():
+            continue
+        row = {str(k).lower(): v for k, v in record.items()
+               if str(k).lower() in allowed and isinstance(v, (str, int, float, bool))}
+        if not any(k in row for k in ("family_id", "scheme_code")):
+            continue
+        fingerprint = json.dumps(row, sort_keys=True, default=str)
+        if fingerprint not in seen:
+            out.append(row)
+            seen.add(fingerprint)
+    return out[:100]
+
+
+def _mfdata_months(payload: Any) -> list[str]:
+    """Extract YYYY-MM month labels only; never serialize holdings records."""
+    candidates: list[str] = []
+    for node in _walk_dicts(payload):
+        for value in node.values():
+            if isinstance(value, str) and re.fullmatch(r"20\\d{2}-(0[1-9]|1[0-2])", value):
+                candidates.append(value)
+    if isinstance(payload, list):
+        candidates.extend(
+            x for x in payload if isinstance(x, str)
+            and re.fullmatch(r"20\\d{2}-(0[1-9]|1[0-2])", x)
+        )
+    return sorted(set(candidates))
+
+
 def run_probe() -> dict[str, Any]:
     session = requests.Session()
     session.headers.update({
@@ -629,6 +670,9 @@ def run_probe() -> dict[str, Any]:
         "manifest": None,
         "tipsheet_manifest": None,
         "tipsheet_weight_candidates": [],
+        "mfdata_schemes": None,
+        "mfdata_scheme_families": [],
+        "mfdata_family_histories": [],
         "nippon_amc_matches": [],
         "amc_catalog_records": [],
         "amc_nifty50_schemes": [],
@@ -739,6 +783,44 @@ def run_probe() -> dict[str, Any]:
     if tipsheet_payload is not None:
         report["tipsheet_weight_candidates"] = _tipsheet_weight_candidates(tipsheet_payload)
 
+    # Independent free-source check: mfdata.in documents a no-key schemes search
+    # and a separate monthly holdings-history endpoint. Only IDs, fund labels and
+    # YYYY-MM availability are retained; per-stock holdings responses are never called.
+    mfdata_payload, mfdata_meta = _fetch_json(
+        session,
+        "https://mfdata.in/api/v1/schemes?search=nifty%2050&has_holdings=true&limit=1000",
+    )
+    report["mfdata_schemes"] = mfdata_meta
+    family_summaries = _mfdata_family_summaries(mfdata_payload) if mfdata_payload is not None else []
+    report["mfdata_scheme_families"] = family_summaries
+    seen_family_ids: set[str] = set()
+    for family in family_summaries:
+        family_id = family.get("family_id")
+        if family_id is None:
+            continue
+        family_id_s = str(family_id)
+        if not re.fullmatch(r"[0-9]{1,12}", family_id_s) or family_id_s in seen_family_ids:
+            continue
+        seen_family_ids.add(family_id_s)
+        if len(seen_family_ids) > 15:
+            break
+        hist_payload, hist_meta = _fetch_json(
+            session,
+            f"https://mfdata.in/api/v1/families/{family_id_s}/holdings/history",
+        )
+        months = _mfdata_months(hist_payload) if hist_payload is not None else []
+        report["mfdata_family_histories"].append({
+            "family": family,
+            "status": hist_meta.get("status"),
+            "http_status": hist_meta.get("http_status"),
+            "bytes": hist_meta.get("bytes"),
+            "month_count": len(months),
+            "first_month": months[0] if months else None,
+            "last_month": months[-1] if months else None,
+            "months_sample": months[:3] + (months[-3:] if len(months) > 3 else []),
+            "month_list_sha256": hashlib.sha256("\\n".join(months).encode("utf-8")).hexdigest(),
+        })
+
     # Discover other fund houses' NIFTY 50 index ETFs/funds. Retain only scheme
     # identifiers and schema/date counts, never individual holdings values.
     amc_probe_slugs = []
@@ -823,7 +905,7 @@ def render_report(report: dict[str, Any]) -> str:
         "# C1 amcs.fund API metadata discovery",
         "",
         f"- Run time (UTC): {report['run_time_utc']}",
-        "- Scope: **metadata only**; the probe calls the documented scheme/month endpoints and inspects first-party HDFC/UTI portfolio archive UI metadata. It does not submit archive forms, download portfolio workbooks, or store holdings values.",
+        "- Scope: **metadata only**; the probe inspects AMC archive UI and mfdata.in family/month-history metadata. It does not submit AMC archive forms, call fund-family holdings endpoints, download portfolio workbooks, or store holdings values.",
         "- Rights: **UNVERIFIED**. Public API access is not treated as permission for commercial/trading-research extraction, caching, or redistribution.",
         "",
         "| Endpoint | Result | HTTP | Content type | Bytes | Top-level records |",
@@ -902,6 +984,19 @@ def render_report(report: dict[str, Any]) -> str:
     else:
         lines.append("- No source metadata was returned by /month/{id}.")
 
+    lines += ["", "## mfdata.in independent portfolio-history availability audit", ""]
+    lines.append("- Scope: scheme/family labels and month availability metadata only; no per-stock holdings endpoint was requested.")
+    lines.append(endpoint_row("mfdata.in /api/v1/schemes?search=nifty 50", report.get("mfdata_schemes")))
+    if report.get("mfdata_scheme_families"):
+        for item in report["mfdata_scheme_families"][:50]:
+            lines.append("- Scheme family: " + json.dumps(item, sort_keys=True, ensure_ascii=False))
+    else:
+        lines.append("- No matching family records were returned by the documented mfdata scheme search.")
+    if report.get("mfdata_family_histories"):
+        for item in report["mfdata_family_histories"]:
+            lines.append("- Holdings-history availability: " + json.dumps(item, sort_keys=True, ensure_ascii=False))
+    else:
+        lines.append("- No family_id values were available to query the documented holdings-history endpoint.")
     lines += ["", "## Tipsheet NIFTY 50 weight-data catalogue entries", ""]
     if report.get("tipsheet_weight_candidates"):
         for item in report["tipsheet_weight_candidates"][:50]:
