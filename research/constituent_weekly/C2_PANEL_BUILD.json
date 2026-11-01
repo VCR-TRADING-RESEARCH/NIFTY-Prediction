@@ -1,12 +1,33 @@
 {
-  "created_at_utc": "2026-11-01T21:37:41.736383+00:00",
-  "fatal_error_category": "ModuleNotFoundError",
-  "fatal_error_location": {
-    "file": "audit_c1_daily_history.py",
-    "function": "load_tejhq_nse_year",
-    "line": 471
+  "acceptance": {
+    "cycles_for_first_C3_confirmatory_forecast": 105,
+    "duplicate_constituent_cycle_rows": 0,
+    "duplicate_index_cycle_rows": 0,
+    "holdout_boundary_anchor_date": "2025-10-29",
+    "holdout_boundary_cycle_idx": 206,
+    "holdout_boundary_expiry_date": "2025-11-04",
+    "holdout_fraction": 0.2,
+    "minimum_index_target_fraction": 0.98,
+    "primary_eligible_cycles": 258,
+    "scheduled_cycles": 258,
+    "stock_member_rule": "at least 47 valid; at least 94% of point-in-time tradable members",
+    "valid_index_target_cycles": 258,
+    "valid_index_target_fraction": 1.0
   },
-  "fatal_error_message": "No module named 'huggingface_hub'",
+  "created_at_utc": "2026-11-01T22:12:52.698347+00:00",
+  "encrypted_panel_cache": {
+    "encryption": "AES-GCM; HF_TOKEN-derived BUP01 cache key; raw values not published",
+    "index": {
+      "cache_relative_path": "c2/frozen_panel/67e566b68a3eb1f50be07abbb2dc.aesgcm",
+      "ciphertext_bytes": 30334,
+      "ciphertext_sha256": "34b71b6151bb86b2248a5f55c74940b1fa1a89baa33b4ea1d1f73ace316a99aa"
+    },
+    "stock": {
+      "cache_relative_path": "c2/frozen_panel/def4acd72d6aadb62f1ae72bae80.aesgcm",
+      "ciphertext_bytes": 1654615,
+      "ciphertext_sha256": "a1669465250c5cd223f57f28178449d8c75d17413237598632bc734335d83441"
+    }
+  },
   "input_manifest": {
     "action_event_sha256": "0c9231a144a0ba16e03e99658fd6300d588bb498f8557a95886bd77a2b9e45a7",
     "alias_sha256": "27b299b995bf59d08ab5b6a83d3fed0789c26363d842ae4b13acd6379e3985a3",
@@ -21,11 +42,56 @@
     "symbol_count": 62
   },
   "limitations": [
-    "The user explicitly waived the remaining historical identity and corporate-action checks as preconditions. This is a scope decision, not a claim that those checks passed.",
-    "No unverified corporate-action factor is applied; unadjusted event-exposed rows are flagged and excluded from the primary sensitivity panel.",
-    "The expiry target is the latest valid 15:00-15:14 one-minute candle close, treated as a 15:15 proxy, not the official 15:30 close.",
-    "No executable options/futures P&L or transaction-cost simulation is performed in C2."
+    "The user waived remaining historical identity and event-level action checks as progression preconditions; this does not certify those checks as passed.",
+    "No unverified corporate-action adjustment is applied. Identity/action flags remain in the encrypted panel.",
+    "The full row-level panel and all price/feature values remain only in the encrypted Actions cache.",
+    "No model fitting occurs in formal C2; stock models belong to C3 and index aggregation belongs to C4."
   ],
+  "methodology_version": "bup01-c2-panel-v1",
+  "panel": {
+    "accepted_cycles_after_primary_sensitivity": 258,
+    "constituent_rows": 12807,
+    "failure_counts": {
+      "stock_daily_features_missing": 92
+    },
+    "feature_columns": [
+      "ret_1d",
+      "ret_5d",
+      "ret_10d",
+      "ret_20d",
+      "ret_60d",
+      "vol_5d",
+      "vol_20d",
+      "vol_60d",
+      "range_10d",
+      "range_20d",
+      "gap_1d",
+      "volume_z20",
+      "cs_rank_ret5",
+      "cs_rank_ret20",
+      "cs_rank_ret5",
+      "cs_rank_ret20"
+    ],
+    "identity_flagged_rows": 292,
+    "index_feature_columns": [
+      "idx_ret_1d",
+      "idx_ret_5d",
+      "idx_ret_10d",
+      "idx_ret_20d",
+      "idx_ret_60d",
+      "idx_vol_10d",
+      "idx_vol_20d",
+      "idx_vol_60d",
+      "idx_range_10d",
+      "idx_range_20d"
+    ],
+    "index_flat_labels": 0,
+    "index_rows": 258,
+    "known_action_crossing_rows": 3,
+    "primary_flagged_rows": 293,
+    "stock_flat_labels": 19,
+    "symbols": 61
+  },
   "schema_version": 1,
-  "status": "FAILED"
-}\n
+  "status": "COMPLETED"
+}

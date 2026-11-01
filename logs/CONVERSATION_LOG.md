@@ -507,3 +507,11 @@
 - Confirmed run [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358) is the only active formal panel-only run. Dependency install, compilation, offline tests, stale-output cleanup, and encrypted cache restoration passed; panel construction remains in progress.
 - Confirmed branch-head commit [02e17c8](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/02e17c8d7938277a2414c9bfe64ca722c4b1b3da) only records logs; active run checks out runner commit [4f37920](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/4f37920c7dc2d719be2c310a1555962343c1616b).
 - No overlapping run was started. Prior FAILED report is stale and is not accepted as this run's result.
+
+
+<!-- C2_PANEL_CONVERSATION_41353406358 -->
+## 2026-11-01T22:12:59.053071+00:00 — formal C2 panel run 41353406358
+
+- Formal panel-only workflow executed on the plan-defined C2 branch.
+- Offline tests: success; panel step: success; result: COMPLETED.
+- The bundled pilot remains diagnostic only; C3/C4 model gates remain separate.

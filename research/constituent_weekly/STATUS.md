@@ -721,7 +721,7 @@ The combined run [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Pre
 <!-- BUP01_C2_PANEL_START -->
 ## Formal C2 panel update
 
-**Formal C2 panel run 41352799593:** INVALID_RESULT_JSON; 0 scheduled cycles; 0 valid NIFTY targets (0.00%); 0 cycles pass the 47/94% stock rule; 0 constituent-cycle rows. C2 is not accepted; see the workflow run and error log.
+**Formal C2 panel run 41353406358:** COMPLETED; 258 scheduled cycles; 258 valid NIFTY targets (100.00%); 258 cycles pass the 47/94% stock rule; 12807 constituent-cycle rows. Full panel stored in encrypted Actions cache; no model fitting in C2.
 
 See [C2 panel report](C2_PANEL_BUILD.md) and [panel manifest](C2_PANEL_BUILD.json).
 <!-- BUP01_C2_PANEL_END -->

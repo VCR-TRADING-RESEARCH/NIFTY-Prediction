@@ -883,3 +883,13 @@
 - Passed dependency installation (including Hugging Face Hub and PyArrow), compilation, offline regression tests, stale-output cleanup, and encrypted cache restore.
 - Panel construction remains active. No new report/artifact is available. The previous FAILED JSON in Git history is stale and must not be read as this run's result.
 - No thresholds have been relaxed; C2 acceptance still requires target coverage, 47/94% member-cycle count, duplicate checks, and causal-feature checks.
+
+
+<!-- C2_PANEL_RUN_41353406358 -->
+## 2026-11-01T22:12:59.053071+00:00 — formal C2 panel run 41353406358
+
+- Status: COMPLETED.
+- Summary: **Formal C2 panel run 41353406358:** COMPLETED; 258 scheduled cycles; 258 valid NIFTY targets (100.00%); 258 cycles pass the 47/94% stock rule; 12807 constituent-cycle rows. Full panel stored in encrypted Actions cache; no model fitting in C2.
+- Input manifest: 715623a04ff8e32a2a7b0a744a1e4b590d37f758c708eb5d7f5352d7dd00a553.
+- Encrypted panel cache metadata: {'encryption': 'AES-GCM; HF_TOKEN-derived BUP01 cache key; raw values not published', 'index': {'cache_relative_path': 'c2/frozen_panel/67e566b68a3eb1f50be07abbb2dc.aesgcm', 'ciphertext_bytes': 30334, 'ciphertext_sha256': '34b71b6151bb86b2248a5f55c74940b1fa1a89baa33b4ea1d1f73ace316a99aa'}, 'stock': {'cache_relative_path': 'c2/frozen_panel/def4acd72d6aadb62f1ae72bae80.aesgcm', 'ciphertext_bytes': 1654615, 'ciphertext_sha256': 'a1669465250c5cd223f57f28178449d8c75d17413237598632bc734335d83441'}}.
+- C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.
