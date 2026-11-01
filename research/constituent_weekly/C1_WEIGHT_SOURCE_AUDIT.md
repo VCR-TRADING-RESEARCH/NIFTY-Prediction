@@ -35,3 +35,21 @@ Relevant official/public references:
 ## Acceptance rule
 
 This candidate is **not** sufficient by itself to pass C1. Before C2, reconcile a sample of historical dates against official reports, check event-date weights against membership effective dates, close the 2025-09 onward gap using an authorized source, verify all historical identifiers/corporate actions, and complete constituent bar coverage. Do not backfill missing weights using equal weights or current weights.
+
+
+## Public ETF holdings proxy — one-date calibration completed (2026-11-01)
+
+A materially better public proxy has been identified: Nippon India ETF Nifty 50 BeES. The AMC says it uses a passive strategy intended to invest in NIFTY 50 constituent securities in the same proportion as the underlying index. Its February 2026 portfolio (portfolio date 2026-02-28; NAV date 2026-02-27) gives a full 50-stock holdings list and reports 0.08% cash.
+
+The portfolio's 50 stock weights were independently normalized to 100% and compared with the existing NSE Indices white-paper official snapshot dated 2026-02-27. All 50 symbols matched. Mean absolute difference = 0.002214 percentage points; RMSE = 0.003204 pp; maximum absolute difference = 0.008967 pp; Pearson correlation = 0.99999895. The figures are consistent with the input sources' 0.01 percentage-point rounding. This is a **single-date calibration only**, not evidence of historical performance or exact daily official weights.
+
+New detailed audit: [C1_ETF_PROXY_CALIBRATION.md](C1_ETF_PROXY_CALIBRATION.md). Aggregate metrics: [etf_proxy_calibration_2026-02-27.csv](../../data/constituent_weekly/etf_proxy_calibration_2026-02-27.csv). Numerical utilities: [weight_proxy.py](../../scripts/constituent_weekly/weight_proxy.py).
+
+Source references:
+- AMC February 2026 scheme note and portfolio: https://mf.nipponindiaim.com/FundsAndPerformance/ProductNotes/NipponIndia-ETF-Nifty-50-BeES-Feb-2026.pdf
+- AMC factsheet archive: https://etf.nipponindiaim.com/home/archives
+- Public 12-month AMC-holdings index and monthly portfolio source references: https://fundtrackerindia.com/scheme/nippon-india-etf-nifty-50-bees
+- SEBI passive-scheme disclosure circular: https://www.sebi.gov.in/legal/circulars/dec-2024/review-of-regulatory-framework-for-passive-schemes-under-mutual-funds_90050.html
+- NSE FAQ on self-weighting / price drift: https://www.nseindia.com/static/products-services/indices-faqs
+
+Decision: official-weight and ETF-replica proxy tracks remain separate. Use actual publication timestamps where available; where unavailable, the proxy report sets an imputed 15-calendar-day lag with +10/+20-day sensitivity. Drift is allowed only for unchanged fixed holdings and is reset at membership, IWF and corporate-action events. The proxy path is exploratory and does not certify C1.
