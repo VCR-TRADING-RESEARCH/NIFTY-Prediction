@@ -741,3 +741,8 @@ Actions run 41321180592 failed before Dhan access because the unit test imported
 ## 2026-11-01 15:55 UTC — C3-X live prediction attempt
 
 Actions run [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741) passed the offline regression step (22 tests) and entered Dhan panel reconstruction/model evaluation. At this checkpoint it had run about 27 minutes. The previous five-year C1 Dhan target-coverage fetch took 29 minutes, so the current runtime is consistent with prior data acquisition. No result artifact or prediction metrics exist yet. Earlier attempts 41321180592 and 41321315199 failed before any Dhan access due to unit-test import/fixture defects; E0079 records the correction. Corrected regression run passed. A queued follow-up run 41321616749 has a concurrency-safe result publisher and can reuse the encrypted panel cache if saved by the active attempt.
+
+
+## 2026-11-01 15:59 UTC — C3-X regression result update
+
+The corrected C3-X workflow [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741) has completed its regression step successfully (22 tests passed). It remains in the live Dhan panel reconstruction and model-evaluation step; no prediction metrics have been published yet. The first two failed workflow attempts were test-collection issues only and did not make Dhan requests.
