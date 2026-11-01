@@ -875,3 +875,11 @@
 - The earlier combined run [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) retrieved daily rows for 62 symbols and made 1,083 intraday requests but had zero cycles passing the primary 47/94% rule after flagged-row exclusions. It is not formal C2 evidence because that workflow crossed the C2/C3/C4 boundary.
 - Both old failure reports were invalid JSON due a second write with a literal backslash-n suffix. Replaced duplicate writes with a single tested JSON writer and added value-free diagnostics for per-cycle eligible counts, per-symbol intraday completeness, index targets, daily history and build failure counts.
 - Added regression tests for single-document JSON serialization and the exact 47/94% threshold. Corrected validation run [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358) is active; its data/panel result is still pending.
+
+
+## 2026-11-02 — Corrected C2 panel validation in progress
+
+- Run [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358) checks out runner commit [4f37920](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/4f37920c7dc2d719be2c310a1555962343c1616b).
+- Passed dependency installation (including Hugging Face Hub and PyArrow), compilation, offline regression tests, stale-output cleanup, and encrypted cache restore.
+- Panel construction remains active. No new report/artifact is available. The previous FAILED JSON in Git history is stale and must not be read as this run's result.
+- No thresholds have been relaxed; C2 acceptance still requires target coverage, 47/94% member-cycle count, duplicate checks, and causal-feature checks.

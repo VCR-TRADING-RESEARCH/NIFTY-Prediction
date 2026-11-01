@@ -725,3 +725,11 @@ The combined run [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Pre
 
 See [C2 panel report](C2_PANEL_BUILD.md) and [panel manifest](C2_PANEL_BUILD.json).
 <!-- BUP01_C2_PANEL_END -->
+
+
+## 2026-11-02 — Active C2 validation run
+
+- Formal run: [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358); checked-out code commit: [4f37920](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/4f37920c7dc2d719be2c310a1555962343c1616b).
+- Passed: dependency installation, Python compilation, offline regression tests, stale-report cleanup, and encrypted-cache restoration.
+- Active: point-in-time constituent panel construction. No fresh output is available yet. Do not treat the previous FAILED JSON report as this run's output.
+- C2 remains NOT PASSED pending the fresh panel report and registered acceptance gates.

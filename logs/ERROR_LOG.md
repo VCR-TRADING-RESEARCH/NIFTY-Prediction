@@ -838,3 +838,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** Both failure handlers wrote the JSON report a second time with a literal backslash-n suffix. GitHub's formal acceptance step raised `JSONDecodeError: Extra data` (line 39 in the combined report; line 31 in the panel-only report). The publisher therefore could not parse the report.
 - **Correction:** Centralised JSON writing in a tested single-document writer; failure handling writes once and includes sanitized, value-free coverage diagnostics. Added regression tests for valid JSON output and the exact 47/94% member threshold.
 - **Status:** Corrected code and the missing dependencies are now under validation in [run 41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358). This run must pass the added tests and publish a parseable result before C2 can be accepted.
+
+
+## E0099 — 2026-11-02 — Corrected C2 panel build remains active; stale report must not be reused
+
+- **Severity:** Medium — execution/observability watch item, not a confirmed new data failure.
+- **Run:** [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358).
+- **Observed:** Dependencies, compilation, offline tests, stale-report cleanup, and encrypted-cache restore passed. Panel construction remains in progress; no fresh report artifact is available. The previous FAILED JSON in branch history is stale and was removed by the current workflow before execution.
+- **Handling:** Keep this as the sole formal C2 execution. Do not launch an overlapping run or reuse the old report. C2 acceptance remains blocked until fresh output is published and passes all gates.

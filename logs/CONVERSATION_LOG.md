@@ -499,3 +499,11 @@
 - Run [41352799593](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41352799593) passed compilation and offline tests, restored the encrypted cache, but failed before data acquisition because `huggingface_hub` was missing. Added the missing downloader and Parquet engine.
 - The retired combined run [41351790810](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351790810) failed the 47/94% rule with zero eligible cycles after flagged-row exclusions, although daily histories were reported for 62 symbols and 1,083 intraday requests were made.
 - Fixed invalid failure-report JSON caused by a second escaped-newline write. Added regression tests and value-free coverage diagnostics. Corrected run [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358) is now active; no C2 result is accepted until its panel report passes all gates.
+
+
+## 2026-11-02 — User said “Proceed”; continued C2 validation
+
+- Re-read the C2 workflow, phase status, error log, research log, and latest branch head before continuing.
+- Confirmed run [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358) is the only active formal panel-only run. Dependency install, compilation, offline tests, stale-output cleanup, and encrypted cache restoration passed; panel construction remains in progress.
+- Confirmed branch-head commit [02e17c8](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/02e17c8d7938277a2414c9bfe64ca722c4b1b3da) only records logs; active run checks out runner commit [4f37920](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/4f37920c7dc2d719be2c310a1555962343c1616b).
+- No overlapping run was started. Prior FAILED report is stale and is not accepted as this run's result.
