@@ -91,3 +91,37 @@ The project's empirical contribution must therefore be narrow and falsifiable:
 - Wiley / 2026 trading-cost update: https://onlinelibrary.wiley.com/doi/10.1111/fima.70070
 
 **Limitations:** This addendum is a focused literature update, not a PRISMA-style systematic review. Citation chaining, preprints, Indian market microstructure papers, derivatives/options forecasting, official NSE/Dhan/Paytm documentation and relevant conference/video material remain to be consolidated in C6.
+
+### 9. Weekly index options can alter the information/volatility process
+
+Jain et al. (2022) examine the introduction of weekly NIFTY 50 index options using a GARCH framework and report changes consistent with faster information assimilation and reduced persistence of volatility shocks relative to a control index. This is relevant context: weekly options are not a neutral wrapper around the underlying cash index; the derivatives market can affect short-horizon information and volatility dynamics.
+
+**Implication:** C4/C5 should test volatility/regime variables and, where timestamped data can be sourced, option-implied volatility, skew, put/call open interest and expiry proximity. Any option feature must be observable by the forecast cutoff; expiry-day end-of-day OI/IV cannot be used for a 10:00 prediction.
+
+Reference: Jain, K. (2022). *Does options improve the information absorption? Evidence from the introduction of weekly index options*. International Review of Finance. https://doi.org/10.1111/irfi.12372
+
+### 10. India VIX, breadth and put/call measures have been studied as sentiment/volatility inputs
+
+Mutum (2020) investigates volatility forecasting for NIFTY options using realized volatility, absolute returns, high-low range, India VIX, advance-decline ratio and put-call open interest as sentiment proxies.
+
+**Implication:** candidate market-context features include India VIX level/change, advance-decline breadth and option open-interest ratios. These should be evaluated as timestamp-safe incremental features rather than inserted by default. Their publication time and historical availability must be audited.
+
+Reference: Mutum, K. (2020). *Volatility Forecast Incorporating Investors’ Sentiment and its Application in Options Trading Strategies: A Behavioural Finance Approach at Nifty 50 Index*. https://doi.org/10.1177/0972262920914117
+
+### 11. FII/DII flows may be informative jointly, but timing is decisive
+
+Naik and Padhi (2015) examine daily FII and DII flows in India and report that the combined flows are related to market returns in their 2002–2012 sample, while the separate FII and DII effects differ. Dhingra, Gandhi and Bulsara (2016) study dynamic interactions between foreign institutional investment, Indian market returns and volatility, reporting asymmetric feedback behaviour around purchases and withdrawals.
+
+**Implication:** test lagged FII/DII net flows, and separate gross buy/sell flows when available, as market-context variables. A flow value published only after the trading session is not available at 10:00 that same day; it may enter the next eligible session only after publication. Do not assume contemporaneous daily data is intraday-known.
+
+References:
+- Naik, P. K., & Padhi, P. (2015). *An Empirical Evidence of Dynamic Interaction between Institutional Fund Flows and Stock Market Returns in India*. Indian Journal of Finance, 9(4). https://doi.org/10.17010/ijf/2015/v9i4/71455
+- Dhingra, V. S., Gandhi, S., & Bulsara, H. P. (2016). *Foreign institutional investments in India: An empirical analysis of dynamic interactions with stock market return and volatility*. IIMB Management Review, 28(4), 212–224. https://doi.org/10.1016/j.iimb.2016.10.001
+
+### 12. Recent weekly NIFTY/India VIX evidence is still preliminary
+
+A 2026 SSRN working paper by Sajjan examines the variance risk premium in 380 NIFTY weekly expiry cycles and reports that India VIX overstates realised weekly movement in many cycles, with different relationships across volatility regimes. This is a working paper, not an established consensus result; its specifications, source data and robustness require independent review.
+
+**Implication:** it motivates a pre-registered test of VIX calibration/regime dependence, but it must not be used as a prior claim that a VIX signal is profitable or directional.
+
+Reference: Sajjan, S. (2026). *Variance Risk Premium in Nifty 50 Weekly Expiry Cycles: VIX Calibration Bias and Regime Dependence*. SSRN working paper, posted 15 June 2026. https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6918100
