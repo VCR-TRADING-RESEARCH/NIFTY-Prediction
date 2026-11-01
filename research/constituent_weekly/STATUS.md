@@ -464,3 +464,11 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - Follow-up run [41275487989](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275487989) completed SUCCESS, including all seven parser tests, the recent-month workbook schema probe, job-summary publication and sanitised report commit.
 - The bounded branch fetch/rebase/push retry successfully resolved the earlier report publication race without force-pushing.
 - C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. Only recent schema was verified; rights, publication times, full history, security/corporate-action continuity, weight coverage and basket reconstruction remain open.
+
+
+## 2026-11-01 — AMC historical archive and API discovery update
+
+- Re-opened the official Nippon AMC archive page: the month-end portfolio list visibly extends to **September 2013**, including the specific April 2019 disclosure. This confirms the archive index has legacy months; it does not guarantee each historical attachment is still directly retrievable.
+- The prior April 2019 probe used an unverified modern filename convention and returned 404. This is now classified as a wrong/unresolved attachment URL, not as missing 2019 holdings.
+- amcs.fund's API index advertises AMC, scheme and month endpoints. Its methodology says it indexes fund-house source files and Internet Archive copies, with disclosure month read from the file itself. API payload and data reuse rights remain unverified; no holdings were imported.
+- C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING. Continue only with bounded exact-source URL/coverage discovery, then rights, timestamps and basket reconciliation gates.
