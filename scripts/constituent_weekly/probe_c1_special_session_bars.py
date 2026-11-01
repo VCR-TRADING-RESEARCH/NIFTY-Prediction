@@ -75,7 +75,7 @@ def normalize_nse_frame(raw: pd.DataFrame) -> pd.DataFrame:
     # ISO YYYY-MM-DD must be parsed explicitly; dayfirst=True can invert
     # its month/day fields (for example, 2020-02-01 -> 2020-01-02).
     date_text = raw[date_col].astype("string").str.strip()
-    iso_mask = date_text.str.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", na=False)
+    iso_mask = date_text.str.len().eq(10) & date_text.str.slice(4, 5).eq("-") & date_text.str.slice(7, 8).eq("-")
     parsed_dates = pd.Series(pd.NaT, index=raw.index, dtype="datetime64[ns]")
     if iso_mask.any():
         parsed_dates.loc[iso_mask] = pd.to_datetime(
