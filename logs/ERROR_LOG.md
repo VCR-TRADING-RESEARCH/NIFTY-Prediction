@@ -422,7 +422,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** The first v1.2 plan edit changed the registered plan version but the text patch did not add the exact required history marker `- **v1.2 —`. The structural governance workflow correctly failed before running governance tests.
 - **Correction:** Appended a controlled v1.2 version-history entry documenting the user's public-source ETF-proxy amendment. No pre-registered statistical thresholds or original outcome definitions were removed.
 - **Verification:** Corrected push/PR governance validation is pending; no empirical test or model was run under the failed plan validation.
-- **Status:** FIX APPLIED — close after the corrected workflow passes.
+- **Status:** CLOSED — C0 validation run [41272603916](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272603916) completed successfully with the corrected v1.2 validator and regression suite.
 
 
 ## E0053 — 2026-11-01 — BUP-01 plan tests still asserted the previous protocol version
@@ -431,4 +431,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** After the v1.2 validator fix, structural validation passed, but two legacy assertions in `tests/test_constituent_weekly_plan.py` still expected plan version 1.1 and the old stop-rule wording ("Stop at C1").
 - **Correction:** Updated the assertions to require v1.2, retain the v1.1 expiry-proxy history, verify the v1.2 ETF-replica amendment, and check the new split between the confirmatory and exploratory gates.
 - **Impact:** The plan methodology was not invalid; this was stale regression-test text.
-- **Status:** FIX APPLIED — close after the current governance workflow passes.
+- **Status:** CLOSED — C0 validation run [41272603916](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272603916) completed successfully with plan v1.2 assertions.
+
+
+## E0054 — 2026-11-01 — C1 commit fan-out ran C0 governance and duplicated PR/push checks
+
+- **Observed:** On the C1 branch push, the broad phase/constituent-* trigger in constituent-weekly-research.yml ran the C0 registration job (run [41272603916](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272603916)). This was a successful but semantically misplaced governance run. The offline-regression workflow also listed tests/test_iwf_math.py twice and ran the same suite on both push and PR events. The authorised-source audit likewise ran twice for the same C1 change.
+- **Correction:** Restrict the governance workflow push trigger to phase/constituent-weekly-outcomes-c0; make the offline-regression and authorised-source audit workflows PR/manual checks rather than repeated push+PR checks; remove the duplicate IWF test invocation.
+- **Impact:** No data, labels or model output was affected. The correction reduces redundant runs and prevents C1 changes from being misrepresented as C0 registration activity.
+- **Verification:** Latest pre-correction runs [41272606532](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272606532), [41272606507](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272606507) and [41272606502](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272606502) all succeeded. Corrected workflow validation is pending.
+- **Status:** FIX COMMITTED — close only after the new workflow push/PR checks complete.
