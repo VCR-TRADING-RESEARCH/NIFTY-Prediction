@@ -480,3 +480,10 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 - The separate [amcs.fund methodology](https://amcs.fund/methodology) says its source records link to original AMC files and Internet Archive copies and use the disclosure date printed inside the file. Its [API index](https://amcs.fund/api/v1) advertises `/amcs` and `/manifest` routes.
 - Added a metadata-only CI probe: [script](../../scripts/constituent_weekly/probe_amcs_fund_metadata.py), [workflow](../../.github/workflows/bup01-c1-amcs-metadata-discovery.yml), [tests](../../tests/test_amcs_fund_metadata.py). The probe does not request a holdings endpoint or download files. Its report is pending the workflow run: [C1_AMCS_API_DISCOVERY_REPORT.md](C1_AMCS_API_DISCOVERY_REPORT.md).
 - **C1 remains NOT PASSED / RIGHTS-BLOCKED.** No API data or historical holdings series have been admitted. C2–C6 remain gated; plan v1.2 is unchanged.
+
+## amcs.fund metadata probe — 2026-11-01
+
+- [Actions run 41277022940](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41277022940) completed **SUCCESS**: 4/4 offline metadata-sanitisation tests passed; API index, /amcs, Nippon AMC detail and /manifest returned valid JSON (HTTP 200).
+- The API identified Nippon India and current Nifty BeES scheme metadata. It did **not** return an original AMC/Internet Archive source URL in the manifest; April 2019 direct attachment remains unresolved.
+- No holdings endpoint was called and no holdings data were downloaded. API reuse rights remain unverified.
+- C1 remains **NOT PASSED / RIGHTS-BLOCKED**. No stock-level modelling has started; plan v1.2 remains unchanged.
