@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from scripts.constituent_weekly.probe_amcs_fund_metadata import (
+    _extract_html_metadata,
     _first_identifier,
     _matching_records,
     _metadata_records,
@@ -131,3 +132,23 @@ def test_tipsheet_manifest_rejects_off_host_urls():
     records = _tipsheet_weight_candidates(payload)
     assert len(records) == 1
     assert "url" not in records[0]
+
+
+
+def test_amcs_html_extractor_keeps_only_same_site_scripts_and_whitelisted_sources():
+    html = '''
+    <html>
+      <script src="/assets/app.js"></script>
+      <script src="https://evil.example/track.js"></script>
+      <a href="https://mf.nipponindiaim.com/portfolios/abc.xlsx">Original portfolio</a>
+      <a href="https://web.archive.org/web/abcid_/https://hdfcfund.com/file.xlsx">Archive copy</a>
+      <a href="https://evil.example/file.xlsx">Unknown file</a>
+    </html>
+    '''
+    meta = _extract_html_metadata(html, "https://amcs.fund/month")
+    assert meta["script_srcs"] == ["https://amcs.fund/assets/app.js"]
+    assert len(meta["source_links"]) == 2
+    assert {x["host"] for x in meta["source_links"]} == {
+        "mf.nipponindiaim.com", "web.archive.org"
+    }
+    assert "html_bytes" in meta and "sha256" in meta
