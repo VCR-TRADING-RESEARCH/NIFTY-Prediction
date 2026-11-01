@@ -806,3 +806,11 @@
 
 ## C2 panel acquisition diagnostic — 2026-11-02
 - Formal C2 workflow [41349085435](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41349085435) passed compilation and 7 offline tests but failed panel acceptance because all 62 daily responses parsed as MISSING_DAILY_ARRAY after 1,083 intraday calls. C1 daily evidence remains 106,392/106,392; this is a C2 acquisition issue, not a data-availability conclusion. Reordered daily acquisition before intraday (commit d37382c) and added value-free response-shape diagnostics (45839fa). Reruns [41350817688](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41350817688) and [41350828764](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41350828764) pending.
+
+
+## 2026-11-02 — C2 daily data pipeline correction and rerun
+- **Phase:** C2 panel construction.
+- **Finding:** Run [41349085435](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41349085435) passed seven offline tests and authenticated to Dhan, but all 62 daily-history responses lacked the expected OHLCV arrays. No panel or model output was accepted.
+- **Correction:** Replaced repeated per-symbol Dhan daily-history requests with the pinned NSE EQ yearly partitions already used in C1, using C1's authenticated AES-GCM cache helpers and the seven official-NSE supplemental residual rows. C2 now uses the same daily source lineage as the 100% C1 audit; source rows remain encrypted in Actions cache.
+- **Workflow correction:** Fixed C2 workflow trigger/checkout branch mismatch so the C2 panel workflow runs from `phase/constituent-weekly-outcomes-c2-panel`; personal-use dataset opt-in is explicit.
+- **Validation:** Rerun [41351049298](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41351049298) started; awaiting its data, panel, and model results. The C2 gate remains IN PROGRESS until sanitized panel QA passes.
