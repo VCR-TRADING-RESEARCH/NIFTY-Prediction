@@ -690,3 +690,13 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - [Direct NSE audit](research/constituent_weekly/C1_DIRECT_NSE_SPECIAL_SESSION_AUDIT.md) · [Composite evidence](research/constituent_weekly/C1_COMPOSITE_DAILY_COVERAGE.json) · [Daily coverage report](research/constituent_weekly/C1_DAILY_COVERAGE_REPORT.md)
 - C1 overall remains NOT PASSED because the corporate-action adjustment ledger and independent issuer/exchange verification are still incomplete; C2 remains locked.
 <!-- C1_DIRECT_NSE_SPECIAL_END -->
+
+
+## C1 progression decision — 2026-11-02
+
+- Per the user's explicit direction, the remaining five historical alias matches and event-level corporate-action verification are **not required as preconditions** for model research.
+- C1 disposition: **ACCEPTED WITH LIMITATIONS FOR C2 PROGRESSION** (not a claim that the residual checks passed).
+- Daily OHLCV: 106,392/106,392 (100%); weekly intraday target coverage: 258/258 cycles.
+- C2 work must carry unresolved identity/action flags, avoid unverified adjustment factors, and include a conservative sensitivity panel excluding affected observations.
+- Handoff record: [C1 acceptance and C2 handoff](C1_ACCEPTANCE_AND_C2_HANDOFF.md).
+- Active phase branch: [phase/constituent-weekly-outcomes-c2-models](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c2-models).
