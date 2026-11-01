@@ -756,3 +756,8 @@ Run [41321315199](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actio
 ## 2026-11-01 — C3-X feature-history performance correction
 
 Static review found repeated daily-history aggregation inside every constituent-cycle feature call. Updated the next-run implementation to compute each constituent's daily OHLCV history once and reuse it across weekly anchors, retaining strict pre-anchor slicing and identical feature definitions. Added an equivalence regression test. The active older runner remains untouched; next queued run will use the optimized branch code. No model metrics are available yet.
+
+
+## 2026-11-01 — C3-X optimized retry queued
+
+The current live attempt [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741) remains in its original Dhan panel reconstruction/model step; its regression suite passed. Code inspection found repeated full daily-history aggregation for every stock/expiry-cycle row. Updated the runner to precompute one daily history per stock and reuse it for that stock's anchors, preserving the strictly pre-anchor feature slice. Added a direct-vs-precomputed feature equivalence test. The latest push triggered [41324416830](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41324416830), queued behind the old active run; this run includes the optimization and the concurrency-safe publisher. Earlier queued run 41321616749 and intermediate run 41324403823 were superseded/cancelled by the newer commit. No prediction result has yet been produced.
