@@ -1,6 +1,6 @@
 # C1 amcs.fund API metadata discovery
 
-- Run time (UTC): 2026-11-01T08:42:40.932478+00:00
+- Run time (UTC): 2026-11-01T08:46:29.983551+00:00
 - Scope: **metadata only**; the probe calls the documented scheme/month endpoints but retains only date/source metadata, discards ISIN-level holdings fields, does not download workbooks, and does not store portfolio values.
 - Rights: **UNVERIFIED**. Public API access is not treated as permission for commercial/trading-research extraction, caching, or redistribution.
 
@@ -11,6 +11,7 @@
 | Nippon AMC detail | PASS_JSON | 200 | application/json; charset=utf-8 | 71595 | 5 |
 | /scheme/{slug} | PASS_JSON | 200 | application/json; charset=utf-8 | 19743 | 5 |
 | /manifest | PASS_JSON | 200 | application/json; charset=utf-8 | 3050 | 5 |
+| Tipsheet /data/v1/manifest.json | PASS_JSON | 200 | application/json | 252882 | 3 |
 | /month/2026-09 | PASS_JSON | 200 | application/json; charset=utf-8 | 15250 | 5 |
 | /month/2019-04 | PASS_JSON | 200 | application/json; charset=utf-8 | 7880 | 5 |
 | /month/2022-09 | PASS_JSON | 200 | application/json; charset=utf-8 | 14444 | 5 |
@@ -51,6 +52,11 @@
 - {"month": "2019-04"}
 - {"month": "2022-09"}
 - {"month": "2025-09"}
+
+## Tipsheet NIFTY 50 weight-data catalogue entries
+
+- No NIFTY 50 weight dataset entry was found in the Tipsheet manifest.
+- Tipsheet says its files are free to fetch with attribution, but upstream sources retain their own terms; this report does not establish a blanket redistribution licence.
 
 ## Historical source-file metadata matches
 
