@@ -735,3 +735,10 @@
 - No prices were imputed and no gaps were waived. Targeted independent daily-bar reconciliation is still required for all seven security/date pairs.
 - Audit: `research/constituent_weekly/C1_SPECIAL_SESSION_CALENDAR_RECONCILIATION.md`. Evidence includes NSE circulars NSE/CMTR/39216, NSE/CMTR/43290, NSE/CMTR/50050, NSE/FAOP/54024, NSE/CMTR/70319 and NSE Market Pulse November 2024.
 - C1 remains PARTIAL / NOT PASSED; C2 remains locked.
+
+## 2026-11-02 — C1 special-session source cross-check setup
+- Added a dedicated, bounded audit for the seven residual security/session pairs. It checks a pinned daily NSE bhavcopy mirror and queries the exact NSE archive URLs; it does not download the full security universe.
+- The mirror maintainer documents the OHLCV files as sourced from NSE archive endpoints. Its collector enumerates weekdays, so absent weekend sessions are not classified as exchange closures.
+- Raw exchange bars are temporary-only. The committed output will contain row status, validity flags and hashes, not numerical prices or volumes. The mirror's MIT software licence is not treated as a market-data licence.
+- First preflight run 41340624209 stopped before network data retrieval: five tests passed and one ISO-date parser test failed. Logged as E0086; corrected the parser and success-gated result publication.
+- **Status:** targeted source audit implementation committed; live rerun pending. Existing C1 daily coverage remains 99.9934% with seven unresolved bars; C1 remains PARTIAL and C2/confirmatory modelling remain LOCKED.
