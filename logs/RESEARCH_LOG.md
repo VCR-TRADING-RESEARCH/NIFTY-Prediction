@@ -761,3 +761,10 @@ Static review found repeated daily-history aggregation inside every constituent-
 ## 2026-11-01 — C3-X optimized retry queued
 
 The current live attempt [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741) remains in its original Dhan panel reconstruction/model step; its regression suite passed. Code inspection found repeated full daily-history aggregation for every stock/expiry-cycle row. Updated the runner to precompute one daily history per stock and reuse it for that stock's anchors, preserving the strictly pre-anchor feature slice. Added a direct-vs-precomputed feature equivalence test. The latest push triggered [41324416830](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41324416830), queued behind the old active run; this run includes the optimization and the concurrency-safe publisher. Earlier queued run 41321616749 and intermediate run 41324403823 were superseded/cancelled by the newer commit. No prediction result has yet been produced.
+
+
+## 2026-11-01 — C3-X incremental encrypted checkpoints
+- Added per-symbol stock-bar and per-chunk NIFTY-index encrypted checkpoints, keyed to source manifest and instrument identity.
+- A completed symbol is saved immediately after retrieval; a resumed run can reuse it instead of refetching all of that symbol's historical chunks.
+- Commit: `4f83a38eac9ae704cd9e8b5be2071d25ed7ab460`.
+- Validation is pending in GitHub Actions. The existing workflow cache save currently runs only after a successful model step, so persistence after downstream model failure remains an outstanding workflow adjustment. No metrics or strategy are claimed.
