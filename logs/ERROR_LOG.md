@@ -345,7 +345,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 ### Runtime clarification — 2026-11-01
 - Inspection of the executed job steps for run [41263593605](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41263593605) shows that it did not execute the `Enforce live Dhan preflight result` step. The current C1 workflow source does contain that step after the sanitized diagnostics commit, but that later workflow revision has not yet been exercised by a subsequent protected live run.
 - Therefore run 41263593605 must be described as **offline tests PASS (26/26), live data gate BLOCKED, Actions job conclusion SUCCESS due to older workflow revision**. The later protected run [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250) executed the gate after diagnostics were committed; it failed on the explicit `PARTIAL_OR_BLOCKED` data status. The workflow's fail-closed runtime behavior is now verified.
-- Dhan auth remains OPEN. Do not repeat token generation until account secrets are checked or the API-key/secret OAuth route is configured.
+- Dhan authentication was subsequently recovered and is now CLOSED: protected run [41266897788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266897788) generated a fresh token on attempt one, confirmed profile HTTP 200 and an active Data API plan, and passed the final Dhan data gate. The diagnostic clock difference was -1 second.
 - This clarification does not change C1/C2 acceptance status.
 
 
