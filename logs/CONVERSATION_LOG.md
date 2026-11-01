@@ -272,3 +272,11 @@
 - Follow-up run [41277022940](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41277022940) passed all 4 tests and fetched the API index, AMC list, AMC detail and manifest successfully.
 - The manifest did not expose an original AMC / Internet Archive link for a historical Nifty BeES file. No holdings endpoint or raw workbook was downloaded; source use rights remain unverified.
 - C1 remains PARTIAL / NOT ACCEPTED FOR MODELLING; BUP-01 plan v1.2 is unchanged.
+
+
+## 2026-11-01 — Alternative weight-source research
+
+- User asked whether alternatives to the unresolved historical AMC file could be found.
+- Visible findings: official NSE Indices historical monthly weightage reports are the strongest candidate for exact weights; a CC BY 4.0 open-source NSE membership history is a credible membership comparator (not a weight series); NSE/BSE quarterly XBRL can support an independent IWF reconstruction if all 22 NSE exclusion categories and publication timestamps are handled; multi-AMC ETFs are proxies/cross-checks only; the Hugging Face 20-year weights dataset is CC BY-NC-SA 4.0 and excluded without separate commercial permission.
+- NSE Indices website terms restrict automated collection absent express written consent and state personal/non-commercial use, so no automated download/cache is enabled. A subscription/licence is a last resort after free/permissioned paths.
+- Full source ranking, methodology, rights and gates are recorded in research/constituent_weekly/C1_WEIGHT_ALTERNATIVES_ASSESSMENT.md. Hidden private chain-of-thought is not stored.
