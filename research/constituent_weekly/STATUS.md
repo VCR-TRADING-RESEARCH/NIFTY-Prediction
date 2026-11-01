@@ -653,3 +653,11 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Official NSE market-activity report documentation identifies `Bcddmmyy.csv` inside daily `nuprddmmyy.zip` as containing corporate-action details. This is a promising mother-source route for dated cross-checking, alongside the NSE Corporate Filings CSV/API interface and the daily corporate-action report specification. The archive URL/date coverage and schema must be validated before this becomes an accepted source.
 - NSE derivative contract adjustments remain distinct from cash-equity historical-price/total-return adjustments.
 - C1 remains PARTIAL / NOT PASSED; seven daily member-session gaps and event-level corporate-action verification remain open. C2 remains locked.
+
+
+## Special-session calendar reconciliation — 2026-11-02
+
+- Audit: [C1_SPECIAL_SESSION_CALENDAR_RECONCILIATION.md](C1_SPECIAL_SESSION_CALENDAR_RECONCILIATION.md).
+- All seven residual security/date gaps are confirmed to fall on actual exchange trading sessions: five HDFC Muhurat dates plus HDFC's 2020-02-01 full-day Budget session, and TATAMOTORS' 2025-10-21 Muhurat session.
+- These dates remain in the expected-session denominator. Special-session hours are now documented; no missing bar is imputed or waived.
+- Daily coverage remains 106,385/106,392 (99.9934%). C1 remains PARTIAL / NOT PASSED; corporate-action verification remains incomplete; C2 remains locked.
