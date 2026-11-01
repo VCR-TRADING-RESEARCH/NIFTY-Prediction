@@ -230,7 +230,21 @@ def fetch_daily(symbol: str, sid: str, token: str, client_id: str, cache_dir: Pa
         write_cache(path, gzip.compress(json.dumps(body, separators=(",", ":")).encode()), token, aad)
         return frame, False, attempts, None
     status = err or (body.get("status") if isinstance(body, dict) else "INVALID_RESPONSE")
-    return None, False, attempts, str(status)
+    if isinstance(body, dict):
+        nested = body.get("data")
+        shape = {
+            "status": str(body.get("status", "NO_STATUS"))[:40],
+            "top_keys": sorted(str(k) for k in body.keys())[:20],
+            "data_type": type(nested).__name__,
+            "data_keys": sorted(str(k) for k in nested.keys())[:20] if isinstance(nested, dict) else [],
+            "array_lengths": {
+                key: len(nested.get(key)) for key in ("timestamp", "start_Time", "start_time", "open", "high", "low", "close", "volume")
+                if isinstance(nested, dict) and isinstance(nested.get(key), list)
+            },
+        }
+    else:
+        shape = {"body_type": type(body).__name__}
+    return None, False, attempts, f"{status}|shape={json.dumps(shape, sort_keys=True)}"
 
 
 def stock_features(frame: pd.DataFrame | None, asof: str) -> dict | None:
