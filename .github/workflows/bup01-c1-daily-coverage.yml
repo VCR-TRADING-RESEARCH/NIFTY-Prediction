@@ -51,7 +51,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ~/.cache/bup01-tejhq-encrypted
-          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.ref_name }}
+          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
+          restore-keys: |
+            bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-
       - name: Run one-request-per-security Dhan daily coverage audit
         if: github.event_name != 'pull_request'
         continue-on-error: true
@@ -69,7 +71,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: ~/.cache/bup01-tejhq-encrypted
-          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.ref_name }}
+          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
       - name: Generate sanitized daily report for artifact retention
         if: always() && github.event_name != 'pull_request'
         run: python scripts/constituent_weekly/update_c1_daily_status.py

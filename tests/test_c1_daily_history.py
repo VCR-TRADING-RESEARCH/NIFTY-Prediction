@@ -342,3 +342,13 @@ def test_registered_hdfc_membership_interval_ends_on_last_separate_trading_sessi
     membership = pd.read_csv(root / "data" / "constituent_weekly" / "nifty50_membership_intervals.csv")
     row = membership.loc[membership["symbol"].eq("HDFC")].iloc[0]
     assert str(row["valid_to"])[:10] == "2023-07-01"
+
+
+def test_tejhq_fallback_requires_explicit_personal_use_only_flag():
+    from scripts.constituent_weekly.audit_c1_daily_history import personal_use_fallback_authorized
+
+    assert personal_use_fallback_authorized("1") is True
+    assert personal_use_fallback_authorized(" 1 ") is True
+    assert personal_use_fallback_authorized(None) is False
+    assert personal_use_fallback_authorized("") is False
+    assert personal_use_fallback_authorized("0") is False

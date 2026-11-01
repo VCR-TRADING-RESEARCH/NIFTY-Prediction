@@ -400,6 +400,11 @@ def daily_audit_status(summary: dict[str, Any], unresolved_count: int) -> str:
     ) else "COMPLETE"
 
 
+def personal_use_fallback_authorized(value: str | None) -> bool:
+    """Require an explicit workflow opt-in for personal-use-only source data."""
+    return str(value or "").strip() == "1"
+
+
 def tejhq_cache_key(token: str) -> bytes:
     if not token or not token.strip():
         raise ValueError("HF_TOKEN is required for the encrypted personal-use data cache.")
@@ -864,7 +869,12 @@ def _run_daily_audit() -> int:
             and int(report["symbol_results"].get(symbol, {}).get("missing_session_count", 0)) > 0
         ]
 
-        if fallback_symbols and not hf_token:
+        personal_use_only = personal_use_fallback_authorized(
+            os.environ.get("TEJHQ_PERSONAL_USE_ONLY")
+        )
+        if fallback_symbols and not personal_use_only:
+            fallback_run["status"] = "SKIPPED_PERSONAL_USE_NOT_CONFIRMED"
+        elif fallback_symbols and not hf_token:
             fallback_run["status"] = "SKIPPED_HF_TOKEN_MISSING"
         elif fallback_symbols:
             fallback_run["status"] = "IN_PROGRESS"
