@@ -1,6 +1,6 @@
 # C1 amcs.fund API metadata discovery
 
-- Run time (UTC): 2026-11-01T08:58:04.476508+00:00
+- Run time (UTC): 2026-11-01T09:02:57.554685+00:00
 - Scope: **metadata only**; the probe calls the documented scheme/month endpoints but retains only date/source metadata, discards ISIN-level holdings fields, does not download workbooks, and does not store portfolio values.
 - Rights: **UNVERIFIED**. Public API access is not treated as permission for commercial/trading-research extraction, caching, or redistribution.
 
