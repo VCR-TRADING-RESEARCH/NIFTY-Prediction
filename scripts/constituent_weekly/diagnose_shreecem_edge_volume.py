@@ -3,6 +3,11 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 import numpy as np
 import pandas as pd
@@ -13,7 +18,6 @@ from scripts.constituent_weekly.dhan_equity_preflight import (
     IST, INTRADAY_URL, PROFILE_URL, acquire_access_token, resolve_ids,
 )
 
-ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "research" / "constituent_weekly" / "C1_SHREECEM_EDGE_DIAGNOSTIC.json"
 START_DATE = "2021-11-01"
 END_DATE = "2022-01-29"
