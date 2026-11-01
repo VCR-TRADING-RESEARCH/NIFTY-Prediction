@@ -682,3 +682,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Replaced all remaining `cache_key` references with `key_for`; commit 392ff2b8c6bf3ecec513ae7dccad64d13260d012.
 - **Validation:** The next attempt, [41321327741](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41321327741), passed the entire regression suite (22 tests). Its live Dhan panel reconstruction/model step remains in progress.
 - **Impact:** No market-data request was made in the failed attempt; no prediction result was generated.
+
+
+## E0081 — 2026-11-01 — Exploratory feature-engineering performance improvement
+
+- **Observed:** Code review found that the live panel builder recalculated the full minute-to-daily history aggregation for every stock-cycle row. This repeats identical calculations for the same stock across expiry cycles and can materially inflate runtime.
+- **Correction:** Added `causal_features_from_history`; the panel builder now computes each stock's validated daily history once and reuses it for all that stock's weekly anchors. Each feature calculation still filters strictly to dates before its anchor and uses the same registered feature equations.
+- **Validation:** Added an equivalence test asserting cached/precomputed history yields identical features to the direct wrapper. Commit a6db061e8f4d465b5592b625d2c3d4816905fe14 plus test commit 9668eb846f73aa9ce022f9a760867c03546d70dc. Automated validation is pending.
+- **Impact:** No features, labels, sample rules, model candidates, validation splits or results are changed; only redundant recomputation is removed. Current active run uses the pre-optimization checkout; the queued/latest retry will use this optimization.
