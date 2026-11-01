@@ -701,12 +701,6 @@ def main() -> int:
                 "", "See C2_PANEL_BUILD.json for hashes, acceptance details and encrypted cache references.",
             ]
             OUT_PANEL_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
-            result["status"] = "PANEL_BUILT"
-            result["panel_build"] = panel_result
-            result["elapsed_seconds"] = round(time.monotonic() - started, 2)
-            OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-            OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-            write_report(result)
             print("C2_PANEL_BUILT", len(panel), "rows", len(order), "eligible cycles")
             return 0
 
@@ -892,16 +886,36 @@ def main() -> int:
         print("C2_STATUS", result["status"], "STOCK_OOF", result["panel"]["stock_oof_cycles"], "META_OOF", result["panel"]["meta_oof_cycles"])
         return 0
     except Exception as exc:
-        result["status"] = "FAILED"
-        result["fatal_error_category"] = type(exc).__name__
         trace = traceback.extract_tb(exc.__traceback__)
+        location = {}
         if trace:
             last = trace[-1]
-            result["fatal_error_location"] = {"file": Path(last.filename).name, "line": int(last.lineno), "function": last.name}
-        result["elapsed_seconds"] = round(time.monotonic() - started, 2)
-        OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-        OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        write_report(result)
+            location = {"file": Path(last.filename).name, "line": int(last.lineno), "function": last.name}
+        if os.environ.get("C2_PANEL_ONLY") == "1":
+            failed = {
+                "schema_version": 1, "status": "FAILED",
+                "created_at_utc": datetime.now(timezone.utc).isoformat(),
+                "fatal_error_category": type(exc).__name__,
+                "fatal_error_location": location,
+                "input_manifest": result.get("input_manifest", {}),
+                "limitations": result.get("limitations", []),
+            }
+            OUT_PANEL_JSON.parent.mkdir(parents=True, exist_ok=True)
+            OUT_PANEL_JSON.write_text(json.dumps(failed, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            OUT_PANEL_MD.write_text(
+                "# C2 Point-in-Time Constituent Panel Build\\n\\n"
+                f"**Status:** FAILED\\n\\n- Error category: {type(exc).__name__}\\n"
+                f"- Source location: {location}\\n",
+                encoding="utf-8",
+            )
+        else:
+            result["status"] = "FAILED"
+            result["fatal_error_category"] = type(exc).__name__
+            result["fatal_error_location"] = location
+            result["elapsed_seconds"] = round(time.monotonic() - started, 2)
+            OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
+            OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            write_report(result)
         print("C2_FAILED", type(exc).__name__)
         return 1
 
