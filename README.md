@@ -447,4 +447,4 @@ The screenshot's earlier handoff predates the latest C1 evidence. The full 50-st
 - [Detailed C1 status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md)
 - [C1 research log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/RESEARCH_LOG.md)
 - [C1 error log](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/ERROR_LOG.md)
-- [C1 continuation / workflow correction commit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8e31a7d813019733ccf23b07129f24d2a7cb7884)
+- [C1 continuation / workflow correction commit](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/45714d20000c307684bca06efa46c09458689475)
