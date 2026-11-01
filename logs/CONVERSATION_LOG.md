@@ -338,3 +338,13 @@
 - Result: 258/258 NIFTY target pairs valid, 258/258 constituent cycles meeting the registered stock coverage threshold, 154 confirmatory cycles after warm-up, zero unresolved active symbols, and 1,083 requests over 21 windows.
 - One index window returned PARTIAL_TARGET_DATES while all cycle-level target pairs passed. Per-date detail was not persisted because the later git rebase conflicted on shared status/log files.
 - E0070 and a durable aggregate report record the result. Overall C1 remains partial because daily features and exhaustive action-adjusted returns are not yet validated.
+
+
+## 2026-11-01 — User said “Resume”; exact intraday QA artifact recovered
+
+- Retrieved and inspected the full sanitized Dhan coverage artifact from Actions run 41309632317 (artifact 13086220727).
+- Verified 258/258 weekly expiry cycles pass the observed NIFTY anchor/expiry target checks and the stock coverage rule; 154 confirmatory cycles remain after the 104-cycle warm-up; minimum constituent coverage is 98%; no active symbols remain unresolved.
+- Resolved the lone window-level partial flag: 26-Apr-2024 is the next cycle's 10:00 anchor (passed), not an expiry. Its extra 15:14 check is partial, but the registered cycle expires 02-May-2024 and that actual expiry proxy passes.
+- Corrected the latest coverage result/report/status so the old 77/258 result is retained only as an earlier incomplete run, not the current gate outcome.
+- Offline C1 regression suite on commit 658d513 passed 87 tests. The live daily audit remains queued behind the shared Dhan market-data concurrency lock.
+- Overall C1 remains PARTIAL: daily feature-data gaps and complete corporate-action/adjusted-return checks remain open; C2 stays gated.
