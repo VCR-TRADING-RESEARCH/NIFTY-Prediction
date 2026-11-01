@@ -425,3 +425,11 @@
 - The initial workflow run [41274822097](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274822097) installed the parser dependencies but omitted pytest, so the regression step failed before the workbook probe. No AMC workbook was downloaded in that attempt.
 - Added pytest explicitly to the dedicated workflow's install command. Corrected run and archive/schema evidence are pending.
 - This is a workflow setup failure only; the C1 source/rights and basket reconciliation gates remain unchanged.
+
+
+## 2026-11-01 — AMC rendered-page link discovery correction
+
+- The first corrected probe run [41274888924](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274888924) passed all four offline parser tests, but found zero workbook hrefs because the runner's raw page response did not expose the rendered monthly-file links as standard .xls anchors.
+- The official rendered page shows September 2026 and February 2026 monthly portfolio download controls; the resolved direct links use an AMC month-end workbook filename convention.
+- Added a deterministic URL fallback using the calendar month-end and abbreviated month/year in the filename, while preserving HTML link discovery as the first choice. Added regression tests for September 2026, February 2026 and April 2019 candidate paths.
+- Next bounded run will verify HTTP response and workbook schema; the April 2019 path and workbook availability are not yet confirmed.
