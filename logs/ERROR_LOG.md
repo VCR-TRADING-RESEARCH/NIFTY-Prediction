@@ -514,4 +514,4 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Root cause:** The fixture did not reflect the actual distinct `/amcs` and `/amc/{id}` endpoint payloads.
 - **Correction:** Split the test into independent AMC-list and scheme-detail payload fixtures. Keep the recursive matcher unchanged; it is intentionally designed to search nested manifest structures.
 - **Impact:** The failure occurred before any network probe. No API data or holdings files were requested, and no source or model result was affected.
-- **Status:** FIX COMMITTED — rerun the push workflow and close only after the sanitisation suite and metadata request complete.
+- **Status:** CLOSED — follow-up [run 41277022940](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41277022940) passed all 4 tests, fetched the metadata endpoints successfully, and committed the sanitized report. The manifest returned no historical source links; that is a source-discovery outcome, not a test failure.
