@@ -226,6 +226,53 @@ def _source_links(records: list[dict[str, Any]]) -> list[dict[str, str]]:
     return links[:30]
 
 
+
+TIPSHEET_MANIFEST_URL = "https://tipsheet.markets/data/v1/manifest.json"
+TIPSHEET_HOST = "tipsheet.markets"
+
+
+def _tipsheet_weight_candidates(payload: Any) -> list[dict[str, Any]]:
+    """Extract dataset catalog metadata only; do not read any series values."""
+    candidates: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    safe_keys = {
+        "name", "title", "slug", "id", "dataset", "description",
+        "resolution", "frequency", "unit", "date_start", "date_end",
+        "start", "end", "first_date", "last_date", "updated_at",
+        "file", "path", "url", "href", "data_url", "download_url",
+        "sha256", "hash", "rows", "row_count", "columns",
+    }
+    url_keys = {"file", "path", "url", "href", "data_url", "download_url"}
+    for record in _walk_dicts(payload):
+        text = " ".join(
+            [str(key) for key in record.keys()]
+            + [str(value) for value in record.values() if isinstance(value, (str, int, float))]
+        ).lower()
+        if "weight" not in text:
+            continue
+        if not ("nifty 50" in text or "nifty-50" in text or "nifty50" in text):
+            continue
+        summary: dict[str, Any] = {}
+        for key, value in record.items():
+            key_l = str(key).lower()
+            if key_l not in safe_keys:
+                continue
+            if key_l in url_keys and isinstance(value, str):
+                absolute = urljoin("https://tipsheet.markets", value)
+                parsed = urlparse(absolute)
+                if parsed.scheme == "https" and parsed.hostname == TIPSHEET_HOST:
+                    summary[key_l] = absolute
+            elif isinstance(value, (str, int, float, bool)) or value is None:
+                summary[key_l] = value
+            elif isinstance(value, list) and value and all(isinstance(x, (str, int, float)) for x in value[:20]):
+                summary[key_l] = value[:20]
+        fingerprint = json.dumps(summary, sort_keys=True, default=str)
+        if summary and fingerprint not in seen:
+            candidates.append(summary)
+            seen.add(fingerprint)
+    return candidates[:100]
+
+
 def run_probe() -> dict[str, Any]:
     session = requests.Session()
     session.headers.update({
@@ -243,6 +290,8 @@ def run_probe() -> dict[str, Any]:
         "month_details": [],
         "historical_month_samples": [],
         "manifest": None,
+        "tipsheet_manifest": None,
+        "tipsheet_weight_candidates": [],
         "nippon_amc_matches": [],
         "nifty_bees_scheme_matches": [],
         "scheme_history_metadata": [],
@@ -291,6 +340,11 @@ def run_probe() -> dict[str, Any]:
             report["month_source_metadata"].extend(_metadata_records(month_payload))
         report["month_details"].append(month_meta)
     report["month_source_metadata"] = report["month_source_metadata"][:100]
+
+    tipsheet_payload, tipsheet_meta = _fetch_json(session, TIPSHEET_MANIFEST_URL)
+    report["tipsheet_manifest"] = tipsheet_meta
+    if tipsheet_payload is not None:
+        report["tipsheet_weight_candidates"] = _tipsheet_weight_candidates(tipsheet_payload)
 
     manifest, manifest_meta = _fetch_json(session, f"{API_BASE}/manifest")
     report["manifest"] = manifest_meta
@@ -357,6 +411,7 @@ def render_report(report: dict[str, Any]) -> str:
         endpoint_row("Nippon AMC detail", report.get("amc_detail")),
         endpoint_row("/scheme/{slug}", report.get("scheme_detail")),
         endpoint_row("/manifest", report.get("manifest")),
+        endpoint_row("Tipsheet /data/v1/manifest.json", report.get("tipsheet_manifest")),
         *[endpoint_row("/month/" + str(x.get("month_id", "{id}")), x) for x in report.get("month_details", [])],
         "",
         "## Nippon AMC metadata matches",
@@ -399,6 +454,13 @@ def render_report(report: dict[str, Any]) -> str:
     else:
         lines.append("- No source metadata was returned by /month/{id}.")
 
+    lines += ["", "## Tipsheet NIFTY 50 weight-data catalogue entries", ""]
+    if report.get("tipsheet_weight_candidates"):
+        for item in report["tipsheet_weight_candidates"][:50]:
+            lines.append("- " + json.dumps(item, sort_keys=True, ensure_ascii=False))
+    else:
+        lines.append("- No NIFTY 50 weight dataset entry was found in the Tipsheet manifest.")
+    lines.append("- Tipsheet says its files are free to fetch with attribution, but upstream sources retain their own terms; this report does not establish a blanket redistribution licence.")
     lines += ["", "## Historical source-file metadata matches", ""]
     if report.get("historical_source_matches"):
         for item in report["historical_source_matches"][:30]:
