@@ -363,7 +363,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Run:** [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250).
 - **Observed:** In the 2021-11-01–2022-01-29 90-day edge check, SHREECEM returned all 61 regular sessions, all 61 anchor sessions and all 61 15:00–15:14 expiry-proxy sessions; timestamps were unique and OHLC/numeric checks passed. Exactly one finite negative volume row caused the OHLCV invariant to fail. The other 49 point-in-time constituents passed all checks.
 - **Correction/investigation:** Added a bounded, single-symbol diagnostic workflow to identify the offending timestamp only. It records no price/volume values, token or security ID. Its offline test caught an unsupported pandas `.dt.isoformat()` call before the live request; corrected it to format individual Timestamp values.
-- **Status:** OPEN — waiting for the corrected diagnostic's Actions result and then a decision whether the single volume anomaly can be isolated without compromising the pre-registered panel rules.
+- **Status:** CLOSED — the single-symbol diagnostic [41266690449](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266690449) located the negative-volume row at **2021-12-30 15:29 IST**. This is after the locked 15:15 target cutoff and outside the target-scope data. The QA checker now validates OHLCV strictly through 15:14 and separately records post-cutoff anomalies. The corrected full 50-stock edge range then passed 50/50 in [run 41266897788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266897788).
 
 
 ## E0046 — 2026-11-01 — Standalone SHREECEM diagnostic could not import repository module
@@ -372,4 +372,21 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** Offline diagnostic tests passed 2/2, but direct execution of the diagnostic script failed before any Dhan request with ModuleNotFoundError: No module named live_api. Direct script execution had not added the repository root to sys.path.
 - **Correction:** Added the resolved repository root to sys.path before importing live_api or project scripts (commit 34e067d).
 - **Impact:** No authentication or data endpoint call was made by this failed diagnostic attempt. The full-universe Dhan preflight result from run 41266155250 is unchanged.
-- **Status:** OPEN — awaiting the corrected one-symbol workflow result.
+- **Status:** CLOSED — corrected diagnostic run [41266690449](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266690449) passed. Repository root is added to `sys.path` before project imports; no Dhan requests were made by the failed run.
+
+
+## E0047 — 2026-11-01 — Pandas datetime accessor does not implement vectorized isoformat
+
+- **Run:** [41266547991](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266547991).
+- **Observed:** The bounded SHREECEM diagnostic's offline test failed with `AttributeError: 'DatetimeProperties' object has no attribute 'isoformat'`. Pandas supports `Timestamp.isoformat()` on individual values, not `.dt.isoformat()` as a vectorized accessor.
+- **Correction:** Convert the selected timestamp values to Python/Pandas Timestamp objects and call `isoformat()` per value.
+- **Verification:** The next diagnostic workflow [41266604463](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266604463) passed both offline tests before reaching the separate import-path issue E0046.
+- **Status:** CLOSED — regression test now protects the timestamp serialization.
+
+## E0048 — 2026-11-01 — 15:15 target-scope refactor referenced an uninitialised post-cutoff frame
+
+- **Runs:** [41266827905](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266827905) and [41266830527](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266830527).
+- **Observed:** Offline range tests failed with `NameError: post_cutoff_frame is not defined` after the first partial edit moved the volume diagnostic but had not yet created the post-cutoff frame in `analyse_intraday_range`.
+- **Correction:** Constructed `post_cutoff_frame` and the corresponding 15:15–15:30 mask explicitly, with target QA restricted to 09:15–15:14.
+- **Verification:** Live protected preflight [41266897788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266897788) passed its 50-stock data gate; offline regressions [41266922851](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266922851) passed **43/43**.
+- **Status:** CLOSED — the target cutoff is covered by tests for both negative in-scope and out-of-scope volume cases.
