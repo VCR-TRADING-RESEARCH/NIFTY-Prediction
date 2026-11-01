@@ -398,8 +398,8 @@
 
 ## 2026-11-02 — User resumed C1 residual-bar audit
 
-- Inspected the C1 branch, registered plan, status, daily-coverage JSON, corporate-action catalogue, research/error logs and latest workflow results before continuing.
-- Added a bounded independent-source check against a pinned public NSE bhavcopy mirror; it validates exact EQ rows and publishes no raw price/volume values.
-- Result: 4/7 valid rows; 3 no-row cases are not treated as missing exchange data because the mirror collector is weekday-only and omits weekend special sessions.
-- All seven sessions remain in the denominator; C1 remains partial and the corporate-action gate remains open. No hidden reasoning or credentials are written to this log.
+- Resumed the C1 residual-bar work, checked branch plan/status/logs and existing coverage artifacts before proceeding.
+- Added an independent public NSE bhavcopy mirror audit (4/7 residual rows) and a direct official NSE archive audit for the three remaining HDFC weekend sessions.
+- Corrected the first direct-NSE parser after inspecting actual legacy CSV headers: TIMESTAMP is the date field. Rerun validated all 3/3 rows with OHLC, volume and ISIN checks.
+- Composite source evidence now covers all seven residual member/date pairs. Base daily coverage JSON remains unchanged at 106,385/106,392 until supplemental rows are safely merged into encrypted feature cache. Corporate-action verification remains open. No hidden reasoning or credentials are logged.
 

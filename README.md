@@ -345,3 +345,13 @@ The pinned independent source returned 4/7 valid exact-date EQ OHLCV rows. Remai
 - Machine result: https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_INDEPENDENT_BHAVCOPY_AUDIT.json
 - Method note: https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_INDEPENDENT_BHAVCOPY_METHOD.md
 <!-- C1_INDEPENDENT_BHAVCOPY_END -->
+
+<!-- C1_DIRECT_NSE_SPECIAL_START -->
+## C1 direct NSE special-session archive audit — 2026-11-02
+
+- Direct NSE archive confirmed **3/3** missing HDFC EQ OHLCV rows (27-Oct-2019, 01-Feb-2020, 14-Nov-2020).
+- Combined with the independent mirror's 4/7 matches, all seven residual security/date pairs now have source-level OHLCV validation.
+- The original Dhan/TejHQ coverage JSON remains 106,385/106,392; supplemental raw-row cache integration is pending, so the composite count is not yet model-ready.
+- [Direct NSE audit](research/constituent_weekly/C1_DIRECT_NSE_SPECIAL_SESSION_AUDIT.md) · [Composite evidence](research/constituent_weekly/C1_COMPOSITE_DAILY_COVERAGE.json)
+- C1 remains NOT PASSED pending encrypted feature-cache integration and corporate-action verification; C2 remains locked.
+<!-- C1_DIRECT_NSE_SPECIAL_END -->

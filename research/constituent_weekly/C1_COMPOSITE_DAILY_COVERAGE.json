@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "methodology_version": "bup01-c1-composite-daily-residual-verification-v1",
+  "updated_at_utc": "2026-11-01T19:47:48.600641+00:00",
+  "status": "ALL_SEVEN_RESIDUALS_SOURCE_VERIFIED",
+  "base_daily_audit": {
+    "valid_member_sessions_ohlcv": 106385,
+    "expected_member_sessions": 106392,
+    "remaining_before_supplemental": 7
+  },
+  "summary": {
+    "residual_security_date_pairs": 7,
+    "independently_verified_residual_rows": 7,
+    "composite_source_validation_count": 106392,
+    "expected_member_sessions": 106392,
+    "composite_validation_fraction": 1,
+    "raw_values_published": false,
+    "raw_feature_cache_integration": "PENDING"
+  },
+  "sources": {
+    "independent_mirror": {
+      "market_data_license": "No separate data licence identified; raw data are processed only in runner temporary storage and are not redistributed in this project.",
+      "readme": "https://github.com/floyds1995/Auto-Index-Constituents-Tracker/blob/aa57b1050383c33e436f81844230ad2a4d52c949/README.md",
+      "repository": "floyds1995/Auto-Index-Constituents-Tracker",
+      "revision": "aa57b1050383c33e436f81844230ad2a4d52c949",
+      "software_license": "MIT (repository code)",
+      "source_provenance": "Repository README states NSE equity daily bhavcopy is collected from NSE archive endpoints and stored by month as Parquet.",
+      "updater": "https://github.com/floyds1995/Auto-Index-Constituents-Tracker/blob/aa57b1050383c33e436f81844230ad2a4d52c949/NSE/RawDataOHLCV/update_ohlcv.py"
+    },
+    "direct_exchange": {
+      "archive_format": "Legacy CM equity bhavcopy ZIP/CSV",
+      "independent_of_third_party_mirror": true,
+      "publisher": "National Stock Exchange of India",
+      "url_pattern": "https://archives.nseindia.com/content/historical/EQUITIES/YYYY/MON/cmDDMONYYYYbhav.csv.zip"
+    }
+  },
+  "results": [
+    {
+      "symbol": "HDFC",
+      "date": "2018-11-07",
+      "session": "Diwali Muhurat",
+      "source": "Independent public NSE bhavcopy mirror",
+      "status": "VALIDATED",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "MATCH",
+      "source_sha256": "e46d30d4d13e0ac9380e4f3ad87b14b207967a8f7b4e532fce58544ecde1c238"
+    },
+    {
+      "symbol": "HDFC",
+      "date": "2019-10-27",
+      "session": "Sunday Diwali Muhurat",
+      "source": "Direct official NSE bhavcopy archive",
+      "status": "VALIDATED",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "MATCH",
+      "source_sha256": "b881a41ca300bb9c91d3e532e85cfa6e4f0b79b52840bfee5b921f19e6b38481"
+    },
+    {
+      "symbol": "HDFC",
+      "date": "2020-02-01",
+      "session": "Saturday Union Budget special session",
+      "source": "Direct official NSE bhavcopy archive",
+      "status": "VALIDATED",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "MATCH",
+      "source_sha256": "ebed0938cc885e7f450c19d751fc70dcb8f905384fc96617bec889b9004ffd90"
+    },
+    {
+      "symbol": "HDFC",
+      "date": "2020-11-14",
+      "session": "Saturday Diwali Muhurat",
+      "source": "Direct official NSE bhavcopy archive",
+      "status": "VALIDATED",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "MATCH",
+      "source_sha256": "652f8a54ba1481baa92032062aec5d3aa00a9db9e919001fec624d69771f1610"
+    },
+    {
+      "symbol": "HDFC",
+      "date": "2021-11-04",
+      "session": "Diwali Muhurat",
+      "source": "Independent public NSE bhavcopy mirror",
+      "status": "VALIDATED",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "MATCH",
+      "source_sha256": "d3a0e9ef35bac8610f0b3e4cfaffce0a06d00b805d255335b6108645b34e3119"
+    },
+    {
+      "symbol": "HDFC",
+      "date": "2022-10-24",
+      "session": "Diwali Muhurat",
+      "source": "Independent public NSE bhavcopy mirror",
+      "status": "VALIDATED",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "ISIN_NOT_PUBLISHED_IN_MIRROR",
+      "source_sha256": "6378ae28df3482fbcdb9aeba26929f437572401b1278dce6688b56581b077dc5"
+    },
+    {
+      "symbol": "TATAMOTORS",
+      "date": "2025-10-21",
+      "session": "Diwali Muhurat (13:45-14:45)",
+      "source": "Independent public NSE bhavcopy mirror",
+      "status": "VALIDATED",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "ISIN_NOT_PUBLISHED_IN_MIRROR",
+      "source_sha256": "1084887d80358e747411fd582405c1166cce44a18eebef8902baea75e6a1b243"
+    }
+  ],
+  "interpretation": "All seven residual member/date pairs now have independent source-level OHLCV validation. The underlying Dhan/TejHQ daily coverage JSON remains unchanged at 106,385/106,392 because these supplemental raw rows have not yet been merged into the encrypted feature cache. Do not treat the composite count as model-ready feature availability until that integration is completed.",
+  "limitations": [
+    "The mirror is a public third-party archive of NSE daily data; four rows were validated there.",
+    "Three HDFC rows were validated from exact official NSE archive files.",
+    "Raw prices and volume are not stored in this report.",
+    "The corporate-action adjustment ledger remains incomplete; no adjusted returns are certified.",
+    "Feature-cache integration and a reproducible re-run of the daily coverage auditor remain pending."
+  ]
+}

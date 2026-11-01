@@ -681,3 +681,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Correction: treat mirror no-row as INCONCLUSIVE; retain all seven dates in the denominator; use a source with explicit special-session capture for remaining dates. No price was imputed.
 - Impact: no change to 106,385/106,392 daily coverage. C1 remains PARTIAL and C2 remains gated.
 
+## E0088 — 2026-11-02 — Direct NSE legacy bhavcopy parser used the wrong trade-date column
+
+- **Class:** Parser/schema mismatch; corrected before accepting the direct-NSE result.
+- **Observed:** Initial exact-date audit reported zero HDFC rows for three special sessions despite successfully downloading valid NSE ZIP/CSV archives.
+- **Cause:** Legacy CM bhavcopy headers use `TIMESTAMP` and `OPEN/HIGH/LOW/CLOSE`; the first parser expected `DATE1` and modern `*_PRICE` names. The OHLC fallback already supported legacy price columns, but the date parser did not read `TIMESTAMP`.
+- **Correction:** Parse `TIMESTAMP` as a supported trade-date field; rerun the exact three archives; verify one EQ row, OHLC invariants, nonnegative volume and matching ISIN per date.
+- **Outcome:** 3/3 direct NSE rows validated. The earlier 0/3 result is superseded and must not be used. Parser fix is committed in the direct-NSE audit script.
+- **Impact:** No raw values were published. Original Dhan/TejHQ coverage remains unchanged until supplemental encrypted-cache integration.
