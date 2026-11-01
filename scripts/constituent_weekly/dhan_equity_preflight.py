@@ -234,18 +234,29 @@ def analyse_bars(body: dict, symbol: str, day: str, *, require_anchor: bool = Tr
         & (ts.dt.strftime("%H:%M") <= "15:14")
     ]
     expiry_proxy = expiry_candidates.tail(1)
+    frame_day = ts.dt.strftime("%Y-%m-%d").eq(day)
+    clock = ts.dt.strftime("%H:%M")
+    target_scope = frame.loc[frame_day & clock.between("09:15", "15:14")].copy()
+    post_cutoff_scope = frame.loc[frame_day & clock.between("15:15", "15:30")].copy()
     ohlc_ok = bool(
-        ((frame["low"] <= frame[["open", "close"]].min(axis=1)) &
-         (frame["high"] >= frame[["open", "close"]].max(axis=1)) &
-         (frame[["open", "high", "low", "close"]] > 0).all(axis=1) &
-         (frame["volume"] >= 0)).all()
+        len(target_scope) > 0 and
+        ((target_scope["low"] <= target_scope[["open", "close"]].min(axis=1)) &
+         (target_scope["high"] >= target_scope[["open", "close"]].max(axis=1)) &
+         (target_scope[["open", "high", "low", "close"]] > 0).all(axis=1) &
+         (target_scope["volume"] >= 0)).all()
     )
+    post_cutoff_volume = pd.to_numeric(post_cutoff_scope["volume"], errors="coerce")
+    post_cutoff_negative_volume_rows = int((post_cutoff_volume < 0).sum())
     passed = (not require_anchor or not anchors.empty) and (not require_expiry or not expiry_proxy.empty) and ohlc_ok
     return {
         "symbol": symbol,
         "date": day,
         "status": "PASS" if passed else "REQUIRED_BAR_OR_OHLC_CHECK_FAILED",
         "bar_count": int(len(frame)),
+        "target_scope_bar_count": int(len(target_scope)),
+        "post_expiry_cutoff_bar_count": int(len(post_cutoff_scope)),
+        "post_expiry_cutoff_negative_volume_rows": post_cutoff_negative_volume_rows,
+        "target_scope_cutoff_ist": "15:15:00",
         "anchor_window_bars": int(len(anchors)),
         "expiry_proxy_bar_count": int(len(expiry_proxy)),
         "expiry_proxy_bar_time_ist": expiry_proxy["time_ist"].iloc[-1].isoformat() if not expiry_proxy.empty else None,
@@ -355,6 +366,13 @@ def analyse_intraday_range(body: dict, symbol: str, start_date: str, end_date: s
     ohlc_ok = bool(
         len(regular_frame) > 0 and finite_rows.all() and ohlc_rows.all() and volume_rows.all()
     )
+    post_cutoff_volume = pd.to_numeric(post_cutoff_frame["volume"], errors="coerce")
+    post_cutoff_finite_volume = post_cutoff_volume.notna() & np.isfinite(
+        post_cutoff_volume.to_numpy(dtype=float)
+    )
+    post_cutoff_negative_volume_rows = int(
+        (post_cutoff_finite_volume & post_cutoff_volume.lt(0)).sum()
+    )
     passed = bool(
         ohlc_ok and duplicated == 0 and len(regular_dates) > 0 and
         not missing_anchor_dates and not missing_expiry_dates
@@ -366,7 +384,10 @@ def analyse_intraday_range(body: dict, symbol: str, start_date: str, end_date: s
         "status": "PASS" if passed else "RANGE_COVERAGE_OR_OHLC_FAILED",
         "bar_count": int(len(frame)),
         "regular_bar_count": int(len(regular_frame)),
-        "outside_regular_hours_bar_count": int((~regular_hours_mask & ~special_mask).sum()),
+        "outside_regular_hours_bar_count": int((~exchange_regular_hours_mask & ~special_mask).sum()),
+        "post_expiry_cutoff_bar_count": int(len(post_cutoff_frame)),
+        "post_expiry_cutoff_negative_volume_rows": post_cutoff_negative_volume_rows,
+        "target_scope_cutoff_ist": "15:15:00",
         "special_session_excluded_bar_count": int(special_mask.sum()),
         "response_calendar_date_count": int(len(dates)),
         "session_count": int(len(regular_dates)),
