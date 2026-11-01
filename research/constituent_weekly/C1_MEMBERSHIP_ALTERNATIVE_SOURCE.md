@@ -21,7 +21,7 @@ This is a **membership proxy** and independent cross-check, not an official weig
 
 ## Structural checks completed before import
 - 83 upstream NIFTY 50 intervals, plus one BSE inclusion interval.
-- Month-end membership cardinality is 50 for every month from April 2018 through October 2026 under half-open intervals `[valid_from, valid_to)`.
+- Membership-set cross-check against the project's 86-row C1 ledger matches **103/103 month-ends** from 2018-04-30 through 2026-10-31 after applying two explicit normalizations: map upstream terminal symbol TMPV back to TATAMOTORS before its 2025-10-24 effective rename, and exclude the temporary non-tradable DUMMYTATAM zero-price placeholder from the tradable-stock comparison. The membership set is 50 on 102 dates and 51 on 2025-10-31 when the official temporary placeholder is counted. CI regression [run 41289992040](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289992040) passed.
 - 50 open membership intervals as at 2026-11-01; BSE is active and WIPRO is inactive.
 - Historical `weightage` values are blank by design. Do not use equal weights or fill them from this file.
 
