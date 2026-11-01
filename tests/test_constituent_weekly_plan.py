@@ -28,8 +28,10 @@ class ConstituentWeeklyPlanTests(unittest.TestCase):
 
     def test_versioned_expiry_proxy_amendment_matches_version_history(self):
         plan = (ROOT / "research" / "constituent_weekly" / "RESEARCH_PLAN.md").read_text(encoding="utf-8")
-        self.assertIn("**Plan version:** 1.1", plan)
+        self.assertIn("**Plan version:** 1.2", plan)
         self.assertIn("- **v1.1 — 2026-11-01:**", plan)
+        self.assertIn("- **v1.2 — 2026-11-01:**", plan)
+        self.assertIn("ETF-replica proxy track", plan)
         self.assertIn("15:00 through 15:14 IST", plan)
         self.assertIn("15:15 expiry proxy", plan)
         self.assertIn("official 15:30 close", plan)
@@ -38,7 +40,8 @@ class ConstituentWeeklyPlanTests(unittest.TestCase):
         plan = (ROOT / "research" / "constituent_weekly" / "RESEARCH_PLAN.md").read_text(encoding="utf-8")
         self.assertIn("Forecast quality is not trading P&L", plan)
         self.assertIn("Paytm Money", plan)
-        self.assertIn("Stop at C1", plan)
+        self.assertIn("Stop confirmatory C1", plan)
+        self.assertIn("exploratory gate", plan)
 
 if __name__ == "__main__":
     unittest.main()
