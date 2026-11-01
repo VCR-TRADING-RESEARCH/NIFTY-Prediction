@@ -44,21 +44,21 @@ jobs:
       - name: Restore encrypted TejHQ personal-use cache
         uses: actions/cache/restore@v4
         with:
-          path: ~/.cache/bup01-tejhq-encrypted
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
           key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
           restore-keys: |
             bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-
       - name: Run pinned personal-use corporate-action catalogue
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          TEJHQ_ENCRYPTED_CACHE_DIR: ~/.cache/bup01-tejhq-encrypted
+          TEJHQ_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/bup01-tejhq-encrypted
           TEJHQ_PERSONAL_USE_ONLY: "1"
         run: python scripts/constituent_weekly/audit_c1_corporate_actions.py
       - name: Save encrypted TejHQ personal-use cache
         if: always()
         uses: actions/cache/save@v4
         with:
-          path: ~/.cache/bup01-tejhq-encrypted
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
           key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
       - name: Upload sanitised corporate-action report
         if: always()

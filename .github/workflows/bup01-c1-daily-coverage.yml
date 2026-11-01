@@ -50,7 +50,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: actions/cache/restore@v4
         with:
-          path: ~/.cache/bup01-tejhq-encrypted
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
           key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
           restore-keys: |
             bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-
@@ -63,14 +63,14 @@ jobs:
           DHAN_PIN: ${{ secrets.DHAN_PIN }}
           DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          TEJHQ_ENCRYPTED_CACHE_DIR: ~/.cache/bup01-tejhq-encrypted
+          TEJHQ_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/bup01-tejhq-encrypted
           TEJHQ_PERSONAL_USE_ONLY: "1"
         run: python scripts/constituent_weekly/audit_c1_daily_history.py
       - name: Save encrypted TejHQ personal-use cache
         if: always() && github.event_name != 'pull_request'
         uses: actions/cache/save@v4
         with:
-          path: ~/.cache/bup01-tejhq-encrypted
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
           key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
       - name: Generate sanitized daily report for artifact retention
         if: always() && github.event_name != 'pull_request'
