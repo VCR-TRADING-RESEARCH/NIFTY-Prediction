@@ -388,3 +388,10 @@
 - No category dataset, named-holder data, official monthly ZIP, or raw Dhan market bars were imported. The upstream parsed compressed CSV licence remains unclear for that nested file; official automated collection requires written data rights for intended use.
 - The main repo is public; raw source data or personal shareholder records cannot be stored there as a cache. Only permitted metadata and aggregate QA summaries may be published pending rights review.
 - **Gate result:** technical IWF calculation harness passes; data-source rights/completeness and official basket reconstruction remain NOT PASSED. BUP-01 v1.1 remains locked and C2–C6 remain gated.
+
+
+## 2026-11-01 — C1 developer handoff issued
+
+- Created [C1_DEVELOPER_GATE_REPORT.md](../research/constituent_weekly/C1_DEVELOPER_GATE_REPORT.md) after the final independent C1 repository review.
+- Developer disposition: C1 PARTIAL PASS / RIGHTS-BLOCKED. Dhan bounded data QA and IWF arithmetic harness pass. Official point-in-time IWF rights/completeness, continuous five-year stock coverage, historical security identity/corporate-action mapping and weighted basket-to-index reconstruction remain open.
+- C1 status file and main README now link the handoff. Plan v1.1 remains locked. No model, forecast, strategy or manuscript is claimed.
