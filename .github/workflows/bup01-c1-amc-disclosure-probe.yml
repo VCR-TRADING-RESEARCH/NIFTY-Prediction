@@ -43,16 +43,27 @@ jobs:
           if [ -f research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md ]; then
             cat research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md >> "$GITHUB_STEP_SUMMARY"
           fi
-      - name: Commit sanitised probe report
+      - name: Commit sanitised probe report with bounded retry
         if: always()
         run: |
+          target_branch="phase/constituent-weekly-outcomes-c1-data"
           if [ -f research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add research/constituent_weekly/C1_AMC_ARCHIVE_PROBE_REPORT.md
             if ! git diff --cached --quiet; then
               git commit -m "Record sanitised AMC disclosure archive probe"
-              git pull --rebase origin phase/constituent-weekly-outcomes-c1-data
-              git push origin HEAD:phase/constituent-weekly-outcomes-c1-data
+              for attempt in 1 2 3 4 5; do
+                git fetch origin "$target_branch"
+                git rebase "origin/$target_branch"
+                if git push origin "HEAD:$target_branch"; then
+                  exit 0
+                fi
+                echo "Concurrent branch update during publish attempt $attempt; retrying."
+                git rebase --abort || true
+                sleep 2
+              done
+              echo "Could not publish sanitised probe report after five non-forced attempts."
+              exit 1
             fi
           fi
