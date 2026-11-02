@@ -3,6 +3,8 @@
 **Updated:** 2026-11-02T10:08:02.739907+00:00
 **Overall status:** PARTIAL_OR_BLOCKED
 **Dhan daily endpoint:** https://api.dhan.co/v2/charts/historical
+**Authentication:** Fresh TOTP token, HTTP 200 (one attempt); data plan active
+**Encrypted TejHQ cache:** 2/2 year partitions hit; 0 downloads
 
 | Symbol | Event | Ex-date | Expected pre factor | Matched dates | Relative OHLC factors | Status |
 |---|---|---|---:|---:|---|---|
