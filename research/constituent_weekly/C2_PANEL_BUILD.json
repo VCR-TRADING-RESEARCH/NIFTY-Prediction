@@ -1,20 +1,470 @@
 {
-  "created_at_utc": "2026-11-02T21:36:22.876112+00:00",
-  "diagnostics": {},
+  "auth_method": "totp_refresh",
+  "created_at_utc": "2026-11-02T22:05:32.058283+00:00",
+  "data_plan_active": null,
+  "diagnostics": {
+    "action_crossing_flagged_rows": 3,
+    "constituent_target_rows": 10194,
+    "cycle_coverage": {
+      "cycles_passing_47_94_rule": 206,
+      "cycles_with_valid_index_targets": 206,
+      "eligible_stock_count_histogram": {
+        "47": 14,
+        "48": 166,
+        "49": 26
+      },
+      "eligible_stock_count_max": 49,
+      "eligible_stock_count_median": 48.0,
+      "eligible_stock_count_min": 47,
+      "point_in_time_member_count_max": 50,
+      "point_in_time_member_count_min": 49
+    },
+    "daily_hits": 9,
+    "daily_requests": 0,
+    "daily_symbols_with_at_least_62_rows": 62,
+    "daily_symbols_with_fewer_than_62_rows": [],
+    "failure_counts": {
+      "index_target_missing": 54,
+      "stock_daily_features_missing": 79,
+      "stock_target_missing": 26
+    },
+    "identity_flagged_rows": 293,
+    "index_intraday_target_coverage": {
+      "anchor_required": 260,
+      "anchor_valid": 207,
+      "expiry_required": 260,
+      "expiry_valid": 206
+    },
+    "intraday_hits": 0,
+    "intraday_requests": 1083,
+    "primary_eligible_stock_rows_before_cycle_gate": 9900,
+    "resolved_symbol_count": 62,
+    "scheduled_cycles": 260,
+    "stock_intraday_target_coverage_by_symbol": {
+      "ADANIENT": {
+        "anchor_required": 213,
+        "anchor_valid": 160,
+        "expiry_required": 213,
+        "expiry_valid": 159
+      },
+      "ADANIPORTS": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "APOLLOHOSP": {
+        "anchor_required": 239,
+        "anchor_valid": 186,
+        "expiry_required": 239,
+        "expiry_valid": 185
+      },
+      "ASIANPAINT": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "AXISBANK": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "BAJAJ-AUTO": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "BAJAJFINSV": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "BAJFINANCE": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "BEL": {
+        "anchor_required": 108,
+        "anchor_valid": 55,
+        "expiry_required": 108,
+        "expiry_valid": 54
+      },
+      "BHARTIARTL": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "BPCL": {
+        "anchor_required": 177,
+        "anchor_valid": 177,
+        "expiry_required": 177,
+        "expiry_valid": 177
+      },
+      "BRITANNIA": {
+        "anchor_required": 177,
+        "anchor_valid": 177,
+        "expiry_required": 177,
+        "expiry_valid": 177
+      },
+      "BSE": {
+        "anchor_required": 4,
+        "anchor_valid": 0,
+        "expiry_required": 4,
+        "expiry_valid": 0
+      },
+      "CIPLA": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "COALINDIA": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "DIVISLAB": {
+        "anchor_required": 152,
+        "anchor_valid": 152,
+        "expiry_required": 152,
+        "expiry_valid": 152
+      },
+      "DRREDDY": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "EICHERMOT": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "ETERNAL": {
+        "anchor_required": 83,
+        "anchor_valid": 30,
+        "expiry_required": 83,
+        "expiry_valid": 29
+      },
+      "GRASIM": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "HCLTECH": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "HDFC": {
+        "anchor_required": 87,
+        "anchor_valid": 87,
+        "expiry_required": 87,
+        "expiry_valid": 87
+      },
+      "HDFCBANK": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "HDFCLIFE": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "HEROMOTOCO": {
+        "anchor_required": 204,
+        "anchor_valid": 204,
+        "expiry_required": 204,
+        "expiry_valid": 204
+      },
+      "HINDALCO": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "HINDUNILVR": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "ICICIBANK": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "INDIGO": {
+        "anchor_required": 56,
+        "anchor_valid": 3,
+        "expiry_required": 56,
+        "expiry_valid": 2
+      },
+      "INDUSINDBK": {
+        "anchor_required": 204,
+        "anchor_valid": 204,
+        "expiry_required": 204,
+        "expiry_valid": 204
+      },
+      "INFY": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "IOC": {
+        "anchor_required": 21,
+        "anchor_valid": 21,
+        "expiry_required": 21,
+        "expiry_valid": 21
+      },
+      "ITC": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "JIOFIN": {
+        "anchor_required": 83,
+        "anchor_valid": 30,
+        "expiry_required": 83,
+        "expiry_valid": 29
+      },
+      "JSWSTEEL": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "KOTAKBANK": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "LT": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "LTM": {
+        "anchor_required": 64,
+        "anchor_valid": 64,
+        "expiry_required": 64,
+        "expiry_valid": 64
+      },
+      "M&M": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "MARUTI": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "MAXHEALTH": {
+        "anchor_required": 56,
+        "anchor_valid": 3,
+        "expiry_required": 56,
+        "expiry_valid": 2
+      },
+      "NESTLEIND": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "NTPC": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "ONGC": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "POWERGRID": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "RELIANCE": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "SBILIFE": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "SBIN": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "SHREECEM": {
+        "anchor_required": 47,
+        "anchor_valid": 47,
+        "expiry_required": 47,
+        "expiry_valid": 47
+      },
+      "SHRIRAMFIN": {
+        "anchor_required": 135,
+        "anchor_valid": 82,
+        "expiry_required": 135,
+        "expiry_valid": 81
+      },
+      "SUNPHARMA": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "TATACONSUM": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "TATAMOTORS": {
+        "anchor_required": 208,
+        "anchor_valid": 207,
+        "expiry_required": 208,
+        "expiry_valid": 206
+      },
+      "TATASTEEL": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "TCS": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "TECHM": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "TITAN": {
+        "anchor_required": 260,
+        "anchor_valid": 207,
+        "expiry_required": 260,
+        "expiry_valid": 206
+      },
+      "TMPV": {
+        "anchor_required": 52,
+        "anchor_valid": 0,
+        "expiry_required": 52,
+        "expiry_valid": 0
+      },
+      "TRENT": {
+        "anchor_required": 108,
+        "anchor_valid": 55,
+        "expiry_required": 108,
+        "expiry_valid": 54
+      },
+      "ULTRACEMCO": {
+        "anchor_required": 260,
+        "anchor_valid": 194,
+        "expiry_required": 260,
+        "expiry_valid": 193
+      },
+      "UPL": {
+        "anchor_required": 125,
+        "anchor_valid": 125,
+        "expiry_required": 125,
+        "expiry_valid": 125
+      },
+      "WIPRO": {
+        "anchor_required": 256,
+        "anchor_valid": 194,
+        "expiry_required": 256,
+        "expiry_valid": 193
+      }
+    },
+    "unresolved_symbols": [],
+    "valid_index_target_cycles": 206
+  },
+  "fallback_profile_retry": "NOT_NEEDED",
   "fatal_error_category": "RuntimeError",
   "fatal_error_location": {
     "file": "run_c2_panel_and_models.py",
     "function": "main",
-    "line": 541
+    "line": 798
   },
-  "fatal_error_message": "Dhan profile/data-plan authorization check failed.",
-  "input_manifest": {},
+  "fatal_error_message": "NIFTY target coverage is 79.2308%; minimum is 98%.",
+  "input_manifest": {
+    "action_event_sha256": "0c9231a144a0ba16e03e99658fd6300d588bb498f8557a95886bd77a2b9e45a7",
+    "alias_sha256": "27b299b995bf59d08ab5b6a83d3fed0789c26363d842ae4b13acd6379e3985a3",
+    "cycle_count": 260,
+    "expiry_sha256": "a1a37949278934fbddebd7ea61092930eb7f25ba171c95fca1421e5ae098eaa5",
+    "first_anchor": "2021-11-08",
+    "hash": "693365a0981d3354a87d8639c1e0ee74022c530b017024d8d3712e91b9014c19",
+    "index_daily_sha256": "5fee1979958e96276e53054c3e76b3818aa6cc1b3abe0e88dd5647c2976104c7",
+    "last_expiry": "2026-10-27",
+    "membership_sha256": "dda5d0aa6cb4feec5edaa53c9a7b099b5d9e46b6020c1ab69c5913f5402d2a08",
+    "scrip_master_sha256": "83c59ef4b2a6234cdda916f0955a9cd7f374989236bb24a5ffc37e5587bd0acd",
+    "symbol_count": 62
+  },
   "limitations": [
     "The user explicitly waived the remaining historical identity and corporate-action checks as preconditions. This is a scope decision, not a claim that those checks passed.",
     "No unverified corporate-action factor is applied; unadjusted event-exposed rows are flagged and excluded from the primary sensitivity panel.",
     "The expiry target is the latest valid 15:00-15:14 one-minute candle close, treated as a 15:15 proxy, not the official 15:30 close.",
     "No executable options/futures P&L or transaction-cost simulation is performed in C2."
   ],
+  "profile_http_status": 200,
   "schema_version": 1,
-  "status": "FAILED"
+  "status": "FAILED",
+  "token_refresh_diagnostics": {
+    "access_token_field_type": "str",
+    "access_token_length": 304,
+    "body_type": "dict",
+    "data_keys": [],
+    "http_status": 200,
+    "provider_error_category": "UNCLASSIFIED_PROVIDER_RESPONSE",
+    "refresh_attempts": 1,
+    "response_keys": [
+      "accessToken",
+      "dhanClientId",
+      "dhanClientName",
+      "dhanClientUcc",
+      "expiryTime",
+      "givenPowerOfAttorney"
+    ],
+    "server_minus_runner_clock_skew_seconds": -1,
+    "token_container": "top_level"
+  },
+  "token_refresh_status": "SUCCESS"
 }

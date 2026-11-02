@@ -954,3 +954,13 @@
 - The existing Dhan preflight contains a bounded TOTP-to-provided-token fallback, which C2 previously lacked. Added the same single fallback only after a fresh TOTP profile HTTP failure.
 - Failure reports now include sanitized auth method, refresh status, profile HTTP status and fallback outcome, never token values.
 - Regression tests cover a successful fallback and prove supplied-token failures are not retried. The new push-triggered C2 run will validate this correction.
+
+
+<!-- C2_PANEL_RUN_41530483274 -->
+## 2026-11-02T22:05:36.989142+00:00 — formal C2 panel run 41530483274
+
+- Status: FAILED.
+- Summary: **Formal C2 panel run 41530483274:** FAILED; 0 scheduled cycles; 0 valid NIFTY targets (0.00%); 0 cycles pass the 47/94% stock rule; 0 constituent-cycle rows. C2 is not accepted; see the workflow run and error log.
+- Input manifest: 693365a0981d3354a87d8639c1e0ee74022c530b017024d8d3712e91b9014c19.
+- Encrypted panel cache metadata: {}.
+- C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.

@@ -890,3 +890,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - This is an authentication/profile gate, not a failure of the shifted-expiry parser or proof that the data source is unavailable.
 - Correction: C2 now applies the same bounded fallback as the existing Dhan preflight: after a fresh TOTP token gets a profile HTTP failure, check the configured provided token once. No retry occurs for a provided-token authentication failure. Publish only sanitized HTTP/method diagnostics.
 - Added offline tests for the fallback and no-retry cases. Status remains OPEN until the corrected workflow succeeds and builds the 260-cycle panel.
+
+
+<!-- C2_PANEL_ERROR_41530483274 -->
+## C2 panel workflow 41530483274 — FAILED
+
+- Offline tests: success; panel step: failure.
+- Error category: RuntimeError.
+- Source location: {'file': 'run_c2_panel_and_models.py', 'function': 'main', 'line': 798}.
+- No panel acceptance is claimed for this run.
