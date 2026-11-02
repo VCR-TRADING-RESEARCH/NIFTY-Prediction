@@ -99,7 +99,11 @@ def test_bajaj_finserv_isin_transition_must_occur_on_ex_date():
     result = compute_adjustment_diagnostic(pd.DataFrame(dhan_rows), pd.DataFrame(raw_rows),
                                            dates, "2022-09-13", 0.1,
                                            "INE918I01018", "INE918I01026")
-    assert result["status"] == "ISIN_TRANSITION_MISMATCH"
+    assert result["status"] == "FACTOR_PASS_IDENTITY_WARNING"
+    assert result["factor_check_passed"] is True
+    assert result["isin_transition_verified"] is False
+    assert result["identity_mismatch_dates"] == ["2022-09-13"]
+    assert result["observed_post_isin_first_date"] == "2022-09-14"
 
 
 def test_public_event_metadata_allows_missing_identity_source():

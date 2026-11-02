@@ -82,14 +82,23 @@ def compute_adjustment_diagnostic(
                 "raw_unique_isin_count": len(isin_values)}
 
     joined = left.merge(right, on="session_date", suffixes=("_dhan", "_raw"), validate="one_to_one")
+    identity_mismatch_dates = []
+    identity_mismatch_types = {}
+    observed_post_isin_dates = []
     for _, identity_row in joined.iterrows():
         identity_day = str(identity_row["session_date"])
         expected_isin = expected_pre_isin.upper() if identity_day < ex_date else expected_post_isin.upper()
         actual_isin = str(identity_row["isin"]).strip().upper()
+        if actual_isin == expected_post_isin.upper():
+            observed_post_isin_dates.append(identity_day)
         if actual_isin != expected_isin:
-            return {"status": "ISIN_TRANSITION_MISMATCH", "dates_checked": int(len(joined)),
-                    "dates_matched": int(len(joined)), "raw_unique_isin_count": len(isin_values),
-                    "isin_transition_verified": False}
+            identity_mismatch_dates.append(identity_day)
+            if actual_isin == expected_pre_isin.upper() and identity_day >= ex_date:
+                identity_mismatch_types[identity_day] = "OLD_ISIN_ON_OR_AFTER_EX_DATE"
+            elif actual_isin == expected_post_isin.upper() and identity_day < ex_date:
+                identity_mismatch_types[identity_day] = "NEW_ISIN_BEFORE_EX_DATE"
+            else:
+                identity_mismatch_types[identity_day] = "UNEXPECTED_ISIN"
     present_dates = set(joined["session_date"].astype(str))
     missing = sorted(set(sample_dates) - present_dates)
     if len(joined) != len(sample_dates):
@@ -124,12 +133,22 @@ def compute_adjustment_diagnostic(
     lower, upper = expected_pre_factor * 0.95, expected_pre_factor * 1.05
     factor_ok = all(lower <= value <= upper for value in relative_factor.values())
     post_ok = all(POST_FACTOR_TOLERANCE[0] <= value <= POST_FACTOR_TOLERANCE[1] for value in post_median.values())
+    identity_ok = not identity_mismatch_dates
+    if factor_ok and post_ok and identity_ok:
+        diagnostic_status = "PASS_ADJUSTMENT_FACTOR"
+    elif factor_ok and post_ok and not identity_ok:
+        diagnostic_status = "FACTOR_PASS_IDENTITY_WARNING"
+    else:
+        diagnostic_status = "FAIL_OR_INCOMPLETE_FACTOR"
     return {
-        "status": "PASS_ADJUSTMENT_FACTOR" if factor_ok and post_ok else "FAIL_OR_INCOMPLETE_FACTOR",
+        "status": diagnostic_status,
         "dates_checked": int(len(joined)), "dates_matched": int(len(joined)),
         "pre_ex_date_session_count": int((joined["session_date"].astype(str) < ex_date).sum()),
         "post_ex_date_session_count": int((joined["session_date"].astype(str) >= ex_date).sum()),
-        "raw_unique_isin_count": len(isin_values), "isin_transition_verified": True,
+        "raw_unique_isin_count": len(isin_values), "isin_transition_verified": identity_ok,
+        "identity_mismatch_dates": identity_mismatch_dates,
+        "identity_mismatch_type_by_date": identity_mismatch_types,
+        "observed_post_isin_first_date": min(observed_post_isin_dates) if observed_post_isin_dates else None,
         "expected_pre_ex_date_factor": float(expected_pre_factor),
         "pre_ex_date_median_dhan_to_raw_by_ohlc": {k: round(v, 6) for k, v in pre_median.items()},
         "post_ex_date_median_dhan_to_raw_by_ohlc": {k: round(v, 6) for k, v in post_median.items()},
