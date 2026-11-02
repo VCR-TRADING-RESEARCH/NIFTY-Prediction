@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-11-03",
+  "status": "COMPLETED_FOR_49_SECONDARY_CANDIDATES; C1_OVERALL_PARTIAL_NOT_PASSED",
+  "scope": "recipient-encrypted personal-use-only queue; sanitized aggregate only",
+  "queue": {
+    "feed_candidates": 49,
+    "point_in_time_membership_matches": 49,
+    "ambiguous_membership_matches": 0,
+    "original_feed_classes": {
+      "buyback": 20,
+      "agm_or_other": 29
+    }
+  },
+  "corrected_event_classification": {
+    "buybacks": 21,
+    "dividends_reclassified_from_other": 3,
+    "agm_governance_events": 25,
+    "total": 49
+  },
+  "buyback_review": {
+    "primary_offer_or_record_date_sources_found": 21,
+    "source_types": [
+      "issuer",
+      "SEBI",
+      "official exchange"
+    ],
+    "universal_mechanical_price_adjustment": false,
+    "forecast_time_announcement_gate": "NOT PASSED FOR MODEL FEATURE USE",
+    "affected_cycle_adjustment_applied": 0
+  },
+  "dividend_reclassification": {
+    "count": 3,
+    "evidence_found": 3,
+    "examples": [
+      {
+        "issuer": "HCL Technologies",
+        "amount_inr_per_share": 2,
+        "record_date": "2018-08-06"
+      },
+      {
+        "issuer": "TCS",
+        "amount_inr_per_share": 4,
+        "record_date": "2018-10-24"
+      },
+      {
+        "issuer": "Nestlé India",
+        "amount_inr_per_share": 135,
+        "record_date": "2020-11-02"
+      }
+    ],
+    "price_index_rule": "No reinvestment or total-return substitution."
+  },
+  "agm_review": {
+    "count": 25,
+    "notice_timestamp_verified_for_forecast_cutoff": false,
+    "feature_disposition": "EXCLUDE until issuer/exchange notice timestamp is verified against 10:00 IST",
+    "price_adjustment_applied": 0
+  },
+  "source_links": {
+    "buybacks": [
+      "https://www.sebi.gov.in/sebi_data/attachdocs/aug-2018/1535088017164.pdf",
+      "https://investors.larsentoubro.com/upload/Announcements/LARSEN_%26_TUBRO_LIMITED_Buyback_ad.pdf",
+      "https://www.iocl.com/buyback-of-shares-by-indianoil",
+      "https://www.sebi.gov.in/sebi_data/attachdocs/mar-2019/1551418134010.pdf",
+      "https://www.sebi.gov.in/sebi_data/attachdocs/feb-2019/1550670210902.pdf",
+      "https://www.sebi.gov.in/sebi_data/attachdocs/mar-2019/1552973486748.pdf",
+      "https://www.adaniports.com/-/media/Project/Ports/CorporateGovernance/Buy-back/Letter-of-Offer-for-Buyback.pdf",
+      "https://www.wipro.com/content/dam/nexus/en/investor/buy-back/buyback2019/stock-exchange-public-announcement-for-buy-back-of-equity-shares.pdf",
+      "https://www.sebi.gov.in/sebi_data/attachdocs/nov-2020/1605951361683.pdf",
+      "https://www.sec.gov/Archives/edgar/data/1123799/000119312520298090/d11431dex992.htm",
+      "https://nsearchives.nseindia.com/corporate/NTPC_26112020195518_NTPCLOF.pdf",
+      "https://www.sebi.gov.in/sebi_data/attachdocs/jan-2021/1611747155575.pdf",
+      "https://www.sebi.gov.in/sebi_data/commondocs/feb-2022/TCS-DLO_p.pdf",
+      "https://www.wipro.com/content/dam/nexus/en/investor/buy-back/buyback2023/post-buyback-public-announcement.pdf",
+      "https://www.lnt.in/LSEQFRSept2023/",
+      "https://www.sebi.gov.in/sebi_data/commondocs/nov-2023/Tata_Consultancy_LOO_p.pdf",
+      "https://www.bseindia.com/xml-data/corpfiling/AttachHis/fb78f27e-699e-4e07-88d8-f22d404a8dec.pdf",
+      "https://www.infosys.com/investors/shareholder-services/documents/buyback-2025/letter-offer.pdf",
+      "https://www.sebi.gov.in/sebi_data/commondocs/jun-2026/Wipro%20Limited%20-%20LOF_p.pdf",
+      "https://legacy.bajajauto.com/-/media/images/bajajauto/media-kit/press-release/disclosures/newspaper-publications/fy2026-27/se-with-lof.pdf"
+    ],
+    "dividends": [
+      "https://www.hcltech.com/investor-relations/unpaid-dividend-information",
+      "https://www.mse-india.in/corporates/corporate-securities-information/corporate-update/default?symbol=HCLTECH&type=4&vmode=vm",
+      "https://www.tcs.com/investor-relations/dividend-payment-details",
+      "https://www.nestle.in/media/specialannouncements/outcome-meeting-board-directors-company-held-23rd-october-2020"
+    ]
+  },
+  "publication_controls": {
+    "raw_tejhq_rows_published": false,
+    "raw_bars_published": false,
+    "raw_isins_published": false,
+    "source_subjects_published": false,
+    "private_key_published": false
+  },
+  "limitations": {
+    "buyback_acceptance_and_extinguishment_cycle_join_complete": false,
+    "agm_timestamps_verified": false,
+    "dividend_announcement_timestamps_joined": false,
+    "historical_identity_and_price_continuity_pass": false
+  }
+}

@@ -27,7 +27,9 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <tr><td>Reliance 1:1 bonus adjustment</td><td>0.5 relative OHLC factor</td><td>9/9 sessions matched; Dhan adjusted history passed this diagnostic.</td></tr>
 <tr><td>Bajaj Finserv 5:1 split + 1:1 bonus</td><td>0.1 relative OHLC factor</td><td>11/11 daily sessions matched. New trading ISIN adjudicated effective 2022-09-13 using NSE Clearing FAOP53644 and the explicit trade-effective clause in CML53597; original raw row is preserved and flagged as stale metadata.</td></tr>
 <tr><td>Intraday corporate-action scale (two events)</td><td>2/2 match Dhan adjusted daily OHLC</td><td>Same-session intraday OHLC aggregates matched the Dhan daily adjusted scale for RELIANCE bonus and BAJAJFINSV split+bonus. Sample only; not evidence for all 711 point-in-time event candidates.</td></tr>
-<tr><td>37 complex issuer-event candidates</td><td>37 / 37 terms and record-date evidence reviewed</td><td>17 equity bonuses, 9 splits, 6 rights and 3 merger/demerger events; two bonus-labelled distributions reclassified as non-equity debentures. No TERP or manual adjustment factors applied.</td></tr>
+<tr><td>37 complex issuer-event candidates</td><td>37 / 37 classified and source-reviewed</td><td>17 equity bonuses, 2 bonus-labelled NCD distributions reclassified as non-equity, 9 splits, 6 rights and 3 merger/demerger events. No TERP or manual adjustment factors applied.</td></tr>
+<tr><td>49 buyback / AGM-other candidates</td><td>49 / 49 reconciled; zero ambiguous member joins</td><td>21 buybacks, 3 dividends reclassified from “other”, and 25 AGM/governance items. All 21 buybacks have primary offer/record-date sources; 25 AGM items remain excluded from features pending proof of publication before 10:00 IST.</td></tr>
+<tr><td>Full 711-candidate taxonomy</td><td>711 / 711 classified at aggregate event-class level</td><td>17 equity bonuses, 2 NCD distributions, 9 splits, 6 rights, 3 merger/demerger, 21 buybacks, 628 dividends and 25 AGM/governance. Historical identity, price continuity and affected-cycle exclusions remain open.</td></tr>
 <tr><td>C2 panel / C3 exploratory stock tests</td><td>C2 PASS WITH C1 LIMITATIONS; C3 exploratory complete</td><td>12,807 stock-cycle rows; 7,512 OOF forecasts. No stock classifier beat the five-session momentum accuracy baseline on the untouched holdout. C4 confirmatory remains gated.</td></tr>
 </tbody>
 </table>
@@ -45,6 +47,7 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <li><a href="C1_OFFICIAL_CORPORATE_ACTION_SOURCE_FEASIBILITY.md">Official source feasibility and verification method</a></li>
 <li><a href="C1_EVENT_REVIEW_PROTOCOL.md">Event-level review protocol (711 matched candidates; prioritised validation and exclusion rules)</a></li>
 <li><a href="C1_ISSUER_EVENT_REVIEW_AGGREGATE.md">Issuer-source review of 37 complex candidates (aggregate report)</a> · <a href="C1_ISSUER_EVENT_REVIEW_AGGREGATE.json">machine-readable summary</a></li>
+<li><a href="C1_BUYBACK_AGM_REVIEW_AGGREGATE.md">Buyback, dividend-misclassification and AGM review (49 candidates)</a> · <a href="C1_BUYBACK_AGM_REVIEW_AGGREGATE.json">machine-readable summary</a></li>
 <li><a href="C1_BAJAJFINSV_ISIN_ADJUDICATION.md">BAJAJFINSV ISIN effective-date adjudication (2022-09-13)</a></li>
 <li><a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md">Detailed C1 phase status</a></li>
 <li><a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/RESEARCH_LOG.md">Research log</a> · <a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/ERROR_LOG.md">Error log</a></li>
@@ -53,10 +56,11 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <h2>Open gates</h2>
 <ul>
 <li>BAJAJFINSV 2022-09-13 trade-effective ISIN date adjudicated using NSE Clearing, NSE listing and BSE notice evidence; raw TejHQ identifier retained and flagged as stale.</li>
-<li>The 37 complex candidates have been reviewed for event terms and dates. Remaining catalogue: 20 buybacks and 29 AGM/other candidates need classification/forecast-time review; 625 dividends must retain price-index semantics and must not be mechanically reinvested into the target.</li>
+<li>The 37 complex and 49 secondary candidates have been classified and source-reviewed. All 25 AGM/governance notices remain excluded from predictive features until actual publication timestamps are verified before the 10:00 IST cutoff. The 21 buyback cases still need announcement, acceptance/completion and affected-cycle joins before they can become point-in-time features.</li>
+<li>All 628 dividends retain NIFTY price-index semantics; do not mechanically reinvest them or substitute a total-return target. Join announcement availability and assess any price-bar QA only where the frozen methodology requires it.</li>
 <li>Complete full historical ISIN/predecessor-successor identity checks, price-series continuity, rights TERP calculations where required, scheme-specific merger/demerger treatment and affected stock-cycle exclusions. No manual adjustment factor has been applied to the panel.</li>
 <li>Do not apply adjustment factors to the full panel until event-level identity, terms and price reconciliation pass.</li>
-<li>C1 remains PARTIAL / NOT PASSED; C2 panel is accepted with C1 limitations, C3 stock modelling is exploratory with no demonstrated edge, confirmatory C4 and trading/execution C5 remain gated. No executable trading strategy is approved.</li>
+<li>C1 remains PARTIAL / NOT PASSED; C2 panel is accepted with C1 limitations, C3 stock modelling is exploratory with no demonstrated edge, confirmatory C4 and trading/execution C5 remain gated. Full historical identity, adjusted-price continuity and affected-cycle exclusions are still open. No executable trading strategy is approved.</li>
 </ul>
 <p><small>Generated from the research branch; see the linked machine-readable files for the exact sanitised diagnostic outputs.</small></p>
 </body>
