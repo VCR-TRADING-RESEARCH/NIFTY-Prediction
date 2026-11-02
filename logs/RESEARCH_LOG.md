@@ -912,3 +912,11 @@
 - Input manifest: 715623a04ff8e32a2a7b0a744a1e4b590d37f758c708eb5d7f5352d7dd00a553.
 - Encrypted panel cache metadata: {'encryption': 'AES-GCM; HF_TOKEN-derived BUP01 cache key; raw values not published', 'index': {'cache_relative_path': 'c2/frozen_panel/67e566b68a3eb1f50be07abbb2dc.aesgcm', 'ciphertext_bytes': 30334, 'ciphertext_sha256': '899e60b3efe3b345919273681013420a179eae7da3e04b087cc4661acb28f3ba'}, 'stock': {'cache_relative_path': 'c2/frozen_panel/def4acd72d6aadb62f1ae72bae80.aesgcm', 'ciphertext_bytes': 1654615, 'ciphertext_sha256': '2c3e416e2681a526f307f092d67f517b747461adbe424c3b2a96ae6901d33408'}}.
 - C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.
+
+
+## 2026-11-02 — C3 handoff encryption-key root cause and C2 correction
+
+- C3 run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) successfully downloaded the latest artifact and paired manifest, verified both ciphertext SHA-256 values, and passed all four offline tests.
+- AES-GCM authentication then failed. Source audit found the C2 frozen-panel writer was using the local Dhan access-token variable, although the manifest documented the stable HF_TOKEN-derived key.
+- Corrected both frozen stock and index panel writes to use HF_TOKEN. This is the stable cross-run key already used by the TejHQ cache design. The Dhan access token remains for Dhan API authentication and Dhan request caches only.
+- Old ciphertext is not re-keyed or force-decrypted. A fresh C2 run is required and will automatically trigger C3 through the registered workflow_run event. C3 remains NOT COMPLETE until the new artifact decrypts and model tests execute.

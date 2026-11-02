@@ -770,8 +770,10 @@ def main() -> int:
             index_bytes = gzip.compress(idx_panel.sort_values("cycle_idx").to_csv(index=False).encode("utf-8"))
             stock_path = cache_file(cache_dir, "frozen_panel", stock_key)
             index_path = cache_file(cache_dir, "frozen_panel", index_key)
-            write_cache(stock_path, stock_bytes, token, stock_aad)
-            write_cache(index_path, index_bytes, token, index_aad)
+            # Frozen-panel encryption must use the stable HF_TOKEN-derived key.
+            # The Dhan access token is rotated and is only for source API/cache requests.
+            write_cache(stock_path, stock_bytes, hf_token, stock_aad)
+            write_cache(index_path, index_bytes, hf_token, index_aad)
             panel_result = {
                 "schema_version": 1,
                 "status": "COMPLETED",

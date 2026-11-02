@@ -855,3 +855,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** The JSON report's `feature_columns` list appended `cs_rank_ret5` and `cs_rank_ret20` even though both are already included in `FEATURES`. The panel dataframe creates each derived column once; the defect is confined to the manifest list.
 - **Correction required:** Report `FEATURES` directly and add a uniqueness regression assertion before the next phase consumes the manifest. Do not reinterpret this as duplicated model columns or invalidate C2 data acceptance.
 - **C2 result:** The formal workflow completed successfully; all 258/258 cycles passed the 47/94% rule, index targets were 100%, and both duplicate-row counts were zero. C2 PASS. The metadata correction is a documentation/manifest cleanup, not a threshold relaxation.
+
+
+## E0103 — 2026-11-02 — Frozen C2 panel encrypted with rotating Dhan token
+
+- **Severity:** High — secure cross-run panel handoff blocked; no plaintext data was exposed.
+- **Detection:** C3 run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) passed artifact download, manifest pairing, ciphertext length and SHA-256 checks, but AES-GCM authentication failed.
+- **Root cause:** C2's frozen-panel writer passed the local `token` variable (Dhan access token returned by `acquire_access_token`) to `write_cache`, while the report documented an HF_TOKEN-derived stable key. Dhan tokens can rotate, so they are not a valid persistent cross-run encryption key.
+- **Correction:** Frozen stock and index panel ciphertext is now encrypted with the already-required stable `hf_token` variable. Dhan access tokens remain limited to Dhan API and source-cache operations. Associated data and AES-GCM authentication remain enforced.
+- **Recovery:** Trigger a fresh formal C2 panel build so the newly generated artifact and manifest share the corrected stable key. C3 must consume only that new artifact; never attempt to decrypt the old artifact using guessed or relaxed keys.
+- **Research impact:** No stock forecasts were generated. C2 data acceptance remains valid; the encryption implementation/handoff is being repaired before C3 model evaluation.

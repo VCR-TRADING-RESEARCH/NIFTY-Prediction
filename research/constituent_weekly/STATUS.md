@@ -752,3 +752,11 @@ See [C2 panel report](C2_PANEL_BUILD.md) and [panel manifest](C2_PANEL_BUILD.jso
 - Identity-flagged rows: 292; known action-crossing rows: 3; primary-flagged rows: 293.
 - Full machine report: [C2_PANEL_BUILD.json](C2_PANEL_BUILD.json); [human report](C2_PANEL_BUILD.md).
 - Formal acceptance: [C2_ACCEPTANCE_REPORT.md](C2_ACCEPTANCE_REPORT.md).
+
+
+## 2026-11-02 — C3 handoff recovery
+
+- C2 panel contents and acceptance counts remain unchanged; the defect was in frozen-panel encryption key selection, not the data panel.
+- Frozen stock/index ciphertext writer corrected to use HF_TOKEN rather than the rotating Dhan access token.
+- New C2 build is required to regenerate ciphertext with stable cross-run key; successful completion will trigger C3 automatically.
+- C3: BLOCKED pending fresh artifact and authenticated decrypt. No prediction result is claimed.
