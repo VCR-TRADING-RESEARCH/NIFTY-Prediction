@@ -117,3 +117,21 @@ def test_response_shape_classifies_dhan_input_exception_without_retaining_messag
     assert "synthetic provider detail" not in str(shape)
 
 # Live-provider diagnostic is deliberately gated to trusted push/manual runs.
+
+
+def test_response_shape_extracts_nested_dhan_remarks_without_retaining_message():
+    fake = FakeResponse(400, {
+        "status": "failure",
+        "remarks": {
+            "error_code": "DH-905",
+            "error_type": "Input_Exception",
+            "error_message": "private provider detail must not be retained",
+        },
+        "data": "",
+    })
+    shape = response_shape(fake)
+    assert shape["remarks_type"] == "dict"
+    assert shape["provider_error_code"] == "DH-905"
+    assert shape["provider_error_type"] == "Input_Exception"
+    assert shape["provider_message_category"] == "DHAN_DH_905"
+    assert "private provider detail" not in str(shape)
