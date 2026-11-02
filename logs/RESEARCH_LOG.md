@@ -800,5 +800,5 @@
 - Added URL candidate handling for the legacy `nuprDDMMYY.zip` and current `PRDDMMYY.zip` names, ZIP validation, corporate-action member detection, CSV-header-only schema inspection, and announcement/board-meeting member checks.
 - Raw archives are AES-GCM encrypted in the Actions cache; public report outputs contain hashes and schema metadata only.
 - Added three offline regression tests and integrated the probe into the C1 corporate-action workflow's push-path and manual-dispatch paths.
-- **No runtime result is claimed yet.** The workflow is expected to run from the matching branch push; its outcome must be inspected before deciding whether to continue to event-level matching.
+- **Runtime execution:** Actions run [41422655123](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422655123) started automatically on the matching branch push. Offline validation and cache restore passed; the catalogue step was still running at this log update. The NSE archive probe has not yet executed.
 - C1 remains PARTIAL / NOT PASSED; C2 remains gated; no holdout tuning or strategy test was started.
