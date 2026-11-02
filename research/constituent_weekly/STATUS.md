@@ -728,3 +728,12 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Next controlled route: use the existing Dhan Data API subscription for daily adjusted OHLCV; Dhan documents bonus/split adjustment. Test against the encrypted TejHQ candidate catalogue internally. This does not prove dividends, rights, mergers or other actions are adjusted.
 - See [C1 data rights and alternatives](C1_DATA_RIGHTS_AND_ALTERNATIVES.md).
 - Corporate-action event/ISIN verification and adjustment ledger remain NOT PASSED; overall C1 remains PARTIAL; C2 remains gated.
+
+
+## Dhan adjusted-price corporate-action diagnostic — 2026-11-02 (PARTIAL)
+
+- Actions run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727) completed offline tests and the Dhan API diagnostic. Fresh TOTP token refresh succeeded (HTTP 200, one attempt); Dhan data plan active. Two encrypted TejHQ year partitions were cache hits; zero partition downloads.
+- **RELIANCE 1:1 bonus, ex-date 2024-10-28:** 9/9 sessions matched. Dhan/raw OHLC relative event factor = 0.5 for open/high/low/close; post-event median ratios = 1.0. Price-adjustment diagnostic PASS.
+- **BAJAJFINSV 5:1 split + 1:1 bonus, ex-date 2022-09-13:** 11/11 sessions matched. Relative event factor = 0.1 for all OHLC fields; price-adjustment diagnostic PASS. However, TejHQ raw rows retain the old ISIN on 2022-09-13 and show the new ISIN from 2022-09-14, while NSE Circular CML53597 says the new ISIN is effective from 2022-09-13. This one-session identity discrepancy is flagged; no correction was applied.
+- Sanitised [Dhan diagnostic report](C1_DHAN_ADJUSTMENT_DIAGNOSTIC.md) and [machine result](C1_DHAN_ADJUSTMENT_DIAGNOSTIC.json) are published. No raw prices or ISIN values are published.
+- Overall status remains PARTIAL_OR_BLOCKED because BAJAJFINSV identity validation is open. No full-panel adjustment factors have been applied. Dividends, rights, mergers/demergers and buybacks remain unverified. C1 corporate-action gate NOT PASSED; C1 overall PARTIAL; C2 remains gated.
