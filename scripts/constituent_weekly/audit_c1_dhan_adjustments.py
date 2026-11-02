@@ -148,7 +148,7 @@ def compute_adjustment_diagnostic(
         "raw_unique_isin_count": len(isin_values), "isin_transition_verified": identity_ok,
         "identity_mismatch_dates": identity_mismatch_dates,
         "identity_mismatch_type_by_date": identity_mismatch_types,
-        "observed_post_isin_first_date": min(observed_post_isin_dates) if observed_post_isin_dates else None,
+        "observed_post_isin_first_date": (min(observed_post_isin_dates) if observed_post_isin_dates else None) if expected_pre_isin.upper() != expected_post_isin.upper() else None,
         "expected_pre_ex_date_factor": float(expected_pre_factor),
         "pre_ex_date_median_dhan_to_raw_by_ohlc": {k: round(v, 6) for k, v in pre_median.items()},
         "post_ex_date_median_dhan_to_raw_by_ohlc": {k: round(v, 6) for k, v in post_median.items()},
@@ -217,9 +217,10 @@ def run() -> dict:
         result["status"] = "BLOCKED_HF_TOKEN_MISSING"
         return result
     try:
-        token, client_id, auth_method, refresh_status, _ = acquire_access_token()
+        token, client_id, auth_method, refresh_status, auth_diagnostics = acquire_access_token()
         result["auth_method"] = auth_method
         result["token_refresh_status"] = refresh_status
+        result["token_refresh_diagnostics"] = auth_diagnostics
         profile = request_profile(token)
         if not profile.ok:
             result["status"] = f"BLOCKED_PROFILE_HTTP_{profile.status_code}"

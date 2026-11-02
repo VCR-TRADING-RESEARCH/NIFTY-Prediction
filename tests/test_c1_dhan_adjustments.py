@@ -111,3 +111,12 @@ def test_public_event_metadata_allows_missing_identity_source():
     bajaj = next(event for event in EVENTS if event["symbol"] == "BAJAJFINSV")
     assert public_event_metadata(reliance)["identity_source"] is None
     assert public_event_metadata(bajaj)["identity_source"].endswith("CML53597.pdf")
+
+
+
+def test_unchanged_isin_has_no_transition_date():
+    dhan, raw = reliance_frames()
+    result = compute_adjustment_diagnostic(dhan, raw, DATES, "2024-10-28", 0.5,
+                                           "INE002A01018", "INE002A01018")
+    assert result["isin_transition_verified"] is True
+    assert result["observed_post_isin_first_date"] is None
