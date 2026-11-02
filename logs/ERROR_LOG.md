@@ -922,3 +922,14 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Correction: C1 and C2 parsers now accept the two verified expiry statuses only when the contract-expiry flag is true. Regression tests cover both shifted expiries and the October 2025 cycle split. C3 now derives the holdout boundary from the final-20% fraction.
 - Validation: C1 coverage, C2 rebuild and C3 rerun remain pending. The old event-cycle sensitivity result is superseded until recalculated on the new frozen C2 manifest.
 - Status: OPEN until automated C1/C2/C3 runs pass and cycle counts, dates and holdout boundaries reconcile.
+
+
+## E0137 — 2026-11-03 — C1 historical intraday requests rejected with HTTP 400
+- **Severity:** High — C1 historical target-coverage gate blocked.
+- **Run:** [41529572895](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41529572895).
+- **Observed:** Dhan profile authentication succeeded (HTTP 200) and the data plan was active. The 90-day audit completed 1,083 historical-data requests. Two index chunks and 70 stock-symbol chunks returned usable responses; 19 index chunks and 992 stock-symbol chunks were rejected with HTTP 400. Only 26/260 index target cycles and 13/260 stock-plus-index cycles passed.
+- **Diagnostic limitation:** The request helper currently reduces non-2xx responses to an HTTP status marker and discards the provider's response body. Therefore the exact Dhan rejection reason is not yet established; do not attribute it to date range, rate limiting, subscription entitlement, or a malformed payload without evidence.
+- **Next correction:** Preserve only sanitized provider error code/message fields (never headers, tokens, IDs, or raw market data), run a bounded single-request diagnostic against one known failing 90-day window, and test a shorter-window fallback only if the returned error supports it. Keep the C1 gate failed until coverage thresholds are genuinely met.
+- **Status:** Open. Existing report/artifact is retained as evidence; no C3 inference is authorized from the failed coverage run.
+- **External reference:** Dhan's current v2 documentation specifies 1-minute intraday candles, a maximum 90-day request window, epoch timestamps, and OHLCV response arrays: https://dhanhq.co/docs/v2/historical-data/.
+- **Security:** No credentials, access tokens, security IDs, raw prices, or private reasoning recorded.
