@@ -1,0 +1,38 @@
+name: BUP-01 C5 economic gate status
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c5-costs
+    paths:
+      - "research/constituent_weekly/C5_COST_GATE.md"
+      - "research/constituent_weekly/C5_STATUS.json"
+      - ".github/workflows/bup01-c5-economic-gate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c5-costs
+      - name: Verify the gate is fail-closed
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d = json.loads(Path("research/constituent_weekly/C5_STATUS.json").read_text())
+          assert d["phase"] == "C5"
+          assert d["status"] == "BLOCKED_NOT_RUN"
+          assert d["signal_gate"] == "NOT_PASSED"
+          assert d["instrument_specified"] is False
+          assert d["cost_schedule_verified"] is False
+          assert d["execution_model_validated"] is False
+          assert d["net_pnl_tested"] is False
+          assert d["trading_strategy_accepted"] is False
+          print("C5 remains correctly blocked; no unsupported cost/profitability claim.")
+          PY
