@@ -25,12 +25,12 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <tr><td>Daily member-session OHLCV coverage</td><td>106,392 / 106,392 (100%)</td><td>Coverage complete, but corporate-action identity and adjustment gates remain open.</td></tr>
 <tr><td>Official NSE PR archive route/schema probe</td><td>4 / 4 dates passed</td><td>Corporate-action CSV, announcements and board-meeting members were present before and after the Oct-2025 naming transition. This is technical feasibility only.</td></tr>
 <tr><td>Reliance 1:1 bonus adjustment</td><td>0.5 relative OHLC factor</td><td>9/9 sessions matched; Dhan adjusted history passed this diagnostic.</td></tr>
-<tr><td>Bajaj Finserv 5:1 split + 1:1 bonus</td><td>0.1 relative OHLC factor</td><td>11/11 sessions matched and price factor passed, but source ISIN transition is one session later than the official circular effective date. Identity gate remains open.</td></tr>
+<tr><td>Bajaj Finserv 5:1 split + 1:1 bonus</td><td>0.1 relative OHLC factor</td><td>11/11 sessions matched and price factor passed. Identity date is ambiguous: NSE CML53597 says w.e.f. 14-Sep in one sentence and 13-Sep ex-date in the next; a BSE notice reproduction says 13-Sep; TejHQ rows transition on 14-Sep. Identity gate remains open.</td></tr>
 </tbody>
 </table>
 
 <h2>Data-rights control</h2>
-<p>NSE website terms prohibit systematic automated collection without express written consent or an applicable agreement. The project will not expand the four-date probe into a bulk NSE archive crawl. Dhan Data API is the current adjusted-price route tested for bonus/split events. The TejHQ personal-use-only reference data remains encrypted and internal; raw data is not redistributed.</p>
+<p>NSE website terms prohibit systematic automated collection without express written consent or an applicable agreement. The project will not expand the four-date probe into a bulk NSE archive crawl. Dhan Data API is the current adjusted-price route tested for bonus/split events. The TejHQ personal-use-only reference data remains encrypted and internal; raw data is not redistributed. The Bajaj Finserv identity date is unresolved because NSE CML53597 contains conflicting dates; a BSE notice reproduction supports the ex-date while TejHQ rows transition the next day.</p>
 
 <h2>Research files</h2>
 <ul>
@@ -44,7 +44,7 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 
 <h2>Open gates</h2>
 <ul>
-<li>Resolve or conservatively flag the one-session Bajaj Finserv ISIN timing discrepancy.</li>
+<li>Resolve or conservatively flag the Bajaj Finserv ISIN effective-date ambiguity (NSE circular wording conflict; secondary BSE notice copy; TejHQ transition on 14-Sep).</li>
 <li>Verify dividend, rights, merger/demerger and buyback treatment separately.</li>
 <li>Do not apply adjustment factors to the full panel until event-level identity, terms and price reconciliation pass.</li>
 <li>C1 remains PARTIAL / NOT PASSED; C2 and subsequent phases remain gated. No executable trading strategy is approved.</li>

@@ -81,3 +81,8 @@ Sources:
 **Decision:** no further automated NSE website archive downloads until express written consent or a suitable agreement is established. The four-date technical probe remains valid as a bounded feasibility test. The next data-validation route is Dhan's subscribed Data API: its daily historical data is documented as adjusted for bonus and split events. Use that data only under the user's Dhan API agreement; compare adjustments against the existing encrypted TejHQ candidate catalogue and verify high-impact events through permitted issuer-first-party documents. Dhan's help page explicitly mentions bonus/split adjustment; it does not establish that dividends, rights or all other event classes are adjusted.
 
 See [C1_DATA_RIGHTS_AND_ALTERNATIVES.md](C1_DATA_RIGHTS_AND_ALTERNATIVES.md) for the source-by-source gate and next tests. C1 corporate-action gate remains NOT PASSED; overall C1 remains PARTIAL; C2 remains gated.
+
+
+## 9. BAJAJFINSV ISIN date-source ambiguity — 2026-11-02
+
+The Dhan diagnostic shows the raw TejHQ row identity transitions on 14-Sep-2022. NSE Circular CML53597 is internally inconsistent: its first operative sentence says the ISIN changes w.e.f. 14-Sep-2022, while the next sentence says the new ISIN applies to trades from the 13-Sep ex-date. A MarketScreener-hosted reproduction of BSE Notice 20220908-17 also says 13-Sep, but the original BSE notice was not independently retrieved. This is an unresolved source-date ambiguity, not proof that the TejHQ row is wrong. Preserve the raw row, do not silently override it, and keep the identity gate open until an authoritative licensed security-master record or original exchange notice resolves the conflict.
