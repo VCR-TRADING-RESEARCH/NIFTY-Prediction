@@ -452,3 +452,11 @@
 - Documented the restriction and alternate route in [C1_DATA_RIGHTS_AND_ALTERNATIVES.md](research/constituent_weekly/C1_DATA_RIGHTS_AND_ALTERNATIVES.md).
 - Next controlled step is to test Dhan daily adjusted OHLCV against the existing internal candidate catalogue. Dhan's help page confirms bonus/split adjustments only; other event types remain unproven.
 - C1 corporate-action gate remains NOT PASSED; C1 overall remains PARTIAL; C2 remains gated. No credentials or hidden reasoning are recorded.
+
+
+## 2026-11-02 — Dhan adjustment check and identity discrepancy
+
+- The bounded Dhan diagnostic completed with a fresh TOTP token. Reliance's 1:1 bonus produced a 0.5 adjusted/raw factor across all OHLC fields; Bajaj Finserv's combined 5:1 split + 1:1 bonus produced 0.1 across all OHLC fields.
+- Bajaj Finserv has a one-session ISIN timing mismatch: the TejHQ raw row on 13-Sep-2022 still carries the old ISIN, while the official NSE circular says the new ISIN is effective from that ex-date; the new ISIN first appears in the source rows on 14-Sep. Logged as E0118, left unresolved.
+- Dhan report and machine result published. No raw prices or ISINs disclosed; no full-panel adjustment factors applied.
+- The NSE bulk archive route remains permission-gated. C1 corporate-action gate remains NOT PASSED; C1 overall PARTIAL; C2 remains gated. No hidden reasoning or credentials are recorded.
