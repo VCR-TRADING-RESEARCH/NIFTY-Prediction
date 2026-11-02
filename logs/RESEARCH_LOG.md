@@ -822,3 +822,13 @@
 - Evaluated the existing Dhan subscription as the next route. Dhan documents daily historical OHLCV from instrument inception and says daily history is adjusted for bonuses and splits; no claim is made that it covers dividends, rights, mergers or all contract adjustments.
 - Added [C1_DATA_RIGHTS_AND_ALTERNATIVES.md](research/constituent_weekly/C1_DATA_RIGHTS_AND_ALTERNATIVES.md) and updated the feasibility report.
 - Next: controlled Dhan adjusted-price diagnostic against the encrypted candidate event catalogue; targeted issuer-first-party verification only where access terms permit. C1 remains PARTIAL / NOT PASSED; C2 remains gated.
+
+
+## 2026-11-02 — Dhan adjusted-price diagnostics (two event classes)
+
+- Run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727) successfully refreshed a Dhan token through TOTP (HTTP 200, one attempt; profile and data plan active). Two encrypted TejHQ year partitions were restored from cache; zero new partition downloads.
+- Reliance 1:1 bonus (28-Oct-2024): 9/9 sessions; relative Dhan-adjusted/raw OHLC factor = 0.5 across open/high/low/close; post-event ratios = 1.0. PASS.
+- Bajaj Finserv 5:1 split plus 1:1 bonus (13-Sep-2022): 11/11 sessions; relative Dhan-adjusted/raw OHLC factor = 0.1 across all four OHLC fields. Price-factor check PASS.
+- **Identity warning:** NSE Circular CML53597 says the new BAJAJFINSV ISIN is effective from 13-Sep-2022, but the TejHQ raw rows retain the old ISIN on 13-Sep and first show the new ISIN on 14-Sep. Logged as E0118; not silently corrected. The factor pass is not an identity pass.
+- Overall diagnostic PARTIAL_OR_BLOCKED. No raw prices/ISINs published; no factor applied to the full panel. Dividends, rights, mergers/demergers and buybacks remain outside this two-event test. C1 remains PARTIAL / NOT PASSED; C2 remains gated.
+- Direct NSE bulk scraping remains prohibited absent written consent/agreement. See C1_DATA_RIGHTS_AND_ALTERNATIVES.md.
