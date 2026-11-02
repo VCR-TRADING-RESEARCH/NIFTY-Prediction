@@ -543,3 +543,12 @@
 
 - Current run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) verified exact artifact hashes and passed offline tests, but AES-GCM authentication failed before modelling.
 - The key is derived from HF_TOKEN; token rotation between the C2 and C3 runs likely caused the mismatch. Regenerate C2 artifact with the current token and pass the exact new artifact directly to C3. Never bypass authentication or use plaintext.
+
+
+## 2026-11-02 — User said “Proceed”; C2 recovery and C3 stock-model result
+
+- C2 run [41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378) passed all 15 steps and formal acceptance: 258/258 valid NIFTY targets, 12,807 constituent-cycle rows, 61 symbols and 258/258 cycles satisfying the registered target coverage gate.
+- The automatic C3 run [41401986460](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41401986460) failed on its first attempt because pandas received decrypted bytes. The parser was corrected with io.BytesIO, a cryptographic/gzip round-trip test was added, and attempt 2 passed every workflow step.
+- C3 generated 7,512 encrypted OOF stock forecasts over 154 cycles; 52 cycles and 2,583 stock observations were held out untouched. On holdout, momentum accuracy was 50.52%; logistic 48.12%; ExtraTrees 48.51%; HistGradientBoosting 46.69%. Logistic minus momentum cycle accuracy was −2.37 percentage points; bootstrap 95% interval [−10.04, +4.29] pp.
+- Decision: no stock model has demonstrated a predictive edge; do not tune on the holdout. C4 confirmatory work remains gated while C1 corporate-action/identity review is incomplete. The separate C3-X v1.4 NIFTY meta-model result is exploratory and statistically inconclusive.
+- No trading P&L or costs are claimed. Only the visible instruction and reproducible engineering/research outcomes are recorded; private reasoning and secrets are not stored.
