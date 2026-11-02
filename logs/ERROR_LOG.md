@@ -727,3 +727,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Added the repository root to `sys.path` before the import. The corrective commit triggers a new workflow run.
 - **Impact:** No NSE URL was requested and no archive/event data was acquired in the failed run. The probe report was not produced; the pre-existing catalogue artifact was still uploaded. No credentials were exposed.
 - **Status:** Code correction committed; follow-up workflow and tests must be read back before source feasibility can be assessed.
+
+
+## E0111 — 2026-11-02 — C1 workflow patch produced malformed YAML (RESOLVED; VALIDATION RUN QUEUED)
+
+- **Severity:** Medium — one intermediate workflow revision was not valid and its run [41423069931](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423069931) failed before creating a job.
+- **Root cause:** A string-based edit inserted the changed-workstream shell block at an incorrect boundary and left malformed YAML.
+- **Correction:** Replaced the entire workflow file with a clean, complete YAML definition. The final workflow separates catalogue and archive-probe execution, keeps offline tests on every triggered run, preserves manual dispatch, and avoids rerunning the large TejHQ catalogue for probe-only changes.
+- **Validation:** The corrected workflow commit [98b4ba5](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/98b4ba5f0182a23140e1b649c41adcfc76f6553d) triggered run [41423171586](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423171586), queued behind the active run. YAML/runtime validation is pending.
+- **Impact:** No research data, raw archive, model output or credential was changed by the malformed workflow. The failure was caught before source probe results were accepted.
