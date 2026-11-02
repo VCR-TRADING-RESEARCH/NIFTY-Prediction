@@ -383,3 +383,14 @@ Run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actio
 ## C3 blocker — encrypted panel key mismatch
 
 Run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) passed artifact download, exact ciphertext SHA checks and four offline tests, but AES-GCM authentication failed before model fitting. The C2 cache encryption key is derived from HF_TOKEN, so a token rotation is the likely cause. A fresh C2 panel artifact will be encrypted under the current token and handed directly to C3. No model result is accepted.
+
+
+## C3 completed — exploratory stock-model result (2026-11-02)
+
+- [C2 accepted panel, run 41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378): 258/258 valid NIFTY targets; 12,807 constituent-cycle rows; 61 symbols.
+- [C3 stock models, run 41401986460 attempt 2](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41401986460): all workflow steps passed; 7,512 encrypted OOF forecasts over 154 cycles, including 52 holdout cycles.
+- Holdout accuracy: momentum 50.52%; logistic 48.12%; ExtraTrees 48.51%; HistGradientBoosting 46.69%. Logistic minus momentum cycle accuracy −2.37 pp; 4-cycle block-bootstrap 95% interval [−10.04, +4.29] pp. No stock model is selected.
+- Separate C3-X plan-v1.4 NIFTY meta-model holdout: 50.98% accuracy, 53.45% balanced accuracy, 48.68% ROC-AUC; paired accuracy bootstrap interval [−25.49, +25.49] pp. Exploratory and inconclusive.
+- C1 remains partial; C4 confirmatory and C5 costs/trading remain blocked. No strategy, return claim or live signal.
+
+See [C3 status](research/constituent_weekly/C3_STATUS.md), [machine results](research/constituent_weekly/C3_RESULTS.json), [report](research/constituent_weekly/C3_RESULTS.md), [research log](logs/RESEARCH_LOG.md), and [error log](logs/ERROR_LOG.md).
