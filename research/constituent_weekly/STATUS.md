@@ -1,3 +1,5 @@
+> **E0141 — persistent-cache key correction:** the previous C2 daily/intraday cache helpers used the rotating Dhan access token as the AES-GCM key, while the frozen panel used the stable HF token. This could make old source cache ciphertext unreadable after token refresh. C2 now uses the stable HF_TOKEN-derived key for daily/intraday cache reads and writes as well; new offline coverage asserts that Dhan token rotation does not change the cache key. Previously saved Dhan-token-keyed source cache objects cannot be migrated without their old token; the next rebuild will safely miss/re-fetch those entries. The C2 run will remain queued behind C1 under the shared concurrency group.
+
 > **E0140 — controlled recovery update:** C1 exact-window test [41534685957](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534685957) passed 7/7 previously failing NIFTY/active-stock intraday requests from 2022, 2023 and 2024. C1/C2 share a live Dhan concurrency group; both use one-second request pacing and sanitized provider error metadata. Only explicit DH-904 receives bounded retries; input/data errors and Data API code 805 are not blindly retried. C1 rerun [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975) is in progress; C2 rerun [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) is queued behind it. No rate-limit root cause is claimed.
 
 > **E0139 — 2026-11-03 C2 corrected panel failed acceptance:** run [41530483274](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41530483274) built the 260-cycle panel but only 206/260 NIFTY target cycles passed (79.2308%; required 98%). Exactly 206 cycles also met the 47/94% constituent rule; 10,194 constituent target rows were built. Daily EOD features were available for all 62 symbols. The panel-only workflow stopped before C3 model training. Dhan auth/profile passed. C1 and C2 intraday jobs overlapped; rate-limit contention is a plausible hypothesis, not a confirmed cause. The detailed report is [C2_PANEL_BUILD.md](C2_PANEL_BUILD.md) and [C2_PANEL_BUILD.json](C2_PANEL_BUILD.json).
@@ -10,7 +12,7 @@
 
 # BUP-01 Research Status
 
-**Last updated:** 2026-11-03 — E0139/E0140  
+**Last updated:** 2026-11-03 — E0139/E0140/E0141  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
 **Status:** C0 PASS; C1 TARGET-COVERAGE FAIL / SERIAL REBUILD QUEUED; C2 PANEL ACCEPTANCE FAIL / SERIAL REBUILD QUEUED; C3 GATED
 **Prediction status:** Prior 258-cycle panel and dependent C3 metrics remain superseded; corrected 260-cycle rebuild currently has 79.23% NIFTY target coverage and fails the 98% gate

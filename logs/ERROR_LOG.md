@@ -918,3 +918,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Retry policy:** Only explicit DH-904 rate-limit codes receive bounded backoff; DH-905 input errors, DH-907 data errors and Data API 805 are not blindly retried.
 - **Status:** C1 serialized rebuild [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975) is in progress; C2 serialized rebuild [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) is queued. C2 acceptance remains failed until 98% index target coverage, 105 eligible cycles and uniqueness checks pass. C3 remains gated.
 - **Qualification:** This is a safer acquisition control, not proof that rate limiting caused the earlier misses; the exact error codes from those old requests were not retained.
+
+
+## E0141 — 2026-11-03 — C2 source-cache encryption used rotating Dhan token
+- **Severity:** Medium — repeat-download/cache-persistence defect.
+- **Finding:** The C2 fetch_intraday_snapshot and fetch_daily helpers used the current Dhan access token to decrypt/encrypt AES-GCM cache files. The token is rotated by the workflow authentication step; a later run could therefore fail decryption and re-fetch previously cached Dhan history. The frozen-panel artifacts already used HF_TOKEN, demonstrating that a stable key was available.
+- **Correction:** Added cache_encryption_key() and use the stable HF_TOKEN-derived key for both daily and intraday source caches, leaving the Dhan token exclusively for API authentication and requests. Added an offline regression asserting that Dhan token changes do not affect the cache key.
+- **Migration:** Existing source cache files encrypted with older Dhan tokens cannot be migrated without those old tokens; they remain unreadable and will be ignored/re-fetched. Newly written caches are portable across Dhan token refreshes while HF_TOKEN remains unchanged.
+- **Status:** Code/test correction committed; next C2 workflow run is queued behind C1.
+- **Security:** No credential values or cache contents are logged.

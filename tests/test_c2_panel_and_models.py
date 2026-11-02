@@ -232,3 +232,15 @@ def test_c2_parse_target_bars_preserves_only_sanitized_provider_error_fields():
     assert result["2023-05-11"]["provider_error_type"] == "Input_Exception"
     assert result["2023-05-11"]["provider_message_category"] == "DHAN_INPUT_EXCEPTION_DH905"
     assert "private Dhan error detail" not in str(result)
+
+
+
+def test_c2_cache_encryption_key_is_stable_across_dhan_token_refresh(monkeypatch):
+    from scripts.constituent_weekly.run_c2_panel_and_models import cache_encryption_key
+
+    monkeypatch.setenv("HF_TOKEN", "stable-hf-cache-secret")
+    monkeypatch.setenv("DHAN_ACCESS_TOKEN", "dhan-token-before-refresh")
+    first_key = cache_encryption_key()
+    monkeypatch.setenv("DHAN_ACCESS_TOKEN", "dhan-token-after-refresh")
+    second_key = cache_encryption_key()
+    assert first_key == second_key == "stable-hf-cache-secret"

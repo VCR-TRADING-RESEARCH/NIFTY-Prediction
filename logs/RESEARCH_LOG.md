@@ -983,3 +983,10 @@
 ## 2026-11-03 — C2 serialized rebuild queued
 - C1's corrected continuous Dhan coverage run [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975) is currently in progress. C2 run [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) is queued behind it under the shared Dhan live-data concurrency group.
 - The C2 code uses one-second request pacing, sanitized Dhan provider error diagnostics and the unchanged formal 98% index-target, 47/94% constituent and uniqueness gates. No model training is authorized until the panel build passes.
+
+
+## 2026-11-03 — E0141: stable encrypted cache key
+- Found that C2 daily/intraday source cache encryption used the per-run Dhan access token, despite the runner rotating Dhan auth between workflow executions. This can prevent persistent cache reuse.
+- Changed both source-cache read and write operations to derive AES-GCM encryption from the stable HF_TOKEN secret, matching the frozen-panel cache behavior. Dhan token remains solely for API access.
+- Added an offline regression confirming the cache key is invariant when DHAN_ACCESS_TOKEN changes.
+- Older source cache ciphertext encrypted with prior Dhan tokens is not migrated; it will be treated as a cache miss. Future cached downloads will persist across token refreshes.

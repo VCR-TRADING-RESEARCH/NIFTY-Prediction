@@ -214,6 +214,14 @@ def panel_failure_diagnostics(local_state: dict) -> dict:
     return diagnostics
 
 
+def cache_encryption_key() -> str:
+    """Use a stable repository secret, never the rotating Dhan access token, for encrypted cache files."""
+    key = os.environ.get("HF_TOKEN", "").strip()
+    if not key:
+        raise RuntimeError("HF_TOKEN is required for stable encrypted C2 cache persistence.")
+    return key
+
+
 def cache_file(cache_dir: Path, family: str, key: str) -> Path:
     digest = hashlib.sha256(key.encode()).hexdigest()[:28]
     path = cache_dir / "c2" / family / f"{digest}.aesgcm"
@@ -328,7 +336,8 @@ def fetch_intraday_snapshot(symbol: str, sid: str, segment: str, instrument: str
     key = f"{VERSION}|{manifest_hash}|{symbol}|{sid}|{chunk['from']}|{chunk['to']}"
     aad = key.encode()
     path = cache_file(cache_dir, f"intraday_{family}", key)
-    raw = read_cache(path, token, aad)
+    stable_cache_key = cache_encryption_key()
+    raw = read_cache(path, stable_cache_key, aad)
     if raw is not None:
         try:
             saved = json.loads(gzip.decompress(raw).decode())
@@ -351,7 +360,7 @@ def fetch_intraday_snapshot(symbol: str, sid: str, segment: str, instrument: str
         for d in (anchors | expiries)
     )
     if complete:
-        write_cache(path, gzip.compress(json.dumps(saved, separators=(",", ":")).encode()), token, aad)
+        write_cache(path, gzip.compress(json.dumps(saved, separators=(",", ":")).encode()), stable_cache_key, aad)
     return saved, False, attempts
 
 
@@ -360,7 +369,8 @@ def fetch_daily(symbol: str, sid: str, token: str, client_id: str, cache_dir: Pa
     key = f"{VERSION}|daily|{manifest_hash}|{symbol}|{sid}|{from_date}|{to_date}"
     aad = key.encode()
     path = cache_file(cache_dir, "daily", key)
-    raw = read_cache(path, token, aad)
+    stable_cache_key = cache_encryption_key()
+    raw = read_cache(path, stable_cache_key, aad)
     if raw is not None:
         try:
             body = json.loads(gzip.decompress(raw).decode())
@@ -372,7 +382,7 @@ def fetch_daily(symbol: str, sid: str, token: str, client_id: str, cache_dir: Pa
     body, attempts = request_daily_history(sid, token, client_id, from_date, to_date)
     frame, err = parse_daily_payload(body)
     if frame is not None and not frame.empty and err is None:
-        write_cache(path, gzip.compress(json.dumps(body, separators=(",", ":")).encode()), token, aad)
+        write_cache(path, gzip.compress(json.dumps(body, separators=(",", ":")).encode()), stable_cache_key, aad)
         return frame, False, attempts, None
     status = err or (body.get("status") if isinstance(body, dict) else "INVALID_RESPONSE")
     if isinstance(body, dict):
