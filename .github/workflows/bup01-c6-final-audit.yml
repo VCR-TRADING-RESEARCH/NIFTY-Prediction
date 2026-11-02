@@ -1,0 +1,45 @@
+name: BUP-01 C6 final audit
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c6-audit
+    paths:
+      - "research/constituent_weekly/MANUSCRIPT.md"
+      - "research/constituent_weekly/C6_RESULTS_SUMMARY.json"
+      - "research/constituent_weekly/C5_STATUS.json"
+      - "scripts/constituent_weekly/audit_bup01_final.py"
+      - ".github/workflows/bup01-c6-final-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  final-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c6-audit
+      - name: Run independent arithmetic and gate audit
+        run: python scripts/constituent_weekly/audit_bup01_final.py
+      - name: Verify manuscript completeness and phase outcomes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path("research/constituent_weekly/MANUSCRIPT.md").read_text()
+          required = [
+              "Abstract", "Introduction", "Research questions", "Literature review",
+              "Data, universe and target construction", "Methodology", "Results",
+              "Discussion", "Strengths", "Limitations", "Conclusion",
+              "Future research", "References", "Appendix A", "Appendix B",
+          ]
+          missing = [x for x in required if x.lower() not in p.lower()]
+          assert not missing, f"Missing manuscript sections: {missing}"
+          assert "No trading strategy is validated" in p
+          assert "C5 is blocked" in p
+          assert Path("research/constituent_weekly/C3_HOLDOUT_ACCURACY.svg").is_file()
+          assert Path("research/constituent_weekly/C3X_NIFTY_HOLDOUT_METRICS.svg").is_file()
+          print("Manuscript structure and figures: PASS")
+          PY
