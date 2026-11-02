@@ -53,7 +53,7 @@ Sources:
 Next controlled tests:
 1. Use the user's subscribed Dhan Data API as the primary permitted channel for daily adjusted OHLCV, subject to Dhan's current API agreement.
 2. Compare Dhan adjusted series with the existing raw daily panel around the 711 candidate events; derive split/bonus adjustment ratios as diagnostics, not as issuer-level proof.
-3. Keep event descriptions/terms from the existing TejHQ personal/research-use catalogue internal and encrypted; do not redistribute its raw rows.
+3. Keep event descriptions/terms from the existing TejHQ personal-use-only catalogue (no client/business use; no raw redistribution) internal and encrypted; do not redistribute its raw rows.
 4. For high-impact events (splits, bonuses, rights, mergers/demergers, large dividends), perform targeted issuer-first-party document verification where access terms permit; do not mass-scrape exchange websites.
 5. Keep dividends, rights, buybacks and contract-adjustment effects separate from split/bonus price adjustments. Dhan's cited help page only explicitly confirms bonus/split adjustments.
 
@@ -76,3 +76,14 @@ Next controlled tests:
 | Overall C1 | PARTIAL / NOT PASSED | C2 remains gated |
 
 The next work item is the Dhan-based adjustment diagnostic and a small, targeted event-verification design—not another NSE archive crawl.
+
+
+## 6. Dhan adjusted-price diagnostic results — 2026-11-02
+
+The Dhan API test passed for two event classes:
+- Reliance 1:1 bonus (28-Oct-2024): 9/9 sessions matched; the relative adjusted/raw factor was 0.5 for open, high, low and close.
+- Bajaj Finserv 5:1 split plus 1:1 bonus (13-Sep-2022): 11/11 sessions matched; the relative adjusted/raw factor was 0.1 for all OHLC fields.
+
+The Bajaj Finserv price-factor check passed, but identity did not: the TejHQ raw rows show the old ISIN on 13-Sep-2022 and the new ISIN from 14-Sep, while NSE Circular CML53597 states that the new ISIN is effective from 13-Sep. This is logged as E0118; no silent date shift or source correction was made. See [C1_DHAN_ADJUSTMENT_DIAGNOSTIC.md](C1_DHAN_ADJUSTMENT_DIAGNOSTIC.md) and its JSON.
+
+The final run used a fresh TOTP token and hit both encrypted TejHQ year partitions from cache. No raw prices or ISINs were published. This validates two price-adjustment cases only; it does not verify dividends, rights, mergers/demergers or buybacks. Overall C1 remains PARTIAL / NOT PASSED and C2 remains gated.
