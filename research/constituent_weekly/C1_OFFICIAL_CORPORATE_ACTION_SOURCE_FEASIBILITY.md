@@ -1,6 +1,6 @@
 # C1 Official Exchange Corporate-Action Source Feasibility — 2026-11-02
 
-**Status:** SOURCE ROUTE IDENTIFIED; HISTORICAL EXTRACTION AND EVENT ADJUDICATION NOT YET RUN  
+**Status:** FIXED-DATE ARCHIVE/SCHEMA PROBE PASSED (4/4); FULL HISTORICAL EXTRACTION AND EVENT ADJUDICATION NOT YET RUN  
 **Scope:** Independent verification of the 711 candidate point-in-time member events catalogued in C1.  
 **Decision:** Use official NSE daily press-file bundles as the next primary-source discovery path; do not calculate or apply price factors from catalogue descriptions alone.
 
@@ -51,3 +51,18 @@ The NSE pages establish that the reports exist and describe their contents; they
 - NSE Circular NSE/CMTR/70563 (1 October 2025): https://nsearchives.nseindia.com/content/circulars/CMTR70563.pdf
 - NSE Corporate Actions query/download page: https://www.nseindia.com/companies-listing/corporate-filings-actions
 - NSE Data and Reports Download: https://www.nseindia.com/static/products-services/equity-market-data-reports-download
+
+
+## 7. Executed fixed-date archive/schema probe — 2026-11-02
+
+The automated probe passed on four known NSE trading dates spanning the old and new naming regimes: **2018-04-02, 2024-04-16, 2025-10-14 and 2026-04-17 (4/4)**. The 17-Apr-2024 sample from the initial probe was an official capital-market holiday (NSE Circular NSE/CMTR/59722) and was replaced with 16-Apr-2024.
+
+The working public website archive pattern was empirically confirmed as:
+
+`https://nsearchives.nseindia.com/archives/equities/bhavcopy/pr/PRDDMMYY.zip`
+
+All four ZIPs contained a corporate-action CSV, an announcement text file and a board-meeting text file. The corporate-action CSV had the same ten headers in all four samples: SERIES, SYMBOL, SECURITY, RECORD_DT, BC_STRT_DT, BC_END_DT, EX_DT, ND_STRT_DT, ND_END_DT, PURPOSE. The member names observed were `bc020418.csv`, `bc160424.csv`, `bc14102025.csv` and `bc17042026.csv`.
+
+The final probe run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062) reused all four encrypted archive-cache entries (4/4 cache hits). The public outputs contain only archive sizes/hashes, member names, headers and presence flags; raw archive bytes remain encrypted in Actions cache and no event rows are published. See [C1_NSE_PR_ARCHIVE_PROBE.md](C1_NSE_PR_ARCHIVE_PROBE.md) and [machine result](C1_NSE_PR_ARCHIVE_PROBE.json).
+
+**Interpretation:** this establishes that the website archive route and corporate-action member schema are retrievable on the four sampled dates, including before and after the October 2025 naming change. It does not establish continuous daily availability, permission for systematic bulk extraction, event completeness, security/ISIN identity, issuer terms or adjustment-factor correctness. No candidate event has been verified and no factor has been calculated/applied. Corporate-action gate remains NOT PASSED; overall C1 remains PARTIAL; C2 stays gated.
