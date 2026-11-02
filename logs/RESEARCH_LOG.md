@@ -920,3 +920,13 @@
 - AES-GCM authentication then failed. Source audit found the C2 frozen-panel writer was using the local Dhan access-token variable, although the manifest documented the stable HF_TOKEN-derived key.
 - Corrected both frozen stock and index panel writes to use HF_TOKEN. This is the stable cross-run key already used by the TejHQ cache design. The Dhan access token remains for Dhan API authentication and Dhan request caches only.
 - Old ciphertext is not re-keyed or force-decrypted. A fresh C2 run is required and will automatically trigger C3 through the registered workflow_run event. C3 remains NOT COMPLETE until the new artifact decrypts and model tests execute.
+
+
+<!-- C2_PANEL_RUN_41398864378 -->
+## 2026-11-02T06:45:51.444523+00:00 — formal C2 panel run 41398864378
+
+- Status: COMPLETED.
+- Summary: **Formal C2 panel run 41398864378:** COMPLETED; 258 scheduled cycles; 258 valid NIFTY targets (100.00%); 258 cycles pass the 47/94% stock rule; 12807 constituent-cycle rows. Full panel stored in encrypted Actions cache; no model fitting in C2.
+- Input manifest: 9d263e441f09c70693e30f1541440ac6b249c5293da61faceb0af729d699c305.
+- Encrypted panel cache metadata: {'encryption': 'AES-GCM; HF_TOKEN-derived BUP01 cache key; raw values not published', 'index': {'cache_relative_path': 'c2/frozen_panel/8ca19537f846de9af66b78eff81b.aesgcm', 'ciphertext_bytes': 30334, 'ciphertext_sha256': '58256008b8d4626a507ea4f9194e3f1d59f0db04db19b543ec86bb5449cc33dd'}, 'stock': {'cache_relative_path': 'c2/frozen_panel/a4ea0d967edcf79a87687c96530a.aesgcm', 'ciphertext_bytes': 1654615, 'ciphertext_sha256': '878fdadcb313c0838d517e975fd53292b7004bc61efe168b695e62c6db9b444c'}}.
+- C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.

@@ -14,18 +14,18 @@
     "valid_index_target_cycles": 258,
     "valid_index_target_fraction": 1.0
   },
-  "created_at_utc": "2026-11-01T22:52:55.826376+00:00",
+  "created_at_utc": "2026-11-02T06:45:45.515579+00:00",
   "encrypted_panel_cache": {
     "encryption": "AES-GCM; HF_TOKEN-derived BUP01 cache key; raw values not published",
     "index": {
-      "cache_relative_path": "c2/frozen_panel/67e566b68a3eb1f50be07abbb2dc.aesgcm",
+      "cache_relative_path": "c2/frozen_panel/8ca19537f846de9af66b78eff81b.aesgcm",
       "ciphertext_bytes": 30334,
-      "ciphertext_sha256": "899e60b3efe3b345919273681013420a179eae7da3e04b087cc4661acb28f3ba"
+      "ciphertext_sha256": "58256008b8d4626a507ea4f9194e3f1d59f0db04db19b543ec86bb5449cc33dd"
     },
     "stock": {
-      "cache_relative_path": "c2/frozen_panel/def4acd72d6aadb62f1ae72bae80.aesgcm",
+      "cache_relative_path": "c2/frozen_panel/a4ea0d967edcf79a87687c96530a.aesgcm",
       "ciphertext_bytes": 1654615,
-      "ciphertext_sha256": "2c3e416e2681a526f307f092d67f517b747461adbe424c3b2a96ae6901d33408"
+      "ciphertext_sha256": "878fdadcb313c0838d517e975fd53292b7004bc61efe168b695e62c6db9b444c"
     }
   },
   "input_manifest": {
@@ -34,11 +34,11 @@
     "cycle_count": 258,
     "expiry_sha256": "a1a37949278934fbddebd7ea61092930eb7f25ba171c95fca1421e5ae098eaa5",
     "first_anchor": "2021-11-12",
-    "hash": "715623a04ff8e32a2a7b0a744a1e4b590d37f758c708eb5d7f5352d7dd00a553",
+    "hash": "9d263e441f09c70693e30f1541440ac6b249c5293da61faceb0af729d699c305",
     "index_daily_sha256": "5fee1979958e96276e53054c3e76b3818aa6cc1b3abe0e88dd5647c2976104c7",
     "last_expiry": "2026-10-27",
     "membership_sha256": "dda5d0aa6cb4feec5edaa53c9a7b099b5d9e46b6020c1ab69c5913f5402d2a08",
-    "scrip_master_sha256": "ad00a05b69606346a5e796bef8715a981242eab8063d615294ce8b3e54981a6a",
+    "scrip_master_sha256": "83c59ef4b2a6234cdda916f0955a9cd7f374989236bb24a5ffc37e5587bd0acd",
     "symbol_count": 62
   },
   "limitations": [
