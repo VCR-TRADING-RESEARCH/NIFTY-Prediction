@@ -1,0 +1,88 @@
+name: BUP-01 C3 stock models
+
+on:
+  workflow_run:
+    workflows: ["BUP-01 C2 panel-only construction and QA"]
+    types: [completed]
+    branches: [phase/constituent-weekly-outcomes-c2-panel]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: bup01-c3-stock-models
+  cancel-in-progress: false
+
+jobs:
+  stock-models:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Checkout C3 research branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c3-models
+          fetch-depth: 0
+      - name: Identify successful C2 source run
+        id: source
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_run" ]; then echo "run_id=$EVENT_RUN_ID" >> "$GITHUB_OUTPUT"; else echo "run_id=41357141947" >> "$GITHUB_OUTPUT"; fi
+      - name: Download encrypted C2 panel artifact
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repo: VCR-TRADING-RESEARCH/NIFTY-Prediction
+          run_id: ${{ steps.source.outputs.run_id }}
+          name: bup01-c2-panel-${{ steps.source.outputs.run_id }}
+          path: ${{ runner.temp }}/bup01-c3-artifact
+      - name: Prepare encrypted panel files
+        env:
+          PANEL_DIR: ${{ runner.temp }}/bup01-c3-panel
+        run: |
+          set -euo pipefail
+          mkdir -p "$PANEL_DIR"
+          STOCK=$(python -c 'import json; x=json.load(open("research/constituent_weekly/C2_PANEL_BUILD.json")); print(x["encrypted_panel_cache"]["stock"]["cache_relative_path"].split("/")[-1])')
+          INDEX=$(python -c 'import json; x=json.load(open("research/constituent_weekly/C2_PANEL_BUILD.json")); print(x["encrypted_panel_cache"]["index"]["cache_relative_path"].split("/")[-1])')
+          find "${{ runner.temp }}/bup01-c3-artifact" -type f -name '*.aesgcm' -exec cp {} "$PANEL_DIR/" \;
+          test -f "$PANEL_DIR/$STOCK" && test -f "$PANEL_DIR/$INDEX"
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt "cryptography>=42" scikit-learn scipy pandas numpy
+      - name: Compile and run C3 offline tests
+        run: |
+          python -m py_compile scripts/constituent_weekly/run_c3_stock_models.py
+          python -m pytest -q tests/test_c3_stock_models.py
+      - name: Run chronological C3 stock model experiment
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          BUP01_C3_PANEL_DIR: ${{ runner.temp }}/bup01-c3-panel
+        run: python scripts/constituent_weekly/run_c3_stock_models.py
+      - name: Upload sanitized C3 results and encrypted OOF forecasts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bup01-c3-results-${{ github.run_id }}
+          path: |
+            research/constituent_weekly/C3_RESULTS.json
+            research/constituent_weekly/C3_RESULTS.md
+            research/constituent_weekly/C3_STATUS.md
+            research/constituent_weekly/C3_STOCK_OOF_FORECASTS.csv.gz.aesgcm
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Commit sanitized C3 results to phase branch
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/constituent_weekly/C3_RESULTS.json research/constituent_weekly/C3_RESULTS.md research/constituent_weekly/C3_STATUS.md
+          if ! git diff --cached --quiet; then git commit -m "Record C3 stock model experiment results"; git push origin HEAD:phase/constituent-weekly-outcomes-c3-models; fi
