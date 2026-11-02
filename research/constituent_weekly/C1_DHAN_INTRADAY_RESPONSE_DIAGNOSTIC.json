@@ -338,7 +338,7 @@
         "errorMessage",
         "errorType"
       ],
-      "provider_message_category": "UNCLASSIFIED_PROVIDER_MESSAGE",
+      "provider_message_category": "DHAN_INPUT_EXCEPTION_DH905",
       "startTime_type": "MISSING",
       "start_Time_type": "MISSING",
       "symbol": "HDFC",
@@ -375,7 +375,7 @@
         "errorMessage",
         "errorType"
       ],
-      "provider_message_category": "UNCLASSIFIED_PROVIDER_MESSAGE",
+      "provider_message_category": "DHAN_INPUT_EXCEPTION_DH905",
       "startTime_type": "MISSING",
       "start_Time_type": "MISSING",
       "symbol": "HDFC",
@@ -412,7 +412,7 @@
         "errorMessage",
         "errorType"
       ],
-      "provider_message_category": "UNCLASSIFIED_PROVIDER_MESSAGE",
+      "provider_message_category": "DHAN_INPUT_EXCEPTION_DH905",
       "startTime_type": "MISSING",
       "start_Time_type": "MISSING",
       "symbol": "HDFC",
@@ -1303,10 +1303,10 @@
       "volume_type": "list"
     }
   ],
-  "created_at_utc": "2026-11-01T13:36:57.434251+00:00",
+  "created_at_utc": "2026-11-02T22:02:34.336545+00:00",
   "credentials_or_tokens_recorded": false,
   "data_plan_active": true,
-  "elapsed_seconds": 35.64,
+  "elapsed_seconds": 38.44,
   "hdfcbank_symbol_resolved": true,
   "market_values_recorded": false,
   "nifty50_index_resolved": true,
