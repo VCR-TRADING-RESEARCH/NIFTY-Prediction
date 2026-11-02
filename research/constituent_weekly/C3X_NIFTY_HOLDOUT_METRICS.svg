@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="480" viewBox="0 0 900 480" role="img" aria-labelledby="title desc">
+<title id="title">C3-X exploratory NIFTY holdout metrics</title>
+<desc id="desc">Meta-model accuracy 50.98 percent, balanced accuracy 53.45 percent, ROC-AUC 48.68 percent; breadth and lag benchmarks are lower on these measures.</desc>
+<rect width="900" height="480" fill="#ffffff"/>
+<text x="34" y="40" font-family="Arial" font-size="25" font-weight="700" fill="#172033">C3-X NIFTY meta-model — exploratory holdout</text>
+<text x="34" y="68" font-family="Arial" font-size="14" fill="#546174">51 weekly cycles • paired four-cycle bootstrap interval: −25.49 to +25.49 percentage points</text>
+<g font-family="Arial" font-size="14" fill="#243044">
+<text x="35" y="138">Accuracy</text><text x="35" y="248">Balanced accuracy</text><text x="35" y="358">ROC-AUC</text>
+</g>
+<line x1="230" y1="105" x2="810" y2="105" stroke="#d5dce4"/><line x1="230" y1="215" x2="810" y2="215" stroke="#d5dce4"/><line x1="230" y1="325" x2="810" y2="325" stroke="#d5dce4"/>
+<line x1="520" y1="92" x2="520" y2="388" stroke="#697586" stroke-dasharray="6 5" stroke-width="2"/>
+<text x="520" y="88" text-anchor="middle" font-family="Arial" font-size="12" fill="#697586">50% reference</text>
+<g>
+<rect x="230" y="118" width="295.7" height="20" rx="4" fill="#306e9b"/><rect x="230" y="143" width="250.2" height="20" rx="4" fill="#9aa5b1"/><rect x="230" y="168" width="284.3" height="20" rx="4" fill="#9aa5b1"/>
+<rect x="230" y="228" width="310.0" height="20" rx="4" fill="#306e9b"/><rect x="230" y="253" width="280.0" height="20" rx="4" fill="#9aa5b1"/><rect x="230" y="278" width="264.8" height="20" rx="4" fill="#9aa5b1"/>
+<rect x="230" y="338" width="282.3" height="20" rx="4" fill="#306e9b"/><rect x="230" y="363" width="258.6" height="20" rx="4" fill="#9aa5b1"/><rect x="230" y="388" width="263.8" height="20" rx="4" fill="#9aa5b1"/>
+</g>
+<g font-family="Arial" font-size="12" fill="#243044">
+<text x="535" y="133">Meta 50.98%</text><text x="489" y="158">Breadth 43.14%</text><text x="523" y="183">Lag 49.02%</text>
+<text x="550" y="243">Meta 53.45%</text><text x="519" y="268">Breadth 48.27%</text><text x="504" y="293">Lag 45.48%</text>
+<text x="522" y="353">Meta 48.68%</text><text x="498" y="378">Breadth 44.57%</text><text x="503" y="403">Lag 45.48%</text>
+</g>
+<text x="35" y="452" font-family="Arial" font-size="12" fill="#687386">ROC-AUC is below 0.50 and the uncertainty interval is wide; exploratory only, not a tradable signal.</text>
+</svg>
