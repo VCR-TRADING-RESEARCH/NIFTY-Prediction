@@ -129,7 +129,7 @@ jobs:
           import json
           from pathlib import Path
           result = json.loads(Path('research/constituent_weekly/C1_DHAN_INTRADAY_CA_DIAGNOSTIC.json').read_text())
-          allowed = {'RAW_SCALE_UNADJUSTED_INTRADAY', 'ADJUSTED_SCALE_INTRADAY'}
+          allowed = {'INTRADAY_MATCHES_DHAN_DAILY_ADJUSTED_SCALE', 'INTRADAY_RAW_SCALE_VS_DAILY_ADJUSTED'}
           statuses = [item.get('diagnostic', {}).get('status') for item in result.get('events', [])]
           print('C1_DHAN_INTRADAY_CA_STATUS', result.get('status'), statuses)
           if result.get('status') != 'COMPLETED_INTRADAY_SCALE_DIAGNOSTIC' or len(statuses) != 2:

@@ -885,3 +885,10 @@
 - Run [41509666199](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41509666199) completed the daily adjustment step and invoked the intraday diagnostic, but produced no minute-bar result. Artifact status: `BLOCKED_RUNTIME_ERROR`.
 - Root cause found in code inspection: the private `GITHUB_ENV` writer used a double-escaped newline and appended literal backslash+n characters to the access token, corrupting the value passed to the next step.
 - Fixed the environment writer and added/updated regression coverage to ensure it writes one actual token line and rejects actual line breaks. No token was logged or stored in the repo.
+
+
+## 2026-11-03 — Preliminary intraday scale result and stronger same-session control
+
+- Protected run [41510216099](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510216099) passed offline tests, daily event adjustment checks and the token handoff. The minute-data script returned preliminary close-to-close ratios of 1.002562 for RELIANCE and 1.047470 for BAJAJFINSV, both classified near adjusted scale.
+- The preliminary comparison crossed an overnight interval and therefore includes the market return. It is not strong enough for C1 acceptance by itself.
+- Added a stronger same-session test: aggregate Dhan intraday OHLC on the cum date and ex-date and compare each field with Dhan daily adjusted OHLC for the exact same dates. This can distinguish pre-event 1.0-scale matching from the expected 2x/10x raw intraday scale without using an overnight return. E0125 records the methodology improvement.

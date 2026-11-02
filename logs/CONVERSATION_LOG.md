@@ -509,3 +509,9 @@
 
 - Inspected the sanitised run artifact from 41509666199 and found no intraday observations. Code review identified a double-escaped newline in the private `GITHUB_ENV` token writer, which could append literal backslash+n characters to the token value.
 - Corrected the writer and matching tests to use an actual line terminator. This is a code correction only; a fresh protected Dhan run is still required to validate minute data. No access token or raw market data is stored in the conversation log.
+
+
+## 2026-11-03 — Preliminary intraday comparison upgraded to same-session endpoint validation
+
+- The protected workflow passed and returned first-pass ratios near 1 for the two sampled events. Review identified that the pre-close to ex-open comparison includes overnight movement and should not be the sole acceptance criterion.
+- The intraday script is being upgraded to compare same-session intraday OHLC aggregates with the Dhan daily adjusted OHLC for the exact same session, with tests for adjusted-scale and raw-scale cases. The first-run result is retained as exploratory, not accepted as a full sub-gate.

@@ -17,6 +17,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from live_api.app import MASTER_URL
+from scripts.constituent_weekly.audit_c1_daily_history import (
+    parse_daily_payload,
+    request_daily_history,
+)
 from scripts.constituent_weekly.dhan_equity_preflight import (
     INTRADAY_URL,
     acquire_access_token,
@@ -147,6 +151,83 @@ def inspect_event_scale(frame: pd.DataFrame, event: dict) -> dict:
     }
 
 
+
+def classify_intraday_vs_daily_scale(
+    pre_ratios: dict[str, float],
+    ex_ratios: dict[str, float],
+    expected_factor: float,
+) -> str:
+    """Compare same-session intraday OHLC aggregates with Dhan's adjusted daily OHLC."""
+    fields = ("open", "high", "low", "close")
+    if not 0 < expected_factor < 0.8:
+        return "INVALID_EXPECTED_FACTOR"
+    if any(
+        field not in pre_ratios or field not in ex_ratios
+        or not np.isfinite(pre_ratios[field]) or not np.isfinite(ex_ratios[field])
+        or pre_ratios[field] <= 0 or ex_ratios[field] <= 0
+        for field in fields
+    ):
+        return "INVALID_ENDPOINT_RATIO"
+    adjusted = all(
+        0.80 <= pre_ratios[field] <= 1.20
+        and 0.80 <= ex_ratios[field] <= 1.20
+        for field in fields
+    )
+    if adjusted:
+        return "INTRADAY_MATCHES_DHAN_DAILY_ADJUSTED_SCALE"
+    raw_pre_factor = 1.0 / expected_factor
+    raw = all(
+        raw_pre_factor * 0.80 <= pre_ratios[field] <= raw_pre_factor * 1.20
+        and 0.80 <= ex_ratios[field] <= 1.20
+        for field in fields
+    )
+    if raw:
+        return "INTRADAY_RAW_SCALE_VS_DAILY_ADJUSTED"
+    return "AMBIGUOUS_INTRADAY_DAILY_SCALE"
+
+
+def compare_intraday_with_daily(
+    intraday: pd.DataFrame,
+    daily: pd.DataFrame,
+    event: dict,
+) -> dict:
+    per_date = {}
+    for day in (event["pre_date"], event["ex_date"]):
+        intraday_day = intraday.loc[intraday["session_date"].eq(day)].sort_values("timestamp")
+        daily_day = daily.loc[daily["session_date"].astype(str).eq(day)]
+        if intraday_day.empty or len(daily_day) != 1:
+            return {
+                "status": "INSUFFICIENT_DAILY_INTRADAY_SESSION_MATCH",
+                "pre_intraday_bars": int(len(intraday.loc[intraday["session_date"].eq(event["pre_date"])])),
+                "ex_intraday_bars": int(len(intraday.loc[intraday["session_date"].eq(event["ex_date"])])),
+                "daily_session_rows": int(len(daily_day)),
+            }
+        first, last = intraday_day.iloc[0], intraday_day.iloc[-1]
+        intraday_ohlc = {
+            "open": float(first["open"]),
+            "high": float(intraday_day["high"].max()),
+            "low": float(intraday_day["low"].min()),
+            "close": float(last["close"]),
+        }
+        daily_row = daily_day.iloc[0]
+        daily_ohlc = {field: float(daily_row[field]) for field in ("open", "high", "low", "close")}
+        if any(not np.isfinite(v) or v <= 0 for v in (*intraday_ohlc.values(), *daily_ohlc.values())):
+            return {"status": "INVALID_DAILY_INTRADAY_OHLC"}
+        per_date[day] = {
+            field: round(intraday_ohlc[field] / daily_ohlc[field], 6)
+            for field in ("open", "high", "low", "close")
+        }
+    classification = classify_intraday_vs_daily_scale(
+        per_date[event["pre_date"]], per_date[event["ex_date"]], float(event["expected_price_factor"])
+    )
+    return {
+        "status": classification,
+        "pre_intraday_to_daily_adjusted_ohlc_ratios": per_date[event["pre_date"]],
+        "ex_intraday_to_daily_adjusted_ohlc_ratios": per_date[event["ex_date"]],
+        "comparison_method": "same-session intraday OHLC aggregation / Dhan adjusted daily historical OHLC",
+        "note": "This avoids the overnight return in a pre-close to ex-open ratio. Dhan daily OHLC is the adjusted-scale comparator; same-session scale matching is evidence for the sampled symbol/event only.",
+    }
+
 def fetch_event(token: str, client_id: str, security_id: str, event: dict) -> dict:
     headers = {
         "access-token": token,
@@ -172,9 +253,27 @@ def fetch_event(token: str, client_id: str, security_id: str, event: dict) -> di
     frame, error = parse_intraday_payload(body)
     if frame is None:
         return {"status": error or "INVALID_INTRADAY_DATA"}
-    result = inspect_event_scale(frame, event)
-    result["bar_count"] = int(len(frame))
-    return result
+    daily_body, daily_attempts = request_daily_history(
+        security_id, token, client_id, event["pre_date"],
+        (pd.Timestamp(event["ex_date"]) + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+    )
+    daily_frame, daily_error = parse_daily_payload(daily_body)
+    if daily_frame is None or daily_frame.empty:
+        return {
+            "status": "DAILY_ADJUSTED_COMPARATOR_UNAVAILABLE",
+            "daily_parse_error": daily_error,
+            "daily_request_attempts": int(daily_attempts),
+            "bar_count": int(len(frame)),
+        }
+    intraday_daily = compare_intraday_with_daily(frame, daily_frame, event)
+    overnight_diagnostic = inspect_event_scale(frame, event)
+    return {
+        **intraday_daily,
+        "bar_count": int(len(frame)),
+        "daily_request_attempts": int(daily_attempts),
+        "overnight_close_ratio_diagnostic": overnight_diagnostic.get("post_pre_median_close_ratio"),
+        "overnight_diagnostic_status": overnight_diagnostic.get("status"),
+    }
 
 
 def run() -> dict:
@@ -221,15 +320,16 @@ def run() -> dict:
         result["events"].append(row)
 
     statuses = [e.get("diagnostic", {}).get("status") for e in result["events"]]
-    if len(statuses) == len(EVENTS) and all(s in ("RAW_SCALE_UNADJUSTED_INTRADAY", "ADJUSTED_SCALE_INTRADAY") for s in statuses):
+    accepted_statuses = ("INTRADAY_MATCHES_DHAN_DAILY_ADJUSTED_SCALE", "INTRADAY_RAW_SCALE_VS_DAILY_ADJUSTED")
+    if len(statuses) == len(EVENTS) and all(s in accepted_statuses for s in statuses):
         result["status"] = "COMPLETED_INTRADAY_SCALE_DIAGNOSTIC"
     else:
         result["status"] = "PARTIAL_OR_BLOCKED"
     result["summary"] = {
         "events_tested": len(result["events"]),
-        "raw_scale_unadjusted": sum(s == "RAW_SCALE_UNADJUSTED_INTRADAY" for s in statuses),
-        "adjusted_scale_intraday": sum(s == "ADJUSTED_SCALE_INTRADAY" for s in statuses),
-        "ambiguous_or_unavailable": sum(s not in ("RAW_SCALE_UNADJUSTED_INTRADAY", "ADJUSTED_SCALE_INTRADAY") for s in statuses),
+        "raw_scale_unadjusted": sum(s == "INTRADAY_RAW_SCALE_VS_DAILY_ADJUSTED" for s in statuses),
+        "matches_daily_adjusted_scale": sum(s == "INTRADAY_MATCHES_DHAN_DAILY_ADJUSTED_SCALE" for s in statuses),
+        "ambiguous_or_unavailable": sum(s not in accepted_statuses for s in statuses),
     }
     return result
 
@@ -246,23 +346,25 @@ def write_report(result: dict) -> None:
         "This diagnostic compares the median close of the final five 1-minute bars on the last cum-event session (15:10–15:14 IST) with the median close of the first five bars on the ex-date (09:15–09:19 IST).",
         "A ratio near the event's expected price factor indicates the intraday history remains on the old/cum-event scale; a ratio near 1 indicates the two sessions are presented on a common adjusted scale. The overnight market move is not removed, so borderline cases are marked ambiguous.",
         "",
-        "| Symbol | Action | Ex-date | Post/pre ratio | Expected raw factor | Diagnostic |",
+        "| Symbol | Action | Ex-date | Pre intraday/daily OHLC ratios | Ex-date intraday/daily OHLC ratios | Diagnostic |",
         "|---|---|---|---:|---:|---|",
     ]
     for row in result.get("events", []):
         d = row.get("diagnostic", {})
         lines.append(
             f'| {row.get("symbol")} | {row.get("action")} | {row.get("ex_date")} | '
-            f'{d.get("post_pre_median_close_ratio", "—")} | {d.get("expected_raw_price_factor", "—")} | {d.get("status", "—")} |'
+            f'{d.get("pre_intraday_to_daily_adjusted_ohlc_ratios", "—")} | '
+            f'{d.get("ex_intraday_to_daily_adjusted_ohlc_ratios", "—")} | {d.get("status", "—")} |'
         )
     lines += [
         "",
         "## Scope and limitations",
         "",
         "- Only two issuer/exchange-adjudicated events are tested: one bonus and one combined split/bonus.",
-        "- The ratio is a diagnostic around a known ex-date, not a complete intraday adjustment audit.",
+        "- The same-session comparison removes the overnight gap, but remains a diagnostic on only two known events rather than a complete intraday adjustment audit.",
         "- No raw OHLC values, security IDs, access tokens or credentials are published.",
         "- A result does not establish adjustment behavior for all instruments, other event classes or all historical dates.",
+        "- The daily endpoint is the adjusted-scale comparator for this test; source-specific intraday adjustment still requires broader independent event coverage.",
         "- If intraday bars are unadjusted, affected weekly stock-return windows must be adjusted using independently verified event factors or excluded before confirmatory fitting.",
         "- Dhan's published support statement explicitly covers **daily** historical OHLCV adjustment for bonuses/splits; its intraday API documentation specifies minute bars and a five-year window but does not state an equivalent corporate-action adjustment guarantee.",
         "",

@@ -837,3 +837,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** The next workflow step received a malformed token value; the intraday API authorization failed before a valid data result was produced. No raw bars were published.
 - **Correction:** Changed the writer and its regression tests to use a real newline character and to reject actual CR/LF characters in the token. Token remains masked and transient in the Actions environment only.
 - **Status:** CLOSED IN CODE; the next protected run must confirm token reuse succeeds and both intraday event samples are classified.
+
+
+## E0125 — 2026-11-03 — First intraday scale test conflated overnight movement with corporate-action adjustment (OPEN METHOD IMPROVEMENT)
+
+- **Evidence:** Protected run [41510216099](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510216099) successfully reused the single validated token and returned two preliminary close-to-close scale ratios: RELIANCE 1.002562; BAJAJFINSV 1.047470. Both fell near 1 rather than the raw event factors 0.5 and 0.1.
+- **Limitation:** The method compared the last five cum-date closes with the first five ex-date opens. The result includes the overnight market return, so it is not sufficiently strong as a corporate-action adjustment test even when the ratio is near 1.
+- **Correction:** Replace the primary gate with a same-session, cross-endpoint comparison: aggregate intraday OHLC for each sample date and compare with Dhan's adjusted daily OHLC for the same date. A pre-event scale near 1 indicates common adjusted scale; a pre-event ratio near 1/factor indicates unadjusted intraday bars against adjusted daily history. Retain the overnight ratio as a secondary diagnostic only.
+- **Status:** OPEN until the new protected run passes or returns a meaningful ambiguous/failure result. Do not infer universal adjustment coverage from two event samples.

@@ -785,3 +785,10 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - The latest intraday diagnostic had no minute observations. Inspection of the private Actions environment writer found that it appended the literal sequence `\\n` instead of an actual newline, corrupting the transient token handoff.
 - Corrected the token writer and regression tests. The validated token remains masked and limited to the current Actions job; no credential is retained in repository files or artifacts.
 - Daily adjusted-price tests remain passing for two sample events only. Intraday continuity remains unverified; C1 stays PARTIAL and C2/C4 confirmatory remain gated.
+
+
+## 2026-11-03 — Intraday scale diagnostic methodology strengthened
+
+- Protected run [41510216099](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510216099) succeeded after the token handoff fix. Preliminary last-cum-session close to first-ex-session close ratios were RELIANCE 1.002562 and BAJAJFINSV 1.047470, both near 1 rather than their raw action factors of 0.5 and 0.1.
+- The overnight comparison includes market movement and is treated as exploratory only. The next diagnostic version compares same-session intraday OHLC aggregates with Dhan adjusted daily OHLC for each of the same two sessions, removing the overnight return from the scale test.
+- Daily Dhan adjusted OHLC checks remain PASS for both sample events; overall C1 remains PARTIAL because the full 711-event member catalogue has not been independently validated.
