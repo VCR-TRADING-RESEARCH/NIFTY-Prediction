@@ -1,0 +1,74 @@
+{
+  "auth_method": "totp_refresh",
+  "credentials_or_tokens_recorded": false,
+  "data_plan_active": true,
+  "dhan_daily_request_attempts": 1,
+  "diagnostic": {
+    "dates_checked": 9,
+    "dates_matched": 9,
+    "expected_post_ex_date_factor": 1.0,
+    "expected_pre_ex_date_factor": 0.5,
+    "isin_published": false,
+    "post_ex_date_median_factor_by_ohlc": {
+      "close": 1.0,
+      "high": 1.0,
+      "low": 1.0,
+      "open": 1.0
+    },
+    "post_ex_date_session_count": 4,
+    "post_factor_check_passed": true,
+    "post_factor_tolerance": [
+      0.97,
+      1.03
+    ],
+    "pre_ex_date_median_factor_by_ohlc": {
+      "close": 0.5,
+      "high": 0.5,
+      "low": 0.500002,
+      "open": 0.5
+    },
+    "pre_ex_date_session_count": 5,
+    "pre_factor_check_passed": true,
+    "pre_factor_tolerance": [
+      0.48,
+      0.52
+    ],
+    "raw_prices_published": false,
+    "raw_unique_isin_count": 1,
+    "status": "PASS_BONUS_ADJUSTMENT_FACTOR"
+  },
+  "event": {
+    "ex_date": "2024-10-28",
+    "ratio": "1:1",
+    "symbol": "RELIANCE",
+    "type": "BONUS"
+  },
+  "raw_event_rows_published": false,
+  "raw_prices_published": false,
+  "sample_dates": [
+    "2024-10-21",
+    "2024-10-22",
+    "2024-10-23",
+    "2024-10-24",
+    "2024-10-25",
+    "2024-10-28",
+    "2024-10-29",
+    "2024-10-30",
+    "2024-11-04"
+  ],
+  "sources": {
+    "issuer": "https://www.ril.com/sites/default/files/2024-10/SE_16102024.pdf",
+    "nse_contract_adjustment": "https://nsearchives.nseindia.com/content/circulars/FAOP64621.pdf"
+  },
+  "status": "PASS_BONUS_ADJUSTMENT_FACTOR",
+  "tejhq_cache": {
+    "dataset_revision": "f576704883fff86a6facdcde336db6ce19502063",
+    "encrypted_cache_hit": false,
+    "raw_partition_sha256": "a09cd025b558eb833fb87d1ae11ebdf44f1822e67c67d09bc0463d50566eea4c",
+    "raw_values_persisted": false,
+    "unique_isin_count": 1,
+    "valid_sample_sessions": 9
+  },
+  "token_refresh_status": "SUCCESS",
+  "updated_at_utc": "2026-11-02T09:56:20.229479+00:00"
+}
