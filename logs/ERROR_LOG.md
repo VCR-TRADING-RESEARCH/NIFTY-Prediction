@@ -798,3 +798,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Interpretation:** The observed 14-Sep transition aligns with the first sentence of the NSE circular but conflicts with its second sentence and the secondary BSE notice reproduction. Do not silently choose one date or overwrite the raw source row. The factor check is accepted as a price-adjustment diagnostic only; the BAJAJFINSV identity gate remains open.
 - **Impact:** No raw prices or ISIN values are published. No event adjustment factor is applied to the full panel. C1 remains PARTIAL / NOT PASSED and C2 remains gated.
 - **Next:** Seek independent permitted confirmation of the 13-Sep row identity or exclude/flag that session in the accepted identity panel. Do not restart NSE bulk archive scraping; the data-rights gate remains in force.
+
+
+## E0119 — 2026-11-03 — C3 AUC must be sourced from original artifact (CLOSED)
+
+- **Issue:** ROC-AUC was not included in the short README C3 summary. An earlier response correctly supplied AUC values but initially cited no underlying machine-readable artifact.
+- **Verification:** Downloaded the original C3 workflow artifact from run 41401986460 and read `C3_RESULTS.json` / `C3_RESULTS.md`. Untouched-holdout ROC-AUC: momentum 0.507727; symbol_frequency 0.519927; logistic 0.485333; extra_trees 0.479234; hist_gradient_boosting 0.488337.
+- **Correction:** Use the artifact values as authoritative. Do not infer AUC from accuracy or substitute the separate C3-X NIFTY meta-model AUC (0.4868).
+- **Status:** CLOSED. The artifact is retained by GitHub Actions until its listed expiry; no raw stock forecasts or secrets were copied into the public repository.
