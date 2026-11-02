@@ -499,3 +499,9 @@ The double-escaped fallback-token newline guard was corrected in commit c8253e9.
 - Corrected the JSON status, recorded audit scope/run and added an assertion in the audit script.
 - Verified by follow-up workflow [41419571678](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41419571678): arithmetic, phase gates, manuscript sections and figures all passed.
 - No result metrics or research conclusions changed.
+
+
+## Scheduled prediction failure — run 41451501985
+- Date: 2026-11-02
+- Status: FAILED; inspect the linked Actions run for the failing step.
+- No secrets or provider response bodies are copied into logs.
