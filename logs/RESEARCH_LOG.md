@@ -1990,3 +1990,10 @@
 - Since the previous C1 HTTP 400 response body was discarded, its root cause cannot be recovered. Concurrent C1/C2 acquisition was a possible contributor, not a confirmed cause; the API docs distinguish DH-904 rate-limit errors, DH-905 input errors and Data API 805 too-many-requests blocking warning. The documentation has separate statements for overall Data API request quotas and minute/hourly requests, so no claim is made that the original HTTP 400s were definitely rate-limit responses.
 - Updated C1 intraday requests to use one-second pacing, preserve only whitelisted provider error codes/types/categories, retry only explicit DH-904 with bounded backoff, and avoid retrying input/data/805 errors. C1/C2 live intraday workflows share a concurrency group to prevent overlap.
 - The formal acceptance thresholds are unchanged. Rebuild and C2 panel acceptance are pending; C3 remains gated.
+
+
+## 2026-11-03 — Serialized C1/C2 recovery runs launched
+- C1 coverage/offline regression code with sanitized Dhan error classification was committed on the C1 phase branch. The C1 offline logic step passed in push run [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975); the standalone expanded regression suite also passed in [41535628639](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535628639).
+- The full C1 Dhan coverage audit is currently in progress in run [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975), now using one-second pacing, provider error-code capture and DH-904-only bounded retries.
+- The matching corrected C2 runner/workflow has been committed with the same shared live-data concurrency group. C2 rebuild [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) is queued behind C1 so the two large data pulls will not overlap.
+- Formal coverage and acceptance thresholds remain unchanged. C1/C2 remain unaccepted until their runs publish passing evidence; C3, C4 confirmatory and C5 remain gated.

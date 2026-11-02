@@ -2,7 +2,7 @@
 
 > **E0137 — 2026-11-03 C1 coverage gate failed:** corrected five-year audit [41529572895](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41529572895) returned valid data for only 26/260 NIFTY target cycles and 13/260 constituent-stock cycles. Dhan profile authentication succeeded (HTTP 200; plan active), but 1,011 historical intraday requests returned HTTP 400. The request wrapper discarded provider error details. A separate bounded probe [41533187708](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41533187708) succeeded on 23/26 cases, including several 90-day stock/index calls; its three failures were legacy HDFC daily-history tests returning DH-905. That does not explain the 1,011 audit failures. Exact failed C1 windows are included in a bounded follow-up probe. The exact-window tests subsequently passed 7/7 in run [41534685957](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534685957); see E0140 for the serialized recovery plan. **C1 remains FAIL; C3 is not authorised.**
 
-> **E0138 — diagnostic test correction:** the expanded offline probe caught an inconsistent DH-905 classifier label. Explicit sanitised DH-905 / DH-907 labels are used; a second stale test assertion was found and corrected after run 41534173076, and the exact-window live probe remains pending.
+> **E0138 — diagnostic test correction:** the expanded offline probe caught an inconsistent DH-905 classifier label. Explicit sanitised DH-905 / DH-907 labels are used; a second stale test assertion was found and corrected after run 41534173076, the exact-window probe passed 7/7 in [41534685957](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534685957).
 
 > **Calendar correction — 2026-11-03:** The expiry parser excluded exchange-verified holiday-shifted expiries. Corrected reconstruction adds the 2021-11-08 to 2021-11-11 cycle and splits the 2025-10-15 to 2025-10-28 interval at the verified 2025-10-20 expiry. The prior 258-cycle panel, event-cycle sensitivity and C3 metrics are superseded pending rebuild.
 
@@ -18,7 +18,7 @@
 |---|---|---|
 | C0 — Registration/governance | PASS | Locked v1.3 plan and governance checks passed |
 | C1 — Point-in-time universe/data audit | TARGET-COVERAGE FAIL / SERIAL REBUILD QUEUED | Seven exact previously failing index/active-stock windows passed; rerun continuous coverage with sanitized provider error capture and C1/C2 request serialization |
-| C2 — Panel labels/features | FAILED ACCEPTANCE / SERIAL REBUILD QUEUED | Run 41530483274 had 206/260 index targets (79.23%); rebuild after C1 with shared Dhan concurrency and unchanged 98% index gate |
+| C2 — Panel labels/features | FAILED ACCEPTANCE / SERIAL REBUILD QUEUED | Run 41530483274 had 206/260 index targets (79.23%); rerun 41535897423 is queued behind C1 with shared Dhan concurrency and unchanged 98% index gate |
 | C3 — Stock models/baselines | GATED | Wait for corrected C2 acceptance and the C1 coverage/identity decision; then rerun with the dynamic final-20% boundary |
 | C4 — Index aggregation/uncertainty | CONFIRMATORY GATED | Do not start confirmatory index aggregation until C1 identity/event exclusions and the registered C4 inputs are accepted |
 | C5 — Economic/execution gate | GATED | Contract-level fills and date-effective Paytm Money costs required before any strategy claim |
