@@ -926,3 +926,15 @@
 - Because hashes matched the exact C2 artifact, the artifact was not truncated or mismatched. The remaining explanation is key/AAD mismatch; code confirms C2 and C3 use the same AAD format and HF_TOKEN-derived key function. A changed HF_TOKEN between the C2 and C3 runs is the likely cause.
 - Recovery: regenerate C2 ciphertext under the current HF_TOKEN, then let workflow_run pass that exact new artifact to C3. No plaintext fallback and no weakened authentication.
 - C3 remains NOT PASSED; no model scores were generated.
+
+
+## 2026-11-02 — C2 rebuilt and C3 stock-model experiment completed
+
+- C2 [run 41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378) passed all 15 workflow steps and formal acceptance: 258/258 NIFTY targets, 258/258 primary eligible cycles, 12,807 constituent-cycle rows, 61 symbols, no duplicate cycle keys. Fresh C2 manifest hash: 9d263e441f09c70693e30f1541440ac6b249c5293da61faceb0af729d699c305.
+- C3 [run 41401986460](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41401986460), attempt 2, passed all workflow steps after correcting the decrypted-bytes CSV reader with io.BytesIO and adding a cryptographic/compressed CSV round-trip test (E0106).
+- Result: 7,512 encrypted OOF stock forecasts, 154 forecast cycles and 57 symbols; the final 52-cycle holdout contains 2,583 observations. All holdout forecasts were fitted using only development cycles 0–205; no holdout refit or tuning occurred.
+- Holdout direction metrics: momentum accuracy 50.52%, balanced accuracy 50.77%, ROC-AUC 50.77%; logistic 48.12%, 49.03%, 48.53%; ExtraTrees 48.51%, 49.21%, 47.92%; HistGradientBoosting 46.69%, 48.94%, 48.83%.
+- Logistic minus momentum cycle-macro accuracy was −2.37 pp; four-cycle moving-block bootstrap 95% interval [−10.04, +4.29] pp (2,000 replicates; seed 20261031). Mean holdout Ridge return rank IC was −0.0193.
+- Inference: no tested stock model earned selection or demonstrated an edge over the simple momentum baseline. This is exploratory, not confirmatory, because C1 identity and corporate-action review remains incomplete. Keep C4 confirmatory gated.
+- Existing separate C3-X v1.4 result contains an exploratory NIFTY meta-model on a 51-cycle holdout: 50.98% accuracy, 53.45% balanced accuracy, ROC-AUC 48.68%; meta-minus-lag accuracy difference 1.96 pp with a four-cycle bootstrap 95% interval [−25.49, +25.49] pp. This is underpowered/inconclusive and must remain separate due to its distinct sample and pipeline.
+- C5 cost/P&L gate has no eligible signal strategy to evaluate; no options/futures fills, Paytm Money costs or slippage are certified. C6 manuscript/audit is the next bounded closeout step.
