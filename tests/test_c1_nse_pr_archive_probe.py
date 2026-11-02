@@ -1,7 +1,7 @@
 from __future__ import annotations
 import io, zipfile
 from datetime import date
-from scripts.constituent_weekly.probe_c1_nse_pr_archives import cache_helpers, candidate_urls, parse_bundle
+from scripts.constituent_weekly.probe_c1_nse_pr_archives import PROBE_DATES, cache_helpers, candidate_urls, parse_bundle
 
 
 def test_candidate_url_uses_canonical_pr_archive_path():
@@ -39,3 +39,8 @@ def test_shared_encrypted_cache_helpers_import_in_actions_environment():
     decrypt, encrypt = cache_helpers()
     assert callable(decrypt)
     assert callable(encrypt)
+
+
+
+def test_fixed_probe_dates_are_trading_sessions_across_naming_transition():
+    assert PROBE_DATES == ["2018-04-02", "2024-04-16", "2025-10-14", "2026-04-17"]
