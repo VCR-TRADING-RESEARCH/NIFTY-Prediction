@@ -12,7 +12,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 OUT_JSON = ROOT / "research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.json"
 OUT_MD = ROOT / "research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.md"
-PROBE_DATES = ["2018-04-02", "2024-04-17", "2025-10-14", "2026-04-17"]
+PROBE_DATES = ["2018-04-02", "2024-04-16", "2025-10-14", "2026-04-17"]
 TRANSITION = date(2025, 10, 13)
 BASE = "https://nsearchives.nseindia.com"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; NIFTYResearchAudit/1.0)", "Accept": "application/zip,*/*", "Referer": "https://www.nseindia.com/all-reports"}
@@ -21,9 +21,7 @@ MAX_BYTES = 40 * 1024 * 1024
 
 def candidate_urls(day: date) -> list[str]:
     stamp = day.strftime("%d%m%y")
-    names = [f"PR{stamp}.zip", f"nupr{stamp}.zip"] if day >= TRANSITION else [f"nupr{stamp}.zip", f"PR{stamp}.zip"]
-    paths = [f"/content/historical/EQUITIES/{day:%Y}/{day.strftime('%b').upper()}", "/archives/equities/bhavcopy/pr"]
-    return [BASE + path + "/" + name for path in paths for name in names]
+    return [BASE + f"/archives/equities/bhavcopy/pr/PR{stamp}.zip"]
 
 
 def parse_bundle(raw: bytes, day: date) -> dict:
@@ -112,7 +110,7 @@ def run_probe(token: str, cache_dir: Path) -> dict:
     after = any(date.fromisoformat(x["date"]) >= TRANSITION for x in confirmed)
     return {"updated_at_utc": datetime.now(timezone.utc).isoformat(), "probe_dates": PROBE_DATES,
             "confirmed_archives": len(confirmed), "pre_transition_schema_confirmed": before,
-            "post_transition_schema_confirmed": after, "overall_status": "PASS_FIXED_PROBE" if before and after else "PARTIAL_OR_BLOCKED",
+            "post_transition_schema_confirmed": after, "overall_status": "PASS_FIXED_PROBE" if len(confirmed) == len(PROBE_DATES) and before and after else "PARTIAL_OR_BLOCKED",
             "raw_archives_published": False, "results": rows,
             "limitations": ["Four-date probe only; not complete daily archive coverage.",
                             "Only CSV headers and member presence are inspected; no event rows are published.",
