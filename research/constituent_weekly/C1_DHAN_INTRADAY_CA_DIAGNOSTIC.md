@@ -1,7 +1,7 @@
 # Dhan Intraday Corporate-Action Scale Diagnostic
 
-**Updated:** 2026-11-02T19:20:09.974988+00:00
-**Status:** BLOCKED_PROFILE_HTTP_401
+**Updated:** 2026-11-02T19:25:33.724875+00:00
+**Status:** BLOCKED_RUNTIME_ERROR
 
 This diagnostic compares the median close of the final five 1-minute bars on the last cum-event session (15:10–15:14 IST) with the median close of the first five bars on the ex-date (09:15–09:19 IST).
 A ratio near the event's expected price factor indicates the intraday history remains on the old/cum-event scale; a ratio near 1 indicates the two sessions are presented on a common adjusted scale. The overnight market move is not removed, so borderline cases are marked ambiguous.

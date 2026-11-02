@@ -4,6 +4,7 @@
   "data_plan_active": true,
   "encrypted_partition_cache_hits": 2,
   "encrypted_partition_downloads": 0,
+  "ephemeral_token_handoff": "PUBLISHED_TO_PRIVATE_GITHUB_ENV",
   "events": [
     {
       "accepted_source_identity_mismatch_dates": null,
@@ -194,5 +195,5 @@
     "token_container": "top_level"
   },
   "token_refresh_status": "SUCCESS",
-  "updated_at_utc": "2026-11-02T19:20:01.101286+00:00"
+  "updated_at_utc": "2026-11-02T19:25:19.253043+00:00"
 }
