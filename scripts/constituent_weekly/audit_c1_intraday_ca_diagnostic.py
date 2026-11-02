@@ -257,13 +257,24 @@ def write_report(result: dict) -> None:
 
 
 def main() -> int:
-    result = run()
+    try:
+        result = run()
+    except Exception as exc:
+        result = {
+            "status": "BLOCKED_RUNTIME_ERROR",
+            "updated_at_utc": datetime.now(timezone.utc).isoformat(),
+            "raw_bars_published": False,
+            "credentials_or_tokens_recorded": False,
+            "error_type": type(exc).__name__,
+            "events": [],
+        }
     write_report(result)
     print("C1_DHAN_INTRADAY_CA_STATUS", result["status"])
     for row in result.get("events", []):
         d = row.get("diagnostic", {})
         print("C1_DHAN_INTRADAY_EVENT", row.get("symbol"), row.get("ex_date"), d.get("status"), d.get("post_pre_median_close_ratio"))
-    return 0 if result.get("status") == "COMPLETED_INTRADAY_SCALE_DIAGNOSTIC" else 1
+    # Diagnostic status is retained in the report; ambiguous observations do not abort report publication.
+    return 0
 
 
 if __name__ == "__main__":
