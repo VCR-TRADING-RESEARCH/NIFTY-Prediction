@@ -252,3 +252,13 @@
 - Full 2021Q4–2022Q1 point-in-time 50-stock Dhan request resolved all 50 IDs and returned 1,233,597 bars; the initial QA rejected all 50 due one common anchor-session gap and OHLCV flags on 48 stocks.
 - Found NSE circular confirming 2021-11-04 was an evening-only 18:15–19:15 Muhurat session. Found the QA also included returned post-market rows beyond 15:30.
 - Corrected regular-session rules, added counters for missing dates/invalid rows, and added tests. Corrective workflow 41252703953 is running; result pending.
+
+ 
+## 2026-11-02 — User said “Proceed”; BUP-01 exploratory closeout
+
+- User instructed continuation of the bottom-up constituent weekly-expiry research.
+- Verified C2 [run 41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378): all 15 steps and formal acceptance passed.
+- C3 [run 41401986460](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41401986460) failed on attempt 1 at decrypted CSV parsing; fixed with io.BytesIO and an encrypted round-trip regression test. Attempt 2 passed all workflow steps and generated the stock holdout metrics.
+- C3 stock classifiers did not outperform the simple momentum baseline; paired cycle accuracy uncertainty crosses zero. Separate C3-X NIFTY aggregation was also inconclusive.
+- C1 remains partial; C4 confirmatory is gated; C5 economic testing is blocked; no strategy is approved. C6 manuscript and independent summary audit have been committed to a separate branch.
+- The conversation log stores visible instructions and outcomes only; private reasoning and secrets are not stored.
