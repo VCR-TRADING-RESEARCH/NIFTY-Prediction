@@ -617,3 +617,11 @@ The former combined C2 panel-and-model workflow has been retired because the loc
 - C3 confirmatory stock modelling is registered on [its own branch](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/tree/phase/constituent-weekly-outcomes-c3-models). Registered methods and handoff: [C3_MODEL_SPEC.md](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-models/research/constituent_weekly/C3_MODEL_SPEC.md).
 - C2 workflow now attaches the encrypted frozen-panel ciphertext (not plaintext) to its artifact so C3 can verify hashes and decrypt only inside Actions. A fresh C2 run is required to produce that handoff artifact.
 - No stock-model prediction edge, bottom-up NIFTY forecast, or trading strategy is yet accepted. C5 remains gated on instrument-level fills and date-effective Paytm Money costs/slippage.
+
+
+## C3 automated stock modelling — 2026-11-02
+
+- C2 encrypted handoff artifact [bup01-c2-panel-41357141947](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41357141947) completed successfully. Both encrypted panel files were downloaded and SHA-256 checked against the C2 manifest; no plaintext market data was exposed.
+- C3 now has a separate automated workflow: [bup01-c3-stock-models.yml](.github/workflows/bup01-c3-stock-models.yml). It starts automatically after a successful C2 workflow and also supports manual dispatch.
+- Registered models: expanding symbol-frequency and five-session momentum baselines, regularised Logistic Regression, ExtraTrees, HistGradientBoosting, and Ridge return regression. Complete expiry cycles remain indivisible; 104 prior-cycle warm-up; refit every four cycles; final holdout starts at cycle 206.
+- Per-stock OOF forecasts are AES-GCM encrypted; only aggregate metrics and cycle-level results are published. C3 has not yet reported model performance. C4 and trading remain gated.
