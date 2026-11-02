@@ -394,3 +394,8 @@ Run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actio
 - C1 remains partial; C4 confirmatory and C5 costs/trading remain blocked. No strategy, return claim or live signal.
 
 See [C3 status](research/constituent_weekly/C3_STATUS.md), [machine results](research/constituent_weekly/C3_RESULTS.json), [report](research/constituent_weekly/C3_RESULTS.md), [research log](logs/RESEARCH_LOG.md), and [error log](logs/ERROR_LOG.md).
+
+
+## C5 status — 2026-11-02
+
+C5 is BLOCKED_NOT_RUN. No trading model or instrument has passed the preceding prediction gates. Workflow [41410573458](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41410573458) verified this fail-closed status. See [C5 cost gate](research/constituent_weekly/C5_COST_GATE.md) and [C5 status](research/constituent_weekly/C5_STATUS.json).
