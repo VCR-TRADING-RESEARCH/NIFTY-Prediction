@@ -990,3 +990,8 @@
 - Changed both source-cache read and write operations to derive AES-GCM encryption from the stable HF_TOKEN secret, matching the frozen-panel cache behavior. Dhan token remains solely for API access.
 - Added an offline regression confirming the cache key is invariant when DHAN_ACCESS_TOKEN changes.
 - Older source cache ciphertext encrypted with prior Dhan tokens is not migrated; it will be treated as a cache miss. Future cached downloads will persist across token refreshes.
+
+
+## 2026-11-03 — E0141 replacement C2 run
+- The cache-key correction changed the pending C2 workflow commit, so GitHub cancelled the old queued run [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) before execution.
+- Replacement C2 run [41536746133](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41536746133) is queued behind the active C1 coverage run [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975) using the shared Dhan concurrency group.

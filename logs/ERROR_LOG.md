@@ -927,3 +927,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Migration:** Existing source cache files encrypted with older Dhan tokens cannot be migrated without those old tokens; they remain unreadable and will be ignored/re-fetched. Newly written caches are portable across Dhan token refreshes while HF_TOKEN remains unchanged.
 - **Status:** Code/test correction committed; next C2 workflow run is queued behind C1.
 - **Security:** No credential values or cache contents are logged.
+
+
+### E0141 follow-up — C2 replacement run queued
+- The first queued C2 attempt [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) was cancelled before its job started after the stable-cache-key fix was committed. Replacement run [41536746133](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41536746133) is queued behind active C1 run [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975).
