@@ -30,9 +30,9 @@
 - Security identity transition source: https://nsearchives.nseindia.com/content/circulars/CML53597.pdf
 - BSE Notice 20220908-17 reproduction (secondary copy): https://in.marketscreener.com/quote/stock/BSE-LIMITED-33930062/news/New-ISIN-Number-of-Bajaj-Finserv-Limited-Scrip-Code-532978-41723564/
 - ISIN transition verified: False
-- Official NSE ISIN effective date: 2022-09-13 (Circular CML53597)
+- NSE CML53597 date wording: its first sentence says the ISIN changes w.e.f. 2022-09-14; the next says it is effective for all trades from the 2022-09-13 ex-date
 - Observed TejHQ daily-row transition date: 2022-09-14
-- Identity discrepancy: the 2022-09-13 row still carries the old ISIN; no correction was applied
+- Identity interpretation: the TejHQ transition on 2022-09-14 matches the first sentence but conflicts with the ex-date sentence. A secondary reproduction of BSE Notice 20220908-17 also says 2022-09-13; the original BSE notice was not independently retrieved. Effective date unresolved; no correction was applied
 - Pre-event Dhan/raw median ratios: {'open': 0.1, 'high': 0.1, 'low': 0.1, 'close': 0.1}
 - Post-event Dhan/raw median ratios: {'open': 1.0, 'high': 1.0, 'low': 1.0, 'close': 1.0}
 - Relative event factors: {'open': 0.1, 'high': 0.1, 'low': 0.1, 'close': 0.1}
