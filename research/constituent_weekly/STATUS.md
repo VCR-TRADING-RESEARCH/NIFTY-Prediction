@@ -1,9 +1,11 @@
+> **E0135 — calendar correction:** The 258-cycle panel is quarantined. Corrected reconstruction contains 260 cycles, including the 2021 Diwali-shifted 3-Nov expiry and 2025 holiday-shifted 20-Oct expiry. C2 will rebuild from the corrected parser; C3 derives the final-20% holdout from the actual cycle count.
+
 # BUP-01 Research Status
 
 **Last updated:** 2026-11-02  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 ACCEPTED WITH LIMITATIONS FOR PROGRESSION by explicit user direction; C2 PASS — formal panel accepted  
-**Prediction status:** C2 frozen panel accepted (258/258 cycles); C3 stock modelling is next; no stock model or bottom-up NIFTY forecast is yet accepted  
+**Status:** C0 PASS; C1 PARTIAL / CALENDAR CORRECTION IN VALIDATION; C2 QUARANTINED PENDING REBUILD; C3 OLD METRICS SUPERSEDED
+**Prediction status:** The previous 258-cycle C2 panel and dependent C3 results are superseded because two verified shifted weekly expiries were omitted; corrected panel and C3 rerun are required
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |

@@ -930,3 +930,10 @@
 - Input manifest: 9d263e441f09c70693e30f1541440ac6b249c5293da61faceb0af729d699c305.
 - Encrypted panel cache metadata: {'encryption': 'AES-GCM; HF_TOKEN-derived BUP01 cache key; raw values not published', 'index': {'cache_relative_path': 'c2/frozen_panel/8ca19537f846de9af66b78eff81b.aesgcm', 'ciphertext_bytes': 30334, 'ciphertext_sha256': '58256008b8d4626a507ea4f9194e3f1d59f0db04db19b543ec86bb5449cc33dd'}, 'stock': {'cache_relative_path': 'c2/frozen_panel/a4ea0d967edcf79a87687c96530a.aesgcm', 'ciphertext_bytes': 1654615, 'ciphertext_sha256': '878fdadcb313c0838d517e975fd53292b7004bc61efe168b695e62c6db9b444c'}}.
 - C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.
+
+## 2026-11-03 — C2 expiry-calendar parser correction
+
+- Static audit found C2 reused the C1 exact-status filter and omitted two verified, contract-present holiday-shifted expiries.
+- The corrected source calendar reconstructs 260 weekly cycles. The previous frozen 258-cycle C2 panel remains an immutable historical artifact but is quarantined and is not current acceptance evidence.
+- Corrected the C2 branch helper and added regression tests for shifted expiry parsing and the October 2025 interval split.
+- A successful C2 panel-only run automatically triggers C3. The C3 runner now calculates the holdout start as floor(80% of eligible cycles), preserving the final-20% chronological holdout.

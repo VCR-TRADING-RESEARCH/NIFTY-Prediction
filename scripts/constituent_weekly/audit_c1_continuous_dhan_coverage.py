@@ -96,7 +96,8 @@ def verified_expiry_dates(expiry_frame: pd.DataFrame) -> list[str]:
     present = expiry_frame["contract_expiry_present"].astype(str).str.strip().str.casefold().isin(
         ("true", "1", "yes")
     )
-    valid = expiry_frame["status"].astype(str).str.strip().eq("verified_nifty_weekly_expiry") & present
+    verified_statuses = {"verified_nifty_weekly_expiry", "verified_shifted_nifty_weekly_expiry"}
+    valid = expiry_frame["status"].astype(str).str.strip().isin(verified_statuses) & present
     values = pd.to_datetime(expiry_frame.loc[valid, "verified_expiry_trade_date"], errors="coerce")
     return sorted({stamp.date().isoformat() for stamp in values.dropna()})
 

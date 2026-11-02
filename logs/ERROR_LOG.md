@@ -865,3 +865,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Frozen stock and index panel ciphertext is now encrypted with the already-required stable `hf_token` variable. Dhan access tokens remain limited to Dhan API and source-cache operations. Associated data and AES-GCM authentication remain enforced.
 - **Recovery:** Trigger a fresh formal C2 panel build so the newly generated artifact and manifest share the corrected stable key. C3 must consume only that new artifact; never attempt to decrypt the old artifact using guessed or relaxed keys.
 - **Research impact:** No stock forecasts were generated. C2 data acceptance remains valid; the encryption implementation/handoff is being repaired before C3 model evaluation.
+
+## E0135 — 2026-11-03 — C2 panel used an incomplete holiday-shifted expiry calendar (OPEN UNTIL REBUILD)
+
+- Severity: High — expiry dates determine every constituent and index label window.
+- Evidence: The C2 runner reused the C1 helper's exact-status filter and omitted two rows with contract_expiry_present=True and status verified_shifted_nifty_weekly_expiry.
+- Impact: The source calendar produces 260 cycles, not the 258 cycles in the previous C2 artifact. The 2021 weekly interval and October 2025 holiday-shifted interval were misrepresented. The previous C2 panel is quarantined; all dependent C3 metrics are superseded.
+- Correction: C2 now accepts only the two explicit verified expiry statuses, subject to contract presence. Regression tests cover both shifted expiries and the split of the 2025-10-15 to 2025-10-28 interval.
+- Status: OPEN until a new C2 panel run passes, publishes its corrected cycle manifest, and automatically triggers a successful C3 rerun.

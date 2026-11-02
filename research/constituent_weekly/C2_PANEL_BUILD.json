@@ -12,7 +12,7 @@
     "scheduled_cycles": 258,
     "stock_member_rule": "at least 47 valid; at least 94% of point-in-time tradable members",
     "valid_index_target_cycles": 258,
-    "valid_index_target_fraction": 1.0
+    "valid_index_target_fraction": 1
   },
   "created_at_utc": "2026-11-02T06:45:45.515579+00:00",
   "encrypted_panel_cache": {
@@ -93,5 +93,7 @@
     "symbols": 61
   },
   "schema_version": 1,
-  "status": "COMPLETED"
+  "status": "SUPERSEDED_BY_EXPIRY_CALENDAR_CORRECTION",
+  "superseded_reason": "The cycle builder excluded two contract-present verified_shifted_nifty_weekly_expiry records; corrected calendar reconstruction contains 260 rather than 258 scheduled cycles.",
+  "superseded_at": "2026-11-03"
 }

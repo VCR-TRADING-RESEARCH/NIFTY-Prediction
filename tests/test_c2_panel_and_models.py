@@ -5,6 +5,7 @@ import json
 import numpy as np
 import pandas as pd
 
+from scripts.constituent_weekly.audit_c1_continuous_dhan_coverage import build_expiry_cycles, verified_expiry_dates
 from scripts.constituent_weekly.run_c2_panel_and_models import (
     arrays_from_body,
     equal_cycle_weights,
@@ -135,3 +136,42 @@ def test_cycle_coverage_summary_applies_both_member_thresholds():
     assert result["cycles_with_valid_index_targets"] == 3
     assert result["cycles_passing_47_94_rule"] == 2
     assert result["eligible_stock_count_histogram"] == {"46": 1, "47": 1, "48": 1}
+
+def test_c2_calendar_accepts_verified_shifted_weekly_contract_expiries():
+    frame = pd.DataFrame({
+        "verified_expiry_trade_date": ["2021-11-03", "2025-10-20", "2025-10-28", "2025-11-04"],
+        "status": [
+            "verified_shifted_nifty_weekly_expiry",
+            "verified_shifted_nifty_weekly_expiry",
+            "candidate",
+            "verified_nifty_weekly_expiry",
+        ],
+        "contract_expiry_present": [True, True, True, False],
+    })
+    assert verified_expiry_dates(frame) == ["2021-11-03", "2025-10-20"]
+
+
+def test_c2_calendar_creates_separate_weekly_cycles_around_shifted_expiry():
+    membership = pd.DataFrame({
+        "symbol": ["AAA", "BBB"],
+        "valid_from": ["2020-01-01", "2020-01-01"],
+        "valid_to": ["", ""],
+        "member_type": ["equity_security", "equity_security"],
+        "market_data_required": ["TRUE", "TRUE"],
+    })
+    cycles = build_expiry_cycles(
+        ["2025-10-14", "2025-10-20", "2025-10-28"],
+        [
+            "2025-10-14", "2025-10-15", "2025-10-16", "2025-10-17",
+            "2025-10-20", "2025-10-21", "2025-10-23", "2025-10-24",
+            "2025-10-27", "2025-10-28",
+        ],
+        membership,
+        "2025-10-01",
+        "2025-10-28",
+        {"2025-10-21"},
+    )
+    assert [(c["anchor_date"], c["expiry_date"]) for c in cycles] == [
+        ("2025-10-15", "2025-10-20"),
+        ("2025-10-23", "2025-10-28"),
+    ]
