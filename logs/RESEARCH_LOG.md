@@ -995,3 +995,13 @@
 ## 2026-11-03 — E0141 replacement C2 run
 - The cache-key correction changed the pending C2 workflow commit, so GitHub cancelled the old queued run [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) before execution.
 - Replacement C2 run [41536746133](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41536746133) is queued behind the active C1 coverage run [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975) using the shared Dhan concurrency group.
+
+
+<!-- C2_PANEL_RUN_41536746133 -->
+## 2026-11-02T23:31:39.925146+00:00 — formal C2 panel run 41536746133
+
+- Status: COMPLETED.
+- Summary: **Formal C2 panel run 41536746133:** COMPLETED; 260 scheduled cycles; 260 valid NIFTY targets (100.00%); 260 cycles pass the 47/94% stock rule; 12907 constituent-cycle rows. Full panel stored in encrypted Actions cache; no model fitting in C2.
+- Input manifest: 693365a0981d3354a87d8639c1e0ee74022c530b017024d8d3712e91b9014c19.
+- Encrypted panel cache metadata: {'encryption': 'AES-GCM; HF_TOKEN-derived BUP01 cache key; raw values not published', 'index': {'cache_relative_path': 'c2/frozen_panel/7642abb1caa4d78460fa6a244090.aesgcm', 'ciphertext_bytes': 30551, 'ciphertext_sha256': 'c7c3ba366ddbddd7ac98c443ac45b3a1d5d80a255115ea8af3bd6540efc588a5'}, 'stock': {'cache_relative_path': 'c2/frozen_panel/3a06ce3e2a8f3a8a2ccdde4f713a.aesgcm', 'ciphertext_bytes': 1668023, 'ciphertext_sha256': 'c5632bd59d3cb85f985ccd5b276e64fa511c9abb7c8e8f9559dbaee439fe1e40'}}.
+- C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.
