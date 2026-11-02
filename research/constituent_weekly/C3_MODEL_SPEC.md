@@ -6,7 +6,7 @@
 
 ## Frozen C2 input and secure handoff
 
-C2 formal acceptance is recorded in [C2_ACCEPTANCE_REPORT.md](C2_ACCEPTANCE_REPORT.md), from workflow [41353406358](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358). It accepted 258 cycles, 12,807 constituent-cycle rows, 61 symbols, 100% valid index targets, 258/258 cycles meeting the 47/94% rule, and zero duplicate cycle rows. Holdout starts at cycle 206 (anchor 2025-10-29; expiry 2025-11-04).
+C2 formal acceptance is recorded in [C2_ACCEPTANCE_REPORT.md](C2_ACCEPTANCE_REPORT.md), from workflow [41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378)(https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41353406358). It accepted 258 cycles, 12,807 constituent-cycle rows, 61 symbols, 100% valid index targets, 258/258 cycles meeting the 47/94% rule, and zero duplicate cycle rows. Holdout starts at cycle 206 (anchor 2025-10-29; expiry 2025-11-04).
 
 The row-level panel is AES-GCM encrypted with the stable HF_TOKEN-derived cache key and stored in the C2 Actions cache. It must be transferred to C3 as ciphertext only. The C2 workflow is being amended to attach only the encrypted frozen-panel files plus the sanitized report to its run artifact. C3 must download the artifact from the latest successful C2 run, verify the ciphertext SHA-256 values against the C2 manifest, decrypt only inside the Actions runner using HF_TOKEN, and never commit plaintext panel data.
 
@@ -34,3 +34,10 @@ No additional model families, tuning loops or holdout retuning are permitted bey
 ## Automated execution trigger
 
 C3 runs automatically when a successful C2 panel workflow completes, and also on a material C3 code/spec push or manual `workflow_dispatch`. A manual run resolves the latest successful C2 run and downloads its artifact. Model outputs are committed only in aggregate/sanitized form; the per-stock OOF forecast remains AES-GCM encrypted.
+
+
+## Latest execution checkpoint — 2026-11-02
+
+C2 run [41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378) passed all 15 steps and formal acceptance, including 258 scheduled cycles, 12,807 constituent-cycle rows, 61 symbols and 258/258 valid index targets. The holdout starts at cycle 206. The manifest records 292 identity-flagged rows, 3 known action-crossing rows, 92 feature-missing observations and 19 flat stock labels; these limitations remain explicit.
+
+C3 run [41401986460](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41401986460) downloaded and authenticated the artifact and passed compilation/offline tests, then failed before model fitting because pandas received raw bytes rather than a file-like buffer. The parser fix and encrypted CSV round-trip test are recorded as E0106.
