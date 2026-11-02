@@ -115,3 +115,5 @@ def test_response_shape_classifies_dhan_input_exception_without_retaining_messag
     assert shape["errorCode_value"] == "DH-905"
     assert shape["errorType_value"] == "Input_Exception"
     assert "synthetic provider detail" not in str(shape)
+
+# Live-provider diagnostic is deliberately gated to trusted push/manual runs.
