@@ -46,3 +46,8 @@ Gross P&L must be calculated from actual contract quantity, lot size, entry/exit
 C5 is **BLOCKED / NOT RUN**. No trading strategy, paper-trading instruction, live signal or profitability claim is issued. This is a valid stop outcome under the registered plan. Do not try random option structures to rescue a weak prediction model.
 
 See the parent [C3 stock results](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-models/research/constituent_weekly/C3_RESULTS.md) and [C3-X exploratory NIFTY report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-exploratory/research/constituent_weekly/EXPLORATORY_REPORT.md).
+
+
+## Automated gate validation
+
+The fail-closed C5 workflow [41410573458](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41410573458) passed. It verified that no instrument, date-effective fee schedule, execution model or net-P&L test is being falsely marked complete. This validates the blocked status, not trading economics.
