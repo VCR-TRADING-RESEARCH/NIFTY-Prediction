@@ -1,0 +1,22 @@
+{
+  "phase": "C5",
+  "status": "BLOCKED_NOT_RUN",
+  "decision_date": "2026-11-02",
+  "signal_gate": "NOT_PASSED",
+  "c1": "PARTIAL",
+  "c4_confirmatory": "GATED",
+  "instrument_specified": false,
+  "cost_schedule_verified": false,
+  "execution_model_validated": false,
+  "net_pnl_tested": false,
+  "trading_strategy_accepted": false,
+  "reason": "No reliable bottom-up NIFTY direction edge established; no instrument-specific strategy to cost.",
+  "next_required_evidence": [
+    "C4 validated direction model",
+    "fixed futures/options instrument and rules",
+    "historical Paytm Money date-effective fee schedule",
+    "contract specs and bid/ask/fill data",
+    "conservative slippage and market-impact model",
+    "walk-forward net P&L and risk audit"
+  ]
+}
