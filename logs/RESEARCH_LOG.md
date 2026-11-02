@@ -978,3 +978,8 @@
 - Reduced C2 inter-request pacing to one second and included the NIFTY index calls. C1 and C2 workflows share one live Dhan concurrency group; requests queue instead of overlapping.
 - Exact-window diagnostic [41534685957](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534685957) passed 7/7 previously failing index/active-stock requests. Root cause of the earlier HTTP 400s remains unproven.
 - C2 build [41530483274](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41530483274) failed at 79.23% index coverage. This change triggers a serialized rebuild; C3 remains gated until C2 passes formal acceptance.
+
+
+## 2026-11-03 — C2 serialized rebuild queued
+- C1's corrected continuous Dhan coverage run [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975) is currently in progress. C2 run [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) is queued behind it under the shared Dhan live-data concurrency group.
+- The C2 code uses one-second request pacing, sanitized Dhan provider error diagnostics and the unchanged formal 98% index-target, 47/94% constituent and uniqueness gates. No model training is authorized until the panel build passes.
