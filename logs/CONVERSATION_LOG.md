@@ -426,3 +426,11 @@
 - Re-read the repository operating rules, C1 status, corporate-action catalogue/method, phase logs and existing daily-coverage evidence before continuing.
 - Identified official NSE daily PR/legacy bundle corporate-action files and documented a bounded source/schema probe for independent event verification.
 - The work is source feasibility only; no event is marked verified, no adjustment factor is applied, and no modelling/holdout tuning is reopened.
+
+
+## 2026-11-02 — User said “Ok”; implement NSE archive probe
+
+- Continued from the documented C1 checkpoint and checked the current workflow, catalogue code, tests, source-feasibility report and status before editing.
+- Added the bounded official NSE PR archive probe and three offline tests; updated the C1 workflow to run it, cache archive bytes encrypted, upload sanitised reports and publish the report files to the C1 branch.
+- The probe is limited to four fixed dates across the 13-Oct-2025 naming transition. It inspects only archive/member metadata and corporate-action CSV headers, never publishes raw event rows.
+- Runtime Actions outcome remains pending; no source coverage or event verification is claimed yet. No hidden reasoning or credentials are recorded.
