@@ -6,13 +6,6 @@ on:
     types: [completed]
     branches: [phase/constituent-weekly-outcomes-c2-panel]
   workflow_dispatch:
-  push:
-    branches: [phase/constituent-weekly-outcomes-c3-models]
-    paths:
-      - '.github/workflows/bup01-c3-stock-models.yml'
-      - 'scripts/constituent_weekly/run_c3_stock_models.py'
-      - 'tests/test_c3_stock_models.py'
-      - 'research/constituent_weekly/C3_MODEL_SPEC.md'
 
 permissions:
   contents: write

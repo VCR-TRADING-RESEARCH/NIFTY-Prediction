@@ -927,3 +927,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Likely cause:** HF_TOKEN changed/rotated between C2 artifact creation and C3 execution. The token is currently used as the encryption key derivation input, so rotating the Hugging Face credential also invalidates previously encrypted cache material.
 - **Correction:** Rebuild the C2 encrypted panel artifact with the current HF_TOKEN and immediately hand that exact run artifact to C3 via workflow_run. This avoids weakening authentication or publishing plaintext. Long-term, encryption should use a dedicated stable repository secret separate from HF_TOKEN rotation.
 - **Status:** No C3 model fitting occurred; the next C2 run is required.
+
+
+## E0104 — 2026-11-02 — C3 complete-case feature filtering would unnecessarily reduce member coverage
+
+- **Severity:** Medium — avoidable sample attrition; corrected before a successful model run.
+- **Detection:** Code review of the C3 pipeline against C2's 92 daily-feature-missing observations.
+- **Cause:** C3 dropped rows with missing predictor values even though every model pipeline has fold-local median imputation. This could reduce per-cycle complete-case coverage below 47 even though C2 had already accepted the cycle and the imputer can safely handle the missing predictors.
+- **Correction:** Retain rows with valid stock labels/returns and allow the training-fold `SimpleImputer` to handle missing features. Do not impute using full-sample statistics. Continue to enforce the 47-row minimum after primary identity/action exclusions.
+- **Research impact:** No result was produced by the earlier failed run; this is a pre-execution sample-handling correction.
