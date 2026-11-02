@@ -855,3 +855,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** The JSON report's `feature_columns` list appended `cs_rank_ret5` and `cs_rank_ret20` even though both are already included in `FEATURES`. The panel dataframe creates each derived column once; the defect is confined to the manifest list.
 - **Correction required:** Report `FEATURES` directly and add a uniqueness regression assertion before the next phase consumes the manifest. Do not reinterpret this as duplicated model columns or invalidate C2 data acceptance.
 - **C2 result:** The formal workflow completed successfully; all 258/258 cycles passed the 47/94% rule, index targets were 100%, and both duplicate-row counts were zero. C2 PASS. The metadata correction is a documentation/manifest cleanup, not a threshold relaxation.
+
+
+## E0101 — 2026-11-02 — C3 first launch stopped before panel download
+
+- **Severity:** Medium — automation wiring defect; no market data was decrypted and no model was run.
+- **Run:** [41398510316](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398510316).
+- **Cause:** The manual/push source-run resolver called GitHub CLI without setting `GH_TOKEN`; GitHub CLI exited with code 4. The always-run publish step then attempted to stage result paths that did not exist, causing a secondary error.
+- **Correction:** Add `GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}` to the source resolver. Make the result commit step conditional on all three sanitized output files existing. Keep the encrypted OOF output optional in the artifact on failure.
+- **Research impact:** None; model execution never began, so no result or inference was produced. The encrypted C2 artifact remains available.
