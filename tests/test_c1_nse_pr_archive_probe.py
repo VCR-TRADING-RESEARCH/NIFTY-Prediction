@@ -1,7 +1,7 @@
 from __future__ import annotations
 import io, zipfile
 from datetime import date
-from scripts.constituent_weekly.probe_c1_nse_pr_archives import candidate_urls, parse_bundle
+from scripts.constituent_weekly.probe_c1_nse_pr_archives import cache_helpers, candidate_urls, parse_bundle
 
 
 def test_candidate_url_uses_legacy_and_new_names_across_transition():
@@ -36,3 +36,10 @@ def test_parse_bundle_rejects_missing_corporate_action_member():
         assert "no documented corporate-action" in str(exc).lower()
     else:
         raise AssertionError("Missing corporate-action CSV must not pass.")
+
+
+
+def test_shared_encrypted_cache_helpers_import_in_actions_environment():
+    decrypt, encrypt = cache_helpers()
+    assert callable(decrypt)
+    assert callable(encrypt)
