@@ -485,3 +485,9 @@
 - Continued C1 after user approval. Public-source review found that NSE Clearing circular FAOP53644 explicitly confirms the 13-Sep-2022 ex-date and combined 10x split/bonus adjustment; the explicit trade-effective clause in NSE CML53597 and the BSE Notice 20220908-17 reproduction both place the new ISIN from trades on the ex-date.
 - Recorded a derived identity mapping from 2022-09-13 inclusive, preserving the conflicting TejHQ raw identifier as stale source metadata rather than rewriting it.
 - Added the C1 adjudication report and closed E0118. Overall C1 remains PARTIAL; C2 and confirmatory C4 remain gated. No private reasoning, credentials or raw prices are stored.
+
+
+## 2026-11-03 — Repository update efficiency correction
+
+- During the C1 continuation, related status/log changes were committed sequentially rather than batched, causing repeated PR validation workflow activity. The work itself was limited to protocol and source adjudication documents; no model run was duplicated.
+- Recorded the process issue as E0120 and will batch future related repository edits into a single commit. No private reasoning or credentials are stored.

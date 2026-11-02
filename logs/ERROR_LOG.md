@@ -798,3 +798,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Resolution:** Apply new ISIN INE918I01026 from 2022-09-13 inclusive in the derived point-in-time security mapping. Preserve the TejHQ row unchanged and flag its 13-Sep ISIN as stale source metadata; do not rewrite raw source data. The specific trade-effective clause controls over the preceding general 14-Sep wording.
 - **Implementation/evidence record:** [C1_BAJAJFINSV_ISIN_ADJUDICATION.md](research/constituent_weekly/C1_BAJAJFINSV_ISIN_ADJUDICATION.md).
 - **Status:** CLOSED WITH SOURCE-BASED ADJUDICATION. This closes only this one-day identity-date dispute; it does not close the wider 711-event corporate-action review or C1 overall.
+
+
+## E0120 — 2026-11-03 — Sequential repository writes caused avoidable repeated PR validation (CLOSED)
+
+- **Severity:** Low — workflow churn/time only; no research data or model result was affected.
+- **Cause:** The C1 protocol, status and log updates were committed as several sequential GitHub Contents API writes on an open PR branch instead of one batched tree/commit. Each branch update can re-trigger the PR's path-filtered C1 validation workflows.
+- **Impact:** Multiple distinct C1 validation jobs were observed running for the same PR head. This added avoidable CI load and could resemble the duplicate-workflow problem previously reported by the user.
+- **Correction:** Batch future related file updates into one Git tree/commit per logical research step; inspect the PR workflow matrix before pushing; do not create separate commits for each log file.
+- **Status:** CLOSED as a process correction. No force-push, workflow rerun or model retraining was initiated.

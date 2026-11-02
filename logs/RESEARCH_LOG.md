@@ -858,3 +858,9 @@
 - NSE Clearing confirms ex-date 2022-09-13 and the combined 10x adjustment factor; both the explicit trade-effective clause in NSE CML53597 and the BSE notice reproduction state that the new ISIN applies to trades from 13-Sep.
 - Decision: derived security mapping uses the new ISIN from 2022-09-13 inclusive. The old ISIN retained in the TejHQ row on that date is flagged as stale source metadata and is not rewritten.
 - Added [C1_BAJAJFINSV_ISIN_ADJUDICATION.md](research/constituent_weekly/C1_BAJAJFINSV_ISIN_ADJUDICATION.md); E0118 closed with adjudication. This does not close the remaining C1 event review.
+
+
+## 2026-11-03 — CI efficiency review
+
+- The C1 protocol and adjudication files were committed in multiple sequential branch writes. The open C1 PR consequently launched multiple path-filtered validation workflows. This did not affect research data, but was unnecessary CI churn.
+- Corrective rule: batch related branch-file changes into one Git tree/commit per logical step, then monitor the single resulting PR validation set. Recorded as E0120.
