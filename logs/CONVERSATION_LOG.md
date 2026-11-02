@@ -262,3 +262,11 @@
 - C3 stock classifiers did not outperform the simple momentum baseline; paired cycle accuracy uncertainty crosses zero. Separate C3-X NIFTY aggregation was also inconclusive.
 - C1 remains partial; C4 confirmatory is gated; C5 economic testing is blocked; no strategy is approved. C6 manuscript and independent summary audit have been committed to a separate branch.
 - The conversation log stores visible instructions and outcomes only; private reasoning and secrets are not stored.
+
+
+## 2026-11-02 — Visible Proceed instruction and BUP-01 closeout
+
+- Continued C2→C3 research after the user's visible “Proceed” instruction. C2 run 41398864378 and C3 run 41401986460 attempt 2 completed; C3 stock results showed no robust edge.
+- C3-X NIFTY aggregation on 51 cycles remained exploratory and statistically inconclusive.
+- C4 branch/workflow 41411507365 passed the fail-closed check but remains gated by C1. C5 branch/workflow 41410573458 passed its fail-closed check but economics remain not run. C6 branch/workflow 41411057657 passed arithmetic and manuscript structure audits with limitations.
+- Main README and research log refreshed. Visible user decisions and results are recorded; private reasoning and secrets are not written.
