@@ -639,3 +639,12 @@ The former combined C2 panel-and-model workflow has been retired because the loc
 - C2 refresh run [41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378) is rebuilding the panel and encrypted artifact using the current HF_TOKEN. A successful C2 completion automatically triggers C3 with that exact run's report and ciphertext.
 - C3 code review corrected a holdout leakage issue: cycles 206–257 are now predicted using training data from cycles 0–205 only. The final holdout is never used in later refits.
 - No C3 model performance, NIFTY prediction edge, or trading strategy is accepted until the new run completes and all validation gates pass.
+
+
+### C3 handoff integrity correction — 2026-11-02
+
+- C3 runs [41398510316](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398510316) and [41398595959](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398595959) stopped before modelling due workflow authentication and stale-manifest issues; both are logged in the phase error log.
+- Run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) passed artifact download, manifest pairing, checksum verification and offline tests, but exposed an AES-GCM key mismatch.
+- Root cause: C2 had used the rotating Dhan token to encrypt the frozen panel despite documenting HF_TOKEN as the stable key. The C2 writer now uses HF_TOKEN for frozen-panel ciphertext; Dhan access tokens remain for API access/source caches.
+- A fresh C2 run [41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378) is rebuilding the encrypted artifact. C3 will trigger automatically after its successful completion and will use the matching run manifest.
+- C3 also retains feature-missing observations for fold-local median imputation and does not reapply the C2 47/94 coverage gate after flat labels are removed.
