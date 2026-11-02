@@ -4,13 +4,9 @@ from datetime import date
 from scripts.constituent_weekly.probe_c1_nse_pr_archives import cache_helpers, candidate_urls, parse_bundle
 
 
-def test_candidate_url_uses_legacy_and_new_names_across_transition():
-    before = candidate_urls(date(2024, 4, 17))
-    after = candidate_urls(date(2025, 10, 14))
-    assert any("/nupr170424.zip" in url for url in before)
-    assert any("/PR141025.zip" in url for url in after)
-    assert all("/content/historical/EQUITIES/2024/APR/" in url for url in before if "/content/historical/" in url)
-    assert all("/content/historical/EQUITIES/2025/OCT/" in url for url in after if "/content/historical/" in url)
+def test_candidate_url_uses_canonical_pr_archive_path():
+    urls = candidate_urls(date(2024, 4, 16))
+    assert urls == ["https://nsearchives.nseindia.com/archives/equities/bhavcopy/pr/PR160424.zip"]
 
 
 def test_parse_bundle_extracts_only_schema_metadata():
