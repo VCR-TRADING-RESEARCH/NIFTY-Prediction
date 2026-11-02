@@ -944,3 +944,10 @@
 
 - Final C6 audit run [41411057657](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41411057657) passed arithmetic, phase-gate and manuscript checks. Its Markdown status and report correctly said PASS WITH LIMITATIONS, while the consolidated JSON still carried the pre-audit AUDIT_PENDING marker.
 - Correcting the JSON to AUDIT_PASS_WITH_LIMITATIONS and strengthening the audit script to assert that state. No research metrics or claims are changed; a follow-up Actions run will verify the repository state.
+
+
+## 2026-11-02 — Final C6 summary-state verification
+
+- Corrected the stale `AUDIT_PENDING` status in `C6_RESULTS_SUMMARY.json` to `AUDIT_PASS_WITH_LIMITATIONS` and added an audit-script assertion plus E0107.
+- Follow-up workflow [41419571678](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41419571678) passed both independent arithmetic/gate checks and manuscript/figure checks. The repository's JSON, status page and audit report now agree.
+- No metrics or scientific conclusions changed. This is a final metadata-consistency verification.

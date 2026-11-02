@@ -964,3 +964,5 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Observed:** C6 status and audit report recorded PASS WITH LIMITATIONS; workflow [41411057657](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41411057657) succeeded, but C6_RESULTS_SUMMARY.json still said AUDIT_PENDING.
 - **Correction:** update the summary to AUDIT_PASS_WITH_LIMITATIONS, record the audit run and audit scope, and add an assertion to the independent audit script so the metadata cannot regress silently.
 - **Research effect:** no metrics, forecasts or conclusions changed. This is a reporting-consistency correction only.
+
+- **Final verification:** follow-up C6 audit run [41419571678](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41419571678) passed after the summary status field and audit assertion were corrected.

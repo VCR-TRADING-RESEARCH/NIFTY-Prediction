@@ -558,3 +558,10 @@
 
 - User asked to resume. Independent review found the final C6 workflow [41411057657](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41411057657) had passed, and C6_STATUS.md / C6_AUDIT_REPORT.md reflected PASS WITH LIMITATIONS, but C6_RESULTS_SUMMARY.json still said AUDIT_PENDING.
 - Corrected the JSON status, linked the audit run and added an assertion in the audit script. This is a status-metadata correction only; no result was changed. The follow-up audit workflow is used to verify it.
+
+
+## 2026-11-02 — Final C6 summary-state verification
+
+- Corrected the stale `AUDIT_PENDING` status in `C6_RESULTS_SUMMARY.json` to `AUDIT_PASS_WITH_LIMITATIONS` and added an audit-script assertion plus E0107.
+- Follow-up workflow [41419571678](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41419571678) passed both independent arithmetic/gate checks and manuscript/figure checks. The repository's JSON, status page and audit report now agree.
+- No metrics or scientific conclusions changed. This is a final metadata-consistency verification.
