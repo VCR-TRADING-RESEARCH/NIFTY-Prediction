@@ -470,3 +470,11 @@
 
 
 - The Pages deployment was refreshed after clarifying the conflicting BAJAJFINSV ISIN date wording in NSE CML53597; latest deployment run [41427840788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41427840788) succeeded.
+
+
+## 2026-11-03 — User approved continuation after C3 results
+
+- User approved proceeding with the next research steps.
+- Recovered the original C3 Actions artifact for run 41401986460 and verified the C3 untouched-holdout ROC-AUC values from the machine-readable results: momentum 0.5077; symbol frequency 0.5199; logistic 0.4853; ExtraTrees 0.4792; HistGradientBoosting 0.4883.
+- Reviewed C1/C4 gates. C4 remains fail-closed because C1 identity and event-level corporate-action acceptance is incomplete.
+- Added the C1 event-level review protocol on the C1 phase branch. No hidden reasoning, credentials, raw market prices, ISINs or restricted event rows are stored in the conversation log.
