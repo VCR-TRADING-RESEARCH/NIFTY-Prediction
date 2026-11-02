@@ -133,7 +133,7 @@ def test_response_shape_extracts_nested_dhan_remarks_without_retaining_message()
     assert shape["remarks_type"] == "dict"
     assert shape["provider_error_code"] == "DH-905"
     assert shape["provider_error_type"] == "Input_Exception"
-    assert shape["provider_message_category"] == "DHAN_DH_905"
+    assert shape["provider_message_category"] == "DHAN_INPUT_EXCEPTION_DH905"
     assert "private provider detail" not in str(shape)
 
 def test_probe_covers_exact_windows_that_failed_in_c1():

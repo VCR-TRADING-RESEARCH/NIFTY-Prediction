@@ -940,6 +940,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Run:** [41533794946](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41533794946).
 - **Symptom:** The new offline test expected `DHAN_INPUT_EXCEPTION_DH905`, while the classifier emitted `DHAN_DH_905`. Six other diagnostic tests passed; the live-provider probe was correctly skipped after the offline test gate failed.
 - **Correction:** Map `DH-905` to `DHAN_INPUT_EXCEPTION_DH905` and `DH-907` to `DHAN_DATA_ERROR_DH907`, without retaining provider message text.
-- **Status:** Code correction committed; rerun offline tests and the bounded provider diagnostic.
-- **Prevention:** Add the offline regression expectation before permitting the live probe to run.
+- **Follow-up:** Run [41534173076](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534173076) found one second assertion still expected the old `DHAN_DH_905` label (95 passed, 1 failed). Correct that remaining assertion too. The provider probe was skipped by the workflow's success gate.
+- **Status:** Final test expectation correction committed; rerun offline tests before live diagnostic.
+- **Prevention:** Update all existing assertions whenever a public diagnostic label changes.
 - **Security:** No credentials, raw provider messages, tokens, security IDs, or private reasoning recorded.

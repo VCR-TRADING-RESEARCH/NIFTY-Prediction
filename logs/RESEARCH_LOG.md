@@ -1978,3 +1978,8 @@
 - The bounded response-shape probe [41533187708](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41533187708) returned usable payloads in 23/26 cases, including full 90-day stock/index calls and a 16-symbol burst. Its three failures were all legacy HDFC daily-history tests returning DH-905. This does not explain the 1,011 historical intraday request failures. Exact windows from the failed C1 chunks were added to the next bounded probe.
 - The expanded offline tests exposed E0138: the expected DH-905 category label differed from the emitted label. The code now maps DH-905 / DH-907 to explicit sanitised categories.
 - C2 corrected panel-only build [41530483274](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41530483274) remains in the panel-construction step; no formal C2 result exists. C3 remains gated.
+
+
+## 2026-11-03 — Follow-up to E0138: align all classifier assertions
+- Offline run [41534173076](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534173076) produced 95 passed and 1 failed because a second nested-remarks test still expected `DHAN_DH_905`. The response classifier correctly emitted the explicit `DHAN_INPUT_EXCEPTION_DH905` category.
+- Updated the remaining stale expectation. The associated live exact-window probe was skipped by the workflow's test-success gate; no new provider result is inferred from this failed run.
