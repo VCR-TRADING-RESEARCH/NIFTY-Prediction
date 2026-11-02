@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import hashlib, io, json, os, re, tempfile, zipfile
+import hashlib, io, json, os, re, sys, tempfile, zipfile
 from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
@@ -8,6 +8,8 @@ import pandas as pd
 import requests
 
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 OUT_JSON = ROOT / "research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.json"
 OUT_MD = ROOT / "research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.md"
 PROBE_DATES = ["2018-04-02", "2024-04-17", "2025-10-14", "2026-04-17"]
