@@ -457,7 +457,7 @@
 ## 2026-11-02 — Dhan adjustment check and identity discrepancy
 
 - The bounded Dhan diagnostic completed with a fresh TOTP token. Reliance's 1:1 bonus produced a 0.5 adjusted/raw factor across all OHLC fields; Bajaj Finserv's combined 5:1 split + 1:1 bonus produced 0.1 across all OHLC fields.
-- Bajaj Finserv has a one-session ISIN timing mismatch: the TejHQ raw row on 13-Sep-2022 still carries the old ISIN, while the official NSE circular says the new ISIN is effective from that ex-date; the new ISIN first appears in the source rows on 14-Sep. Logged as E0118, left unresolved.
+- Bajaj Finserv has a one-session ISIN timing mismatch: the TejHQ raw row on 13-Sep-2022 still carries the old ISIN, while NSE Circular CML53597 itself conflicts (w.e.f. 14-Sep in its first sentence; trades from 13-Sep ex-date in the next). A secondary reproduction of BSE Notice 20220908-17 says 13-Sep; TejHQ rows transition on 14-Sep. Logged as E0118 and left unresolved.
 - Dhan report and machine result published. No raw prices or ISINs disclosed; no full-panel adjustment factors applied.
 - The NSE bulk archive route remains permission-gated. C1 corporate-action gate remains NOT PASSED; C1 overall PARTIAL; C2 remains gated. No hidden reasoning or credentials are recorded.
 
