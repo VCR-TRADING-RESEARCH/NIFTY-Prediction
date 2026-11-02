@@ -1,6 +1,6 @@
 # Dhan Daily Adjusted-Price Corporate-Action Diagnostics
 
-**Updated:** 2026-11-02T19:32:28.262016+00:00
+**Updated:** 2026-11-02T19:37:25.301900+00:00
 **Overall status:** PASS_ALL_EVENT_ADJUSTMENTS
 **Dhan daily endpoint:** https://api.dhan.co/v2/charts/historical
 

@@ -1,6 +1,6 @@
 # Dhan Intraday Corporate-Action Scale Diagnostic
 
-**Updated:** 2026-11-02T19:32:36.963359+00:00
+**Updated:** 2026-11-02T19:37:34.168801+00:00
 **Status:** COMPLETED_INTRADAY_SCALE_DIAGNOSTIC
 
 Primary test: aggregate the full Dhan intraday session OHLC for the last cum-event day and ex-date, then compare each same-session OHLC field with Dhan daily adjusted historical OHLC for that exact date. This removes the overnight return from the scale comparison.
