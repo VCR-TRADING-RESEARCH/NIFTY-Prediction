@@ -1997,3 +1997,7 @@
 - The full C1 Dhan coverage audit is currently in progress in run [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975), now using one-second pacing, provider error-code capture and DH-904-only bounded retries.
 - The matching corrected C2 runner/workflow has been committed with the same shared live-data concurrency group. C2 rebuild [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) is queued behind C1 so the two large data pulls will not overlap.
 - Formal coverage and acceptance thresholds remain unchanged. C1/C2 remain unaccepted until their runs publish passing evidence; C3, C4 confirmatory and C5 remain gated.
+
+
+## 2026-11-03 — Cross-phase E0141 update
+- C2 cache persistence was corrected to use the stable HF_TOKEN-derived encryption key rather than the rotating Dhan token. The old pending C2 run was cancelled before execution; replacement run [41536746133](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41536746133) remains queued behind active C1 audit [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975).

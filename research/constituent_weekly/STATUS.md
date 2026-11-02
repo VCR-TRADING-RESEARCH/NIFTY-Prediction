@@ -18,7 +18,7 @@
 |---|---|---|
 | C0 — Registration/governance | PASS | Locked v1.3 plan and governance checks passed |
 | C1 — Point-in-time universe/data audit | TARGET-COVERAGE FAIL / SERIAL REBUILD QUEUED | Seven exact previously failing index/active-stock windows passed; rerun continuous coverage with sanitized provider error capture and C1/C2 request serialization |
-| C2 — Panel labels/features | FAILED ACCEPTANCE / SERIAL REBUILD QUEUED | Run 41530483274 had 206/260 index targets (79.23%); rerun 41535897423 is queued behind C1 with shared Dhan concurrency and unchanged 98% index gate |
+| C2 — Panel labels/features | FAILED ACCEPTANCE / SERIAL REBUILD QUEUED | Run 41530483274 had 206/260 index targets (79.23%); rerun 41536746133 is queued behind C1 with shared Dhan concurrency and unchanged 98% index gate |
 | C3 — Stock models/baselines | GATED | Wait for corrected C2 acceptance and the C1 coverage/identity decision; then rerun with the dynamic final-20% boundary |
 | C4 — Index aggregation/uncertainty | CONFIRMATORY GATED | Do not start confirmatory index aggregation until C1 identity/event exclusions and the registered C4 inputs are accepted |
 | C5 — Economic/execution gate | GATED | Contract-level fills and date-effective Paytm Money costs required before any strategy claim |

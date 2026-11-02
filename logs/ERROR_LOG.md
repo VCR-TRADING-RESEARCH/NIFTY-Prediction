@@ -954,3 +954,8 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Status:** Offline regression tests passed; serialized five-year C1 rebuild [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975) is in progress. C2 rebuild [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) is queued behind it.
 - **Security:** No raw provider messages, tokens, credentials, security IDs or market prices are recorded.
 
+
+
+## E0141 cross-phase update — stable C2 cache key
+- C2's daily/intraday AES-GCM cache previously used the rotating Dhan access token as its encryption key. It now uses the stable HF_TOKEN-derived key, so source cache data can persist across Dhan token refreshes.
+- Original queued C2 run [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) was cancelled before execution when this fix was committed. Replacement [41536746133](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41536746133) is queued behind C1 run [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975).
