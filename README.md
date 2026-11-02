@@ -631,3 +631,11 @@ The former combined C2 panel-and-model workflow has been retired because the loc
 
 
 - **C3 automation:** the stock-modelling workflow supports automatic execution after a successful C2 run, manual dispatch, and controlled reruns after code/spec changes. Latest rerun [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) is using the manifest bundled with its own encrypted C2 artifact.
+
+
+## C3 encrypted-panel handoff recovery — 2026-11-02
+
+- C3 runs [41398510316](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398510316), [41398595959](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398595959), and [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) did not produce valid model results. The last run passed artifact hash checks and offline tests but AES-GCM authentication failed, consistent with a changed HF_TOKEN-derived encryption key.
+- C2 refresh run [41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378) is rebuilding the panel and encrypted artifact using the current HF_TOKEN. A successful C2 completion automatically triggers C3 with that exact run's report and ciphertext.
+- C3 code review corrected a holdout leakage issue: cycles 206–257 are now predicted using training data from cycles 0–205 only. The final holdout is never used in later refits.
+- No C3 model performance, NIFTY prediction edge, or trading strategy is accepted until the new run completes and all validation gates pass.
