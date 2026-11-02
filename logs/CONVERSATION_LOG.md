@@ -522,3 +522,8 @@
 - Protected run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625) passed. It reused the validated token through private, masked Actions environment handoff; all daily and intraday gates succeeded.
 - Same-session intraday OHLC aggregates match Dhan adjusted daily OHLC across both sampled events: RELIANCE (1:1 bonus) and BAJAJFINSV (5:1 split + 1:1 bonus). Pre-event and ex-date ratios were all approximately 1.0; exact sanitised ratios are in `C1_DHAN_INTRADAY_CA_DIAGNOSTIC.md`.
 - This resolves the scale question for two samples only. The larger C1 event and identity gate remains open; confirmatory C4 is still gated. No raw bars, credentials or private reasoning are stored.
+
+
+## 2026-11-03 — Same-session diagnostic report wording corrected
+
+- Confirmed the same-session Dhan intraday versus daily adjusted OHLC check passed both events in protected run 41510761625. Corrected a stale explanatory paragraph in the generated Markdown report so it now describes the actual calculation rather than the earlier overnight comparison.

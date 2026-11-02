@@ -801,3 +801,9 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - BAJAJFINSV split+bonus: pre-date ratios 0.996548, 0.997072, 1.000164, 1.006179; ex-date ratios 1.000000, 0.999756, 1.000000, 0.997899.
 - Both samples classified `INTRADAY_MATCHES_DHAN_DAILY_ADJUSTED_SCALE`. This uses same-session intraday OHLC aggregation versus Dhan daily adjusted historical OHLC and avoids the overnight-return confound in the first probe.
 - Scope remains only two events. The 711 matched-event catalogue and other historical identity cases are still unresolved, so C1 remains PARTIAL; C2 is accepted with C1 limitations; confirmatory C4 and trading C5 remain gated.
+
+
+## 2026-11-03 — Finalised same-session diagnostic report description
+
+- Updated the report generator and saved report to accurately describe the executed same-session OHLC aggregation versus Dhan daily adjusted OHLC, including the expected reciprocal raw-scale factors (2x and 10x). The protected result from run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625) remains the empirical source of the two-event finding.
+- Two sample events match adjusted daily scale; full C1 event review remains open.

@@ -901,3 +901,9 @@
 - BAJAJFINSV 5:1 split + 1:1 bonus (2022-09-13): pre-date ratios 0.996548, 0.997072, 1.000164, 1.006179; ex-date ratios 1.000000, 0.999756, 1.000000, 0.997899. Result: `INTRADAY_MATCHES_DHAN_DAILY_ADJUSTED_SCALE`.
 - The same-session cross-endpoint test removes the overnight move in the earlier exploratory check. It indicates minute bars match Dhan's adjusted daily scale for these two events. It does not establish all-symbol/all-event coverage. No raw prices or intraday bars were published.
 - E0125 closed for the two registered samples. E0126 closed (corrected report method description). Overall C1 remains PARTIAL because the remaining point-in-time event catalogue and identity review are open.
+
+
+## 2026-11-03 — Intraday report-method wording corrected
+
+- The same-session intraday-versus-daily scale comparison passed both sampled events on run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625).
+- A review found the Markdown explanation still described the earlier overnight pre-close-to-ex-open comparison even though the JSON and acceptance gate used same-session comparisons. Corrected the report generator and saved report so the documentation now matches the executed calculation.
