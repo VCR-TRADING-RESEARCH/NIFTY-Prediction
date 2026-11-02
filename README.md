@@ -2,6 +2,8 @@
 
 ## Data rights and next source route
 
+Live research page: https://vcr-trading-research.github.io/NIFTY-Prediction/research/constituent_weekly/
+
 The four-date NSE archive/schema probe passed, but NSE's current Terms of Use prohibit systematic/automated website collection without express written consent, and its Non-Display Usage Policy covers algorithms used for trading decisions. The project will not bulk-crawl NSE archives without an applicable written permission/agreement. Dhan's adjusted daily OHLCV was tested: Reliance 1:1 bonus matched a 0.5 OHLC factor and Bajaj Finserv's 5:1 split + 1:1 bonus matched 0.1. The latter has a one-session ISIN timing discrepancy against NSE Circular CML53597, so C1 remains partial. Dividends, rights and other event classes remain unverified. See the [Dhan diagnostic report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_DHAN_ADJUSTMENT_DIAGNOSTIC.md), [data-rights gate](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_DATA_RIGHTS_AND_ALTERNATIVES.md), and [C1 data rights and alternatives](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_DATA_RIGHTS_AND_ALTERNATIVES.md).
 
 ## Official NSE corporate-action archive probe
