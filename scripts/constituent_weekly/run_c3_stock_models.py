@@ -66,7 +66,8 @@ def main():
     if len(cycles)!=258 or HOLDOUT not in cycles: raise ValueError('C2 cycle or holdout boundary differs from frozen plan')
     primary=stock.primary_flag.astype(str).str.lower().isin(['true','1'])
     d=stock.loc[primary & stock.stock_label.notna()].copy(); d['cycle_idx']=d.cycle_idx.astype(int); d['stock_label']=d.stock_label.astype(int); d['stock_return']=pd.to_numeric(d.stock_return,errors='coerce'); d=d.dropna(subset=['stock_return'])  # Imputers are fitted inside each training fold; retain feature-missing rows.
-    if (d.groupby('cycle_idx').size().reindex(cycles,fill_value=0)<47).any(): raise ValueError('Complete-case C3 rows below 47 in an accepted cycle')
+    per_cycle_n=d.groupby('cycle_idx').size().reindex(cycles,fill_value=0)
+    if (per_cycle_n<=0).any(): raise ValueError('One or more accepted cycles have no usable directional stock labels')
     development_forecast=[c for c in cycles[MIN_PRIOR:] if c<HOLDOUT]
     blocks=[development_forecast[i:i+REFIT] for i in range(0,len(development_forecast),REFIT)]
     blocks.append([c for c in cycles if c>=HOLDOUT])

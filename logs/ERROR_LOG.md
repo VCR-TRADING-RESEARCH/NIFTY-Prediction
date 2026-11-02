@@ -936,3 +936,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Cause:** C3 dropped rows with missing predictor values even though every model pipeline has fold-local median imputation. This could reduce per-cycle complete-case coverage below 47 even though C2 had already accepted the cycle and the imputer can safely handle the missing predictors.
 - **Correction:** Retain rows with valid stock labels/returns and allow the training-fold `SimpleImputer` to handle missing features. Do not impute using full-sample statistics. Continue to enforce the 47-row minimum after primary identity/action exclusions.
 - **Research impact:** No result was produced by the earlier failed run; this is a pre-execution sample-handling correction.
+
+
+## E0105 — 2026-11-02 — Do not reapply the C2 47/94 gate after excluding flat stock labels
+
+- **Severity:** Low — validation logic correction.
+- **Cause:** C2's 47/94 acceptance gate counts primary valid constituent target rows. Nineteen flat stock returns have no UP/DOWN label and are correctly excluded from C3 classification, but this can reduce a cycle's labelled sample below 47 without invalidating C2 acceptance.
+- **Correction:** C3 verifies every accepted cycle retains at least one labelled stock observation; it does not incorrectly rerun the C2 coverage gate on the post-flat-label subset. The original 47/94 gate remains enforced and reported by C2.
+- **Research impact:** No outcomes changed; correction prevents a false rejection caused by mixing the panel acceptance gate with the model-specific labelled sample.
