@@ -756,3 +756,11 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - It prioritises the 37 matched bonus/split/rights/merger-demerger candidates, then buyback and AGM/other candidates; dividend events are handled according to price-index semantics and forecast-time availability.
 - This is a protocol/documentation deliverable only. No additional event has been verified, no adjustment factor has been applied, and no C1 gate has passed.
 - **C1 remains PARTIAL; C2 and confirmatory C4 remain GATED.** Next action: execute the bounded event review and identity reconciliation using permitted issuer evidence and Dhan diagnostics; publish only sanitised aggregate results.
+
+
+## 2026-11-03 — BAJAJFINSV ISIN date adjudicated
+
+- Resolved the 2022-09-13/14 identity discrepancy using the explicit trade-effective clause in NSE CML53597, NSE Clearing FAOP53644 (which confirms 13-Sep ex-date and combined 10x adjustment factor), and the BSE Notice 20220908-17 reproduction.
+- Derived mapping decision: new ISIN is effective for trades from 2022-09-13 inclusive. Preserve the TejHQ 13-Sep old-ISIN field unchanged and flag it as stale source metadata; do not rewrite raw rows.
+- Added [C1_BAJAJFINSV_ISIN_ADJUDICATION.md](C1_BAJAJFINSV_ISIN_ADJUDICATION.md); closed E0118 with source-based adjudication in the error log.
+- This closes only the one-day BAJAJFINSV identity-date dispute. It does not validate the other member events or the full 711-event catalogue. C1 remains PARTIAL; C2/C4 confirmatory remain GATED.
