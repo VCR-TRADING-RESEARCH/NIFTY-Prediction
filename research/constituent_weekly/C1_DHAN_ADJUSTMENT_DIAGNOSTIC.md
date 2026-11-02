@@ -27,6 +27,9 @@
 - Exchange adjustment source: https://archives.nseindia.com/content/circulars/FAOP53548.pdf
 - Security identity transition source: https://nsearchives.nseindia.com/content/circulars/CML53597.pdf
 - ISIN transition verified: False
+- Official NSE ISIN effective date: 2022-09-13 (Circular CML53597)
+- Observed TejHQ daily-row transition date: 2022-09-14
+- Identity discrepancy: the 2022-09-13 row still carries the old ISIN; no correction was applied
 - Pre-event Dhan/raw median ratios: {'open': 0.1, 'high': 0.1, 'low': 0.1, 'close': 0.1}
 - Post-event Dhan/raw median ratios: {'open': 1.0, 'high': 1.0, 'low': 1.0, 'close': 1.0}
 - Relative event factors: {'open': 0.1, 'high': 0.1, 'low': 0.1, 'close': 0.1}
