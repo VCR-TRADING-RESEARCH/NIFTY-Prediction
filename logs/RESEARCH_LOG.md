@@ -842,3 +842,11 @@
 
 
 - The Pages deployment was refreshed after clarifying the conflicting BAJAJFINSV ISIN date wording in NSE CML53597; latest deployment run [41427840788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41427840788) succeeded.
+
+
+## 2026-11-03 — C1 event-level review protocol
+
+- Reviewed the current C1 status, data-rights assessment, corporate-action catalogue, Dhan adjustment diagnostic, continuous coverage report, C4 gate and relevant project conversation history.
+- Confirmed the C1 catalogue contains 711 point-in-time member-event candidates: 625 dividends, 20 buybacks, 19 bonuses, 9 splits, 6 rights, 3 merger/demerger and 29 AGM/other events.
+- Added `research/constituent_weekly/C1_EVENT_REVIEW_PROTOCOL.md` on the C1 phase branch. The protocol preserves price-index dividend semantics, prevents double application of Dhan split/bonus adjustments, separates price-factor validation from security-identity validation, and defines event-window exclusion rules.
+- No new event was verified and no adjustment factor was applied. C1 remains PARTIAL; C2/C4 confirmatory remain gated. This is a bounded process deliverable, not an empirical pass.
