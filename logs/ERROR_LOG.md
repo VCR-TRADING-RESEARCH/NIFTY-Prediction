@@ -917,3 +917,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Run:** [41398595959](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398595959).
 - **Observed:** The commit step attempted to stage C3_RESULTS.md even though the runner had failed before creating it.
 - **Correction:** Stage outputs only after confirming all required report files exist. The current run is not yet complete.
+
+
+## E0105 — 2026-11-02 — AES-GCM authentication failed after ciphertext hashes matched
+
+- **Severity:** High — encrypted data handoff blocked before model fitting.
+- **Run:** [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117).
+- **Observed:** C2 artifact download and preparation passed; C3 matched ciphertext byte lengths and SHA-256 values to the exact artifact manifest. AES-GCM authentication then failed with InvalidTag. This proves the ciphertext bytes and manifest are paired, but the current HF_TOKEN-derived key or associated data does not match the key/AAD used when C2 encrypted the artifact.
+- **Likely cause:** HF_TOKEN changed/rotated between C2 artifact creation and C3 execution. The token is currently used as the encryption key derivation input, so rotating the Hugging Face credential also invalidates previously encrypted cache material.
+- **Correction:** Rebuild the C2 encrypted panel artifact with the current HF_TOKEN and immediately hand that exact run artifact to C3 via workflow_run. This avoids weakening authentication or publishing plaintext. Long-term, encryption should use a dedicated stable repository secret separate from HF_TOKEN rotation.
+- **Status:** No C3 model fitting occurred; the next C2 run is required.

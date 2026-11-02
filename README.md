@@ -378,3 +378,8 @@ First C3 orchestration run [41398510316](https://github.com/VCR-TRADING-RESEARCH
 ## C3 current execution — 2026-11-02
 
 Run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) has passed C2 source discovery, encrypted artifact download and file preparation. Dependency installation is in progress. C3 uses the matching C2 manifest from that artifact and freezes holdout cycles 206–257 from all refitting. No C3 result or trading edge is yet accepted.
+
+
+## C3 blocker — encrypted panel key mismatch
+
+Run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) passed artifact download, exact ciphertext SHA checks and four offline tests, but AES-GCM authentication failed before model fitting. The C2 cache encryption key is derived from HF_TOKEN, so a token rotation is the likely cause. A fresh C2 panel artifact will be encrypted under the current token and handed directly to C3. No model result is accepted.

@@ -918,3 +918,11 @@
 - The exact C2 manifest from the downloaded artifact is copied into the workspace, so its ciphertext SHA-256 values match the two encrypted files.
 - The model runner now freezes holdout cycles 206–257: the entire holdout is predicted from a model trained only on cycles 0–205. No holdout refits are allowed.
 - Earlier failed runs 41398510316 and 41398595959 did not produce accepted model metrics. C3 is not yet complete.
+
+
+## 2026-11-02 — C3 AES-GCM key mismatch and recovery
+
+- C3 run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) passed dependency install, four offline tests, source artifact download, and ciphertext SHA-256 verification. Decryption then failed with AES-GCM InvalidTag.
+- Because hashes matched the exact C2 artifact, the artifact was not truncated or mismatched. The remaining explanation is key/AAD mismatch; code confirms C2 and C3 use the same AAD format and HF_TOKEN-derived key function. A changed HF_TOKEN between the C2 and C3 runs is the likely cause.
+- Recovery: regenerate C2 ciphertext under the current HF_TOKEN, then let workflow_run pass that exact new artifact to C3. No plaintext fallback and no weakened authentication.
+- C3 remains NOT PASSED; no model scores were generated.

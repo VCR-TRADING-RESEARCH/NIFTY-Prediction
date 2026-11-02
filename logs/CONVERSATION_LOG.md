@@ -537,3 +537,9 @@
 
 - Run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) passed source-run discovery, C2 artifact download, and encrypted-file preparation. Dependency installation is in progress.
 - The latest runner corrects holdout leakage and binds the report to the exact encrypted C2 artifact; old runs 41398510316/41398595959 are recorded as failures before accepted modelling.
+
+
+## 2026-11-02 — C3 encrypted panel authentication blocker
+
+- Current run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) verified exact artifact hashes and passed offline tests, but AES-GCM authentication failed before modelling.
+- The key is derived from HF_TOKEN; token rotation between the C2 and C3 runs likely caused the mismatch. Regenerate C2 artifact with the current token and pass the exact new artifact directly to C3. Never bypass authentication or use plaintext.
