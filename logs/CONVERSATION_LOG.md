@@ -478,3 +478,10 @@
 - Recovered the original C3 Actions artifact for run 41401986460 and verified the C3 untouched-holdout ROC-AUC values from the machine-readable results: momentum 0.5077; symbol frequency 0.5199; logistic 0.4853; ExtraTrees 0.4792; HistGradientBoosting 0.4883.
 - Reviewed C1/C4 gates. C4 remains fail-closed because C1 identity and event-level corporate-action acceptance is incomplete.
 - Added the C1 event-level review protocol on the C1 phase branch. No hidden reasoning, credentials, raw market prices, ISINs or restricted event rows are stored in the conversation log.
+
+
+## 2026-11-03 — Exchange-source adjudication of BAJAJFINSV identity date
+
+- Continued C1 after user approval. Public-source review found that NSE Clearing circular FAOP53644 explicitly confirms the 13-Sep-2022 ex-date and combined 10x split/bonus adjustment; the explicit trade-effective clause in NSE CML53597 and the BSE Notice 20220908-17 reproduction both place the new ISIN from trades on the ex-date.
+- Recorded a derived identity mapping from 2022-09-13 inclusive, preserving the conflicting TejHQ raw identifier as stale source metadata rather than rewriting it.
+- Added the C1 adjudication report and closed E0118. Overall C1 remains PARTIAL; C2 and confirmatory C4 remain gated. No private reasoning, credentials or raw prices are stored.
