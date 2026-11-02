@@ -1,21 +1,25 @@
+> **E0139 — 2026-11-03 C2 corrected panel failed acceptance:** run [41530483274](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41530483274) built the 260-cycle panel but only 206/260 NIFTY target cycles passed (79.2308%; required 98%). Exactly 206 cycles also met the 47/94% constituent rule; 10,194 constituent target rows were built. Daily EOD features were available for all 62 symbols. The panel-only workflow stopped before C3 model training. Dhan auth/profile passed. C1 and C2 intraday jobs overlapped; rate-limit contention is a plausible hypothesis, not a confirmed cause. The detailed report is [C2_PANEL_BUILD.md](C2_PANEL_BUILD.md) and [C2_PANEL_BUILD.json](C2_PANEL_BUILD.json).
+
+> **E0135:** The previous 258-cycle data and model artifacts remain superseded; corrected calendar contains 260 cycles.
+
 > **E0136:** The first corrected C2 panel attempt failed at the Dhan profile check before cycle construction. C2 now implements the same bounded TOTP-to-provided-token fallback as the existing preflight and records only sanitized auth status metadata. Offline tests are included in the next push.
 
 > **E0135 — calendar correction:** The 258-cycle panel is quarantined. Corrected reconstruction contains 260 cycles, including the 2021 Diwali-shifted 3-Nov expiry and 2025 holiday-shifted 20-Oct expiry. C2 will rebuild from the corrected parser; C3 derives the final-20% holdout from the actual cycle count.
 
 # BUP-01 Research Status
 
-**Last updated:** 2026-11-02  
+**Last updated:** 2026-11-03 — E0139  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 PARTIAL / CALENDAR CORRECTION IN VALIDATION; C2 PROFILE-AUTH RETRY IN VALIDATION; C3 OLD METRICS SUPERSEDED
-**Prediction status:** Prior 258-cycle panel and dependent C3 metrics remain superseded; corrected 260-cycle C2 rebuild is pending a successful Dhan profile authorization
+**Status:** C0 PASS; C1 TARGET-COVERAGE FAIL / DIAGNOSIS OPEN; C2 PANEL ACCEPTANCE FAIL / REBUILD REQUIRED; C3 GATED
+**Prediction status:** Prior 258-cycle panel and dependent C3 metrics remain superseded; corrected 260-cycle rebuild currently has 79.23% NIFTY target coverage and fails the 98% gate
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Locked v1.3 plan and governance checks passed |
-| C1 — Point-in-time universe/data audit | ACCEPTED WITH LIMITATIONS FOR C2 PROGRESSION | 258/258 intraday weekly target cycles pass; daily OHLCV is 106,392/106,392 across 70 symbols with zero gaps; all seven residual bars validated from official NSE archives and merged via encrypted cache; 711 point-in-time member action candidates still require independent issuer/exchange verification and event-specific treatment; dated historical identity checks remain under review |
-| C2 — Panel labels/features | PASS | 258/258 index targets; 258/258 cycles satisfy 47/94%; 12,807 rows; zero duplicate rows; encrypted panel frozen |
-| C3 — Stock models/baselines | READY TO START | Establish baseline and pooled logistic/regularised regression/ExtraTrees/HistGradientBoosting using cycle-grouped chronological OOF and untouched 20% holdout |
+| C1 — Point-in-time universe/data audit | TARGET-COVERAGE FAIL / DIAGNOSIS OPEN | Corrected audit returned only 26/260 index targets and 13/260 constituent cycles; exact request failure cause remains under investigation |
+| C2 — Panel labels/features | FAILED ACCEPTANCE | Corrected panel has 206/260 valid NIFTY targets (79.23%); 206 cycles meet 47/94%, but required index coverage is 98%; no C3 models trained |
+| C3 — Stock models/baselines | GATED | Wait for corrected C2 panel acceptance; do not compute or cite new model metrics before it passes |
 
 | C4 — Index aggregation/uncertainty | GATED | Separate branch after C3 OOF stock forecasts are frozen |
 | C5 — Economic/execution gate | GATED | Contract-level fills and date-effective Paytm Money costs required before any strategy claim |
@@ -26,8 +30,8 @@
 
 - The first C2 daily-history attempt failed because Dhan's returned daily payload did not match the parser schema for any of 62 symbols. The prior run did not create a usable panel.
 - C2 was changed to use the same pinned NSE EQ yearly partitions as the C1 100%-coverage audit, plus the seven official-NSE supplemental rows; raw source data remains encrypted in the Actions cache.
-- The first rerun then exposed missing explicit workflow dependencies (`huggingface_hub`, `pyarrow`). Both were added to the C2 workflow. The corrected push-triggered run is pending validation.
-- C2 remains IN PROGRESS; no model performance or NIFTY forecast is accepted yet.
+- The first rerun then exposed missing explicit workflow dependencies (`huggingface_hub`, `pyarrow`). Both were added to the C2 workflow. The corrected run [41530483274](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41530483274) completed panel construction but failed formal acceptance at 79.23% index target coverage. The artifact and report are retained; no training was run.
+- C2 is FAILED at the index coverage gate; no model performance or NIFTY forecast is accepted yet.
 
 ## Latest gate update — 2026-11-02
 

@@ -964,3 +964,9 @@
 - Input manifest: 693365a0981d3354a87d8639c1e0ee74022c530b017024d8d3712e91b9014c19.
 - Encrypted panel cache metadata: {}.
 - C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.
+
+
+## 2026-11-03 — Corrected C2 panel execution and formal-gate outcome
+- C2 run [41530483274](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41530483274) passed compile and offline regression tests, authenticated via TOTP, retrieved the data profile successfully and completed 260-cycle panel construction. It saved encrypted cache and uploaded sanitized diagnostics.
+- The formal gate failed: 206/260 index target cycles (79.2308%) versus the required 98%. 206 cycles met the stock 47/94% rule; 10,194 stock target rows were created; all 62 symbols had sufficient daily EOD history. Missing intraday targets were 54 index cycles and 26 constituent-cycle observations. No C3 models were trained.
+- C1 and C2 intraday jobs overlapped; rate contention is plausible given Dhan's documented 5 requests/second Data API limit, but the error response codes were not captured, so causality is unproven. The next rebuild must serialize Dhan workflows, preserve sanitized error categories and retain the acceptance threshold.

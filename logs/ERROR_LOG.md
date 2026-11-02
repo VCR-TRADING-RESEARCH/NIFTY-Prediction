@@ -899,3 +899,14 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Error category: RuntimeError.
 - Source location: {'file': 'run_c2_panel_and_models.py', 'function': 'main', 'line': 798}.
 - No panel acceptance is claimed for this run.
+
+
+## E0139 — 2026-11-03 — Corrected C2 panel failed NIFTY target-coverage gate
+- **Severity:** High — C2 acceptance blocked.
+- **Run:** [41530483274](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41530483274).
+- **Observed:** The corrected 260-cycle panel runner completed acquisition and produced 10,194 constituent target rows. It had 206 valid NIFTY target cycles (79.2308%; acceptance requires at least 98%), and 206 cycles passed the 47/94% constituent rule. Daily EOD features were available for all 62 point-in-time symbols; 79 rows lacked daily feature history, 26 constituent targets were missing, and 54 index targets were missing. Authentication succeeded and the Dhan profile returned HTTP 200.
+- **Outcome:** The panel-only run stopped at formal acceptance. No stock classifiers, NIFTY meta-models, C3 forecasts or trading results were generated. Encrypted cache and sanitized diagnostic artifact were saved.
+- **Possible contributing factor, not proven:** C1 and C2 historical intraday acquisition jobs overlapped and share the same Dhan Data API account. Dhan documents a 5 requests/second Data API rate limit. Their configured inter-request delays could exceed that combined rate when concurrent. The runner did not preserve per-request provider error codes, so this is not confirmed as the cause.
+- **Next action:** Serialize all Dhan-heavy C1/C2 workflows, use a conservative shared request pace, preserve sanitized provider error codes, then rerun once. Do not lower the 98% acceptance threshold or silently impute missing index targets.
+- **Status:** Open. C2 remains failed pending a clean, serialized rebuild.
+- **Security:** No secrets, raw market prices, tokens or security IDs logged.
