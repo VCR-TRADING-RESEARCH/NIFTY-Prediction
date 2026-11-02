@@ -491,3 +491,11 @@ The double-escaped fallback-token newline guard was corrected in commit c8253e9.
 - **Verification:** attempt 2 passed the complete workflow, including regression tests, chronological stock-model execution, sanitized result artifact upload and branch publication.
 - **Research effect:** attempt 1 produced no model fit; accepted exploratory results come only from attempt 2.
 - **Security:** no plaintext data or secret values were published.
+
+
+## E0107 — 2026-11-02 — C6 machine-readable audit status (RESOLVED)
+
+- The C6 markdown status/report said PASS WITH LIMITATIONS, while C6_RESULTS_SUMMARY.json still said AUDIT_PENDING.
+- Corrected the JSON status, recorded audit scope/run and added an assertion in the audit script.
+- Verified by follow-up workflow [41419571678](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41419571678): arithmetic, phase gates, manuscript sections and figures all passed.
+- No result metrics or research conclusions changed.

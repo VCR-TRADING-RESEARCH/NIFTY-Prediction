@@ -2,6 +2,8 @@
 
 ## Latest BUP-01 research status — 2026-11-02
 
+**Final metadata re-audit:** [C6 run 41419571678](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41419571678) passed after the machine-readable summary was reconciled to `AUDIT_PASS_WITH_LIMITATIONS`.
+
 **Overall:** C1 PARTIAL; C2 panel PASS WITH C1 LIMITATIONS; C3 stock model EXPLORATORY COMPLETE / NO EDGE; C3-X NIFTY aggregation EXPLORATORY / INCONCLUSIVE; C4 confirmatory GATED; C5 BLOCKED; C6 manuscript and automated summary audit PASS WITH LIMITATIONS.
 
 - **C2:** [run 41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378) passed all 15 steps and formal acceptance: 258/258 valid index targets; 12,807 constituent-cycle rows; 61 symbols; zero duplicate cycle keys.

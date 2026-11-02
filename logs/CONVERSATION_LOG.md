@@ -270,3 +270,8 @@
 - C3-X NIFTY aggregation on 51 cycles remained exploratory and statistically inconclusive.
 - C4 branch/workflow 41411507365 passed the fail-closed check but remains gated by C1. C5 branch/workflow 41410573458 passed its fail-closed check but economics remain not run. C6 branch/workflow 41411057657 passed arithmetic and manuscript structure audits with limitations.
 - Main README and research log refreshed. Visible user decisions and results are recorded; private reasoning and secrets are not written.
+
+
+## 2026-11-02 — User said “Resume”; final BUP-01 audit reconciliation
+
+The final review found the C6 machine-readable summary retained AUDIT_PENDING despite the completed Markdown audit. Corrected the JSON status and added a guard in the independent audit script. Follow-up run [41419571678](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41419571678) passed. C6 is PASS WITH LIMITATIONS; C1 remains PARTIAL, C4 GATED, C5 BLOCKED / NOT RUN and no trading strategy is validated. This records visible instructions and outcomes only.

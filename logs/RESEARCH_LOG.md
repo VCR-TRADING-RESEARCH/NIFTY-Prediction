@@ -430,3 +430,8 @@
 - C5 workflow 41410573458 passed its fail-closed check; economic testing remains blocked because no accepted signal or instrument specification exists.
 - C6 workflow 41411057657 passed the sanitised arithmetic and manuscript/figure audit. C6 status is PASS WITH LIMITATIONS, not raw-data re-performance or external human review.
 - Main README now links C4/C5/C6 phase reports. Operating rules remain in docs/RESEARCH_OPERATING_RULES.md. No strategy or live signal is validated.
+
+
+## 2026-11-02 — C6 summary status consistency verified
+
+The C6 JSON status was corrected from AUDIT_PENDING to AUDIT_PASS_WITH_LIMITATIONS to match C6_STATUS.md and C6_AUDIT_REPORT.md. The independent audit script now asserts the status. Follow-up run [41419571678](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41419571678) passed all checks. No results changed.
