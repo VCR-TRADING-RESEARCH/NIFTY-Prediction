@@ -1,8 +1,8 @@
 # C1 Continuous Dhan Stock and NIFTY Target Coverage Report
 
-**Updated:** 2026-11-01T14:25:13.654424+00:00
-**Status:** DATA_COVERAGE_PASS_IDENTITY_ACTION_REVIEW_PENDING
-**Target coverage gate:** PASS
+**Updated:** 2026-11-02T21:54:16.471643+00:00
+**Status:** PARTIAL_OR_BLOCKED_TARGET_COVERAGE
+**Target coverage gate:** FAIL
 **Security/action gate:** SYMBOL_MAPPING_RESOLVED_KNOWN_AND_UNIVERSAL_CORPORATE_ACTION_REVIEW_PENDING
 
 ## Registered scope
@@ -17,14 +17,14 @@
 
 | Metric | Result |
 |---|---:|
-| Scheduled cycles | 258 |
-| Valid NIFTY target cycles | 258 |
-| NIFTY target valid fraction | 100.00% |
-| Cycles meeting 47 / 94% stock rule | 258 |
-| Cycles meeting stock + index data gates | 258 |
-| Confirmatory cycles after 104 prior cycles | 154 |
-| Minimum constituent coverage fraction | 98.00% |
-| Median valid constituents | 50.0 |
+| Scheduled cycles | 260 |
+| Valid NIFTY target cycles | 26 |
+| NIFTY target valid fraction | 10.00% |
+| Cycles meeting 47 / 94% stock rule | 13 |
+| Cycles meeting stock + index data gates | 13 |
+| Confirmatory cycles after 104 prior cycles | 0 |
+| Minimum constituent coverage fraction | 0.00% |
+| Median valid constituents | 0.0 |
 
 ## Known corporate-action crossing exclusions
 
@@ -47,7 +47,7 @@
 - Membership SHA-256: dda5d0aa6cb4feec5edaa53c9a7b099b5d9e46b6020c1ab69c5913f5402d2a08
 - Expiry calendar SHA-256: a1a37949278934fbddebd7ea61092930eb7f25ba171c95fca1421e5ae098eaa5
 - Official NIFTY daily-session SHA-256: 5fee1979958e96276e53054c3e76b3818aa6cc1b3abe0e88dd5647c2976104c7
-- Dhan scrip-master SHA-256: ad00a05b69606346a5e796bef8715a981242eab8063d615294ce8b3e54981a6a
+- Dhan scrip-master SHA-256: 83c59ef4b2a6234cdda916f0955a9cd7f374989236bb24a5ffc37e5587bd0acd
 - Dhan requests this run: 1083
 - Cached index chunks: 21; cached stock-symbol chunks: 1062
 

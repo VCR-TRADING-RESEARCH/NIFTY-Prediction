@@ -603,18 +603,18 @@ Protected Actions run [41224048773](https://github.com/VCR-TRADING-RESEARCH/NIFT
 <!-- C1_CONTINUOUS_COVERAGE_START -->
 ## Latest continuous Dhan stock + NIFTY target coverage audit
 
-- Updated (UTC): 2026-11-01T14:25:13.654424+00:00
-- Auditor status: **DATA_COVERAGE_PASS_IDENTITY_ACTION_REVIEW_PENDING**
-- Stock/index data-coverage gate: **PASS**
+- Updated (UTC): 2026-11-02T21:54:16.471643+00:00
+- Auditor status: **PARTIAL_OR_BLOCKED_TARGET_COVERAGE**
+- Stock/index data-coverage gate: **FAIL**
 - Security/action identity gate: **SYMBOL_MAPPING_RESOLVED_KNOWN_AND_UNIVERSAL_CORPORATE_ACTION_REVIEW_PENDING**
-- Window: 2021-11-12 to 2026-10-27
-- Scheduled expiry cycles: 258
-- Valid observed NIFTY anchor/expiry targets: 258 / 258 (100.00%)
-- Cycles meeting the 47-stock / 94% member coverage gate: 258
-- Cycles accepted for data coverage (including the observed NIFTY target): 258
-- Confirmatory cycles after 104 prior accepted cycles: 154
-- Minimum cycle member coverage: 98.00%
-- Median valid member count: 50.0
+- Window: 2021-11-08 to 2026-10-27
+- Scheduled expiry cycles: 260
+- Valid observed NIFTY anchor/expiry targets: 26 / 260 (10.00%)
+- Cycles meeting the 47-stock / 94% member coverage gate: 13
+- Cycles accepted for data coverage (including the observed NIFTY target): 13
+- Confirmatory cycles after 104 prior accepted cycles: 0
+- Minimum cycle member coverage: 0.00%
+- Median valid member count: 0.0
 - Dhan requests in this run: 1083
 - Reused cached 90-day chunks: index=0, stock-symbol=0
 - Unresolved security symbols: 0

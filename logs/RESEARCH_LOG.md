@@ -971,3 +971,13 @@
 - C1 and C2 parsers now accept the two explicit verified status values only when the contract-expiry flag is true. Regression tests cover both shifted dates and the cycle split.
 - C3's holdout boundary is calculated as floor(80% of eligible cycles): 206 for 258 and 208 for 260.
 - Next: cached C1 coverage refresh, C2 panel-only rebuild, automatic C3 rerun, then recalculate event-cycle sensitivity against the new C2 manifest. No strategy or cost claim is authorised by this correction.
+
+
+## 2026-11-02 — C1 continuous stock/index target coverage
+
+- **Auditor status:** PARTIAL_OR_BLOCKED_TARGET_COVERAGE; data-coverage gate: FAIL; identity/action gate: SYMBOL_MAPPING_RESOLVED_KNOWN_AND_UNIVERSAL_CORPORATE_ACTION_REVIEW_PENDING.
+- **Window:** 2021-11-08 to 2026-10-27.
+- **Coverage:** 26/260 valid NIFTY targets; 13 cycles meet the stock and index data rules; 0 confirmatory cycles after the 104-cycle warm-up.
+- **API/cache:** 1083 requests this run; reused 0 index and 0 stock-symbol chunks.
+- **Interpretation:** data coverage is assessed independently of security identity/corporate-action treatment. This audit does not train or evaluate a model and does not unlock C2.
+- **Artifacts:** C1_CONTINUOUS_COVERAGE.json and C1_CONTINUOUS_COVERAGE_REPORT.md.
