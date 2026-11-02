@@ -2,73 +2,119 @@
   "auth_method": "totp_refresh",
   "credentials_or_tokens_recorded": false,
   "data_plan_active": true,
-  "dhan_daily_request_attempts": 1,
-  "diagnostic": {
-    "dates_checked": 9,
-    "dates_matched": 9,
-    "expected_post_ex_date_factor": 1.0,
-    "expected_pre_ex_date_factor": 0.5,
-    "isin_published": false,
-    "post_ex_date_median_factor_by_ohlc": {
-      "close": 1.0,
-      "high": 1.0,
-      "low": 1.0,
-      "open": 1.0
+  "encrypted_partition_cache_hits": 2,
+  "encrypted_partition_downloads": 0,
+  "events": [
+    {
+      "action": "BONUS_1_TO_1",
+      "dhan_daily_request_attempts": 1,
+      "diagnostic": {
+        "dates_checked": 9,
+        "dates_matched": 9,
+        "expected_pre_ex_date_factor": 0.5,
+        "factor_check_passed": true,
+        "isin_published": false,
+        "post_ex_date_median_dhan_to_raw_by_ohlc": {
+          "close": 1.0,
+          "high": 1.0,
+          "low": 1.0,
+          "open": 1.0
+        },
+        "post_ex_date_session_count": 4,
+        "post_factor_check_passed": true,
+        "post_factor_tolerance": [
+          0.9,
+          1.05
+        ],
+        "pre_ex_date_median_dhan_to_raw_by_ohlc": {
+          "close": 0.5,
+          "high": 0.5,
+          "low": 0.500002,
+          "open": 0.5
+        },
+        "pre_ex_date_session_count": 5,
+        "pre_factor_tolerance": [
+          0.475,
+          0.525
+        ],
+        "raw_prices_published": false,
+        "raw_unique_isin_count": 1,
+        "relative_event_factor_by_ohlc": {
+          "close": 0.5,
+          "high": 0.5,
+          "low": 0.500002,
+          "open": 0.5
+        },
+        "status": "PASS_ADJUSTMENT_FACTOR"
+      },
+      "ex_date": "2024-10-28",
+      "exchange_source": "https://nsearchives.nseindia.com/content/circulars/FAOP64621.pdf",
+      "expected_pre_factor": 0.5,
+      "issuer_source": "https://www.ril.com/sites/default/files/2024-10/SE_16102024.pdf",
+      "sample_dates": [
+        "2024-10-21",
+        "2024-10-22",
+        "2024-10-23",
+        "2024-10-24",
+        "2024-10-25",
+        "2024-10-28",
+        "2024-10-29",
+        "2024-10-30",
+        "2024-11-04"
+      ],
+      "status": "PASS_ADJUSTMENT_FACTOR",
+      "symbol": "RELIANCE",
+      "tejhq_cache": {
+        "dataset_revision": "f576704883fff86a6facdcde336db6ce19502063",
+        "encrypted_cache_hit": true,
+        "raw_partition_sha256": "a09cd025b558eb833fb87d1ae11ebdf44f1822e67c67d09bc0463d50566eea4c",
+        "raw_values_persisted": false,
+        "unique_isin_count": 1,
+        "valid_sample_sessions": 9
+      }
     },
-    "post_ex_date_session_count": 4,
-    "post_factor_check_passed": true,
-    "post_factor_tolerance": [
-      0.97,
-      1.03
-    ],
-    "pre_ex_date_median_factor_by_ohlc": {
-      "close": 0.5,
-      "high": 0.5,
-      "low": 0.500002,
-      "open": 0.5
-    },
-    "pre_ex_date_session_count": 5,
-    "pre_factor_check_passed": true,
-    "pre_factor_tolerance": [
-      0.48,
-      0.52
-    ],
-    "raw_prices_published": false,
-    "raw_unique_isin_count": 1,
-    "status": "PASS_BONUS_ADJUSTMENT_FACTOR"
-  },
-  "event": {
-    "ex_date": "2024-10-28",
-    "ratio": "1:1",
-    "symbol": "RELIANCE",
-    "type": "BONUS"
-  },
+    {
+      "action": "SPLIT_5_TO_1_PLUS_BONUS_1_TO_1",
+      "ex_date": "2022-09-13",
+      "exchange_source": "https://archives.nseindia.com/content/circulars/FAOP53548.pdf",
+      "expected_pre_factor": 0.1,
+      "issuer_source": "https://www.bajajfinserv.in/finserv-digital-annual-report-fy23/assets/pdf/Bajaj-Finserv-AnnualReport-2022-23.pdf",
+      "raw_reference_qa": {
+        "duplicate_session_count": 0,
+        "invalid_ohlc_row_count": 0,
+        "invalid_volume_row_count": 0,
+        "unique_isin_count": 2,
+        "valid_session_count": 11
+      },
+      "sample_dates": [
+        "2022-09-05",
+        "2022-09-06",
+        "2022-09-07",
+        "2022-09-08",
+        "2022-09-09",
+        "2022-09-12",
+        "2022-09-13",
+        "2022-09-14",
+        "2022-09-15",
+        "2022-09-16",
+        "2022-09-19"
+      ],
+      "status": "BLOCKED_RAW_REFERENCE_QA",
+      "symbol": "BAJAJFINSV",
+      "tejhq_cache": {
+        "dataset_revision": "f576704883fff86a6facdcde336db6ce19502063",
+        "encrypted_cache_hit": true,
+        "raw_partition_sha256": "23c40086ca1936f86957708c092b4a3ca777735522030060f20770925b6f143e",
+        "raw_values_persisted": false,
+        "unique_isin_count": 2,
+        "valid_sample_sessions": 11
+      }
+    }
+  ],
   "raw_event_rows_published": false,
   "raw_prices_published": false,
-  "sample_dates": [
-    "2024-10-21",
-    "2024-10-22",
-    "2024-10-23",
-    "2024-10-24",
-    "2024-10-25",
-    "2024-10-28",
-    "2024-10-29",
-    "2024-10-30",
-    "2024-11-04"
-  ],
-  "sources": {
-    "issuer": "https://www.ril.com/sites/default/files/2024-10/SE_16102024.pdf",
-    "nse_contract_adjustment": "https://nsearchives.nseindia.com/content/circulars/FAOP64621.pdf"
-  },
-  "status": "PASS_BONUS_ADJUSTMENT_FACTOR",
-  "tejhq_cache": {
-    "dataset_revision": "f576704883fff86a6facdcde336db6ce19502063",
-    "encrypted_cache_hit": false,
-    "raw_partition_sha256": "a09cd025b558eb833fb87d1ae11ebdf44f1822e67c67d09bc0463d50566eea4c",
-    "raw_values_persisted": false,
-    "unique_isin_count": 1,
-    "valid_sample_sessions": 9
-  },
+  "resolved_event_symbols": 2,
+  "status": "PARTIAL_OR_BLOCKED",
   "token_refresh_status": "SUCCESS",
-  "updated_at_utc": "2026-11-02T09:56:20.229479+00:00"
+  "updated_at_utc": "2026-11-02T10:00:21.186037+00:00"
 }
