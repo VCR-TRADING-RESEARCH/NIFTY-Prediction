@@ -135,3 +135,18 @@ def test_response_shape_extracts_nested_dhan_remarks_without_retaining_message()
     assert shape["provider_error_type"] == "Input_Exception"
     assert shape["provider_message_category"] == "DHAN_DH_905"
     assert "private provider detail" not in str(shape)
+
+def test_probe_covers_exact_windows_that_failed_in_c1():
+    from scripts.constituent_weekly.probe_c1_dhan_intraday_response_shape import CASES
+
+    case_names = {item["name"] for item in CASES}
+    assert {
+        "index_exact_first_c1_failed_window",
+        "stock_exact_first_c1_failed_window",
+        "stock_adani_exact_first_c1_failed_window",
+        "index_exact_c1_failed_window_2023",
+        "stock_exact_c1_failed_window_2023",
+        "index_exact_c1_failed_window_2024",
+        "stock_exact_c1_failed_window_2024",
+    }.issubset(case_names)
+
