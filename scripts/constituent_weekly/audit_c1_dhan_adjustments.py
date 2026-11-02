@@ -78,12 +78,16 @@ def compute_adjustment_diagnostic(
     for _, row in joined.iterrows():
         day = str(row["session_date"])
         for field in PRICE_FIELDS:
-            dhan_value = pd.to_numeric(row[f"{field}_dhan"], errors="coerce")
-            raw_value = pd.to_numeric(row[f"{field}_raw"], errors="coerce")
+            try:
+                dhan_value = float(row[f"{field}_dhan"])
+                raw_value = float(row[f"{field}_raw"])
+            except (TypeError, ValueError):
+                return {"status": "INVALID_PRICE_OBSERVATION", "dates_checked": int(len(joined)),
+                        "dates_matched": int(len(joined)), "raw_unique_isin_count": 1}
             if not np.isfinite(dhan_value) or not np.isfinite(raw_value) or dhan_value <= 0 or raw_value <= 0:
                 return {"status": "INVALID_PRICE_OBSERVATION", "dates_checked": int(len(joined)),
                         "dates_matched": int(len(joined)), "raw_unique_isin_count": 1}
-            ratio = float(dhan_value / raw_value)
+            ratio = dhan_value / raw_value
             ratios[field].append(ratio)
             (pre_ratios if day < ex_date else post_ratios)[field].append(ratio)
 
