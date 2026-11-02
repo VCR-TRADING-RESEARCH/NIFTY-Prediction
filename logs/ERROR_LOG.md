@@ -864,3 +864,22 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Cause:** The manual/push source-run resolver called GitHub CLI without setting `GH_TOKEN`; GitHub CLI exited with code 4. The always-run publish step then attempted to stage result paths that did not exist, causing a secondary error.
 - **Correction:** Add `GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}` to the source resolver. Make the result commit step conditional on all three sanitized output files existing. Keep the encrypted OOF output optional in the artifact on failure.
 - **Research impact:** None; model execution never began, so no result or inference was produced. The encrypted C2 artifact remains available.
+
+
+## E0101 — 2026-11-02 — C3 workflow source-run discovery failed before model execution
+
+- **Severity:** Medium — orchestration only; no panel decryption or modelling occurred.
+- **Run:** [41398510316](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398510316).
+- **Observed:** GitHub CLI source-run discovery initially lacked GH_TOKEN and failed before artifact download. The always-run commit step also attempted to stage absent output files. The current workflow has a GH_TOKEN environment and guarded staging; this failed run is not model evidence.
+
+## E0102 — 2026-11-02 — C3 holdout refit leakage found before valid modelling
+
+- **Severity:** High — statistical protocol flaw.
+- **Observed:** The original rolling four-cycle refit loop continued through cycles 206–257, allowing earlier holdout labels into later holdout fits.
+- **Correction:** Development refits now stop at cycle 205. The entire 52-cycle holdout is predicted as one block using only cycles 0–205 for training. No holdout labels enter fitting, tuning or calibration.
+
+## E0103 — 2026-11-02 — C3 used stale C2 manifest metadata for newer ciphertext
+
+- **Severity:** High — encrypted-source integrity mismatch.
+- **Observed:** C3 branch retained C2 report metadata from run 41353406358, while the artifact from run 41357141947 contained new AES-GCM ciphertext (random nonces) with different SHA-256 hashes, despite the same underlying input manifest hash.
+- **Correction:** C3 now copies the sanitized C2_PANEL_BUILD.json from the exact downloaded C2 run artifact before resolving ciphertext filenames and verifying hashes. No stale manifest is used.

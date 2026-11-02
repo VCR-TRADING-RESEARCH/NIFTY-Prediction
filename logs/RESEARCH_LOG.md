@@ -902,3 +902,11 @@
 - Limitations remain visible: 292 identity-flagged rows, 3 known action-crossing rows, 92 stock daily-feature missing rows and 19 flat stock labels. User-authorized progression waiver is not certification of the unresolved historical identity/action catalogue.
 - A metadata-only defect was found: two derived cross-sectional feature names are repeated in the report's feature list, although the dataframe columns are generated once. Log as E0100; correct the manifest before C3 consumes it.
 - C3 confirmatory work is opened on its own branch. The encrypted panel must be transferred to C3 as ciphertext and decrypted only inside Actions. Chronological cycle-grouped folds, 104-cycle warm-up, and untouched holdout remain mandatory.
+
+
+## 2026-11-02 — C3 orchestration and validation corrections
+
+- C3 run [41398510316](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398510316) failed before model fitting. Source discovery lacked GH_TOKEN; output staging also failed on absent files. The active workflow now supplies GH_TOKEN and stages only files that exist.
+- Holdout code review found the rolling refit loop crossed into cycles 206–257. Corrected: four-cycle refits apply only to development cycles 104–205; all holdout cycles are predicted from training cycles 0–205 only.
+- Verified that the C3 branch's C2 report was stale relative to the successful 41357141947 artifact's random-nonce ciphertext hashes. C3 now takes the report from the same artifact as the ciphertext before validating hashes and decrypting.
+- No C3 performance result is accepted until the corrected workflow passes all gates.

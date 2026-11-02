@@ -67,9 +67,13 @@ def main():
     primary=stock.primary_flag.astype(str).str.lower().isin(['true','1'])
     d=stock.loc[primary & stock.stock_label.notna()].copy(); d['cycle_idx']=d.cycle_idx.astype(int); d['stock_label']=d.stock_label.astype(int); d['stock_return']=pd.to_numeric(d.stock_return,errors='coerce'); d=d.dropna(subset=FEATURES+['stock_return'])
     if (d.groupby('cycle_idx').size().reindex(cycles,fill_value=0)<47).any(): raise ValueError('Complete-case C3 rows below 47 in an accepted cycle')
-    forecast_cycles=cycles[MIN_PRIOR:]; blocks=[forecast_cycles[i:i+REFIT] for i in range(0,len(forecast_cycles),REFIT)]; out=[]
+    development_forecast=[c for c in cycles[MIN_PRIOR:] if c<HOLDOUT]
+    blocks=[development_forecast[i:i+REFIT] for i in range(0,len(development_forecast),REFIT)]
+    blocks.append([c for c in cycles if c>=HOLDOUT])
+    out=[]
     for block in blocks:
-        start=block[0]; tr=d[d.cycle_idx<start]; te=d[d.cycle_idx.isin(block)]
+        start=block[0]; train_cutoff=min(start,HOLDOUT)
+        tr=d[d.cycle_idx<train_cutoff]; te=d[d.cycle_idx.isin(block)]
         if tr.cycle_idx.nunique()<MIN_PRIOR or tr.stock_label.nunique()<2: raise ValueError('Warm-up or class diversity gate failed at '+str(start))
         xtr=tr[FEATURES].to_numpy(float); xte=te[FEATURES].to_numpy(float); y=tr.stock_label.to_numpy(int); w=weights(tr.cycle_idx)
         row=te[['cycle_idx','anchor_date','expiry_date','symbol','stock_label','stock_return']].copy()

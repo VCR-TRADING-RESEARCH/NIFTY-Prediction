@@ -368,3 +368,8 @@ The pinned independent source returned 4/7 valid exact-date EQ OHLCV rows. Remai
 <!-- BUP01_C2_PANEL_STATUS_START -->
 > **BUP-01 C2:** **Formal C2 panel run 41353406358:** COMPLETED; 258 scheduled cycles; 258 valid NIFTY targets (100.00%); 258 cycles pass the 47/94% stock rule; 12807 constituent-cycle rows. Full panel stored in encrypted Actions cache; no model fitting in C2. [panel report](research/constituent_weekly/C2_PANEL_BUILD.md) · [research status](research/constituent_weekly/STATUS.md)
 <!-- BUP01_C2_PANEL_STATUS_END -->
+
+
+## C3 gate corrections — 2026-11-02
+
+First C3 orchestration run [41398510316](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398510316) failed before model fitting. C3 now takes the exact sanitized manifest from the downloaded C2 artifact, verifies its paired ciphertext hashes, and decrypts only inside Actions. The workflow has guarded source discovery/output handling. A code-review correction also freezes the final 20% holdout (cycles 206–257): all holdout predictions are fitted exclusively on development cycles 0–205. No C3 model result is yet accepted.
