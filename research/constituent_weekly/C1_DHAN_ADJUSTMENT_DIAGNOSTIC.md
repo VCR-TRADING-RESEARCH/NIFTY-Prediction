@@ -28,6 +28,7 @@
 - Issuer source: https://www.bajajfinserv.in/finserv-digital-annual-report-fy23/assets/pdf/Bajaj-Finserv-AnnualReport-2022-23.pdf
 - Exchange adjustment source: https://archives.nseindia.com/content/circulars/FAOP53548.pdf
 - Security identity transition source: https://nsearchives.nseindia.com/content/circulars/CML53597.pdf
+- BSE Notice 20220908-17 reproduction (secondary copy): https://in.marketscreener.com/quote/stock/BSE-LIMITED-33930062/news/New-ISIN-Number-of-Bajaj-Finserv-Limited-Scrip-Code-532978-41723564/
 - ISIN transition verified: False
 - Official NSE ISIN effective date: 2022-09-13 (Circular CML53597)
 - Observed TejHQ daily-row transition date: 2022-09-14
