@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-11-03",
+  "status": "COMPLETED_FOR_37_COMPLEX_CANDIDATES; C1_OVERALL_PARTIAL_NOT_PASSED",
+  "scope": "recipient-encrypted, personal-use-only candidate queue; aggregate only",
+  "queue": {
+    "candidates": 37,
+    "point_in_time_membership_matches": 37,
+    "ambiguous_membership_matches": 0,
+    "candidate_feed_counts": {
+      "bonus_labelled": 19,
+      "split": 9,
+      "rights": 6,
+      "merger_demerger": 3
+    }
+  },
+  "event_classification": {
+    "equity_bonus": 17,
+    "split": 9,
+    "rights": 6,
+    "merger_demerger": 3,
+    "bonus_label_reclassified_as_non_equity_debenture_distribution": 2,
+    "total": 37
+  },
+  "source_review": {
+    "event_terms_and_record_date_evidence": 37,
+    "issuer_first_party_sources": 35,
+    "official_exchange_primary_sources_where_issuer_notice_not_located": 2,
+    "unresolved_event_terms_in_this_37_candidate_batch": 0
+  },
+  "identity_and_price_gates": {
+    "membership_join_unambiguous": true,
+    "complete_historical_isin_and_predecessor_successor_identity_pass": false,
+    "full_event_price_series_reconciliation_pass": false,
+    "dhan_same_session_intraday_vs_daily_scale_samples_passed": 2,
+    "dhan_same_session_adjustment_scale_sample_is_universal_evidence": false
+  },
+  "adjustment_disposition": {
+    "manual_bonus_or_split_factors_applied_to_panel": 0,
+    "rights_terp_factors_computed": 0,
+    "merger_demerger_generic_factors_applied": 0,
+    "affected_stock_cycle_confirmatory_release": "NOT_APPROVED"
+  },
+  "remaining_711_catalogue_scope": {
+    "dividends": 625,
+    "buybacks": 20,
+    "agm_or_other": 29,
+    "complex_candidates_reviewed": 37,
+    "total": 711
+  },
+  "key_corrections": {
+    "non_equity_debenture_distributions_reclassified": 2,
+    "issuer_corrigendum_record_date_updates_applied": 1,
+    "dated_bajaj_finserv_identity_adjudication_applied": 1
+  },
+  "publication_controls": {
+    "raw_tejhq_rows_published": false,
+    "raw_market_bars_published": false,
+    "raw_isins_published": false,
+    "source_subjects_or_cleartext_candidate_rows_published": false,
+    "recipient_private_key_published": false
+  },
+  "phase_disposition": {
+    "C1": "PARTIAL / NOT PASSED",
+    "C2": "PANEL PASS WITH C1 LIMITATIONS (per existing progression decision)",
+    "C3": "EXPLORATORY COMPLETE; no stock classifier beat the momentum accuracy baseline on untouched holdout",
+    "C4": "CONFIRMATORY GATED",
+    "C5": "TRADING / EXECUTION GATED"
+  }
+}

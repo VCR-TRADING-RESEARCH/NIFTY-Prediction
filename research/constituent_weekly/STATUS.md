@@ -1,18 +1,18 @@
 # BUP-01 Research Status
 
-**Last updated:** 2026-11-02  
+**Last updated:** 2026-11-03  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 intraday target-data sub-gate PASS; daily OHLCV COMPLETE at 106,392/106,392 (100%); overall C1 PARTIAL pending event-level corporate-action verification and dated historical security-identity closure  
-**Prediction status:** No constituent panel, trained stock model or bottom-up forecast exists  
+**Status:** C0 PASS; C1 PARTIAL / NOT PASSED after the 37-candidate complex-event source review; C2 panel PASS WITH C1 LIMITATIONS; C3 exploratory results complete with no confirmed stock-model edge; confirmatory C4 and trading C5 gated  
+**Prediction status:** C2 frozen panel accepted (258/258 cycles); C3 exploratory OOF/holdout stock models completed; no confirmatory bottom-up NIFTY forecast or predictive edge is accepted  
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Locked v1.3 plan and governance checks passed |
-| C1 — Point-in-time universe/data audit | PARTIAL / CORPORATE ACTION + IDENTITY REVIEW | 258/258 intraday weekly target cycles pass; daily OHLCV is 106,392/106,392 across 70 symbols with zero gaps; all seven residual bars validated from official NSE archives and merged via encrypted cache; 711 point-in-time member action candidates still require independent issuer/exchange verification and event-specific treatment; dated historical identity checks remain under review |
-| C2 — Panel labels/features | GATED | Build only after C1 acceptance; freeze source hashes, exclusion ledger and chronological split |
-| C3 — Stock models/baselines | GATED | Pooled stock panel and bounded benchmarks only after C2 passes |
-| C4 — Index aggregation/uncertainty | GATED | Calibrated NIFTY-direction meta-model on strictly OOF unweighted stock forecast summaries |
+| C1 — Point-in-time universe/data audit | PARTIAL / NOT PASSED | 258/258 intraday target cycles and 106,392/106,392 daily sessions pass coverage; 37 complex event candidates have terms/record-date source review; two bonus labels were reclassified as debenture distributions; full 711-event treatment and dated security identity/price continuity remain open |
+| C2 — Panel labels/features | PASS WITH C1 LIMITATIONS | Formal panel: 258/258 index targets; 258/258 cycles satisfy 47/94%; 12,807 stock-cycle rows; zero duplicate rows; holdout boundary fixed at cycle 206 |
+| C3 — Stock models/baselines | EXPLORATORY COMPLETE — NO EDGE | 7,512 OOF forecasts across 154 expiry cycles; on untouched holdout momentum accuracy 50.52%, versus logistic 48.12%, ExtraTrees 48.51% and HGB 46.69%; no classifier beat momentum |
+| C4 — Index aggregation/uncertainty | CONFIRMATORY GATED | Do not start confirmatory index aggregation until C1 identity/event exclusions and the registered C4 inputs are accepted |
 | C5 — Economic/execution gate | GATED | Contract-level fills and date-effective Paytm Money costs required before any strategy claim |
 | C6 — Manuscript/independent audit | GATED | Complete manuscript, plots, tables, appendices and formula/repository audit
 
@@ -829,3 +829,14 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - First successful queue build [41513398732](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41513398732) uploaded recipient-encrypted data, but the matching private key was unavailable to the active review runtime. It could not be decrypted for the event review.
 - Rotated to a new RSA-3072 recipient keypair held outside GitHub: public key/fingerprint in queue builder; private key remains local with restrictive file permissions and is not committed or uploaded.
 - New protected queue run required. C1 remains PARTIAL; only the 37 complex event candidates are in this first review batch.
+
+
+## 2026-11-03 — 37-candidate issuer-event source review completed
+
+- The recipient-encrypted queue workflow [41514027613](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41514027613) built and uploaded ciphertext only. The 37 candidate rows joined to point-in-time member keys with zero ambiguous matches; the private decision ledger remains outside GitHub.
+- Issuer/official-exchange source review classified 37 candidates as 17 equity bonus-share actions, 9 splits, 6 rights offers and 3 merger/demerger schemes. Two of the 19 bonus-labelled entries were reclassified from equity bonus to non-convertible debenture distributions.
+- Terms and record dates were source-checked for all 37: 35 have issuer-first-party evidence and 2 have official exchange-primary evidence where the issuer notice was not located in this bounded search.
+- No new manual stock adjustment factor, TERP or merger adjustment has been applied. Dhan adjusted-scale validation remains empirical for only 2 events. The separate historic ISIN/predecessor-successor identity and affected stock-cycle exclusion gates remain open.
+- Remaining of the 711 catalogue: 625 dividends, 20 buybacks and 29 AGM/other candidates. Dividends must retain NIFTY price-index semantics; buybacks and other events require forecast-time and affected-cycle classification.
+- Report: [C1_ISSUER_EVENT_REVIEW_AGGREGATE.md](C1_ISSUER_EVENT_REVIEW_AGGREGATE.md); [sanitised machine summary](C1_ISSUER_EVENT_REVIEW_AGGREGATE.json).
+- Phase disposition: **C1 PARTIAL / NOT PASSED**; C2 panel **PASS WITH C1 LIMITATIONS**; C3 exploratory complete with no confirmed edge; confirmatory C4 and trading C5 remain gated.

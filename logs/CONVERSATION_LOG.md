@@ -546,3 +546,12 @@
 
 - The first recipient-encrypted queue run succeeded but its matching private key was unavailable in the active research runtime, so I could not inspect the encrypted candidate list. No ciphertext was decrypted and no raw event rows were exposed.
 - Generated a new RSA-3072 keypair outside GitHub. Committed only the public key and fingerprint; the matching private key remains local with restrictive permissions. The queue will be regenerated and decrypted locally in this session. No credentials or raw data are added to the repository.
+
+
+## 2026-11-03 — Issuer-event review of the encrypted complex-candidate queue
+
+- The replacement recipient key was used only to decrypt the one-day ciphertext artifact from protected queue run [41514027613](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41514027613) in the private runtime. The queue contained 37 unique candidates with no ambiguous point-in-time membership joins; event-level source rows and the private decision ledger remain outside GitHub.
+- Source review classified 17 actual equity bonus-share events, 9 splits, 6 rights issues and 3 merger/demerger schemes. Two candidates labelled as bonuses were actually non-convertible debenture distributions, not equity bonus shares (E0130). No equity bonus factor was applied to those distributions.
+- Issuer/official exchange primary terms and record-date sources were checked for all 37 candidates; 35 had issuer-first-party evidence and 2 had official exchange-primary evidence where issuer notice was not located in the bounded search.
+- No rights TERP, manual adjustment factor or generic demerger factor was calculated/applied. The separate full historical identity and affected-cycle gates remain open. The remaining 674 catalogue candidates are 625 dividends, 20 buybacks and 29 other/AGM candidates.
+- Updated the aggregate report and phase status. No raw TejHQ rows, raw market bars, ISINs, private key or hidden reasoning are stored in GitHub logs or Pages.

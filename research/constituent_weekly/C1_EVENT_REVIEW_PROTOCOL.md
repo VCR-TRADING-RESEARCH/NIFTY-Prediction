@@ -76,3 +76,12 @@ NSE terms prohibit systematic automated collection without permission and restri
 ## 7. Safety and research integrity
 
 This protocol does not grant data rights. The TejHQ catalogue remains personal-use-only; exchange terms apply independently. Raw restricted data must remain in the authorised encrypted runtime/cache only. No public repository or artifact may contain reconstructive source rows. Do not claim that a technical API response, adjusted-price ratio or symbol match independently verifies an issuer event.
+
+
+## 6. 37-candidate complex-event review result — 2026-11-03
+
+- The protected queue [41514027613](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41514027613) yielded 37 unique candidate records and zero ambiguous point-in-time member-key matches.
+- Source review classified the queue as 17 equity bonus-share events, 9 splits, 6 rights offers and 3 merger/demerger schemes. Two bonus-labelled candidates were reclassified by issuer evidence as non-equity debenture distributions.
+- The reviewed candidate terms and record dates have issuer-first-party evidence for 35 entries and official exchange-primary evidence for 2 entries where an issuer notice was not located in this bounded search. The event-level ledger remains outside GitHub; only aggregate counts are published in [C1_ISSUER_EVENT_REVIEW_AGGREGATE.md](C1_ISSUER_EVENT_REVIEW_AGGREGATE.md).
+- This does **not** close historical ISIN/predecessor-successor identity or full price-series continuity. Rights TERPs, scheme-specific predecessor/successor adjustments and affected-weekly-cycle exclusions have not been computed/applied. The 2-event Dhan scale test is not universal evidence.
+- Remaining catalogue: 625 dividends, 20 buybacks, 29 AGM/other. C1 remains PARTIAL / NOT PASSED.

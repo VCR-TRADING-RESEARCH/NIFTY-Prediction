@@ -814,7 +814,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Run [41507896770](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41507896770) authenticated successfully and completed the Dhan daily adjustment step, then failed before the intraday request with `ModuleNotFoundError: No module named 'live_api'`.
 - Cause: standalone script did not add repository root to `sys.path` before importing project modules.
 - Correction: add repository-root bootstrap and include the new diagnostic tests in the protected workflow test command.
-- Status: fixed in code; next protected run must validate.
+- Status: CLOSED. Protected queue run [41514027613](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41514027613) passed, including queue build and ciphertext upload.
 
 ## E0122 — 2026-11-03 — Daily adjustment workflow gate expected obsolete status string (CLOSED IN CODE)
 
@@ -854,14 +854,6 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Updated the report generator and published report to state the actual same-session method, including the 2x/10x raw-scale alternative.
 - **Status:** CLOSED. The numerical output and acceptance gate were unaffected; the documentation is now aligned with the executed test.
 
-
-## E0126 — 2026-11-03 — Intraday report retained obsolete overnight-method description (CLOSED)
-
-- **Cause:** A prior documentation-only replacement did not match the source text, leaving the report generator and saved Markdown describing the exploratory pre-close-to-ex-open ratio even though the accepted gate used the same-session Dhan intraday-versus-daily OHLC comparison.
-- **Correction:** Exact-text replacement now updates both the report generator and saved report to the same-session method and its 2x/10x raw-scale alternative.
-- **Status:** CLOSED. The machine results and acceptance gate were already based on the same-session comparison; this corrects documentation consistency only.
-
-
 ## E0127 — 2026-11-03 — NSE automated archive extraction rights gate formalised (CLOSED BY WORKFLOW RESTRICTION)
 
 - NSE's current Terms of Use prohibit systematic/automated website data collection without express written consent and restrict website-data use for gaming, virtual trading and simulation. NSE's Data Sharing & Usage Policy governs historical/corporate market data through agreements and restricts redistribution.
@@ -885,4 +877,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Evidence:** The private queue build [41513398732](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41513398732) succeeded and uploaded ciphertext, but only its public recipient key was present in the repository. No matching private key was accessible to the research runtime, so the queue could not be decrypted for issuer verification.
 - **Impact:** Candidate counts were obtainable from the aggregate workflow log, but event-level work could not proceed from the ciphertext. The artifact was not published to Git or Pages.
 - **Correction:** Generated a fresh RSA-3072 recipient keypair outside GitHub. The private half is held only in the active local research runtime with filesystem mode 0600; the matching public half and its SHA-256 fingerprint are embedded in the queue builder. The private key is not committed, attached to a workflow, or uploaded.
-- **Status:** CLOSED FOR THIS RUNTIME SESSION. A new ciphertext artifact must be produced with this public key, then decrypted locally; the private key must not be exposed in any GitHub log, workflow output, artifact or repository file.
+- **Status:** CLOSED. The replacement key produced a successful ciphertext artifact in [run 41514027613](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41514027613), which was authenticated and decrypted only in the private runtime. The private key remains uncommitted and unuploaded.
+
+
+## E0130 — 2026-11-03 — Two bonus-labelled candidates were non-equity debenture distributions (CLOSED AS CATALOGUE RECLASSIFICATION)
+
+- **Finding:** Issuer annual reports show two entries classified by the discovery feed as equity bonus events were actually distributions of non-convertible debentures to equity holders: one secured ₹30 debenture per share and one unsecured ₹29 debenture per share. They do not issue additional equity shares and must not be assigned a stock bonus factor.
+- **Impact:** Treating the rows as 1:1 equity bonuses would misstate share-count adjustment and risk double-adjusting the target/feature history. No such adjustment was applied to the frozen panel in this review.
+- **Correction:** Reclassify both candidates as non-equity security distributions. Preserve the event flag and separately assess their effect on equity prices; do not apply an equity split/bonus factor.
+- **Evidence:** Issuer annual reports: https://media.britannia.co.in/Annual_Report_2019_20_b376843dc6.pdf ; https://media.britannia.co.in/Annual_Report_2020_21_be3a70d511.pdf ; https://media.britannia.co.in/Annual_Report_2021_22_6eb6f3ae88.pdf
+- **Status:** CLOSED FOR CLASSIFICATION. Affected-cycle price impact remains in the C1 exclusion/identity gate.
