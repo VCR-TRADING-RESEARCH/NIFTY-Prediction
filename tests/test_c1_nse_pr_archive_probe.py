@@ -9,8 +9,8 @@ def test_candidate_url_uses_legacy_and_new_names_across_transition():
     after = candidate_urls(date(2025, 10, 14))
     assert any("/nupr170424.zip" in url for url in before)
     assert any("/PR141025.zip" in url for url in after)
-    assert all("2024/APR" in url for url in before if "/content/historical/" in url)
-    assert all("2025/OCT" in url for url in after if "/content/historical/" in url)
+    assert all("/content/historical/EQUITIES/2024/APR/" in url for url in before if "/content/historical/" in url)
+    assert all("/content/historical/EQUITIES/2025/OCT/" in url for url in after if "/content/historical/" in url)
 
 
 def test_parse_bundle_extracts_only_schema_metadata():
