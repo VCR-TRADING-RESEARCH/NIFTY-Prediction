@@ -937,3 +937,13 @@
 - The corrected source calendar reconstructs 260 weekly cycles. The previous frozen 258-cycle C2 panel remains an immutable historical artifact but is quarantined and is not current acceptance evidence.
 - Corrected the C2 branch helper and added regression tests for shifted expiry parsing and the October 2025 interval split.
 - A successful C2 panel-only run automatically triggers C3. The C3 runner now calculates the holdout start as floor(80% of eligible cycles), preserving the final-20% chronological holdout.
+
+
+<!-- C2_PANEL_RUN_41529637670 -->
+## 2026-11-02T21:36:29.873534+00:00 — formal C2 panel run 41529637670
+
+- Status: FAILED.
+- Summary: **Formal C2 panel run 41529637670:** FAILED; 0 scheduled cycles; 0 valid NIFTY targets (0.00%); 0 cycles pass the 47/94% stock rule; 0 constituent-cycle rows. C2 is not accepted; see the workflow run and error log.
+- Input manifest: not available.
+- Encrypted panel cache metadata: {}.
+- C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.

@@ -873,3 +873,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Impact: The source calendar produces 260 cycles, not the 258 cycles in the previous C2 artifact. The 2021 weekly interval and October 2025 holiday-shifted interval were misrepresented. The previous C2 panel is quarantined; all dependent C3 metrics are superseded.
 - Correction: C2 now accepts only the two explicit verified expiry statuses, subject to contract presence. Regression tests cover both shifted expiries and the split of the 2025-10-15 to 2025-10-28 interval.
 - Status: OPEN until a new C2 panel run passes, publishes its corrected cycle manifest, and automatically triggers a successful C3 rerun.
+
+
+<!-- C2_PANEL_ERROR_41529637670 -->
+## C2 panel workflow 41529637670 — FAILED
+
+- Offline tests: success; panel step: failure.
+- Error category: RuntimeError.
+- Source location: {'file': 'run_c2_panel_and_models.py', 'function': 'main', 'line': 541}.
+- No panel acceptance is claimed for this run.
