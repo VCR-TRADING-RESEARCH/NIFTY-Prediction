@@ -781,10 +781,20 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Status:** Corrected in commit [8910990](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8910990d8892091dc9de27f50f39910a5a1f19a9); included in run [41425623117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425623117).
 
 
-## E0117 — 2026-11-02 — Dhan TOTP refresh failed; fallback access token returned HTTP 401 (RETRY WITH DIAGNOSTICS)
+## E0117 — 2026-11-02 — Dhan TOTP refresh transiently failed; bounded retry succeeded (RESOLVED)
 
 - **Severity:** High — the combined split/bonus diagnostic could not access Dhan daily history.
 - **Evidence:** Run [41425871917](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425871917) reported `auth_method=provided_token_fallback`, `token_refresh_status=FAILED_FALLBACK_USED`, then `BLOCKED_PROFILE_HTTP_401`. No Dhan daily-history request was made and no market data was acquired in this run.
 - **Context:** The preceding Dhan preflight on 2026-11-01 had a successful TOTP refresh (HTTP 200, one attempt, runner/server clock skew approximately -1 second). This is therefore a new authentication failure, not evidence that the API plan is inactive.
 - **Correction:** Added sanitised token-refresh diagnostics (HTTP status, response field names/types, attempt count and clock skew only; no token or secret values) to the next diagnostic report.
-- **Status:** One bounded retry is triggered by commit [2f6bb41](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/2f6bb4160c10224da4f648064fa111dd3f746e51). If refresh still fails, stop and request user intervention to verify/renew Dhan authentication secrets; do not repeat retries.
+- **Resolution:** Run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727) refreshed the token successfully via TOTP (HTTP 200, one attempt, approximately -1 second clock skew); profile/data plan passed. No user intervention is needed for authentication at this checkpoint. The remaining split/bonus identity warning is separately recorded as E0118.
+
+
+## E0118 — 2026-11-02 — BAJAJFINSV ISIN transition is one session later in TejHQ rows than NSE circular effective date (OPEN DATA DISCREPANCY)
+
+- **Severity:** Medium — price-adjustment factor passes, but point-in-time security identity does not.
+- **Evidence:** Dhan diagnostic run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727) compared 11 sessions around the 13-Sep-2022 split/bonus ex-date. All OHLC relative event factors equal 0.1 (the expected combined 10x adjustment). The raw reference has two ISINs; the old ISIN persists on 2022-09-13 and the new ISIN first appears on 2022-09-14.
+- **Primary source:** NSE Circular CML53597 says the new ISIN is effective for trades on and from the ex-date, 13-Sep-2022: https://nsearchives.nseindia.com/content/circulars/CML53597.pdf.
+- **Interpretation:** The one-session difference is a source identity-date discrepancy. Do not silently shift the official effective date or overwrite the raw source row. The factor check is accepted as a price-adjustment diagnostic only; the BAJAJFINSV identity gate remains open.
+- **Impact:** No raw prices or ISIN values are published. No event adjustment factor is applied to the full panel. C1 remains PARTIAL / NOT PASSED and C2 remains gated.
+- **Next:** Seek independent permitted confirmation of the 13-Sep row identity or exclude/flag that session in the accepted identity panel. Do not restart NSE bulk archive scraping; the data-rights gate remains in force.
