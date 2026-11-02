@@ -1,5 +1,9 @@
 # NIFTY Weekly Expiry Direction Research
 
+## Official NSE corporate-action archive probe
+
+C1 now includes a bounded four-date probe of the NSE daily PR/legacy archive route, spanning the pre/post 13-Oct-2025 file-naming transition. The workflow inspects ZIP validity, corporate-action CSV headers and announcement/board-meeting member presence; raw archives remain AES-GCM encrypted in Actions cache and are not published. Runtime results are pending; this does not pass the corporate-action gate. See the [probe implementation](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/scripts/constituent_weekly/probe_c1_nse_pr_archives.py), [workflow](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/.github/workflows/bup01-c1-corporate-actions.yml), and [C1 status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md).
+
 ## Latest BUP-01 research status — 2026-11-02
 
 **Final metadata re-audit:** [C6 run 41419571678](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41419571678) passed after the machine-readable summary was reconciled to `AUDIT_PASS_WITH_LIMITATIONS`.
