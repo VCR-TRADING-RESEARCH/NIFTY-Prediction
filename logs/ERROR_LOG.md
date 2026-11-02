@@ -944,3 +944,15 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Cause:** C2's 47/94 acceptance gate counts primary valid constituent target rows. Nineteen flat stock returns have no UP/DOWN label and are correctly excluded from C3 classification, but this can reduce a cycle's labelled sample below 47 without invalidating C2 acceptance.
 - **Correction:** C3 verifies every accepted cycle retains at least one labelled stock observation; it does not incorrectly rerun the C2 coverage gate on the post-flat-label subset. The original 47/94 gate remains enforced and reported by C2.
 - **Research impact:** No outcomes changed; correction prevents a false rejection caused by mixing the panel acceptance gate with the model-specific labelled sample.
+
+
+## E0106 — 2026-11-02 — C3 decrypted CSV passed to pandas as raw bytes
+
+- **Severity:** Medium — stopped C3 before model fitting on attempt 1.
+- **Run:** [41401986460](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41401986460).
+- **Observed:** C2 workflow [41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378) passed all 15 steps and formal acceptance. C3 downloaded the exact artifact, prepared the encrypted files, installed dependencies and passed compilation/offline tests. AES-GCM decryption and gzip decompression succeeded; pandas.read_csv then raised a TypeError because raw bytes were passed instead of a file-like object.
+- **Root cause:** C3 panel loader passed decompressed bytes directly to pd.read_csv.
+- **Correction:** use io.BytesIO in read_decrypted_csv and add an encrypted AES-GCM plus gzip CSV round-trip regression test. Ciphertext checks, authentication and holdout boundaries remain unchanged.
+- **Verification:** attempt 2 of run 41401986460 passed all workflow steps, including tests, chronological model execution, report/artifact upload and phase-branch publication.
+- **Research impact:** attempt 1 did not fit models; attempt 2 generated the C3 result. No model result is based on the failed attempt.
+- **Status:** RESOLVED.
