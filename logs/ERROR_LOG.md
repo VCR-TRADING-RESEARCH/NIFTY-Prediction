@@ -828,7 +828,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Evidence:** Protected run [41508838557](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41508838557) refreshed a valid token for the daily diagnostic, then the separate intraday script attempted another TOTP refresh. The second refresh returned HTTP 200 without an access-token field; the provided-token fallback was rejected by profile with HTTP 401. No intraday history request was made.
 - **Cause:** The workflow requested a second Dhan token within the same job even though the first step had just authenticated and verified the active Data API plan.
 - **Correction:** Export the validated ephemeral token only through GitHub Actions' private `GITHUB_ENV` file, mark it masked, and reuse it in the intraday step. Do not write the token to repository files, logs, artifacts or public Pages.
-- **Status:** CLOSED IN CODE; the next protected run must validate the handoff.
+- **Status:** CLOSED. Run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625) successfully reused the masked token, completed both daily and intraday tests, and passed both protected gates.
 
 
 ## E0124 — 2026-11-03 — Ephemeral Dhan token handoff encoded a literal backslash-n (CLOSED IN CODE)
@@ -836,7 +836,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Evidence:** Intraday diagnostic run [41509666199](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41509666199) completed the protected daily diagnostic and reached the intraday script, but the intraday result was `BLOCKED_RUNTIME_ERROR` with no minute-bar observations. The code review showed the `GITHUB_ENV` writer used a double-escaped newline, appending the literal two-character sequence `\\n` to the token value instead of terminating the environment assignment with a real line break.
 - **Impact:** The next workflow step received a malformed token value; the intraday API authorization failed before a valid data result was produced. No raw bars were published.
 - **Correction:** Changed the writer and its regression tests to use a real newline character and to reject actual CR/LF characters in the token. Token remains masked and transient in the Actions environment only.
-- **Status:** CLOSED IN CODE; the next protected run must confirm token reuse succeeds and both intraday event samples are classified.
+- **Status:** CLOSED. Run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625) confirms the token handoff and completed intraday classifications.
 
 
 ## E0125 — 2026-11-03 — First intraday scale test conflated overnight movement with corporate-action adjustment (OPEN METHOD IMPROVEMENT)
@@ -844,4 +844,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Evidence:** Protected run [41510216099](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510216099) successfully reused the single validated token and returned two preliminary close-to-close scale ratios: RELIANCE 1.002562; BAJAJFINSV 1.047470. Both fell near 1 rather than the raw event factors 0.5 and 0.1.
 - **Limitation:** The method compared the last five cum-date closes with the first five ex-date opens. The result includes the overnight market return, so it is not sufficiently strong as a corporate-action adjustment test even when the ratio is near 1.
 - **Correction:** Replace the primary gate with a same-session, cross-endpoint comparison: aggregate intraday OHLC for each sample date and compare with Dhan's adjusted daily OHLC for the same date. A pre-event scale near 1 indicates common adjusted scale; a pre-event ratio near 1/factor indicates unadjusted intraday bars against adjusted daily history. Retain the overnight ratio as a secondary diagnostic only.
-- **Status:** OPEN until the new protected run passes or returns a meaningful ambiguous/failure result. Do not infer universal adjustment coverage from two event samples.
+- **Result:** The same-session comparison passed both sampled events in run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625): all pre-event and ex-date intraday/daily OHLC ratios were within 0.9940–1.0062 (RELIANCE) and 0.9965–1.0062 (BAJAJFINSV).
+- **Status:** CLOSED FOR THE TWO REGISTERED SAMPLES only. The earlier overnight test remains exploratory. Do not infer universal adjustment coverage from two event samples.
+
+
+## E0126 — 2026-11-03 — Intraday report retained obsolete overnight-method description (CLOSED)
+
+- **Cause:** The machine result and table used the stronger same-session intraday-versus-daily OHLC comparison, but the Markdown report's introductory method paragraph still described the earlier pre-close-to-ex-open method.
+- **Correction:** Updated the report generator and published report to state the actual same-session method, including the 2x/10x raw-scale alternative.
+- **Status:** CLOSED. The numerical output and acceptance gate were unaffected; the documentation is now aligned with the executed test.

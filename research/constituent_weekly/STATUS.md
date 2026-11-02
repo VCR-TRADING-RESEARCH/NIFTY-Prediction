@@ -792,3 +792,12 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Protected run [41510216099](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510216099) succeeded after the token handoff fix. Preliminary last-cum-session close to first-ex-session close ratios were RELIANCE 1.002562 and BAJAJFINSV 1.047470, both near 1 rather than their raw action factors of 0.5 and 0.1.
 - The overnight comparison includes market movement and is treated as exploratory only. The next diagnostic version compares same-session intraday OHLC aggregates with Dhan adjusted daily OHLC for each of the same two sessions, removing the overnight return from the scale test.
 - Daily Dhan adjusted OHLC checks remain PASS for both sample events; overall C1 remains PARTIAL because the full 711-event member catalogue has not been independently validated.
+
+
+## 2026-11-03 — Dhan intraday corporate-action scale check passed on two samples
+
+- Protected run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625) passed all 13 substantive workflow steps; 14 daily/offline tests from the prior revision were already passed, and the same-session scale classifier's tests ran in this revision.
+- RELIANCE 1:1 bonus: pre-date intraday/daily OHLC ratios 0.994008, 0.997211, 1.000000, 1.000226; ex-date ratios 1.000000, 1.000000, 1.000000, 1.000300.
+- BAJAJFINSV split+bonus: pre-date ratios 0.996548, 0.997072, 1.000164, 1.006179; ex-date ratios 1.000000, 0.999756, 1.000000, 0.997899.
+- Both samples classified `INTRADAY_MATCHES_DHAN_DAILY_ADJUSTED_SCALE`. This uses same-session intraday OHLC aggregation versus Dhan daily adjusted historical OHLC and avoids the overnight-return confound in the first probe.
+- Scope remains only two events. The 711 matched-event catalogue and other historical identity cases are still unresolved, so C1 remains PARTIAL; C2 is accepted with C1 limitations; confirmatory C4 and trading C5 remain gated.

@@ -515,3 +515,10 @@
 
 - The protected workflow passed and returned first-pass ratios near 1 for the two sampled events. Review identified that the pre-close to ex-open comparison includes overnight movement and should not be the sole acceptance criterion.
 - The intraday script is being upgraded to compare same-session intraday OHLC aggregates with the Dhan daily adjusted OHLC for the exact same session, with tests for adjusted-scale and raw-scale cases. The first-run result is retained as exploratory, not accepted as a full sub-gate.
+
+
+## 2026-11-03 — Same-session intraday-versus-daily comparison passed
+
+- Protected run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625) passed. It reused the validated token through private, masked Actions environment handoff; all daily and intraday gates succeeded.
+- Same-session intraday OHLC aggregates match Dhan adjusted daily OHLC across both sampled events: RELIANCE (1:1 bonus) and BAJAJFINSV (5:1 split + 1:1 bonus). Pre-event and ex-date ratios were all approximately 1.0; exact sanitised ratios are in `C1_DHAN_INTRADAY_CA_DIAGNOSTIC.md`.
+- This resolves the scale question for two samples only. The larger C1 event and identity gate remains open; confirmatory C4 is still gated. No raw bars, credentials or private reasoning are stored.

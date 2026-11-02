@@ -892,3 +892,12 @@
 - Protected run [41510216099](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510216099) passed offline tests, daily event adjustment checks and the token handoff. The minute-data script returned preliminary close-to-close ratios of 1.002562 for RELIANCE and 1.047470 for BAJAJFINSV, both classified near adjusted scale.
 - The preliminary comparison crossed an overnight interval and therefore includes the market return. It is not strong enough for C1 acceptance by itself.
 - Added a stronger same-session test: aggregate Dhan intraday OHLC on the cum date and ex-date and compare each field with Dhan daily adjusted OHLC for the exact same dates. This can distinguish pre-event 1.0-scale matching from the expected 2x/10x raw intraday scale without using an overnight return. E0125 records the methodology improvement.
+
+
+## 2026-11-03 — Same-session intraday corporate-action scale comparison passed
+
+- Protected Actions run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625) passed all steps, including offline tests, daily adjustment checks, intraday diagnostic, report publication and both acceptance gates.
+- RELIANCE 1:1 bonus (2024-10-28): same-session intraday/daily adjusted OHLC ratios for pre-date 2024-10-25 were open 0.994008, high 0.997211, low 1.000000, close 1.000226; ex-date ratios 1.000000, 1.000000, 1.000000, 1.000300. Result: `INTRADAY_MATCHES_DHAN_DAILY_ADJUSTED_SCALE`.
+- BAJAJFINSV 5:1 split + 1:1 bonus (2022-09-13): pre-date ratios 0.996548, 0.997072, 1.000164, 1.006179; ex-date ratios 1.000000, 0.999756, 1.000000, 0.997899. Result: `INTRADAY_MATCHES_DHAN_DAILY_ADJUSTED_SCALE`.
+- The same-session cross-endpoint test removes the overnight move in the earlier exploratory check. It indicates minute bars match Dhan's adjusted daily scale for these two events. It does not establish all-symbol/all-event coverage. No raw prices or intraday bars were published.
+- E0125 closed for the two registered samples. E0126 closed (corrected report method description). Overall C1 remains PARTIAL because the remaining point-in-time event catalogue and identity review are open.
