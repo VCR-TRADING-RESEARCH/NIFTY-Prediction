@@ -859,3 +859,9 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - No buyback/dividend/AGM price factor, TERP or generic merger factor has been applied. Historical identity, adjusted-price continuity and affected stock-cycle exclusions remain open.
 - Reports: [C1_ISSUER_EVENT_REVIEW_AGGREGATE.md](C1_ISSUER_EVENT_REVIEW_AGGREGATE.md), [C1_BUYBACK_AGM_REVIEW_AGGREGATE.md](C1_BUYBACK_AGM_REVIEW_AGGREGATE.md), and machine summaries.
 - **Disposition:** C1 PARTIAL / NOT PASSED; C2 PASS WITH C1 LIMITATIONS; C3 exploratory complete/no confirmed edge; confirmatory C4 and trading C5 remain gated.
+
+
+## 2026-11-03 — First cycle-sensitivity workflow wiring correction
+
+- The first protected run [41523805932](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41523805932) started but its YAML contained over-escaped GitHub Actions expression markers for token/artifact/cache inputs. No data result was produced and no decryption began.
+- Corrected expression escaping and logged E0134. The next protected run must pass before the cycle-exclusion result is accepted.

@@ -569,3 +569,9 @@
 - Source review classified 21 buybacks, 3 dividends and 25 AGM/governance entries. One buyback and three dividends were mislabelled as “other”. HCLTech ₹2/record 6-Aug-2018; TCS ₹4/record 24-Oct-2018; Nestlé India ₹135/record 2-Nov-2020; NTPC buyback ₹115/record 13-Nov-2020.
 - Corrected full 711 catalogue: 17 equity bonuses, 2 NCD distributions, 9 splits, 6 rights, 3 merger/demerger, 21 buybacks, 628 dividends and 25 AGM/governance.
 - AGM features remain excluded pending verification of the notice timestamp before 10:00 IST. Dividends retain price-index semantics; no price factors/TERPs/generic merger adjustment applied. C1 partial; C4/C5 gated.
+
+
+## 2026-11-03 — Corrected cycle-exclusion workflow expression escaping
+
+- After adding the protected event-cycle audit, the first Actions run exposed a workflow authoring defect: the GitHub Actions expression markers contained a literal leading backslash, preventing secret and runner-path interpolation.
+- The defect was caught before the panel artifact was decrypted or event rows were accessed. Logged E0134 and corrected all expressions in one commit; no credentials or private data were exposed.

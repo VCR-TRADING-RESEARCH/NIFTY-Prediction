@@ -15,7 +15,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: bup01-c1-complex-event-cycle-audit-\${{ github.repository }}
+  group: bup01-c1-complex-event-cycle-audit-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:
@@ -60,39 +60,39 @@ jobs:
         with:
           name: bup01-c2-panel-41398864378
           run-id: 41398864378
-          github-token: \${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           repository: VCR-TRADING-RESEARCH/NIFTY-Prediction
-          path: \${{ runner.temp }}/bup01-c2-panel-artifact
+          path: ${{ runner.temp }}/bup01-c2-panel-artifact
 
       - name: Restore encrypted TejHQ personal-use cache
         uses: actions/cache/restore@v4
         with:
-          path: \${{ runner.temp }}/bup01-tejhq-encrypted
-          key: bup01-tejhq-raw-nse-encrypted-\${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-\${{ github.run_id }}
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
           restore-keys: |
-            bup01-tejhq-raw-nse-encrypted-\${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-
+            bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-
 
       - name: Run conservative complex-event cycle-exclusion sensitivity
         env:
-          HF_TOKEN: \${{ secrets.HF_TOKEN }}
-          TEJHQ_ENCRYPTED_CACHE_DIR: \${{ runner.temp }}/bup01-tejhq-encrypted
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TEJHQ_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/bup01-tejhq-encrypted
           TEJHQ_PERSONAL_USE_ONLY: "1"
           C2_SOURCE_ROOT: c2-source-snapshot
-          C2_PANEL_ARTIFACT_DIR: \${{ runner.temp }}/bup01-c2-panel-artifact
+          C2_PANEL_ARTIFACT_DIR: ${{ runner.temp }}/bup01-c2-panel-artifact
         run: python scripts/constituent_weekly/audit_c1_complex_event_cycle_exclusions.py
 
       - name: Save encrypted TejHQ personal-use cache
         if: always()
         uses: actions/cache/save@v4
         with:
-          path: \${{ runner.temp }}/bup01-tejhq-encrypted
-          key: bup01-tejhq-raw-nse-encrypted-\${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-\${{ github.run_id }}
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
 
       - name: Upload sanitized event-cycle sensitivity report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: c1-complex-event-cycle-exclusion-audit-\${{ github.run_id }}
+          name: c1-complex-event-cycle-exclusion-audit-${{ github.run_id }}
           path: |
             research/constituent_weekly/C1_COMPLEX_EVENT_CYCLE_EXCLUSION_AUDIT.json
             research/constituent_weekly/C1_COMPLEX_EVENT_CYCLE_EXCLUSION_AUDIT.md

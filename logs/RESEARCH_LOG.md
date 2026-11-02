@@ -956,3 +956,9 @@
 - All AGM records remain excluded from predictive features until actual issuer/exchange notice timestamps are verified before the 10:00 IST forecast cutoff. No price factor is applied to buybacks, dividends or AGMs.
 - Corrected final 711 classification: 17 equity bonuses, 2 NCD distributions, 9 splits, 6 rights, 3 merger/demerger, 21 buybacks, 628 dividends and 25 AGM/governance. Full identity, adjusted-price continuity and affected-cycle exclusions remain open.
 - Reports: [C1_BUYBACK_AGM_REVIEW_AGGREGATE.md](research/constituent_weekly/C1_BUYBACK_AGM_REVIEW_AGGREGATE.md), [complex event aggregate](research/constituent_weekly/C1_ISSUER_EVENT_REVIEW_AGGREGATE.md).
+
+
+## 2026-11-03 — Workflow template correction for complex-event cycle sensitivity
+
+- The initial cycle-exclusion workflow run [41523805932](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41523805932) started, but review found GitHub Actions expression markers had been over-escaped in the committed YAML. Token and artifact/cache inputs would not resolve.
+- Corrected the workflow expressions in one batched commit. The first run is not a research result; the corrected run must validate artifact download, checksum verification, decryption, event joins and 47/94 sensitivity.

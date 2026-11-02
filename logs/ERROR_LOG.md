@@ -904,3 +904,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Corrected full 711-event classification to 17 equity bonuses, 2 non-equity NCD distributions, 9 splits, 6 rights, 3 mergers/demergers, 21 buybacks, 628 dividends and 25 AGM/governance. Arithmetic check = 711. No dividend, buyback or AGM adjustment factor is applied.
 - **Controls:** All 25 AGM entries are excluded from predictive features until actual public-notice timestamps are checked against the 10:00 IST forecast cutoff. Dividends preserve price-index semantics.
 - **Status:** CLOSED FOR CLASSIFICATION AND AGGREGATE COUNTS. Historical identity, adjusted-price continuity and affected-cycle exclusions remain open.
+
+
+## E0134 — 2026-11-03 — GitHub Actions expressions were over-escaped in the new cycle-audit workflow (CLOSED IN CODE)
+
+- **Evidence:** Initial workflow push [41523805932](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41523805932) started the audit job, but code review found that GitHub Actions expressions for the token, artifact path and cache path were committed with a leading backslash. Those inputs would be treated as literal strings instead of runtime expressions.
+- **Impact:** The job had not reached C2 artifact decryption or TejHQ event-data access when the defect was identified. No credential or raw event row was exposed.
+- **Correction:** Removed the unintended backslash from all GitHub Actions expression markers. The corrected push-triggered run must complete before any coverage result is accepted.
+- **Status:** CLOSED IN CODE; the protected retry must validate the correction.
