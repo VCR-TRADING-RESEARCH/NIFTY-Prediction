@@ -850,3 +850,11 @@
 - Confirmed the C1 catalogue contains 711 point-in-time member-event candidates: 625 dividends, 20 buybacks, 19 bonuses, 9 splits, 6 rights, 3 merger/demerger and 29 AGM/other events.
 - Added `research/constituent_weekly/C1_EVENT_REVIEW_PROTOCOL.md` on the C1 phase branch. The protocol preserves price-index dividend semantics, prevents double application of Dhan split/bonus adjustments, separates price-factor validation from security-identity validation, and defines event-window exclusion rules.
 - No new event was verified and no adjustment factor was applied. C1 remains PARTIAL; C2/C4 confirmatory remain gated. This is a bounded process deliverable, not an empirical pass.
+
+
+## 2026-11-03 — BAJAJFINSV identity-date discrepancy resolved
+
+- Re-examined E0118 using the original NSE listing circular, the NSE Clearing contract-adjustment circular FAOP53644 and the BSE Notice 20220908-17 reproduction.
+- NSE Clearing confirms ex-date 2022-09-13 and the combined 10x adjustment factor; both the explicit trade-effective clause in NSE CML53597 and the BSE notice reproduction state that the new ISIN applies to trades from 13-Sep.
+- Decision: derived security mapping uses the new ISIN from 2022-09-13 inclusive. The old ISIN retained in the TejHQ row on that date is flagged as stale source metadata and is not rewritten.
+- Added [C1_BAJAJFINSV_ISIN_ADJUDICATION.md](research/constituent_weekly/C1_BAJAJFINSV_ISIN_ADJUDICATION.md); E0118 closed with adjudication. This does not close the remaining C1 event review.
