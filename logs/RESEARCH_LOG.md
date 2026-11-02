@@ -1971,3 +1971,10 @@
 - Dhan profile returned HTTP 200 and the data plan was active. Of 1,083 requests, 70 stock chunks and 2 index chunks produced usable responses; 992 stock chunks and 19 index chunks returned HTTP 400.
 - The current request wrapper discarded non-2xx response bodies, so the exact provider rejection cause remains unknown. No speculative fix or broad retry is authorized. Next action is to add sanitized error-code/message diagnostics and test one known failing request before any full rebuild.
 - C2 remains independently in progress; C3 stays gated until the corrected C2 panel and all upstream data acceptance criteria pass.
+
+
+## 2026-11-03 — C1 failure diagnostic and regression correction
+- C1 continuous coverage run [41529572895](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41529572895) failed its formal gate: 26/260 index target cycles and 13/260 stock-plus-index cycles passed. Dhan profile auth returned HTTP 200 and the data plan was active. The audit recorded HTTP 400 for 19/21 index chunks and 992/1,062 stock-symbol chunks, but discarded provider error details.
+- The bounded response-shape probe [41533187708](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41533187708) returned usable payloads in 23/26 cases, including full 90-day stock/index calls and a 16-symbol burst. Its three failures were all legacy HDFC daily-history tests returning DH-905. This does not explain the 1,011 historical intraday request failures. Exact windows from the failed C1 chunks were added to the next bounded probe.
+- The expanded offline tests exposed E0138: the expected DH-905 category label differed from the emitted label. The code now maps DH-905 / DH-907 to explicit sanitised categories.
+- C2 corrected panel-only build [41530483274](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41530483274) remains in the panel-construction step; no formal C2 result exists. C3 remains gated.

@@ -933,3 +933,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Status:** Open. Existing report/artifact is retained as evidence; no C3 inference is authorized from the failed coverage run.
 - **External reference:** Dhan's current v2 documentation specifies 1-minute intraday candles, a maximum 90-day request window, epoch timestamps, and OHLCV response arrays: https://dhanhq.co/docs/v2/historical-data/.
 - **Security:** No credentials, access tokens, security IDs, raw prices, or private reasoning recorded.
+
+
+## E0138 — 2026-11-03 — Dhan response-diagnostic regression label mismatch
+- **Severity:** Low — diagnostic test gate only; no market-data conclusion affected.
+- **Run:** [41533794946](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41533794946).
+- **Symptom:** The new offline test expected `DHAN_INPUT_EXCEPTION_DH905`, while the classifier emitted `DHAN_DH_905`. Six other diagnostic tests passed; the live-provider probe was correctly skipped after the offline test gate failed.
+- **Correction:** Map `DH-905` to `DHAN_INPUT_EXCEPTION_DH905` and `DH-907` to `DHAN_DATA_ERROR_DH907`, without retaining provider message text.
+- **Status:** Code correction committed; rerun offline tests and the bounded provider diagnostic.
+- **Prevention:** Add the offline regression expectation before permitting the live probe to run.
+- **Security:** No credentials, raw provider messages, tokens, security IDs, or private reasoning recorded.

@@ -236,9 +236,10 @@ def response_shape(
     if error_type is not None:
         result["provider_error_type"] = str(error_type)[:60]
     code = str(error_code or "").strip().upper()
-    if code in {"DH-905", "DH-907"}:
-        # Input/data errors need endpoint and request-shape context; retain no raw message.
-        result["provider_message_category"] = f"DHAN_{code.replace('-', '_')}"
+    if code == "DH-905":
+        result["provider_message_category"] = "DHAN_INPUT_EXCEPTION_DH905"
+    elif code == "DH-907":
+        result["provider_message_category"] = "DHAN_DATA_ERROR_DH907"
 
     payload = body.get("data") if isinstance(body.get("data"), dict) else body
     result["data_field_type"] = type(body["data"]).__name__ if "data" in body else "TOP_LEVEL_ARRAYS"
