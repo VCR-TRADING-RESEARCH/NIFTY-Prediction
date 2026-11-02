@@ -1,13 +1,15 @@
 # Dhan Intraday Corporate-Action Scale Diagnostic
 
-**Updated:** 2026-11-02T19:25:33.724875+00:00
-**Status:** BLOCKED_RUNTIME_ERROR
+**Updated:** 2026-11-02T19:29:00.024643+00:00
+**Status:** COMPLETED_INTRADAY_SCALE_DIAGNOSTIC
 
 This diagnostic compares the median close of the final five 1-minute bars on the last cum-event session (15:10–15:14 IST) with the median close of the first five bars on the ex-date (09:15–09:19 IST).
 A ratio near the event's expected price factor indicates the intraday history remains on the old/cum-event scale; a ratio near 1 indicates the two sessions are presented on a common adjusted scale. The overnight market move is not removed, so borderline cases are marked ambiguous.
 
 | Symbol | Action | Ex-date | Post/pre ratio | Expected raw factor | Diagnostic |
 |---|---|---|---:|---:|---|
+| RELIANCE | 1:1 bonus | 2024-10-28 | 1.002562 | 0.5 | ADJUSTED_SCALE_INTRADAY |
+| BAJAJFINSV | 5:1 split plus 1:1 bonus | 2022-09-13 | 1.04747 | 0.1 | ADJUSTED_SCALE_INTRADAY |
 
 ## Scope and limitations
 

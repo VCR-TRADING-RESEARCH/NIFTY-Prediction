@@ -1,8 +1,51 @@
 {
+  "auth_method": "reused_validated_prior_step_token",
   "credentials_or_tokens_recorded": false,
-  "error_type": "RuntimeError",
-  "events": [],
+  "data_source": "DhanHQ v2 intraday historical API",
+  "events": [
+    {
+      "action": "1:1 bonus",
+      "diagnostic": {
+        "bar_count": 734,
+        "classification_note": "RAW_SCALE means pre-ex bars remain on the cum-event price scale relative to first ex-date bars; ADJUSTED_SCALE means the two sessions are approximately continuous on a common price scale. The overnight market move is not removed, so borderline cases remain ambiguous.",
+        "expected_raw_price_factor": 0.5,
+        "post_pre_median_close_ratio": 1.002562,
+        "post_window_bars": 5,
+        "pre_window_bars": 5,
+        "status": "ADJUSTED_SCALE_INTRADAY"
+      },
+      "ex_date": "2024-10-28",
+      "pre_date": "2024-10-25",
+      "symbol": "RELIANCE"
+    },
+    {
+      "action": "5:1 split plus 1:1 bonus",
+      "diagnostic": {
+        "bar_count": 734,
+        "classification_note": "RAW_SCALE means pre-ex bars remain on the cum-event price scale relative to first ex-date bars; ADJUSTED_SCALE means the two sessions are approximately continuous on a common price scale. The overnight market move is not removed, so borderline cases remain ambiguous.",
+        "expected_raw_price_factor": 0.1,
+        "post_pre_median_close_ratio": 1.04747,
+        "post_window_bars": 5,
+        "pre_window_bars": 5,
+        "status": "ADJUSTED_SCALE_INTRADAY"
+      },
+      "ex_date": "2022-09-13",
+      "pre_date": "2022-09-12",
+      "symbol": "BAJAJFINSV"
+    }
+  ],
   "raw_bars_published": false,
-  "status": "BLOCKED_RUNTIME_ERROR",
-  "updated_at_utc": "2026-11-02T19:25:33.724875+00:00"
+  "status": "COMPLETED_INTRADAY_SCALE_DIAGNOSTIC",
+  "summary": {
+    "adjusted_scale_intraday": 2,
+    "ambiguous_or_unavailable": 0,
+    "events_tested": 2,
+    "raw_scale_unadjusted": 0
+  },
+  "token_refresh_diagnostics": {
+    "source": "prior_profile_and_data_plan_validated_step",
+    "token_value_recorded": false
+  },
+  "token_refresh_status": "REUSED_WITHIN_SAME_ACTIONS_JOB",
+  "updated_at_utc": "2026-11-02T19:29:00.024643+00:00"
 }
