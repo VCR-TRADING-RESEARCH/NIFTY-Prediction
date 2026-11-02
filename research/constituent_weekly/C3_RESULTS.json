@@ -1,6 +1,6 @@
 {
   "track": "BUP-01-C3",
-  "status": "EXPLORATORY_COMPLETE_NOT_CONFIRMATORY",
+  "status": "SUPERSEDED_BY_EXPIRY_CALENDAR_CORRECTION",
   "created_at_utc": "2026-11-02T07:57:36.588861+00:00",
   "methodology_version": "BUP01-C3-v1",
   "input_c2_manifest_hash": "9d263e441f09c70693e30f1541440ac6b249c5293da61faceb0af729d699c305",
@@ -1044,5 +1044,7 @@
     "Cycle dependence addressed using paired four-cycle moving-block bootstrap.",
     "C4 NIFTY aggregation remains separate.",
     "No options, FII/DII, global-market, VIX, news, costs, slippage or P&L analysis in C3."
-  ]
+  ],
+  "superseded_at": "2026-11-03",
+  "superseded_reason": "The 258-cycle C2 input excluded two contract-present verified holiday-shifted weekly expiries; a corrected 260-cycle C2 panel requires a new OOF and holdout experiment."
 }

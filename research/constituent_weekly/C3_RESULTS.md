@@ -1,6 +1,8 @@
+> **Superseded on 2026-11-03:** The following metrics were generated from a 258-cycle C2 panel that omitted two verified shifted expiries. Keep them as historical evidence only; do not use them as current performance estimates. A corrected C2 panel and C3 rerun are required.
+
 # BUP-01 C3 Stock Model Results
 
-**Status:** EXPLORATORY COMPLETE — NOT CONFIRMATORY
+**Status:** SUPERSEDED — EXPIRY-CALENDAR CORRECTION REQUIRES RERUN
 
 - C2 manifest: `9d263e441f09c70693e30f1541440ac6b249c5293da61faceb0af729d699c305`
 - Eligible cycles: 258; OOF forecast cycles: 154; holdout starts at cycle 206.

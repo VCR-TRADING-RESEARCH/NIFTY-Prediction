@@ -956,3 +956,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Verification:** attempt 2 of run 41401986460 passed all workflow steps, including tests, chronological model execution, report/artifact upload and phase-branch publication.
 - **Research impact:** attempt 1 did not fit models; attempt 2 generated the C3 result. No model result is based on the failed attempt.
 - **Status:** RESOLVED.
+
+## E0135 — 2026-11-03 — C3 holdout boundary and input cycle count invalidated by shifted-expiry omission (OPEN UNTIL RERUN)
+
+- C3 consumed the 258-cycle C2 panel, which omitted two contract-verified holiday-shifted expiries.
+- Its fixed holdout index 206 was correct for the old 258-cycle count but would not preserve the final-20% split on the corrected 260-cycle panel; the corresponding boundary is 208.
+- Replaced the hard-coded index with floor(0.8 * eligible_cycle_count). Regression checks preserve 206 for 258 cycles and return 208 for 260 cycles.
+- Existing C3 accuracy/AUC, 154 OOF-cycle and 52 holdout-cycle metrics are superseded until the corrected C2 artifact triggers a new successful C3 run.
+- Status: OPEN until the automatic workflow produces and validates refreshed model results.

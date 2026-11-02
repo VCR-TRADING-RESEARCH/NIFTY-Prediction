@@ -1,9 +1,11 @@
+> **E0135:** Do not use the previously reported C3 accuracy/AUC values as current research conclusions. The 258-cycle input omitted two verified shifted expiries. The C3 runner derives the final-20% holdout boundary from the actual panel count (206 for 258 cycles; 208 for 260 cycles).
+
 # BUP-01 Research Status
 
 **Last updated:** 2026-11-02  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 ACCEPTED WITH LIMITATIONS FOR PROGRESSION by explicit user direction; C2 PASS — formal panel accepted  
-**Prediction status:** C2 frozen panel accepted (258/258 cycles); C3 stock modelling is next; no stock model or bottom-up NIFTY forecast is yet accepted  
+**Status:** C1 PARTIAL / CALENDAR REBUILD REQUIRED; C2 QUARANTINED PENDING REBUILD; prior C3 metrics SUPERSEDED
+**Prediction status:** Prior 258-cycle C3 stock metrics are superseded; rerun automatically against corrected C2 panel and dynamic final-20% chronological holdout
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |

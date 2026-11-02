@@ -938,3 +938,9 @@
 - Inference: no tested stock model earned selection or demonstrated an edge over the simple momentum baseline. This is exploratory, not confirmatory, because C1 identity and corporate-action review remains incomplete. Keep C4 confirmatory gated.
 - Existing separate C3-X v1.4 result contains an exploratory NIFTY meta-model on a 51-cycle holdout: 50.98% accuracy, 53.45% balanced accuracy, ROC-AUC 48.68%; meta-minus-lag accuracy difference 1.96 pp with a four-cycle bootstrap 95% interval [−25.49, +25.49] pp. This is underpowered/inconclusive and must remain separate due to its distinct sample and pipeline.
 - C5 cost/P&L gate has no eligible signal strategy to evaluate; no options/futures fills, Paytm Money costs or slippage are certified. C6 manuscript/audit is the next bounded closeout step.
+
+## 2026-11-03 — C3 holdout split corrected for calendar rebuild
+
+- The C2 weekly-expiry parser defect makes the old 258-cycle C3 experiment a historical result only; its holdout metrics are superseded.
+- The registered final-20% holdout rule now uses floor(0.8 * eligible_cycle_count), returning cycle 206 for 258 cycles and cycle 208 for the corrected 260-cycle calendar.
+- Added regression coverage for both counts. C3 is configured to run automatically when the corrected C2 panel workflow succeeds.

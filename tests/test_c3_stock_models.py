@@ -1,6 +1,6 @@
 import gzip
 import numpy as np, pandas as pd
-from scripts.constituent_weekly.run_c3_stock_models import weights, score, symbol_frequency, boot_ci, encrypt, read_decrypted_csv
+from scripts.constituent_weekly.run_c3_stock_models import weights, score, symbol_frequency, boot_ci, encrypt, read_decrypted_csv, holdout_start_index
 
 def test_cycle_weights_equalize_cycle_totals():
     ids=pd.Series([1,1,2,2,2,3]); w=weights(ids); sums=pd.Series(w).groupby(ids).sum()
@@ -25,3 +25,8 @@ def test_encrypted_csv_round_trip_uses_file_like_buffer(tmp_path):
     path=tmp_path/'panel.aesgcm'; path.write_bytes(encrypt(raw,token,aad))
     loaded=read_decrypted_csv(path,token,aad)
     pd.testing.assert_frame_equal(loaded,frame)
+
+def test_holdout_boundary_is_dynamic_final_twenty_percent():
+    assert holdout_start_index(258) == 206
+    assert holdout_start_index(260) == 208
+    assert 260 - holdout_start_index(260) == 52

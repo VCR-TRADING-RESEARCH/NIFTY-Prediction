@@ -552,3 +552,10 @@
 - C3 generated 7,512 encrypted OOF stock forecasts over 154 cycles; 52 cycles and 2,583 stock observations were held out untouched. On holdout, momentum accuracy was 50.52%; logistic 48.12%; ExtraTrees 48.51%; HistGradientBoosting 46.69%. Logistic minus momentum cycle accuracy was −2.37 percentage points; bootstrap 95% interval [−10.04, +4.29] pp.
 - Decision: no stock model has demonstrated a predictive edge; do not tune on the holdout. C4 confirmatory work remains gated while C1 corporate-action/identity review is incomplete. The separate C3-X v1.4 NIFTY meta-model result is exploratory and statistically inconclusive.
 - No trading P&L or costs are claimed. Only the visible instruction and reproducible engineering/research outcomes are recorded; private reasoning and secrets are not stored.
+
+## 2026-11-03 — Resume: C3 metrics quarantined pending corrected calendar
+
+- User message: “Resume”.
+- C3's old 258-cycle accuracy and AUC figures are historical only; the shifted-expiry calendar defect invalidates their registered weekly-cycle sample.
+- Updated C3 to compute the final-20% holdout index from the actual C2 cycle count and added explicit 258/260 boundary tests.
+- No model was retrained in this commit; the automatic C2-success workflow will trigger C3 after the corrected panel passes.
