@@ -42,6 +42,32 @@ from scripts.constituent_weekly.audit_c1_daily_history import (
 )
 from scripts.constituent_weekly.security_identity import point_in_time_symbol
 
+def request_profile_with_fallback(token, auth_method, fallback_token, profile_request=None):
+    """Use the bounded provided-token fallback after a TOTP profile rejection."""
+    requester = profile_request or request_profile
+    profile = requester(token)
+    selected_token = token
+    selected_method = auth_method
+    fallback_status = "NOT_NEEDED"
+    if (
+        not profile.ok
+        and auth_method == "totp_refresh"
+        and fallback_token
+        and fallback_token != token
+        and "\\n" not in fallback_token
+        and "\\r" not in fallback_token
+    ):
+        retry = requester(fallback_token)
+        if retry.ok:
+            profile = retry
+            selected_token = fallback_token
+            selected_method = "provided_token_fallback"
+            fallback_status = "PASS"
+        else:
+            fallback_status = f"HTTP_{int(retry.status_code)}"
+    return selected_token, profile, selected_method, fallback_status
+
+
 MEMBERSHIP = ROOT / "data/constituent_weekly/nifty50_membership_intervals.csv"
 ALIASES = ROOT / "data/constituent_weekly/security_alias_history.csv"
 ACTIONS = ROOT / "data/constituent_weekly/security_corporate_action_events.csv"
@@ -535,10 +561,20 @@ def main() -> int:
     }
     try:
         token, client_id, auth_method, refresh_status, _auth_diag = acquire_access_token()
+        token, profile, auth_method, fallback_profile_retry = request_profile_with_fallback(
+            token, auth_method, os.environ.get("DHAN_ACCESS_TOKEN", "").strip()
+        )
+        profile_http_status = int(profile.status_code)
         result["auth_method"], result["token_refresh_status"] = auth_method, refresh_status
-        profile = request_profile(token)
-        if not profile.ok or str(profile.json().get("dataPlan", "")).casefold() != "active":
-            raise RuntimeError("Dhan profile/data-plan authorization check failed.")
+        result["profile_http_status"] = profile_http_status
+        result["fallback_profile_retry"] = fallback_profile_retry
+        if not profile.ok:
+            raise RuntimeError(f"Dhan profile authorization failed with HTTP {profile_http_status}.")
+        profile_body = profile.json()
+        data_plan = str(profile_body.get("dataPlan", "")).strip().casefold()
+        result["data_plan_active"] = data_plan == "active"
+        if data_plan != "active":
+            raise RuntimeError("Dhan Data API plan is not active.")
         hf_token = os.environ.get("HF_TOKEN", "").strip()
         if not hf_token:
             raise RuntimeError("HF_TOKEN is required for encrypted C2 cache persistence.")
@@ -1054,6 +1090,12 @@ def main() -> int:
                 "fatal_error_location": location,
                 "input_manifest": result.get("input_manifest", {}),
                 "diagnostics": diagnostics,
+                "auth_method": locals().get("auth_method"),
+                "token_refresh_status": locals().get("refresh_status"),
+                "token_refresh_diagnostics": locals().get("_auth_diag", {}),
+                "profile_http_status": locals().get("profile_http_status"),
+                "fallback_profile_retry": locals().get("fallback_profile_retry"),
+                "data_plan_active": locals().get("data_plan_active"),
                 "limitations": result.get("limitations", []),
             }
             write_json_report(OUT_PANEL_JSON, failed)
@@ -1066,6 +1108,10 @@ def main() -> int:
                 f"- Error category: {type(exc).__name__}",
                 f"- Error message: {safe_message}",
                 f"- Source location: {location}",
+                f"- Authentication method: {locals().get('auth_method', 'not reached')}",
+                f"- Token refresh status: {locals().get('refresh_status', 'not reached')}",
+                f"- Profile HTTP status: {locals().get('profile_http_status', 'not reached')}",
+                f"- Provided-token fallback: {locals().get('fallback_profile_retry', 'not attempted')}",
                 f"- Scheduled cycles: {diagnostics.get('scheduled_cycles', 'not reached')}",
                 f"- Valid NIFTY target cycles: {diagnostics.get('valid_index_target_cycles', 'not reached')}",
                 f"- Constituent target rows: {diagnostics.get('constituent_target_rows', 'not reached')}",

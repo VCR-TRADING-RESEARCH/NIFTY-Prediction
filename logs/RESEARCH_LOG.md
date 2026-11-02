@@ -947,3 +947,10 @@
 - Input manifest: not available.
 - Encrypted panel cache metadata: {}.
 - C2 is panel-only; stock models belong to C3 and index meta-models belong to C4.
+
+## 2026-11-03 — C2 profile authorization fallback
+
+- Corrected calendar C2 run 41529637670 restored cache and passed offline tests, but failed the Dhan profile gate before cycle construction.
+- The existing Dhan preflight contains a bounded TOTP-to-provided-token fallback, which C2 previously lacked. Added the same single fallback only after a fresh TOTP profile HTTP failure.
+- Failure reports now include sanitized auth method, refresh status, profile HTTP status and fallback outcome, never token values.
+- Regression tests cover a successful fallback and prove supplied-token failures are not retried. The new push-triggered C2 run will validate this correction.

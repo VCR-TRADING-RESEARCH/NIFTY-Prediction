@@ -882,3 +882,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Error category: RuntimeError.
 - Source location: {'file': 'run_c2_panel_and_models.py', 'function': 'main', 'line': 541}.
 - No panel acceptance is claimed for this run.
+
+## E0136 — 2026-11-03 — Corrected C2 calendar build blocked at Dhan profile authorization (OPEN UNTIL VALIDATED RETRY)
+
+- Run: [41529637670](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41529637670).
+- C2 compilation, offline regression tests, encrypted-cache restore, artifact upload and report publishing completed. The panel runner stopped at the Dhan profile/data-plan check; no expiry cycles or market-data requests were made.
+- This is an authentication/profile gate, not a failure of the shifted-expiry parser or proof that the data source is unavailable.
+- Correction: C2 now applies the same bounded fallback as the existing Dhan preflight: after a fresh TOTP token gets a profile HTTP failure, check the configured provided token once. No retry occurs for a provided-token authentication failure. Publish only sanitized HTTP/method diagnostics.
+- Added offline tests for the fallback and no-retry cases. Status remains OPEN until the corrected workflow succeeds and builds the 260-cycle panel.

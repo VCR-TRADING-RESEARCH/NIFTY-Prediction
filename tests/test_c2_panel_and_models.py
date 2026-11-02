@@ -16,6 +16,7 @@ from scripts.constituent_weekly.run_c2_panel_and_models import (
     stock_features,
     summarize_cycle_coverage,
     write_json_report,
+    request_profile_with_fallback,
 )
 
 
@@ -175,3 +176,43 @@ def test_c2_calendar_creates_separate_weekly_cycles_around_shifted_expiry():
         ("2025-10-15", "2025-10-20"),
         ("2025-10-23", "2025-10-28"),
     ]
+
+def test_dhan_profile_fallback_uses_provided_token_only_after_fresh_token_http_failure():
+    class Response:
+        def __init__(self, ok, status_code):
+            self.ok = ok
+            self.status_code = status_code
+
+    supplied = []
+    def fake_profile(token):
+        supplied.append(token)
+        return Response(token == "known-good-fallback", 200 if token == "known-good-fallback" else 401)
+
+    token, profile, method, fallback = request_profile_with_fallback(
+        "fresh-totp-token", "totp_refresh", "known-good-fallback", fake_profile
+    )
+    assert supplied == ["fresh-totp-token", "known-good-fallback"]
+    assert token == "known-good-fallback"
+    assert profile.ok is True
+    assert method == "provided_token_fallback"
+    assert fallback == "PASS"
+
+
+def test_dhan_profile_fallback_is_not_used_for_non_totp_auth():
+    class Response:
+        ok = False
+        status_code = 401
+
+    supplied = []
+    def fake_profile(token):
+        supplied.append(token)
+        return Response()
+
+    token, profile, method, fallback = request_profile_with_fallback(
+        "supplied-token", "provided_token_fallback", "another-token", fake_profile
+    )
+    assert supplied == ["supplied-token"]
+    assert token == "supplied-token"
+    assert profile.status_code == 401
+    assert method == "provided_token_fallback"
+    assert fallback == "NOT_NEEDED"
