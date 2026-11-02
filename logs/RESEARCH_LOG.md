@@ -813,3 +813,12 @@
 - The final retest reused 4/4 encrypted archive cache entries. Raw bytes remain AES-GCM encrypted in Actions cache; public artifacts contain only metadata, hashes and headers.
 - Corrected publisher now preserves generated reports across branch synchronisation; read-back verified the new 4/4 report and machine result.
 - This is a bounded source/schema feasibility pass only—not proof of complete historical coverage or licence for bulk extraction. No candidate events were matched/adjudicated, no price factors calculated, and C1 remains PARTIAL / NOT PASSED; C2 remains gated.
+
+
+## 2026-11-02 — NSE data-rights review and alternate source decision
+
+- Reviewed NSE Terms of Use, Data Sharing & Usage Policy, Non-Display Usage Policy and NSE Research Initiative. NSE terms prohibit systematic/automated collection from the website without express written consent; non-display policy covers automated trading-decision algorithms and derived data. Research access is described as academic/non-commercial.
+- Decision: do not expand the successful four-date technical probe into a 711-event automated NSE archive crawl without an applicable written permission/agreement.
+- Evaluated the existing Dhan subscription as the next route. Dhan documents daily historical OHLCV from instrument inception and says daily history is adjusted for bonuses and splits; no claim is made that it covers dividends, rights, mergers or all contract adjustments.
+- Added [C1_DATA_RIGHTS_AND_ALTERNATIVES.md](research/constituent_weekly/C1_DATA_RIGHTS_AND_ALTERNATIVES.md) and updated the feasibility report.
+- Next: controlled Dhan adjusted-price diagnostic against the encrypted candidate event catalogue; targeted issuer-first-party verification only where access terms permit. C1 remains PARTIAL / NOT PASSED; C2 remains gated.
