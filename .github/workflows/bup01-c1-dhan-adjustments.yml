@@ -7,6 +7,8 @@ on:
     paths:
       - "scripts/constituent_weekly/audit_c1_dhan_adjustments.py"
       - "tests/test_c1_dhan_adjustments.py"
+      - "scripts/constituent_weekly/audit_c1_intraday_ca_diagnostic.py"
+      - "tests/test_c1_intraday_ca_diagnostic.py"
       - ".github/workflows/bup01-c1-dhan-adjustments.yml"
   workflow_dispatch:
 
