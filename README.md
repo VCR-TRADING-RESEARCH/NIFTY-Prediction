@@ -394,3 +394,17 @@ Run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actio
 - C1 remains partial; C4 confirmatory and C5 costs/trading remain blocked. No strategy, return claim or live signal.
 
 See [C3 status](research/constituent_weekly/C3_STATUS.md), [machine results](research/constituent_weekly/C3_RESULTS.json), [report](research/constituent_weekly/C3_RESULTS.md), [research log](logs/RESEARCH_LOG.md), and [error log](logs/ERROR_LOG.md).
+
+
+## BUP-01 exploratory closeout — 2026-11-02
+
+- **C1:** PARTIAL; 711 point-in-time member-event candidates still require independent corporate-action review.
+- **C2:** PASS with C1 limitations — [run 41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378).
+- **C3:** exploratory stock models complete — [run 41401986460](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41401986460); no model edge selected.
+- **C4:** confirmatory aggregation GATED, validated by [workflow 41411507365](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41411507365).
+- **C5:** BLOCKED / NOT RUN, validated by [workflow 41410573458](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41410573458).
+- **C6:** automated summary audit PASS WITH LIMITATIONS — [workflow 41411057657](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41411057657).
+
+Full manuscript: [MANUSCRIPT.md](research/constituent_weekly/MANUSCRIPT.md) · [Audit report](research/constituent_weekly/C6_AUDIT_REPORT.md) · [Status](research/constituent_weekly/C6_STATUS.md) · [C5 economic gate](research/constituent_weekly/C5_COST_GATE.md) · [C4 gate](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c4-aggregation/research/constituent_weekly/C4_STATUS.md).
+
+No trading strategy or live signal is validated. This branch closes the current bounded exploratory evidence; further confirmatory work requires C1 gate closure.
