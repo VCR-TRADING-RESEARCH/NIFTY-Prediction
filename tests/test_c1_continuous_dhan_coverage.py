@@ -273,3 +273,135 @@ def test_request_intraday_window_returns_sanitizable_schema_after_three_malforme
     assert inspected["status"] == "INVALID_RESPONSE"
     assert inspected["response_schema"]["response_top_level_keys"] == ["remarks", "status"]
     assert "private provider text" not in str(inspected)
+
+
+
+def test_provider_error_fields_are_whitelisted_and_message_text_is_not_retained():
+    import scripts.constituent_weekly.audit_c1_continuous_dhan_coverage as audit
+
+    body = {
+        "errorCode": "DH-905",
+        "errorType": "Input_Exception",
+        "errorMessage": "private provider text with account-specific detail",
+    }
+    fields = audit.sanitized_provider_error_fields(body)
+    assert fields == {
+        "provider_error_code": "DH-905",
+        "provider_error_type": "Input_Exception",
+        "provider_message_category": "DHAN_INPUT_EXCEPTION_DH905",
+    }
+    assert "private provider text" not in str(fields)
+    assert "account-specific detail" not in str(fields)
+
+
+def test_provider_error_fields_support_nested_remarks_shape():
+    import scripts.constituent_weekly.audit_c1_continuous_dhan_coverage as audit
+
+    fields = audit.sanitized_provider_error_fields({
+        "status": "failure",
+        "remarks": {
+            "error_code": "805",
+            "error_type": "Data_Error",
+            "error_message": "too many requests; private text",
+        },
+    })
+    assert fields == {
+        "provider_error_code": "805",
+        "provider_error_type": "Data_Error",
+        "provider_message_category": "DHAN_DATA_TOO_MANY_REQUESTS_805",
+    }
+    assert "private text" not in str(fields)
+
+
+def test_http_400_dh905_is_recorded_without_retry_or_message_text(monkeypatch):
+    import scripts.constituent_weekly.audit_c1_continuous_dhan_coverage as audit
+
+    class Response:
+        status_code = 400
+        ok = False
+        headers = {}
+
+        def json(self):
+            return {
+                "errorCode": "DH-905",
+                "errorType": "Input_Exception",
+                "errorMessage": "private provider message",
+            }
+
+    calls = {"count": 0}
+    def fake_post(*_args, **_kwargs):
+        calls["count"] += 1
+        return Response()
+
+    monkeypatch.setattr(audit.requests, "post", fake_post)
+    monkeypatch.setattr(audit.time, "sleep", lambda *_: None)
+    body, attempts = audit.request_intraday_window(
+        "123", "IDX_I", "INDEX", "token", "client", "2023-05-06", "2023-08-03"
+    )
+    assert attempts == calls["count"] == 1
+    assert body["status"] == "HTTP_400"
+    assert body["provider_error_code"] == "DH-905"
+    assert body["provider_message_category"] == "DHAN_INPUT_EXCEPTION_DH905"
+    assert "private provider message" not in str(body)
+
+
+def test_http_400_dh904_uses_bounded_backoff_then_recovers(monkeypatch):
+    import scripts.constituent_weekly.audit_c1_continuous_dhan_coverage as audit
+
+    class Response:
+        ok = True
+        headers = {}
+
+        def __init__(self, status_code, body):
+            self.status_code = status_code
+            self.body = body
+            self.ok = status_code == 200
+
+        def json(self):
+            return self.body
+
+    success = {
+        "open": [100.0, 101.0],
+        "high": [101.0, 102.0],
+        "low": [99.0, 100.0],
+        "close": [100.5, 101.5],
+        "timestamp": [epoch_ist("2023-05-11T10:00:00"), epoch_ist("2023-05-11T15:14:00")],
+    }
+    responses = [
+        Response(400, {
+            "errorCode": "DH-904",
+            "errorType": "Data_Error",
+            "errorMessage": "too many requests; private detail",
+        }),
+        Response(200, success),
+    ]
+    calls = {"count": 0}
+    waits = []
+
+    def fake_post(*_args, **_kwargs):
+        response = responses[calls["count"]]
+        calls["count"] += 1
+        return response
+
+    monkeypatch.setattr(audit.requests, "post", fake_post)
+    monkeypatch.setattr(audit.time, "sleep", lambda seconds: waits.append(seconds))
+    body, attempts = audit.request_intraday_window(
+        "123", "IDX_I", "INDEX", "token", "client", "2023-05-06", "2023-08-03"
+    )
+    assert attempts == calls["count"] == 2
+    assert waits == [2.0]
+    assert body == success
+
+
+def test_inspect_target_dates_exposes_only_sanitized_provider_error_metadata():
+    body = {
+        "errorCode": "DH-905",
+        "errorType": "Input_Exception",
+        "errorMessage": "do not publish this provider detail",
+    }
+    inspected = inspect_target_dates(body, ["2023-05-11"], require_volume=False)
+    schema = inspected["response_schema"]
+    assert schema["provider_error_code"] == "DH-905"
+    assert schema["provider_error_type"] == "Input_Exception"
+    assert schema["provider_message_category"] == "DHAN_INPUT_EXCEPTION_DH905"
+    assert "do not publish this provider detail" not in str(inspected)

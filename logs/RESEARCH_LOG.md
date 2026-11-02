@@ -1983,3 +1983,10 @@
 ## 2026-11-03 — Follow-up to E0138: align all classifier assertions
 - Offline run [41534173076](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534173076) produced 95 passed and 1 failed because a second nested-remarks test still expected `DHAN_DH_905`. The response classifier correctly emitted the explicit `DHAN_INPUT_EXCEPTION_DH905` category.
 - Updated the remaining stale expectation. The associated live exact-window probe was skipped by the workflow's test-success gate; no new provider result is inferred from this failed run.
+
+
+## 2026-11-03 — E0140: controlled Dhan recovery preparation
+- The exact-window Dhan diagnostic [41534685957](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534685957) passed 7/7 requests for NIFTY and active-stock 90-day chunks that had failed in the continuous C1 audit. It passed 30/33 diagnostic requests overall; the three failures were legacy HDFC daily-history calls returning DH-905.
+- Since the previous C1 HTTP 400 response body was discarded, its root cause cannot be recovered. Concurrent C1/C2 acquisition was a possible contributor, not a confirmed cause; the API docs distinguish DH-904 rate-limit errors, DH-905 input errors and Data API 805 too-many-requests blocking warning. The documentation has separate statements for overall Data API request quotas and minute/hourly requests, so no claim is made that the original HTTP 400s were definitely rate-limit responses.
+- Updated C1 intraday requests to use one-second pacing, preserve only whitelisted provider error codes/types/categories, retry only explicit DH-904 with bounded backoff, and avoid retrying input/data/805 errors. C1/C2 live intraday workflows share a concurrency group to prevent overlap.
+- The formal acceptance thresholds are unchanged. Rebuild and C2 panel acceptance are pending; C3 remains gated.

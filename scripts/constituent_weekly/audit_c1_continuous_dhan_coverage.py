@@ -33,7 +33,7 @@ EXPIRY_CSV = ROOT / "data" / "reconciliation" / "expiry_verification.csv"
 INDEX_DAILY_CSV = ROOT / "data" / "reconciliation" / "nifty50_official_daily.csv"
 OUTPUT = ROOT / "research" / "constituent_weekly" / "C1_CONTINUOUS_COVERAGE.json"
 CHUNK_DAYS = 90
-REQUEST_DELAY_SECONDS = 0.5
+REQUEST_DELAY_SECONDS = 1.0
 REQUEST_TIMEOUT_SECONDS = 120
 MIN_VALID_MEMBERS = 47
 MIN_MEMBER_FRACTION = 0.94
@@ -225,6 +225,90 @@ def _payload_arrays(body: Any) -> tuple[dict[str, Any] | None, str | None]:
     return arrays, None
 
 
+def sanitized_provider_error_fields(body: Any) -> dict[str, str]:
+    """Return whitelisted Dhan error metadata only; never retain provider message text."""
+    if not isinstance(body, dict):
+        return {}
+    remarks = body.get("remarks")
+    nested = remarks if isinstance(remarks, dict) else {}
+    code_value = (
+        body.get("provider_error_code")
+        or nested.get("error_code")
+        or body.get("errorCode")
+        or body.get("error_code")
+    )
+    raw_code = str(code_value or "").strip().upper()
+    code_aliases = {
+        "800": "800", "804": "804", "805": "805", "806": "806",
+        "807": "807", "808": "808", "809": "809", "810": "810",
+        "811": "811", "812": "812", "813": "813", "814": "814",
+        "DH-904": "DH-904", "DH-905": "DH-905", "DH-906": "DH-906",
+        "DH-907": "DH-907", "DH-908": "DH-908", "DH-909": "DH-909",
+        "DH-910": "DH-910",
+    }
+    code = code_aliases.get(raw_code)
+    type_value = body.get("provider_error_type") or nested.get("error_type") or body.get("errorType") or body.get("error_type")
+    raw_type = str(type_value or "").strip().casefold()
+    type_aliases = {
+        "input_exception": "Input_Exception",
+        "data_error": "Data_Error",
+        "order_error": "Order_Error",
+        "internal_server_error": "Internal_Server_Error",
+        "network_error": "Network_Error",
+        "authentication_error": "Authentication_Error",
+        "others": "Others",
+    }
+    error_type = type_aliases.get(raw_type)
+    message_value = (
+        nested.get("error_message")
+        or body.get("errorMessage")
+        or body.get("error_message")
+        or body.get("message")
+    )
+    message = str(message_value or "").casefold()
+    categories = {
+        "DH-904": "DHAN_RATE_LIMIT_DH904",
+        "DH-905": "DHAN_INPUT_EXCEPTION_DH905",
+        "DH-906": "DHAN_ORDER_ERROR_DH906",
+        "DH-907": "DHAN_DATA_ERROR_DH907",
+        "DH-908": "DHAN_INTERNAL_ERROR_DH908",
+        "DH-909": "DHAN_NETWORK_ERROR_DH909",
+        "DH-910": "DHAN_OTHER_ERROR_DH910",
+        "800": "DHAN_DATA_INTERNAL_ERROR_800",
+        "804": "DHAN_DATA_INSTRUMENT_LIMIT_804",
+        "805": "DHAN_DATA_TOO_MANY_REQUESTS_805",
+        "806": "DHAN_DATA_NOT_SUBSCRIBED_806",
+        "807": "DHAN_ACCESS_TOKEN_EXPIRED_807",
+        "808": "DHAN_AUTHENTICATION_FAILED_808",
+        "809": "DHAN_ACCESS_TOKEN_INVALID_809",
+        "810": "DHAN_CLIENT_ID_INVALID_810",
+        "811": "DHAN_INVALID_EXPIRY_DATE_811",
+        "812": "DHAN_INVALID_DATE_FORMAT_812",
+        "813": "DHAN_INVALID_SECURITY_ID_813",
+        "814": "DHAN_INVALID_REQUEST_814",
+    }
+    category = categories.get(code or "")
+    if not category and message:
+        if any(term in message for term in ("rate limit", "too many request", "throttl")):
+            category = "RATE_LIMIT_MESSAGE"
+        elif any(term in message for term in ("subscription", "data plan", "not subscribed", "entitlement")):
+            category = "DATA_ENTITLEMENT_MESSAGE"
+        elif any(term in message for term in ("invalid security", "security id", "instrument not found")):
+            category = "INVALID_INSTRUMENT_MESSAGE"
+        elif any(term in message for term in ("invalid date", "date range", "from date", "to date")):
+            category = "INVALID_DATE_OR_RANGE_MESSAGE"
+        elif any(term in message for term in ("unauthor", "invalid token", "expired token", "access denied")):
+            category = "AUTHENTICATION_MESSAGE"
+    result: dict[str, str] = {}
+    if code:
+        result["provider_error_code"] = code
+    if error_type:
+        result["provider_error_type"] = error_type
+    if category:
+        result["provider_message_category"] = category
+    return result
+
+
 def _ohlc_rows_valid(frame: pd.DataFrame, require_volume: bool) -> bool:
     if frame.empty:
         return False
@@ -277,6 +361,7 @@ def inspect_target_dates(
                 } if isinstance(payload, dict) else {},
                 "provider_status_value": str(body.get("status"))[:32] if isinstance(body.get("status"), (str, int, float, bool)) else None,
             }
+            schema.update(sanitized_provider_error_fields(body))
         return {"status": "INVALID_RESPONSE", "bar_count": 0, "dates": results, "response_schema": schema}
 
     count = len(arrays["timestamp"])
@@ -380,7 +465,23 @@ def request_intraday_window(
                 continue
             return last_body, attempts
         if not response.ok:
-            return {"status": f"HTTP_{response.status_code}", "bar_count": 0, "dates": {}}, attempts
+            try:
+                error_body = response.json()
+            except ValueError:
+                error_body = {}
+            error_fields = sanitized_provider_error_fields(error_body)
+            last_body = {
+                "status": f"HTTP_{response.status_code}",
+                "bar_count": 0,
+                "dates": {},
+                **error_fields,
+            }
+            # Retry only the explicit DH-904 rate-limit response. DH-905/907 and
+            # Data API code 805 need correction or a pause, not repeated identical calls.
+            if error_fields.get("provider_error_code") == "DH-904" and attempt < 2:
+                time.sleep(2.0 * (attempt + 1))
+                continue
+            return last_body, attempts
         try:
             body = response.json()
         except ValueError:
@@ -391,6 +492,16 @@ def request_intraday_window(
             return last_body, attempts
 
         arrays, shape_error = _payload_arrays(body)
+        error_fields = sanitized_provider_error_fields(body)
+        if (
+            arrays is None
+            and error_fields.get("provider_error_code") == "DH-904"
+            and attempt < 2
+        ):
+            time.sleep(2.0 * (attempt + 1))
+            continue
+        if arrays is None and error_fields.get("provider_error_code") not in (None, "DH-904"):
+            return body, attempts
         retryable_shape_errors = {
             "INVALID_JSON_SHAPE",
             "MISSING_REQUIRED_ARRAY",

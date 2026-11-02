@@ -944,3 +944,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Status:** Final test expectation correction committed; rerun offline tests before live diagnostic.
 - **Prevention:** Update all existing assertions whenever a public diagnostic label changes.
 - **Security:** No credentials, raw provider messages, tokens, security IDs, or private reasoning recorded.
+
+
+## E0140 — 2026-11-03 — Serialize Dhan intraday acquisition and preserve sanitized provider errors
+- **Severity:** High — corrective control for repeated historical-data coverage failures.
+- **Evidence:** The expanded bounded diagnostic [41534685957](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534685957) returned valid payloads for all seven exact index/active-stock requests covering failed C1 windows from 2022, 2023 and 2024. The same run passed the 16-symbol request burst. The only three failures among 33 cases were legacy HDFC daily-history requests returning DH-905 (input exception), outside the intraday target audit.
+- **Unresolved cause:** The original five-year C1 request helper discarded HTTP error bodies, so the specific error code for its 1,011 HTTP-400 requests is unknowable. C1 and C2 had overlapping Dhan acquisition jobs; combined configured request pacing may have contributed, but this is not proven. Dhan's documentation distinguishes DH-904 rate-limit errors from DH-905 input errors and Data API code 805 ("too many requests or connections; further requests may result in blocking"). Historical intraday rate guidance is stated differently across the API overview/release notes; do not assign rate limiting as the root cause without captured evidence.
+- **Correction:** Add whitelisted, sanitised Dhan error-code/type/category fields; never retain provider message bodies. Retry only explicit DH-904 with bounded backoff. Do not automatically retry DH-905, DH-907 or Data API 805. Pace each job at one request per second and place C1/C2 on a shared Actions concurrency group so their live Dhan jobs do not overlap.
+- **Status:** Offline regression tests and serialized five-year rebuild pending.
+- **Security:** No raw provider messages, tokens, credentials, security IDs or market prices are recorded.
+
