@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BUP-01 C1 — Constituent Corporate-Action Research</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:1000px;margin:2rem auto;padding:0 1rem;line-height:1.55;color:#17202a}
+h1,h2{line-height:1.2} table{border-collapse:collapse;width:100%;margin:1rem 0} th,td{border:1px solid #ccd3da;padding:.55rem;text-align:left;vertical-align:top} th{background:#f2f5f7}
+.status{font-weight:700} .note{border-left:4px solid #aab7b8;padding:.6rem 1rem;background:#f7f9f9}
+a{color:#075aa8} code{overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<p><a href="../../index.html">← Research home</a> · <a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction">Main repository</a></p>
+<h1>BUP-01 C1 — Constituent Corporate-Action Research</h1>
+<p><strong>Last updated:</strong> 2026-11-02</p>
+<p class="status">C1: PARTIAL / NOT PASSED · C2: GATED</p>
+<p class="note">This page publishes sanitised research metadata and diagnostic summaries only. Raw market prices, raw corporate-action rows, ISIN values, API tokens and credentials are not published.</p>
+
+<h2>Current findings</h2>
+<table>
+<thead><tr><th>Work item</th><th>Result</th><th>Interpretation</th></tr></thead>
+<tbody>
+<tr><td>Daily member-session OHLCV coverage</td><td>106,392 / 106,392 (100%)</td><td>Coverage complete, but corporate-action identity and adjustment gates remain open.</td></tr>
+<tr><td>Official NSE PR archive route/schema probe</td><td>4 / 4 dates passed</td><td>Corporate-action CSV, announcements and board-meeting members were present before and after the Oct-2025 naming transition. This is technical feasibility only.</td></tr>
+<tr><td>Reliance 1:1 bonus adjustment</td><td>0.5 relative OHLC factor</td><td>9/9 sessions matched; Dhan adjusted history passed this diagnostic.</td></tr>
+<tr><td>Bajaj Finserv 5:1 split + 1:1 bonus</td><td>0.1 relative OHLC factor</td><td>11/11 sessions matched and price factor passed, but source ISIN transition is one session later than the official circular effective date. Identity gate remains open.</td></tr>
+</tbody>
+</table>
+
+<h2>Data-rights control</h2>
+<p>NSE website terms prohibit systematic automated collection without express written consent or an applicable agreement. The project will not expand the four-date probe into a bulk NSE archive crawl. Dhan Data API is the current adjusted-price route tested for bonus/split events. The TejHQ personal-use-only reference data remains encrypted and internal; raw data is not redistributed.</p>
+
+<h2>Research files</h2>
+<ul>
+<li><a href="C1_NSE_PR_ARCHIVE_PROBE.md">NSE archive probe report</a> · <a href="C1_NSE_PR_ARCHIVE_PROBE.json">machine-readable probe result</a></li>
+<li><a href="C1_DHAN_ADJUSTMENT_DIAGNOSTIC.md">Dhan adjustment diagnostic report</a> · <a href="C1_DHAN_ADJUSTMENT_DIAGNOSTIC.json">machine-readable adjustment result</a></li>
+<li><a href="C1_DATA_RIGHTS_AND_ALTERNATIVES.md">Data rights gate and permitted alternatives</a></li>
+<li><a href="C1_OFFICIAL_CORPORATE_ACTION_SOURCE_FEASIBILITY.md">Official source feasibility and verification method</a></li>
+<li><a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md">Detailed C1 phase status</a></li>
+<li><a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/RESEARCH_LOG.md">Research log</a> · <a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/ERROR_LOG.md">Error log</a></li>
+</ul>
+
+<h2>Open gates</h2>
+<ul>
+<li>Resolve or conservatively flag the one-session Bajaj Finserv ISIN timing discrepancy.</li>
+<li>Verify dividend, rights, merger/demerger and buyback treatment separately.</li>
+<li>Do not apply adjustment factors to the full panel until event-level identity, terms and price reconciliation pass.</li>
+<li>C1 remains PARTIAL / NOT PASSED; C2 and subsequent phases remain gated. No executable trading strategy is approved.</li>
+</ul>
+<p><small>Generated from the research branch; see the linked machine-readable files for the exact sanitised diagnostic outputs.</small></p>
+</body>
+</html>
