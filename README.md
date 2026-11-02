@@ -628,3 +628,6 @@ The former combined C2 panel-and-model workflow has been retired because the loc
 
 
 - **C3 execution launched:** [GitHub Actions run 41398510316](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398510316). It downloads the latest successful C2 encrypted artifact, verifies both ciphertext hashes, decrypts only in the Actions runner, runs cycle-grouped stock models, and uploads aggregate metrics plus encrypted OOF predictions.
+
+
+- **C3 automation:** the stock-modelling workflow supports automatic execution after a successful C2 run, manual dispatch, and controlled reruns after code/spec changes. Latest rerun [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) is using the manifest bundled with its own encrypted C2 artifact.
