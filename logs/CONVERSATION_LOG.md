@@ -434,3 +434,12 @@
 - Added the bounded official NSE PR archive probe and three offline tests; updated the C1 workflow to run it, cache archive bytes encrypted, upload sanitised reports and publish the report files to the C1 branch.
 - The probe is limited to four fixed dates across the 13-Oct-2025 naming transition. It inspects only archive/member metadata and corporate-action CSV headers, never publishes raw event rows.
 - Runtime Actions run [41422655123](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422655123) started automatically. Offline validation and cache restore passed; catalogue step is running and the NSE archive probe has not yet executed. Static review identified an uppercase-path defect in the first probe implementation. It was corrected and recorded as E0109; the first run is superseded, and the corrected follow-up run is pending. No source coverage or event verification is claimed. No hidden reasoning or credentials are recorded.
+
+
+## 2026-11-02 — NSE archive probe completed and published
+
+- The corrected fixed-date probe completed in Actions run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062): 4/4 dates passed, including pre- and post-13-Oct-2025 samples.
+- The verified website archive route is `/archives/equities/bhavcopy/pr/PRDDMMYY.zip`; the corporate-action CSV schema and announcement/board-meeting member presence were consistent on all four dates.
+- Final encrypted-cache rerun hit all four archive entries. The sanitised 4/4 report and JSON result were read back from the C1 branch after correcting the report publisher.
+- The 17-Apr-2024 initial sample was a market holiday; it was replaced with 16-Apr-2024. All implementation mistakes were recorded in ERROR_LOG.md and corrected.
+- Only source/schema feasibility is complete. Full archive coverage, event/ISIN matching, issuer verification and adjustment maths remain open; C1 stays PARTIAL / NOT PASSED and C2 remains gated. No hidden reasoning or credentials are recorded.
