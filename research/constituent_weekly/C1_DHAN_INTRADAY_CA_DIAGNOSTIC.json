@@ -1,0 +1,26 @@
+{
+  "auth_method": "provided_token_fallback",
+  "credentials_or_tokens_recorded": false,
+  "data_source": "DhanHQ v2 intraday historical API",
+  "events": [],
+  "raw_bars_published": false,
+  "status": "BLOCKED_PROFILE_HTTP_401",
+  "token_refresh_diagnostics": {
+    "access_token_field_type": "missing",
+    "access_token_length": 0,
+    "body_type": "dict",
+    "data_keys": [],
+    "fallback_available": true,
+    "http_status": 200,
+    "provider_error_category": "UNCLASSIFIED_PROVIDER_RESPONSE",
+    "refresh_attempts": 2,
+    "response_keys": [
+      "message",
+      "status"
+    ],
+    "server_minus_runner_clock_skew_seconds": 0,
+    "token_container": null
+  },
+  "token_refresh_status": "FAILED_FALLBACK_USED",
+  "updated_at_utc": "2026-11-02T19:20:09.974988+00:00"
+}

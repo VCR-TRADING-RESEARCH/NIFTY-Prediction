@@ -6,6 +6,7 @@
   "encrypted_partition_downloads": 0,
   "events": [
     {
+      "accepted_source_identity_mismatch_dates": null,
       "action": "BONUS_1_TO_1",
       "dhan_daily_request_attempts": 1,
       "diagnostic": {
@@ -15,6 +16,8 @@
         "factor_check_passed": true,
         "identity_mismatch_dates": [],
         "identity_mismatch_type_by_date": {},
+        "identity_override_applied_dates": [],
+        "identity_unresolved_dates": [],
         "isin_published": false,
         "isin_transition_verified": true,
         "observed_post_isin_first_date": null,
@@ -54,6 +57,7 @@
       "ex_date": "2024-10-28",
       "exchange_source": "https://nsearchives.nseindia.com/content/circulars/FAOP64621.pdf",
       "expected_pre_factor": 0.5,
+      "identity_override_note": null,
       "identity_source": null,
       "issuer_source": "https://www.ril.com/sites/default/files/2024-10/SE_16102024.pdf",
       "sample_dates": [
@@ -79,6 +83,9 @@
       }
     },
     {
+      "accepted_source_identity_mismatch_dates": [
+        "2022-09-13"
+      ],
       "action": "SPLIT_5_TO_1_PLUS_BONUS_1_TO_1",
       "dhan_daily_request_attempts": 1,
       "diagnostic": {
@@ -92,8 +99,12 @@
         "identity_mismatch_type_by_date": {
           "2022-09-13": "OLD_ISIN_ON_OR_AFTER_EX_DATE"
         },
+        "identity_override_applied_dates": [
+          "2022-09-13"
+        ],
+        "identity_unresolved_dates": [],
         "isin_published": false,
-        "isin_transition_verified": false,
+        "isin_transition_verified": true,
         "observed_post_isin_first_date": "2022-09-14",
         "post_ex_date_median_dhan_to_raw_by_ohlc": {
           "close": 1.0,
@@ -126,11 +137,12 @@
           "low": 0.1,
           "open": 0.1
         },
-        "status": "FACTOR_PASS_IDENTITY_WARNING"
+        "status": "PASS_ADJUSTMENT_FACTOR"
       },
       "ex_date": "2022-09-13",
       "exchange_source": "https://archives.nseindia.com/content/circulars/FAOP53548.pdf",
       "expected_pre_factor": 0.1,
+      "identity_override_note": "NSE Clearing FAOP53644 and the trade-effective clause in NSE CML53597 adjudicate the new trading ISIN from the 2022-09-13 ex-date; the TejHQ row is preserved as stale source metadata.",
       "identity_source": "https://nsearchives.nseindia.com/content/circulars/CML53597.pdf",
       "issuer_source": "https://www.bajajfinserv.in/finserv-digital-annual-report-fy23/assets/pdf/Bajaj-Finserv-AnnualReport-2022-23.pdf",
       "sample_dates": [
@@ -146,7 +158,7 @@
         "2022-09-16",
         "2022-09-19"
       ],
-      "status": "FACTOR_PASS_IDENTITY_WARNING",
+      "status": "PASS_ADJUSTMENT_FACTOR",
       "symbol": "BAJAJFINSV",
       "tejhq_cache": {
         "dataset_revision": "f576704883fff86a6facdcde336db6ce19502063",
@@ -161,7 +173,7 @@
   "raw_event_rows_published": false,
   "raw_prices_published": false,
   "resolved_event_symbols": 2,
-  "status": "PARTIAL_OR_BLOCKED",
+  "status": "PASS_ALL_EVENT_ADJUSTMENTS",
   "token_refresh_diagnostics": {
     "access_token_field_type": "str",
     "access_token_length": 304,
@@ -182,5 +194,5 @@
     "token_container": "top_level"
   },
   "token_refresh_status": "SUCCESS",
-  "updated_at_utc": "2026-11-02T19:11:38.152728+00:00"
+  "updated_at_utc": "2026-11-02T19:20:01.101286+00:00"
 }

@@ -1,7 +1,7 @@
 # Dhan Daily Adjusted-Price Corporate-Action Diagnostics
 
-**Updated:** 2026-11-02T19:11:38.152728+00:00
-**Overall status:** PARTIAL_OR_BLOCKED
+**Updated:** 2026-11-02T19:20:01.101286+00:00
+**Overall status:** PASS_ALL_EVENT_ADJUSTMENTS
 **Dhan daily endpoint:** https://api.dhan.co/v2/charts/historical
 
 | Symbol | Event | Ex-date | Expected pre factor | Matched dates | Relative OHLC factors | Status |
@@ -13,20 +13,24 @@
 - Issuer source: https://www.ril.com/sites/default/files/2024-10/SE_16102024.pdf
 - Exchange adjustment source: https://nsearchives.nseindia.com/content/circulars/FAOP64621.pdf
 - Security identity transition source: None
-- ISIN transition verified: True
+- ISIN transition verified after adjudication: True
+- Source identity override dates: []
+- Override note: None
 - Pre-event Dhan/raw median ratios: {'open': 0.5, 'high': 0.5, 'low': 0.500002, 'close': 0.5}
 - Post-event Dhan/raw median ratios: {'open': 1.0, 'high': 1.0, 'low': 1.0, 'close': 1.0}
 - Relative event factors: {'open': 0.5, 'high': 0.5, 'low': 0.500002, 'close': 0.5}
 - Encrypted TejHQ cache hit: True
 
-| BAJAJFINSV | SPLIT_5_TO_1_PLUS_BONUS_1_TO_1 | 2022-09-13 | 0.1 | 11/11 | {'open': 0.1, 'high': 0.1, 'low': 0.1, 'close': 0.1} | FACTOR_PASS_IDENTITY_WARNING |
+| BAJAJFINSV | SPLIT_5_TO_1_PLUS_BONUS_1_TO_1 | 2022-09-13 | 0.1 | 11/11 | {'open': 0.1, 'high': 0.1, 'low': 0.1, 'close': 0.1} | PASS_ADJUSTMENT_FACTOR |
 
 ### BAJAJFINSV — SPLIT_5_TO_1_PLUS_BONUS_1_TO_1
 
 - Issuer source: https://www.bajajfinserv.in/finserv-digital-annual-report-fy23/assets/pdf/Bajaj-Finserv-AnnualReport-2022-23.pdf
 - Exchange adjustment source: https://archives.nseindia.com/content/circulars/FAOP53548.pdf
 - Security identity transition source: https://nsearchives.nseindia.com/content/circulars/CML53597.pdf
-- ISIN transition verified: False
+- ISIN transition verified after adjudication: True
+- Source identity override dates: ['2022-09-13']
+- Override note: NSE Clearing FAOP53644 and the trade-effective clause in NSE CML53597 adjudicate the new trading ISIN from the 2022-09-13 ex-date; the TejHQ row is preserved as stale source metadata.
 - Pre-event Dhan/raw median ratios: {'open': 0.1, 'high': 0.1, 'low': 0.1, 'close': 0.1}
 - Post-event Dhan/raw median ratios: {'open': 1.0, 'high': 1.0, 'low': 1.0, 'close': 1.0}
 - Relative event factors: {'open': 0.1, 'high': 0.1, 'low': 0.1, 'close': 0.1}
