@@ -1,5 +1,5 @@
 {
-  "confirmed_archives": 3,
+  "confirmed_archives": 4,
   "limitations": [
     "Four-date probe only; not complete daily archive coverage.",
     "Only CSV headers and member presence are inspected; no event rows are published.",
@@ -11,7 +11,7 @@
   "pre_transition_schema_confirmed": true,
   "probe_dates": [
     "2018-04-02",
-    "2024-04-17",
+    "2024-04-16",
     "2025-10-14",
     "2026-04-17"
   ],
@@ -21,26 +21,8 @@
       "archive_bytes": 502142,
       "archive_sha256": "10dafb999b73f73bc2aa7df57c0e62b130e7291dec290cfa897964c12bec9e92",
       "date": "2018-04-02",
-      "encrypted_cache_hit": false,
-      "http_attempts": [
-        {
-          "http_status": 404,
-          "url_path": "/content/historical/EQUITIES/2018/APR/nupr020418.zip"
-        },
-        {
-          "http_status": 404,
-          "url_path": "/content/historical/EQUITIES/2018/APR/PR020418.zip"
-        },
-        {
-          "http_status": 404,
-          "url_path": "/archives/equities/bhavcopy/pr/nupr020418.zip"
-        },
-        {
-          "http_status": 200,
-          "url_path": "/archives/equities/bhavcopy/pr/PR020418.zip",
-          "valid_zip": true
-        }
-      ],
+      "encrypted_cache_hit": true,
+      "http_attempts": [],
       "schema": {
         "announcement_member_present": true,
         "archive_member_count": 16,
@@ -64,48 +46,39 @@
       "status": "SCHEMA_CONFIRMED"
     },
     {
-      "attempts": [
-        {
-          "http_status": 404,
-          "url_path": "/content/historical/EQUITIES/2024/APR/nupr170424.zip"
-        },
-        {
-          "http_status": 404,
-          "url_path": "/content/historical/EQUITIES/2024/APR/PR170424.zip"
-        },
-        {
-          "http_status": 404,
-          "url_path": "/archives/equities/bhavcopy/pr/nupr170424.zip"
-        },
-        {
-          "http_status": 404,
-          "url_path": "/archives/equities/bhavcopy/pr/PR170424.zip"
-        }
-      ],
-      "date": "2024-04-17",
-      "encrypted_cache_hit": false,
-      "status": "NOT_RETRIEVED"
+      "archive_bytes": 432838,
+      "archive_sha256": "c8d77309dd868db21bfa376021e02c8fa8c19b94c26c32136417d9a2afe29bda",
+      "date": "2024-04-16",
+      "encrypted_cache_hit": true,
+      "http_attempts": [],
+      "schema": {
+        "announcement_member_present": true,
+        "archive_member_count": 15,
+        "board_meeting_member_present": true,
+        "corporate_action_header": [
+          "SERIES",
+          "SYMBOL",
+          "SECURITY",
+          "RECORD_DT",
+          "BC_STRT_DT",
+          "BC_END_DT",
+          "EX_DT",
+          "ND_STRT_DT",
+          "ND_END_DT",
+          "PURPOSE"
+        ],
+        "corporate_action_member": "bc160424.csv",
+        "corporate_action_member_bytes": 10087,
+        "schema_date": "2024-04-16"
+      },
+      "status": "SCHEMA_CONFIRMED"
     },
     {
       "archive_bytes": 579043,
       "archive_sha256": "e039feca01b7a49e9f76c135ae36927d94392a42f3dde64b201ab541b4e97746",
       "date": "2025-10-14",
-      "encrypted_cache_hit": false,
-      "http_attempts": [
-        {
-          "http_status": 404,
-          "url_path": "/content/historical/EQUITIES/2025/OCT/PR141025.zip"
-        },
-        {
-          "http_status": 404,
-          "url_path": "/content/historical/EQUITIES/2025/OCT/nupr141025.zip"
-        },
-        {
-          "http_status": 200,
-          "url_path": "/archives/equities/bhavcopy/pr/PR141025.zip",
-          "valid_zip": true
-        }
-      ],
+      "encrypted_cache_hit": true,
+      "http_attempts": [],
       "schema": {
         "announcement_member_present": true,
         "archive_member_count": 14,
@@ -132,22 +105,8 @@
       "archive_bytes": 599129,
       "archive_sha256": "7d755b44abd7896c256dd2490214740c9c13a7874db5c7ae8df595d1efb0c6f3",
       "date": "2026-04-17",
-      "encrypted_cache_hit": false,
-      "http_attempts": [
-        {
-          "http_status": 404,
-          "url_path": "/content/historical/EQUITIES/2026/APR/PR170426.zip"
-        },
-        {
-          "http_status": 404,
-          "url_path": "/content/historical/EQUITIES/2026/APR/nupr170426.zip"
-        },
-        {
-          "http_status": 200,
-          "url_path": "/archives/equities/bhavcopy/pr/PR170426.zip",
-          "valid_zip": true
-        }
-      ],
+      "encrypted_cache_hit": true,
+      "http_attempts": [],
       "schema": {
         "announcement_member_present": true,
         "archive_member_count": 14,
@@ -171,5 +130,5 @@
       "status": "SCHEMA_CONFIRMED"
     }
   ],
-  "updated_at_utc": "2026-11-02T09:45:49.271878+00:00"
+  "updated_at_utc": "2026-11-02T09:49:03.750861+00:00"
 }
