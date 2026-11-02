@@ -4,7 +4,7 @@ import io
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import numpy as np
@@ -16,9 +16,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from live_api.app import MASTER_URL
-from scripts.constituent_weekly.dhan_equity_preflight import (
-    acquire_access_token, request_profile, resolve_ids,
-)
+from scripts.constituent_weekly.dhan_equity_preflight import acquire_access_token, request_profile, resolve_ids
 from scripts.constituent_weekly.audit_c1_daily_history import (
     DAILY_URL, load_tejhq_nse_year, parse_daily_payload, request_daily_history,
     inspect_tejhq_member_rows, resolve_tejhq_encrypted_cache_dir,
@@ -27,25 +25,41 @@ from scripts.constituent_weekly.audit_c1_daily_history import (
 
 OUT_JSON = ROOT / "research/constituent_weekly/C1_DHAN_ADJUSTMENT_DIAGNOSTIC.json"
 OUT_MD = ROOT / "research/constituent_weekly/C1_DHAN_ADJUSTMENT_DIAGNOSTIC.md"
-SYMBOL = "RELIANCE"
-EX_DATE = "2024-10-28"
-EXPECTED_PRE_FACTOR = 0.5
-SAMPLE_DATES = [
-    "2024-10-21", "2024-10-22", "2024-10-23", "2024-10-24", "2024-10-25",
-    "2024-10-28", "2024-10-29", "2024-10-30", "2024-11-04",
-]
 PRICE_FIELDS = ("open", "high", "low", "close")
-RIL_SOURCE = "https://www.ril.com/sites/default/files/2024-10/SE_16102024.pdf"
-NSE_SOURCE = "https://nsearchives.nseindia.com/content/circulars/FAOP64621.pdf"
+POST_FACTOR_TOLERANCE = (0.90, 1.05)
+
+EVENTS = [
+    {
+        "symbol": "RELIANCE", "action": "BONUS_1_TO_1", "ex_date": "2024-10-28",
+        "expected_pre_factor": 0.5, "sample_dates": [
+            "2024-10-21", "2024-10-22", "2024-10-23", "2024-10-24", "2024-10-25",
+            "2024-10-28", "2024-10-29", "2024-10-30", "2024-11-04",
+        ],
+        "raw_year": 2024,
+        "issuer_source": "https://www.ril.com/sites/default/files/2024-10/SE_16102024.pdf",
+        "exchange_source": "https://nsearchives.nseindia.com/content/circulars/FAOP64621.pdf",
+    },
+    {
+        "symbol": "BAJAJFINSV", "action": "SPLIT_5_TO_1_PLUS_BONUS_1_TO_1", "ex_date": "2022-09-13",
+        "expected_pre_factor": 0.1, "sample_dates": [
+            "2022-09-05", "2022-09-06", "2022-09-07", "2022-09-08", "2022-09-09", "2022-09-12",
+            "2022-09-13", "2022-09-14", "2022-09-15", "2022-09-16", "2022-09-19",
+        ],
+        "raw_year": 2022,
+        "issuer_source": "https://www.bajajfinserv.in/finserv-digital-annual-report-fy23/assets/pdf/Bajaj-Finserv-AnnualReport-2022-23.pdf",
+        "exchange_source": "https://archives.nseindia.com/content/circulars/FAOP53548.pdf",
+    },
+]
 
 
 def compute_adjustment_diagnostic(
     dhan_frame: pd.DataFrame,
     raw_frame: pd.DataFrame,
-    sample_dates: list[str] = SAMPLE_DATES,
-    ex_date: str = EX_DATE,
+    sample_dates: list[str],
+    ex_date: str,
+    expected_pre_factor: float,
 ) -> dict:
-    """Compare Dhan's adjusted OHLC against raw NSE bhavcopy OHLC without exposing prices."""
+    """Compare adjusted OHLC with raw NSE bhavcopy; output ratios only, never prices."""
     required = {"session_date", *PRICE_FIELDS}
     if required - set(dhan_frame.columns) or required - set(raw_frame.columns):
         return {"status": "INVALID_INPUT_SCHEMA", "dates_checked": 0, "dates_matched": 0}
@@ -64,15 +78,13 @@ def compute_adjustment_diagnostic(
                 "raw_unique_isin_count": len(isin_values)}
 
     joined = left.merge(right, on="session_date", suffixes=("_dhan", "_raw"), validate="one_to_one")
-    expected_dates = set(sample_dates)
     present_dates = set(joined["session_date"].astype(str))
-    missing = sorted(expected_dates - present_dates)
+    missing = sorted(set(sample_dates) - present_dates)
     if len(joined) != len(sample_dates):
         return {"status": "INCOMPLETE_DATE_MATCH", "dates_checked": int(len(joined)),
                 "dates_matched": int(len(joined)), "missing_dates": missing,
                 "raw_unique_isin_count": 1}
 
-    ratios = {field: [] for field in PRICE_FIELDS}
     pre_ratios = {field: [] for field in PRICE_FIELDS}
     post_ratios = {field: [] for field in PRICE_FIELDS}
     for _, row in joined.iterrows():
@@ -88,70 +100,75 @@ def compute_adjustment_diagnostic(
                 return {"status": "INVALID_PRICE_OBSERVATION", "dates_checked": int(len(joined)),
                         "dates_matched": int(len(joined)), "raw_unique_isin_count": 1}
             ratio = dhan_value / raw_value
-            ratios[field].append(ratio)
             (pre_ratios if day < ex_date else post_ratios)[field].append(ratio)
 
-    pre_median = {field: round(float(np.median(values)), 6) for field, values in pre_ratios.items()}
-    post_median = {field: round(float(np.median(values)), 6) for field, values in post_ratios.items()}
-    pre_ok = all(0.48 <= value <= 0.52 for value in pre_median.values())
-    post_ok = all(0.97 <= value <= 1.03 for value in post_median.values())
+    if min((len(x) for x in pre_ratios.values()), default=0) < 3 or min((len(x) for x in post_ratios.values()), default=0) < 3:
+        return {"status": "INSUFFICIENT_PRE_POST_SESSIONS", "dates_checked": int(len(joined)),
+                "dates_matched": int(len(joined)), "raw_unique_isin_count": 1}
+
+    pre_median = {field: float(np.median(values)) for field, values in pre_ratios.items()}
+    post_median = {field: float(np.median(values)) for field, values in post_ratios.items()}
+    relative_factor = {field: pre_median[field] / post_median[field] for field in PRICE_FIELDS}
+    lower, upper = expected_pre_factor * 0.95, expected_pre_factor * 1.05
+    factor_ok = all(lower <= value <= upper for value in relative_factor.values())
+    post_ok = all(POST_FACTOR_TOLERANCE[0] <= value <= POST_FACTOR_TOLERANCE[1] for value in post_median.values())
     return {
-        "status": "PASS_BONUS_ADJUSTMENT_FACTOR" if pre_ok and post_ok else "FAIL_OR_INCOMPLETE_FACTOR",
-        "dates_checked": int(len(joined)),
-        "dates_matched": int(len(joined)),
+        "status": "PASS_ADJUSTMENT_FACTOR" if factor_ok and post_ok else "FAIL_OR_INCOMPLETE_FACTOR",
+        "dates_checked": int(len(joined)), "dates_matched": int(len(joined)),
         "pre_ex_date_session_count": int((joined["session_date"].astype(str) < ex_date).sum()),
         "post_ex_date_session_count": int((joined["session_date"].astype(str) >= ex_date).sum()),
         "raw_unique_isin_count": 1,
-        "expected_pre_ex_date_factor": EXPECTED_PRE_FACTOR,
-        "expected_post_ex_date_factor": 1.0,
-        "pre_ex_date_median_factor_by_ohlc": pre_median,
-        "post_ex_date_median_factor_by_ohlc": post_median,
-        "pre_factor_tolerance": [0.48, 0.52],
-        "post_factor_tolerance": [0.97, 1.03],
-        "pre_factor_check_passed": pre_ok,
-        "post_factor_check_passed": post_ok,
-        "raw_prices_published": False,
-        "isin_published": False,
+        "expected_pre_ex_date_factor": float(expected_pre_factor),
+        "pre_ex_date_median_dhan_to_raw_by_ohlc": {k: round(v, 6) for k, v in pre_median.items()},
+        "post_ex_date_median_dhan_to_raw_by_ohlc": {k: round(v, 6) for k, v in post_median.items()},
+        "relative_event_factor_by_ohlc": {k: round(v, 6) for k, v in relative_factor.items()},
+        "pre_factor_tolerance": [round(lower, 6), round(upper, 6)],
+        "post_factor_tolerance": list(POST_FACTOR_TOLERANCE),
+        "factor_check_passed": factor_ok, "post_factor_check_passed": post_ok,
+        "raw_prices_published": False, "isin_published": False,
     }
 
 
 def write_report(result: dict) -> None:
     OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
     OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    diag = result.get("diagnostic", {})
     lines = [
-        "# Dhan Daily Adjusted-Price Corporate-Action Diagnostic", "",
+        "# Dhan Daily Adjusted-Price Corporate-Action Diagnostics", "",
         f"**Updated:** {result.get('updated_at_utc')}",
         f"**Overall status:** {result.get('status')}",
-        f"**Instrument:** {SYMBOL}",
-        f"**Event:** 1:1 bonus; ex-date {EX_DATE}",
-        f"**Dhan daily endpoint:** {DAILY_URL}",
-        f"**Matched sessions:** {diag.get('dates_matched', 0)}/{len(SAMPLE_DATES)}",
-        f"**Pre-ex median factors (OHLC):** {diag.get('pre_ex_date_median_factor_by_ohlc')}",
-        f"**Post-ex median factors (OHLC):** {diag.get('post_ex_date_median_factor_by_ohlc')}",
-        f"**Pre/post checks:** {diag.get('pre_factor_check_passed')} / {diag.get('post_factor_check_passed')}", "",
-        "## Primary-source event terms", "",
-        f"- Issuer record-date notice: {RIL_SOURCE}",
-        f"- NSE F&O adjustment circular (factor 2, revised market lot 500): {NSE_SOURCE}", "",
+        f"**Dhan daily endpoint:** {DAILY_URL}", "",
+        "| Symbol | Event | Ex-date | Expected pre factor | Matched dates | Relative OHLC factors | Status |",
+        "|---|---|---|---:|---:|---|---|",
+    ]
+    for item in result.get("events", []):
+        d = item.get("diagnostic", {})
+        lines.append(
+            f"| {item.get('symbol')} | {item.get('action')} | {item.get('ex_date')} | "
+            f"{item.get('expected_pre_factor')} | {d.get('dates_matched', 0)}/{len(item.get('sample_dates', []))} | "
+            f"{d.get('relative_event_factor_by_ohlc', {})} | {item.get('status')} |"
+        )
+        lines += ["", f"### {item.get('symbol')} — {item.get('action')}", "",
+                  f"- Issuer source: {item.get('issuer_source')}",
+                  f"- Exchange adjustment source: {item.get('exchange_source')}",
+                  f"- Pre-event Dhan/raw median ratios: {d.get('pre_ex_date_median_dhan_to_raw_by_ohlc')}",
+                  f"- Post-event Dhan/raw median ratios: {d.get('post_ex_date_median_dhan_to_raw_by_ohlc')}",
+                  f"- Relative event factors: {d.get('relative_event_factor_by_ohlc')}",
+                  f"- Encrypted TejHQ cache hit: {item.get('tejhq_cache', {}).get('encrypted_cache_hit')}", ""]
+    lines += [
         "## Data and privacy", "",
-        "- Raw Dhan/TejHQ prices and ISIN are not written to reports or artifacts.",
-        "- The raw TejHQ NSE partition is used only under the personal-use-only workflow opt-in and retained only as AES-GCM encrypted Actions cache.",
+        "- Raw Dhan/TejHQ prices and ISINs are not written to reports or artifacts.",
+        "- TejHQ raw partitions are used only under the personal-use-only workflow opt-in and retained only as AES-GCM encrypted Actions cache.",
         "- Dhan API credentials and tokens are runtime-only; no token values are logged.",
-        "- This single bonus-event diagnostic does not validate dividends, rights, mergers, demergers or buybacks.",
+        "- These two event diagnostics do not validate dividends, rights, mergers, demergers or buybacks.",
     ]
     OUT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def run() -> dict:
     result = {
-        "status": "BLOCKED",
-        "updated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "event": {"symbol": SYMBOL, "type": "BONUS", "ratio": "1:1", "ex_date": EX_DATE},
-        "sample_dates": SAMPLE_DATES,
-        "raw_prices_published": False,
-        "raw_event_rows_published": False,
+        "status": "BLOCKED", "updated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "events": [], "raw_prices_published": False, "raw_event_rows_published": False,
         "credentials_or_tokens_recorded": False,
-        "sources": {"issuer": RIL_SOURCE, "nse_contract_adjustment": NSE_SOURCE},
     }
     if not personal_use_fallback_authorized(os.environ.get("TEJHQ_PERSONAL_USE_ONLY")):
         result["status"] = "BLOCKED_PERSONAL_USE_NOT_CONFIRMED"
@@ -176,46 +193,77 @@ def run() -> dict:
         master_response = requests.get(MASTER_URL, timeout=45)
         master_response.raise_for_status()
         master = pd.read_csv(io.BytesIO(master_response.content), low_memory=False)
-        resolved = resolve_ids(master, [SYMBOL])
-        if SYMBOL not in resolved:
+        all_symbols = [event["symbol"] for event in EVENTS]
+        resolved = resolve_ids(master, all_symbols)
+        result["resolved_event_symbols"] = len(resolved)
+        if len(resolved) != len(all_symbols):
             result["status"] = "BLOCKED_SECURITY_ID_UNRESOLVED"
             return result
 
-        dhan_body, attempts = request_daily_history(
-            resolved[SYMBOL], token, client_id, min(SAMPLE_DATES),
-            "2024-11-05",
-        )
-        result["dhan_daily_request_attempts"] = attempts
-        dhan_frame, parse_error = parse_daily_payload(dhan_body)
-        if dhan_frame is None or dhan_frame.empty:
-            result["status"] = "BLOCKED_DHAN_DAILY_" + str(parse_error or "NO_BARS")
-            return result
-
         cache_dir = resolve_tejhq_encrypted_cache_dir(os.environ.get("TEJHQ_ENCRYPTED_CACHE_DIR"))
-        raw_year, cache_meta = load_tejhq_nse_year(2024, hf_token, cache_dir)
-        source_summary, raw_rows = inspect_tejhq_member_rows(raw_year, SYMBOL, SAMPLE_DATES)
-        result["tejhq_cache"] = {
-            "encrypted_cache_hit": bool(cache_meta.get("encrypted_cache_hit")),
-            "raw_partition_sha256": cache_meta.get("raw_file_sha256"),
-            "dataset_revision": cache_meta.get("dataset_revision"),
-            "valid_sample_sessions": len(source_summary.get("valid_session_dates", [])),
-            "unique_isin_count": source_summary.get("unique_isin_count"),
-            "raw_values_persisted": False,
-        }
-        if source_summary.get("valid_session_dates") != sorted(SAMPLE_DATES):
-            result["status"] = "BLOCKED_RAW_REFERENCE_QA"
-            result["raw_reference_qa"] = {
-                "valid_session_count": len(source_summary.get("valid_session_dates", [])),
-                "duplicate_session_count": source_summary.get("duplicate_session_count"),
-                "invalid_ohlc_row_count": source_summary.get("invalid_ohlc_row_count"),
-                "invalid_volume_row_count": source_summary.get("invalid_volume_row_count"),
-                "unique_isin_count": source_summary.get("unique_isin_count"),
+        partitions: dict[int, pd.DataFrame] = {}
+        partition_meta: dict[int, dict] = {}
+        for event in EVENTS:
+            symbol = event["symbol"]
+            sample_dates = event["sample_dates"]
+            year = int(event["raw_year"])
+            if year not in partitions:
+                partitions[year], partition_meta[year] = load_tejhq_nse_year(year, hf_token, cache_dir)
+            summary, raw_rows = inspect_tejhq_member_rows(partitions[year], symbol, sample_dates)
+            event_result = {k: event[k] for k in (
+                "symbol", "action", "ex_date", "expected_pre_factor", "sample_dates",
+                "issuer_source", "exchange_source",
+            )}
+            event_result["tejhq_cache"] = {
+                "encrypted_cache_hit": bool(partition_meta[year].get("encrypted_cache_hit")),
+                "raw_partition_sha256": partition_meta[year].get("raw_file_sha256"),
+                "dataset_revision": partition_meta[year].get("dataset_revision"),
+                "valid_sample_sessions": len(summary.get("valid_session_dates", [])),
+                "unique_isin_count": summary.get("unique_isin_count"),
+                "raw_values_persisted": False,
             }
-            return result
+            if summary.get("valid_session_dates") != sorted(sample_dates) or summary.get("unique_isin_count") != 1:
+                event_result["status"] = "BLOCKED_RAW_REFERENCE_QA"
+                event_result["raw_reference_qa"] = {
+                    "valid_session_count": len(summary.get("valid_session_dates", [])),
+                    "duplicate_session_count": summary.get("duplicate_session_count"),
+                    "invalid_ohlc_row_count": summary.get("invalid_ohlc_row_count"),
+                    "invalid_volume_row_count": summary.get("invalid_volume_row_count"),
+                    "unique_isin_count": summary.get("unique_isin_count"),
+                }
+                result["events"].append(event_result)
+                continue
 
-        diagnostic = compute_adjustment_diagnostic(dhan_frame, raw_rows)
-        result["diagnostic"] = diagnostic
-        result["status"] = diagnostic["status"]
+            body, attempts = request_daily_history(
+                resolved[symbol], token, client_id, min(sample_dates),
+                (date.fromisoformat(max(sample_dates)) + timedelta(days=1)).isoformat(),
+            )
+            event_result["dhan_daily_request_attempts"] = attempts
+            dhan_frame, parse_error = parse_daily_payload(body)
+            if dhan_frame is None or dhan_frame.empty:
+                event_result["status"] = "BLOCKED_DHAN_DAILY_" + str(parse_error or "NO_BARS")
+                result["events"].append(event_result)
+                continue
+
+            diagnostic = compute_adjustment_diagnostic(
+                dhan_frame, raw_rows, sample_dates, event["ex_date"], event["expected_pre_factor"]
+            )
+            event_result["diagnostic"] = diagnostic
+            event_result["status"] = diagnostic["status"]
+            result["events"].append(event_result)
+
+        result["encrypted_partition_cache_hits"] = sum(
+            int(meta.get("encrypted_cache_hit", False)) for meta in partition_meta.values()
+        )
+        result["encrypted_partition_downloads"] = sum(
+            int(not meta.get("encrypted_cache_hit", False)) for meta in partition_meta.values()
+        )
+        result["status"] = (
+            "PASS_ALL_EVENT_ADJUSTMENTS"
+            if len(result["events"]) == len(EVENTS)
+            and all(item.get("status") == "PASS_ADJUSTMENT_FACTOR" for item in result["events"])
+            else "PARTIAL_OR_BLOCKED"
+        )
         return result
     except Exception as exc:
         result["status"] = "BLOCKED_RUNTIME_ERROR"
@@ -227,7 +275,12 @@ def main() -> int:
     result = run()
     write_report(result)
     print("C1_DHAN_ADJUSTMENT_DIAGNOSTIC", result["status"])
-    print("Dhan bonus adjustment factor diagnostic complete; raw price values withheld.")
+    for item in result.get("events", []):
+        diagnostic = item.get("diagnostic", {})
+        print("C1_DHAN_ADJUSTMENT_EVENT", item.get("symbol"), item.get("status"),
+              "dates=", diagnostic.get("dates_matched", 0),
+              "relative_factor=", diagnostic.get("relative_event_factor_by_ohlc", {}))
+    print("Dhan adjusted-price diagnostics complete; raw price values withheld.")
     return 0
 
 
