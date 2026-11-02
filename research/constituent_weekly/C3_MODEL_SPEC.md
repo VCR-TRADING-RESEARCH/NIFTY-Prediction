@@ -29,3 +29,8 @@ The row-level panel is AES-GCM encrypted with the stable HF_TOKEN-derived cache 
 C3 is accepted only if the full chronological pipeline, fold isolation, leakage tests, coverage, duplicate checks, and untouched holdout reporting all pass. Prediction success does not imply trading profitability. C5 remains separate and requires executable instrument fills, date-effective Paytm Money brokerage/levies/taxes, spread, slippage, lot size and conservative fill assumptions.
 
 No additional model families, tuning loops or holdout retuning are permitted beyond the locked plan.
+
+
+## Automated execution trigger
+
+C3 runs automatically when a successful C2 panel workflow completes, and also on a material C3 code/spec push or manual `workflow_dispatch`. A manual run resolves the latest successful C2 run and downloads its artifact. Model outputs are committed only in aggregate/sanitized form; the per-stock OOF forecast remains AES-GCM encrypted.
