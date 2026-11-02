@@ -14,6 +14,7 @@
         "expected_pre_ex_date_factor": 0.5,
         "factor_check_passed": true,
         "isin_published": false,
+        "isin_transition_verified": true,
         "post_ex_date_median_dhan_to_raw_by_ohlc": {
           "close": 1.0,
           "high": 1.0,
@@ -50,6 +51,7 @@
       "ex_date": "2024-10-28",
       "exchange_source": "https://nsearchives.nseindia.com/content/circulars/FAOP64621.pdf",
       "expected_pre_factor": 0.5,
+      "identity_source": null,
       "issuer_source": "https://www.ril.com/sites/default/files/2024-10/SE_16102024.pdf",
       "sample_dates": [
         "2024-10-21",
@@ -75,17 +77,19 @@
     },
     {
       "action": "SPLIT_5_TO_1_PLUS_BONUS_1_TO_1",
+      "dhan_daily_request_attempts": 1,
+      "diagnostic": {
+        "dates_checked": 11,
+        "dates_matched": 11,
+        "isin_transition_verified": false,
+        "raw_unique_isin_count": 2,
+        "status": "ISIN_TRANSITION_MISMATCH"
+      },
       "ex_date": "2022-09-13",
       "exchange_source": "https://archives.nseindia.com/content/circulars/FAOP53548.pdf",
       "expected_pre_factor": 0.1,
+      "identity_source": "https://nsearchives.nseindia.com/content/circulars/CML53597.pdf",
       "issuer_source": "https://www.bajajfinserv.in/finserv-digital-annual-report-fy23/assets/pdf/Bajaj-Finserv-AnnualReport-2022-23.pdf",
-      "raw_reference_qa": {
-        "duplicate_session_count": 0,
-        "invalid_ohlc_row_count": 0,
-        "invalid_volume_row_count": 0,
-        "unique_isin_count": 2,
-        "valid_session_count": 11
-      },
       "sample_dates": [
         "2022-09-05",
         "2022-09-06",
@@ -99,7 +103,7 @@
         "2022-09-16",
         "2022-09-19"
       ],
-      "status": "BLOCKED_RAW_REFERENCE_QA",
+      "status": "ISIN_TRANSITION_MISMATCH",
       "symbol": "BAJAJFINSV",
       "tejhq_cache": {
         "dataset_revision": "f576704883fff86a6facdcde336db6ce19502063",
@@ -116,5 +120,5 @@
   "resolved_event_symbols": 2,
   "status": "PARTIAL_OR_BLOCKED",
   "token_refresh_status": "SUCCESS",
-  "updated_at_utc": "2026-11-02T10:00:21.186037+00:00"
+  "updated_at_utc": "2026-11-02T10:03:58.536877+00:00"
 }
