@@ -757,27 +757,27 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Data/security:** Raw archives remain encrypted in Actions cache; no raw event rows or credentials were published.
 
 
-## E0114 — 2026-11-02 — Known ISIN transition on split/bonus event initially treated as ambiguous (RESOLVED IN METHOD; RETEST RUNNING)
+## E0114 — 2026-11-02 — Known ISIN transition on split/bonus event initially treated as ambiguous (METHOD RESOLVED; SOURCE DISCREPANCY OPEN)
 
 - **Severity:** Medium — the first combined split/bonus sample was blocked by a too-strict one-ISIN-per-event assumption.
 - **Evidence:** Run [41425134622](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425134622) showed 11/11 valid raw sessions but two ISINs for BAJAJFINSV around the 13-Sep-2022 ex-date. NSE Circular NSE/CML/53597 confirms the new ISIN INE918I01026 was effective for trades from the ex-date; the previous ISIN was INE918I01018.
 - **Correction:** The diagnostic now checks the exact pre-ex-date and post-ex-date ISIN mapping from the official circular, rather than rejecting a valid corporate-action identity transition. Raw ISIN values are not published.
 - **Sources:** https://nsearchives.nseindia.com/content/circulars/CML53597.pdf ; https://archives.nseindia.com/content/circulars/FAOP53548.pdf
-- **Status:** Corrected code committed; final run [41425623117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425623117) pending.
+- **Resolution:** Final run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727) verified the adjustment factor and exposed the exact one-session source identity discrepancy, now tracked separately as E0118.
 
 ## E0115 — 2026-11-02 — ISIN-transition negative test had too few sessions (RESOLVED)
 
 - **Severity:** Low — the negative test returned the earlier insufficient-sessions guard before reaching the intended ISIN-transition assertion.
 - **Evidence:** Run [41425450786](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425450786): 5 tests passed, 1 failed; the fixture contained only one pre-ex-date session and two post-ex-date sessions, below the three-per-side minimum.
 - **Correction:** Expanded the fixture to three pre- and three post-ex-date sessions so the test reaches the intended transition check.
-- **Status:** Corrected in commit [8910990](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8910990d8892091dc9de27f50f39910a5a1f19a9); included in run [41425623117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425623117).
+- **Status:** Corrected in commit [8910990](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8910990d8892091dc9de27f50f39910a5a1f19a9); included and passed in final run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727).
 
 ## E0116 — 2026-11-02 — Optional identity-source metadata caused a possible event-loop KeyError (RESOLVED BEFORE LIVE EXECUTION)
 
 - **Severity:** Low — RELIANCE has no ISIN-transition source field, while BAJAJFINSV does.
 - **Root cause:** Event metadata construction used direct dictionary indexing for an optional identity-source field.
 - **Correction:** Added a safe metadata helper using optional lookup and a regression test covering both events.
-- **Impact:** The prior Dhan run failed in offline tests before executing the live diagnostic, so this defect did not affect any Dhan result or source data.
+- **Impact:** The earlier run failed in offline tests before executing the live diagnostic, so this defect did not affect any Dhan result or source data; the corrected final run passed the tests.
 - **Status:** Corrected in commit [8910990](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8910990d8892091dc9de27f50f39910a5a1f19a9); included in run [41425623117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425623117).
 
 
