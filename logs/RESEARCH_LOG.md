@@ -422,3 +422,11 @@
 - C1 remains PARTIAL due unresolved historical identity and 711 member-event candidates requiring independent corporate-action review. User-authorised progression does not make C1 a pass.
 - C4 confirmatory remains GATED. C5 is BLOCKED / NOT RUN because no reliable predictive edge or instrument specification is available. Paytm Money date-effective costs, spreads, slippage, fills and net P&L are not tested.
 - C6 manuscript and independent arithmetic summary audit are on phase/constituent-weekly-outcomes-c6-audit.
+
+
+## 2026-11-02 — BUP-01 final phase gates
+
+- C4 workflow 41411507365 passed its fail-closed check; confirmatory aggregation remains gated by partial C1.
+- C5 workflow 41410573458 passed its fail-closed check; economic testing remains blocked because no accepted signal or instrument specification exists.
+- C6 workflow 41411057657 passed the sanitised arithmetic and manuscript/figure audit. C6 status is PASS WITH LIMITATIONS, not raw-data re-performance or external human review.
+- Main README now links C4/C5/C6 phase reports. Operating rules remain in docs/RESEARCH_OPERATING_RULES.md. No strategy or live signal is validated.
