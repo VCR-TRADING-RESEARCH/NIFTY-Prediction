@@ -66,3 +66,18 @@ All four ZIPs contained a corporate-action CSV, an announcement text file and a 
 The final probe run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062) reused all four encrypted archive-cache entries (4/4 cache hits). The public outputs contain only archive sizes/hashes, member names, headers and presence flags; raw archive bytes remain encrypted in Actions cache and no event rows are published. See [C1_NSE_PR_ARCHIVE_PROBE.md](C1_NSE_PR_ARCHIVE_PROBE.md) and [machine result](C1_NSE_PR_ARCHIVE_PROBE.json).
 
 **Interpretation:** this establishes that the website archive route and corporate-action member schema are retrievable on the four sampled dates, including before and after the October 2025 naming change. It does not establish continuous daily availability, permission for systematic bulk extraction, event completeness, security/ISIN identity, issuer terms or adjustment-factor correctness. No candidate event has been verified and no factor has been calculated/applied. Corporate-action gate remains NOT PASSED; overall C1 remains PARTIAL; C2 stays gated.
+
+
+## 8. Data-rights gate — 2026-11-02
+
+A primary-source review after the technical probe found that NSE's current website Terms of Use prohibit systematic/automated data collection without express written consent and restrict copying/storing website content without prior written permission. NSE's Data Sharing & Usage Policy governs historical/corporate market data through relevant agreements, and its Non-Display Usage Policy expressly covers automated algorithms used for trading decisions and derived data. NSE's research route is described as academic/non-commercial. These rules mean the public archive URL is not permission for a 711-event automated crawl.
+
+Sources:
+- NSE Terms of Use: https://www.nseindia.com/static/nse-terms-of-use
+- NSE Data Sharing & Usage Policy: https://www.nseindia.com/static/market-data/nse-data-policy
+- NSE Non-Display Usage Policy: https://www.nseindia.com/static/market-data/non-display-data
+- NSE Research Initiative: https://www.nseindia.com/static/research/research-initiatives
+
+**Decision:** no further automated NSE website archive downloads until express written consent or a suitable agreement is established. The four-date technical probe remains valid as a bounded feasibility test. The next data-validation route is Dhan's subscribed Data API: its daily historical data is documented as adjusted for bonus and split events. Use that data only under the user's Dhan API agreement; compare adjustments against the existing encrypted TejHQ candidate catalogue and verify high-impact events through permitted issuer-first-party documents. Dhan's help page explicitly mentions bonus/split adjustment; it does not establish that dividends, rights or all other event classes are adjusted.
+
+See [C1_DATA_RIGHTS_AND_ALTERNATIVES.md](C1_DATA_RIGHTS_AND_ALTERNATIVES.md) for the source-by-source gate and next tests. C1 corporate-action gate remains NOT PASSED; overall C1 remains PARTIAL; C2 remains gated.
