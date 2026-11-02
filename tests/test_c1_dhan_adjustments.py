@@ -150,7 +150,7 @@ def test_ephemeral_token_is_written_only_to_actions_environment_file(tmp_path, m
     env_file = tmp_path / "github-env"
     monkeypatch.setenv("GITHUB_ENV", str(env_file))
     assert publish_ephemeral_workflow_token("test-token-value") is True
-    assert env_file.read_text() == "DHAN_EPHEMERAL_ACCESS_TOKEN=test-token-value\\n"
+    assert env_file.read_text() == "DHAN_EPHEMERAL_ACCESS_TOKEN=test-token-value\n"
 
 
 def test_ephemeral_token_rejects_newlines(tmp_path, monkeypatch):
@@ -158,4 +158,4 @@ def test_ephemeral_token_rejects_newlines(tmp_path, monkeypatch):
     monkeypatch.setenv("GITHUB_ENV", str(tmp_path / "github-env"))
     import pytest
     with pytest.raises(ValueError):
-        publish_ephemeral_workflow_token("bad\\ntoken")
+        publish_ephemeral_workflow_token("bad\ntoken")

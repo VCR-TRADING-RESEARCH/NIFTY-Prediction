@@ -62,11 +62,11 @@ def publish_ephemeral_workflow_token(token: str) -> bool:
     env_file = os.environ.get("GITHUB_ENV", "").strip()
     if not env_file:
         return False
-    if not token or "\\n" in token or "\\r" in token:
+    if not token or "\n" in token or "\r" in token:
         raise ValueError("Refusing to publish an invalid ephemeral token.")
     print(f"::add-mask::{token}")
     with Path(env_file).open("a", encoding="utf-8") as handle:
-        handle.write(f"DHAN_EPHEMERAL_ACCESS_TOKEN={token}\\n")
+        handle.write(f"DHAN_EPHEMERAL_ACCESS_TOKEN={token}\n")
     return True
 
 

@@ -878,3 +878,10 @@
 - Run [41508838557](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41508838557) passed all 14 offline math/diagnostic tests and the protected daily adjusted-price diagnostic. Dhan authentication succeeded; RELIANCE bonus factor was 0.5 across OHLC (9/9 sessions) and BAJAJFINSV split+bonus factor was 0.1 across OHLC (11/11 sessions). The 13-Sep identity discrepancy was handled with the documented derived override while the raw source row remained unchanged.
 - The intraday step made no price request: it attempted a second TOTP refresh in the same workflow, which returned no token, and the fallback profile check returned HTTP 401. Logged as E0123.
 - Correction: hand off the first profile/data-plan validated token only through private Actions `GITHUB_ENV`, masked, and reuse it for the intraday request; no token is retained in the repository or artifact. The same run also exposed that the previous workflow file still contained the stale gate status string; its check is now being replaced with the actual machine status contract.
+
+
+## 2026-11-03 — Ephemeral token handoff newline defect found
+
+- Run [41509666199](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41509666199) completed the daily adjustment step and invoked the intraday diagnostic, but produced no minute-bar result. Artifact status: `BLOCKED_RUNTIME_ERROR`.
+- Root cause found in code inspection: the private `GITHUB_ENV` writer used a double-escaped newline and appended literal backslash+n characters to the access token, corrupting the value passed to the next step.
+- Fixed the environment writer and added/updated regression coverage to ensure it writes one actual token line and rejects actual line breaks. No token was logged or stored in the repo.

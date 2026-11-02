@@ -829,3 +829,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Cause:** The workflow requested a second Dhan token within the same job even though the first step had just authenticated and verified the active Data API plan.
 - **Correction:** Export the validated ephemeral token only through GitHub Actions' private `GITHUB_ENV` file, mark it masked, and reuse it in the intraday step. Do not write the token to repository files, logs, artifacts or public Pages.
 - **Status:** CLOSED IN CODE; the next protected run must validate the handoff.
+
+
+## E0124 — 2026-11-03 — Ephemeral Dhan token handoff encoded a literal backslash-n (CLOSED IN CODE)
+
+- **Evidence:** Intraday diagnostic run [41509666199](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41509666199) completed the protected daily diagnostic and reached the intraday script, but the intraday result was `BLOCKED_RUNTIME_ERROR` with no minute-bar observations. The code review showed the `GITHUB_ENV` writer used a double-escaped newline, appending the literal two-character sequence `\\n` to the token value instead of terminating the environment assignment with a real line break.
+- **Impact:** The next workflow step received a malformed token value; the intraday API authorization failed before a valid data result was produced. No raw bars were published.
+- **Correction:** Changed the writer and its regression tests to use a real newline character and to reject actual CR/LF characters in the token. Token remains masked and transient in the Actions environment only.
+- **Status:** CLOSED IN CODE; the next protected run must confirm token reuse succeeds and both intraday event samples are classified.

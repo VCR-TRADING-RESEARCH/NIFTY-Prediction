@@ -778,3 +778,10 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Protected run [41508838557](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41508838557) completed 14 offline tests and the two registered Dhan daily adjusted OHLC checks: RELIANCE 0.5 (9/9) and BAJAJFINSV 0.1 (11/11). The Bajaj source identity discrepancy is accepted only through the documented 2022-09-13 derived override; raw source rows were not altered.
 - Intraday did not reach the API because it requested a second TOTP token in the same job and the provider returned no token (E0123). The next run reuses the first validated token through private GitHub Actions environment handoff.
 - **This is only a two-event daily diagnostic pass, not full C1 acceptance.** The 711-event catalogue remains open; C1 is PARTIAL, C2/C4 confirmatory remain gated.
+
+
+## 2026-11-03 — Intraday token handoff newline defect corrected
+
+- The latest intraday diagnostic had no minute observations. Inspection of the private Actions environment writer found that it appended the literal sequence `\\n` instead of an actual newline, corrupting the transient token handoff.
+- Corrected the token writer and regression tests. The validated token remains masked and limited to the current Actions job; no credential is retained in repository files or artifacts.
+- Daily adjusted-price tests remain passing for two sample events only. Intraday continuity remains unverified; C1 stays PARTIAL and C2/C4 confirmatory remain gated.

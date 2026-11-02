@@ -503,3 +503,9 @@
 
 - Run 41508838557 passed 14 offline tests and both daily adjusted-price event samples (RELIANCE 0.5; BAJAJFINSV 0.1). Intraday did not call the market-data endpoint because its second token-refresh request in the same job returned HTTP 200 without an access token and fallback profile returned HTTP 401.
 - Added E0123. Correction is to reuse the first validated token within the same protected job via private, masked Actions environment only. No token or data is stored in the repository.
+
+
+## 2026-11-03 — Intraday token handoff root cause and correction
+
+- Inspected the sanitised run artifact from 41509666199 and found no intraday observations. Code review identified a double-escaped newline in the private `GITHUB_ENV` token writer, which could append literal backslash+n characters to the token value.
+- Corrected the writer and matching tests to use an actual line terminator. This is a code correction only; a fresh protected Dhan run is still required to validate minute data. No access token or raw market data is stored in the conversation log.
