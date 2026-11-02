@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from scripts.constituent_weekly.audit_c1_dhan_adjustments import compute_adjustment_diagnostic
+from scripts.constituent_weekly.audit_c1_dhan_adjustments import EVENTS, compute_adjustment_diagnostic, public_event_metadata
 
 DATES = ["2024-10-21", "2024-10-22", "2024-10-23", "2024-10-24", "2024-10-25",
          "2024-10-28", "2024-10-29", "2024-10-30", "2024-11-04"]
@@ -84,7 +84,7 @@ def test_adjustment_diagnostic_rejects_unexpected_isin_transition():
 
 
 def test_bajaj_finserv_isin_transition_must_occur_on_ex_date():
-    dates = ["2022-09-12", "2022-09-13", "2022-09-14"]
+    dates = ["2022-09-08", "2022-09-09", "2022-09-12", "2022-09-13", "2022-09-14", "2022-09-15"]
     raw_rows, dhan_rows = [], []
     for day in dates:
         value = 100.0 if day < "2022-09-13" else 10.0
@@ -95,8 +95,15 @@ def test_bajaj_finserv_isin_transition_must_occur_on_ex_date():
                           "high": (value + 1) * 0.1 if day < "2022-09-13" else value + 1,
                           "low": (value - 1) * 0.1 if day < "2022-09-13" else value - 1,
                           "close": value * 0.1 if day < "2022-09-13" else value, "volume": 100})
-    raw_rows[1]["isin"] = "INE918I01026"
+    raw_rows[3]["isin"] = "INE918I01018"
     result = compute_adjustment_diagnostic(pd.DataFrame(dhan_rows), pd.DataFrame(raw_rows),
                                            dates, "2022-09-13", 0.1,
                                            "INE918I01018", "INE918I01026")
     assert result["status"] == "ISIN_TRANSITION_MISMATCH"
+
+
+def test_public_event_metadata_allows_missing_identity_source():
+    reliance = next(event for event in EVENTS if event["symbol"] == "RELIANCE")
+    bajaj = next(event for event in EVENTS if event["symbol"] == "BAJAJFINSV")
+    assert public_event_metadata(reliance)["identity_source"] is None
+    assert public_event_metadata(bajaj)["identity_source"].endswith("CML53597.pdf")

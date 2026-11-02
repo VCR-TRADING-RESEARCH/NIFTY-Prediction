@@ -141,6 +141,12 @@ def compute_adjustment_diagnostic(
     }
 
 
+def public_event_metadata(event: dict) -> dict:
+    keys = ("symbol", "action", "ex_date", "expected_pre_factor", "sample_dates",
+            "issuer_source", "exchange_source", "identity_source")
+    return {key: event.get(key) for key in keys}
+
+
 def write_report(result: dict) -> None:
     OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
     OUT_JSON.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -224,10 +230,7 @@ def run() -> dict:
             if year not in partitions:
                 partitions[year], partition_meta[year] = load_tejhq_nse_year(year, hf_token, cache_dir)
             summary, raw_rows = inspect_tejhq_member_rows(partitions[year], symbol, sample_dates)
-            event_result = {k: event[k] for k in (
-                "symbol", "action", "ex_date", "expected_pre_factor", "sample_dates",
-                "issuer_source", "exchange_source", "identity_source",
-            )}
+            event_result = public_event_metadata(event)
             event_result["tejhq_cache"] = {
                 "encrypted_cache_hit": bool(partition_meta[year].get("encrypted_cache_hit")),
                 "raw_partition_sha256": partition_meta[year].get("raw_file_sha256"),
