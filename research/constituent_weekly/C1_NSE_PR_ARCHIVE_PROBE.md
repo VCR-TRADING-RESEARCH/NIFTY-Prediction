@@ -51,3 +51,8 @@ Post-13-Oct-2025 schema: True
 - Only CSV headers and member presence are inspected; no event rows are published.
 - Retrieval does not establish licence for bulk extraction or redistribution.
 - No issuer verification or adjustment-factor calculation/application is performed.
+
+
+## 2026-11-03 — Rights interpretation and archive-probe retirement
+
+The 4/4 result establishes technical archive access and schema only. It is not permission for systematic automated extraction or for use of NSE website data in trading simulation. Following review of the current NSE Terms of Use and Data Sharing & Usage Policy, the automated PR archive route is retired pending written permission/agreement. The historical result is retained only as technical-feasibility metadata. Sources: https://www.nseindia.com/static/nse-terms-of-use and https://www.nseindia.com/static/market-data/nse-data-policy

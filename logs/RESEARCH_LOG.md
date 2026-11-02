@@ -907,3 +907,11 @@
 
 - The same-session intraday-versus-daily scale comparison passed both sampled events on run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625).
 - A review found the Markdown explanation still described the earlier overnight pre-close-to-ex-open comparison even though the JSON and acceptance gate used same-session comparisons. Corrected the report generator and saved report so the documentation now matches the executed calculation.
+
+
+## 2026-11-03 — C1 rights-compliant continuation
+
+- Rechecked official NSE Terms of Use and Data Sharing & Usage Policy. The four-date PR archive probe is retained as technical feasibility only; it is not permission for systematic automated extraction or use in trading simulation. Disabled the PR archive-probe path, including manual dispatch.
+- Dhan daily and same-session intraday scale checks passed for RELIANCE and BAJAJFINSV in protected run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625). BAJAJFINSV's trading-ISIN date is adjudicated to 2022-09-13 inclusive; raw TejHQ value remains preserved and flagged stale.
+- Added a new recipient-encrypted private queue workflow for the 37 complex member-event candidates. It reads the TejHQ personal-use-only source within Actions and uploads only ciphertext for one day; the private key is held outside GitHub and no cleartext event rows are logged or published.
+- Next: decrypt only in the intended private runtime, verify issuer-first-party terms where permitted, and exclude cycles for unresolved event terms/identity. C1 remains PARTIAL; C2 panel accepted with limitations, C4/C5 gated.

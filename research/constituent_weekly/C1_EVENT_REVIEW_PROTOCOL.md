@@ -61,8 +61,18 @@ A price-factor match does not prove that the security identity is correct. Valid
 
 ## 5. Current blockers and next action
 
-The two-event Dhan diagnostic has one clean bonus-factor case (RELIANCE) and one factor-pass/identity-warning case (BAJAJFINSV). This is not enough to certify the event catalogue. The next bounded task is to resolve the remaining 37 complex non-dividend candidates and dated security aliases, then quantify dividend-event overlap with forecast cycles. Do not launch C2/C4 confirmatory fitting until C1 acceptance is explicit.
+The two-event Dhan daily and same-session intraday diagnostics pass for RELIANCE 1:1 bonus and BAJAJFINSV 5:1 split + 1:1 bonus. BAJAJFINSV's trading-ISIN date is adjudicated from 2022-09-13 inclusive; its discrepant TejHQ raw row remains preserved and flagged as stale metadata. These two samples do not certify the wider event catalogue.
 
-## 6. Safety and research integrity
+NSE terms prohibit systematic automated collection without permission and restrict website-data use for simulation. The four-date archive probe is technical feasibility only; its automated workflow branch is disabled. Next: build the recipient-encrypted queue for 37 complex member-event candidates from the existing personal-use-only TejHQ source, then verify terms using issuer-first-party evidence where permitted. Dhan is the subscribed price-scale source. Events lacking evidence remain unresolved and affected stock-cycles are excluded. C4 confirmatory fitting stays gated until C1 acceptance is explicit.
+
+## 6. Source rights and permitted evidence
+
+- NSE website content will not be bulk-collected automatically without express written permission or an agreement covering this research/backtest use.
+- Use Dhan's subscribed Data API for price histories subject to the user's agreement.
+- Use issuer-first-party disclosures for event terms where access permits; do not mass-scrape exchange websites.
+- The TejHQ source is personal-use-only; the 37-event queue is recipient-encrypted, uploaded as ciphertext for one day, and never published as cleartext.
+- Mark unsupported event terms SOURCE_UNRESOLVED and exclude affected stock-cycles rather than infer a factor.
+
+## 7. Safety and research integrity
 
 This protocol does not grant data rights. The TejHQ catalogue remains personal-use-only; exchange terms apply independently. Raw restricted data must remain in the authorised encrypted runtime/cache only. No public repository or artifact may contain reconstructive source rows. Do not claim that a technical API response, adjusted-price ratio or symbol match independently verifies an issuer event.

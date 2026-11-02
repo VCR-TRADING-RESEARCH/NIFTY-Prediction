@@ -527,3 +527,10 @@
 ## 2026-11-03 — Same-session diagnostic report wording corrected
 
 - Confirmed the same-session Dhan intraday versus daily adjusted OHLC check passed both events in protected run 41510761625. Corrected a stale explanatory paragraph in the generated Markdown report so it now describes the actual calculation rather than the earlier overnight comparison.
+
+
+## 2026-11-03 — Resumed C1 after Dhan sample checks
+
+- Rechecked project C1 status, current workflows, source-rights file and event-review protocol. Dhan's daily and same-session intraday/daily comparisons passed for two samples (RELIANCE 1:1 bonus and BAJAJFINSV 5:1 split + 1:1 bonus). The BAJAJFINSV new trading ISIN is adjudicated effective from 2022-09-13; raw TejHQ source value is preserved unchanged.
+- Current NSE Terms of Use prohibit systematic automated website collection without permission and restrict website data for virtual trading/simulation. The four-date archive check remains technical feasibility only; future automated NSE archive retrieval was disabled.
+- Added an encrypted one-day event-queue workflow for the 37 complex candidates. Cleartext stays in memory inside Actions; artifact contains only recipient-encrypted ciphertext; private key remains outside GitHub. C1 remains PARTIAL and confirmatory C4 remains gated.

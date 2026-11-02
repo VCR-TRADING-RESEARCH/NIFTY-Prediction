@@ -860,3 +860,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Cause:** A prior documentation-only replacement did not match the source text, leaving the report generator and saved Markdown describing the exploratory pre-close-to-ex-open ratio even though the accepted gate used the same-session Dhan intraday-versus-daily OHLC comparison.
 - **Correction:** Exact-text replacement now updates both the report generator and saved report to the same-session method and its 2x/10x raw-scale alternative.
 - **Status:** CLOSED. The machine results and acceptance gate were already based on the same-session comparison; this corrects documentation consistency only.
+
+
+## E0127 — 2026-11-03 — NSE automated archive extraction rights gate formalised (CLOSED BY WORKFLOW RESTRICTION)
+
+- NSE's current Terms of Use prohibit systematic/automated website data collection without express written consent and restrict website-data use for gaming, virtual trading and simulation. NSE's Data Sharing & Usage Policy governs historical/corporate market data through agreements and restricts redistribution.
+- The four-date archive probe demonstrates technical availability only, not rights for a 711-event automated crawl or for this trading research/backtest.
+- Disabled the PR archive probe branch in `bup01-c1-corporate-actions.yml`, including manual dispatch. No further automated NSE PR archive fetch will occur absent written permission/suitable agreement covering the intended use.
+- Use Dhan's subscribed API for price-scale tests and issuer-first-party documents for event terms where access permits; otherwise mark event SOURCE_UNRESOLVED and exclude affected stock-cycles.
+- Status: CLOSED as a source-control measure; corporate-action C1 gate remains open.
+- Sources: https://www.nseindia.com/static/nse-terms-of-use ; https://www.nseindia.com/static/market-data/nse-data-policy

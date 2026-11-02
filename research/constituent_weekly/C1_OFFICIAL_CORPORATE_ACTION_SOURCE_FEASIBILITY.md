@@ -1,6 +1,6 @@
 # C1 Official Exchange Corporate-Action Source Feasibility — 2026-11-02
 
-**Status:** FIXED-DATE ARCHIVE/SCHEMA PROBE PASSED (4/4); FULL HISTORICAL EXTRACTION AND EVENT ADJUDICATION NOT YET RUN  
+**Status:** FIXED-DATE ARCHIVE/SCHEMA PROBE PASSED (4/4); AUTOMATED NSE BULK EXTRACTION RIGHTS-BLOCKED; ISSUER-FIRST-PARTY ROUTE REQUIRED  
 **Scope:** Independent verification of the 711 candidate point-in-time member events catalogued in C1.  
 **Decision:** Use official NSE daily press-file bundles as the next primary-source discovery path; do not calculate or apply price factors from catalogue descriptions alone.
 
@@ -83,6 +83,18 @@ Sources:
 See [C1_DATA_RIGHTS_AND_ALTERNATIVES.md](C1_DATA_RIGHTS_AND_ALTERNATIVES.md) for the source-by-source gate and next tests. C1 corporate-action gate remains NOT PASSED; overall C1 remains PARTIAL; C2 remains gated.
 
 
-## 9. BAJAJFINSV ISIN date-source ambiguity — 2026-11-02
+## 9. BAJAJFINSV ISIN date-source adjudication — 2026-11-03
 
-The Dhan diagnostic shows the raw TejHQ row identity transitions on 14-Sep-2022. NSE Circular CML53597 is internally inconsistent: its first operative sentence says the ISIN changes w.e.f. 14-Sep-2022, while the next sentence says the new ISIN applies to trades from the 13-Sep ex-date. A MarketScreener-hosted reproduction of BSE Notice 20220908-17 also says 13-Sep, but the original BSE notice was not independently retrieved. This is an unresolved source-date ambiguity, not proof that the TejHQ row is wrong. Preserve the raw row, do not silently override it, and keep the identity gate open until an authoritative licensed security-master record or original exchange notice resolves the conflict.
+The new trading ISIN is adjudicated effective from the 2022-09-13 ex-date inclusive. NSE Clearing FAOP53644 confirms the 5:1 split, 1:1 bonus, ex-date and combined 10x adjustment. The explicit trade-effective clause in NSE CML53597 states that the new ISIN applies to trades on and from 13-Sep, notwithstanding preceding general 14-Sep wording. The TejHQ 13-Sep old-ISIN field remains unchanged and is flagged as stale source metadata in the derived point-in-time mapping. This closes only the one-day identity dispute, not the 711-event corporate-action gate. See [C1_BAJAJFINSV_ISIN_ADJUDICATION.md](C1_BAJAJFINSV_ISIN_ADJUDICATION.md).
+
+
+## 10. 2026-11-03 — Stop automated NSE archive expansion
+
+NSE's current Terms of Use prohibit systematic or automated website data collection, including scraping, data mining, data extraction and harvesting, without express written consent. The same terms restrict use of website data/content for gaming, virtual trading and simulation. NSE's Data Sharing & Usage Policy defines Market Data to include historical and corporate data, requires relevant agreements and restricts redistribution. The research adopts a conservative operational decision: no automated expansion of the four-date PR archive probe without written permission/agreement expressly covering this research use.
+
+Sources:
+- https://www.nseindia.com/static/nse-terms-of-use
+- https://www.nseindia.com/static/market-data/nse-data-policy
+- https://www.nseindia.com/static/market-data/non-display-data
+
+The four-date probe remains a technical feasibility result only. The corporate-action workflow now forces the NSE probe scope to false even on manual dispatch. Remaining work uses Dhan for price-scale diagnostics and issuer-first-party disclosures where permitted; otherwise affected stock-cycles are marked unresolved/excluded.

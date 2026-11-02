@@ -39,7 +39,7 @@ jobs:
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "catalogue=true" >> "$GITHUB_OUTPUT"
-            echo "probe=true" >> "$GITHUB_OUTPUT"
+            echo "probe=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" > /tmp/c1-changed-files.txt
@@ -48,11 +48,9 @@ jobs:
           else
             echo "catalogue=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(scripts/constituent_weekly/probe_c1_nse_pr_archives.py|tests/test_c1_nse_pr_archive_probe.py)$' /tmp/c1-changed-files.txt; then
-            echo "probe=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "probe=false" >> "$GITHUB_OUTPUT"
-          fi
+          # NSE Terms prohibit systematic/automated collection without permission.
+          # The historical four-date probe remains a technical-feasibility record only.
+          echo "probe=false" >> "$GITHUB_OUTPUT"
       - name: Set up Python
         uses: actions/setup-python@v5
         with:

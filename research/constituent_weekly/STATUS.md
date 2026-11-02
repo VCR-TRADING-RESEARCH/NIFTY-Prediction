@@ -807,3 +807,12 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 
 - Updated the report generator and saved report to accurately describe the executed same-session OHLC aggregation versus Dhan daily adjusted OHLC, including the expected reciprocal raw-scale factors (2x and 10x). The protected result from run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625) remains the empirical source of the two-event finding.
 - Two sample events match adjusted daily scale; full C1 event review remains open.
+
+
+## 2026-11-03 — Rights gate and 37-event issuer review
+
+- **Dhan sample checks:** Protected run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625) passed daily adjustment and same-session intraday/daily scale checks for RELIANCE 1:1 bonus and BAJAJFINSV 5:1 split + 1:1 bonus. These are two samples only.
+- **BAJAJFINSV identity:** New trading ISIN is adjudicated from 2022-09-13 inclusive via NSE CML53597's explicit trade-effective clause and NSE Clearing FAOP53644. The TejHQ 13-Sep old-ISIN value is preserved as stale raw metadata; the derived mapping carries the override.
+- **NSE rights control:** The four-date PR archive probe is technical feasibility only. Current NSE Terms prohibit systematic automated website collection without consent and restrict use in simulation. The PR archive probe workflow is disabled for future runs, including manual dispatch.
+- **Next:** Build the recipient-encrypted queue for the 37 complex bonus/split/rights/merger-demerger member candidates from the TejHQ personal-use-only source. Upload only ciphertext as a one-day Actions artifact, emit aggregate counts only, and hold the private key outside GitHub. Verify using issuer-first-party disclosure pages where permitted; otherwise set SOURCE_UNRESOLVED and exclude affected stock-cycles.
+- **Phase:** C1 remains PARTIAL / NOT PASSED. C2 panel results remain accepted with C1 limitations; confirmatory C4 and strategy C5 remain gated. The registered research plan remains locked; no plan change is made.
