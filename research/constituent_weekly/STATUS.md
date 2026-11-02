@@ -699,3 +699,13 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Added [C1 official corporate-action source feasibility](C1_OFFICIAL_CORPORATE_ACTION_SOURCE_FEASIBILITY.md), including a fixed-date archive/schema probe, ISIN matching, issuer verification, rights/split/bonus math checks and rights/permission controls.
 - No archive was downloaded in this step; no event is independently verified and no adjustment factor is calculated/applied.
 - Corporate-action gate remains NOT PASSED; overall C1 remains PARTIAL; C2 stays gated.
+
+
+## Official NSE PR archive probe implementation — 2026-11-02
+
+- Added a bounded four-date probe for 2018-04-02, 2024-04-17, 2025-10-14 and 2026-04-17, spanning the legacy/new naming boundary.
+- The probe tests documented PR/legacy archive URL variants, checks ZIP validity and the corporate-action CSV member/header, and records whether announcement/board-meeting members exist.
+- Raw archive bytes are retained only in AES-GCM encrypted Actions cache; public output is limited to archive hashes, sizes, member names and CSV headers. No event rows are published.
+- Added offline unit tests and wired the probe into the C1 corporate-action workflow, including push-path and manual dispatch support.
+- **Execution result: PENDING** at this status update. The workflow has been wired but no Actions result has yet been independently read back.
+- C1 corporate-action gate remains NOT PASSED; C1 overall remains PARTIAL; C2 remains gated. No modelling or holdout tuning was reopened.
