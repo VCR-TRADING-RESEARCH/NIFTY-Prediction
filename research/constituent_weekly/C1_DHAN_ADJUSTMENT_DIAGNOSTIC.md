@@ -1,10 +1,8 @@
 # Dhan Daily Adjusted-Price Corporate-Action Diagnostics
 
-**Updated:** 2026-11-02T10:08:02.739907+00:00
+**Updated:** 2026-11-02T19:11:38.152728+00:00
 **Overall status:** PARTIAL_OR_BLOCKED
 **Dhan daily endpoint:** https://api.dhan.co/v2/charts/historical
-**Authentication:** Fresh TOTP token, HTTP 200 (one attempt); data plan active
-**Encrypted TejHQ cache:** 2/2 year partitions hit; 0 downloads
 
 | Symbol | Event | Ex-date | Expected pre factor | Matched dates | Relative OHLC factors | Status |
 |---|---|---|---:|---:|---|---|
@@ -28,11 +26,7 @@
 - Issuer source: https://www.bajajfinserv.in/finserv-digital-annual-report-fy23/assets/pdf/Bajaj-Finserv-AnnualReport-2022-23.pdf
 - Exchange adjustment source: https://archives.nseindia.com/content/circulars/FAOP53548.pdf
 - Security identity transition source: https://nsearchives.nseindia.com/content/circulars/CML53597.pdf
-- BSE Notice 20220908-17 reproduction (secondary copy): https://in.marketscreener.com/quote/stock/BSE-LIMITED-33930062/news/New-ISIN-Number-of-Bajaj-Finserv-Limited-Scrip-Code-532978-41723564/
 - ISIN transition verified: False
-- NSE CML53597 date wording: its first sentence says the ISIN changes w.e.f. 2022-09-14; the next says it is effective for all trades from the 2022-09-13 ex-date
-- Observed TejHQ daily-row transition date: 2022-09-14
-- Identity interpretation: the TejHQ transition on 2022-09-14 matches the first sentence but conflicts with the ex-date sentence. A secondary reproduction of BSE Notice 20220908-17 also says 2022-09-13; the original BSE notice was not independently retrieved. Effective date unresolved; no correction was applied
 - Pre-event Dhan/raw median ratios: {'open': 0.1, 'high': 0.1, 'low': 0.1, 'close': 0.1}
 - Post-event Dhan/raw median ratios: {'open': 1.0, 'high': 1.0, 'low': 1.0, 'close': 1.0}
 - Relative event factors: {'open': 0.1, 'high': 0.1, 'low': 0.1, 'close': 0.1}
