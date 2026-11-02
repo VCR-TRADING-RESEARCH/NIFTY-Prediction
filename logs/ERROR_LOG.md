@@ -716,7 +716,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Changed the builder to preserve `/content/historical/EQUITIES/` casing and uppercase only the three-letter month. Strengthened tests to assert the exact case-sensitive path.
 - **Impact:** The first automatic Actions run [41422655123](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422655123) did not reach the network stage because of E0110. Independently, the static URL-case defect was corrected before accepting any archive result; the follow-up run uses the corrected URL builder.
 - **Data/security:** No raw market or event data were changed or published. No credentials were exposed. The correction does not alter the C1 gate.
-- **Status:** Code correction committed; follow-up offline test and live archive probe still require completion and read-back.
+- **Status:** **Resolved:** final run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062) passed with 4/4 schema-confirmed archives; canonical website archive route is recorded in the probe report.
 
 
 ## E0110 — 2026-11-02 — NSE archive probe failed to import shared cache helpers (RESOLVED IN CODE; VALIDATION PENDING)
@@ -726,7 +726,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Root cause:** Unlike the existing corporate-action auditor, the new standalone script had not inserted the repository root into `sys.path` before importing the shared helper module.
 - **Correction:** Added the repository root to `sys.path` before the import. The corrective commit triggers a new workflow run.
 - **Impact:** No NSE URL was requested and no archive/event data was acquired in the failed run. The probe report was not produced; the pre-existing catalogue artifact was still uploaded. No credentials were exposed.
-- **Status:** Code correction committed; follow-up workflow and tests must be read back before source feasibility can be assessed.
+- **Status:** **Resolved:** run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062) imported the helper successfully, passed offline tests and completed the probe.
 
 
 ## E0111 — 2026-11-02 — C1 workflow patch produced malformed YAML (RESOLVED; VALIDATION RUN QUEUED)
@@ -734,7 +734,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Severity:** Medium — one intermediate workflow revision was not valid and its run [41423069931](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423069931) failed before creating a job.
 - **Root cause:** A string-based edit inserted the changed-workstream shell block at an incorrect boundary and left malformed YAML.
 - **Correction:** Replaced the entire workflow file with a clean, complete YAML definition. The final workflow separates catalogue and archive-probe execution, keeps offline tests on every triggered run, preserves manual dispatch, and avoids rerunning the large TejHQ catalogue for probe-only changes.
-- **Validation:** The corrected workflow commit [98b4ba5](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/98b4ba5f0182a23140e1b649c41adcfc76f6553d) triggered run [41423171586](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423171586), queued behind the active run. YAML/runtime validation is pending.
+- **Validation:** The corrected workflow commit [98b4ba5](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/98b4ba5f0182a23140e1b649c41adcfc76f6553d) triggered run [41423171586](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423171586), queued behind the active run. **Resolved:** the corrected workflow was loaded in run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062); scope detection, offline tests, probe, cache save, artifact upload and report publishing all passed.
 - **Impact:** No research data, raw archive, model output or credential was changed by the malformed workflow. The failure was caught before source probe results were accepted.
 
 
@@ -744,7 +744,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Severity:** Low — the date-selection design, not the archive source, caused one expected 404.
 - **Evidence:** Probe run [41422881110](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422881110) retrieved 3/4 archives. The missing date, 17-Apr-2024, was an official NSE equity-market holiday for Shri Ram Navami (NSE Capital Market Circular NSE/CMTR/59722, which lists 17-Apr-2024 as Shri Ram Navmi. Source: https://nsearchives.nseindia.com/content/circulars/CMTR59722.pdf.
 - **Correction:** Replaced the holiday with 16-Apr-2024 and simplified the probe to the verified website archive path `/archives/equities/bhavcopy/pr/PRDDMMYY.zip`. Added an exact URL unit test and made PASS require all four fixed dates plus both sides of the naming transition.
-- **Validation:** Corrected run [41423292302](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423292302) is executing the updated probe-only path after offline tests. Final 4/4 result is pending.
+- **Validation:** Corrected run [41423292302](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423292302) is executing the updated probe-only path after offline tests. **Resolved:** corrected probe run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062) confirmed 4/4 dates, including 16-Apr-2024.
 - **Impact:** The earlier 3/4 result still confirms archive/schema availability on 2018-04-02, 2025-10-14 and 2026-04-17, but is superseded for the fixed four-date acceptance test. No event-level verification or adjustment factor was performed.
 
 
@@ -753,5 +753,5 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Severity:** Medium — the successful 4/4 runtime result was present in the Actions workspace/artifact but the branch report files remained at the prior 3/4 revision.
 - **Evidence:** Actions run [41423379012](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423379012) logged `C1_NSE_PR_PROBE PASS_FIXED_PROBE CONFIRMED 4`, but branch read-back still showed the older 09:45:49Z report. The publish step executed `git reset --hard origin/phase/constituent-weekly-outcomes-c1-data` after generation, discarding uncommitted report outputs before staging them.
 - **Correction:** Updated the publish step to copy all generated sanitised reports to a runner-temporary directory before the branch reset, restore them afterwards, then stage/commit/push. Removed self-triggering workflow-file path and retained targeted probe/test triggers.
-- **Retest:** Test commit [163565d](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/163565db3f439e78aeb8d72aeaba52c4ca32e01f) triggers a probe-only run using the corrected publisher. Final branch read-back is pending.
+- **Retest:** Test commit [163565d](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/163565db3f439e78aeb8d72aeaba52c4ca32e01f) triggers a probe-only run using the corrected publisher. **Resolved:** corrected publisher ran successfully in [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062); both the Markdown and JSON reports were fetched from the C1 branch and verified at 4/4.
 - **Data/security:** Raw archives remain encrypted in Actions cache; no raw event rows or credentials were published.
