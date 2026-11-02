@@ -870,3 +870,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Use Dhan's subscribed API for price-scale tests and issuer-first-party documents for event terms where access permits; otherwise mark event SOURCE_UNRESOLVED and exclude affected stock-cycles.
 - Status: CLOSED as a source-control measure; corporate-action C1 gate remains open.
 - Sources: https://www.nseindia.com/static/nse-terms-of-use ; https://www.nseindia.com/static/market-data/nse-data-policy
+
+
+## E0128 — 2026-11-03 — Private issuer queue script omitted repository-root import bootstrap (CLOSED IN CODE)
+
+- **Evidence:** Protected workflow [41513029040](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41513029040) passed the encryption unit tests, restored the existing encrypted TejHQ cache and then failed before queue construction with `ModuleNotFoundError: No module named 'scripts'`.
+- **Cause:** The standalone script imported C1 package modules before adding the repository root to `sys.path`.
+- **Correction:** Added repository-root bootstrap before project imports. The failure occurred before any candidate queue was created or uploaded; no cleartext event details were logged.
+- **Status:** CLOSED IN CODE; a fresh protected run must validate the fix.

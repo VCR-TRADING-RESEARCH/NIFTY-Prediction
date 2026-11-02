@@ -2,10 +2,16 @@ from __future__ import annotations
 import base64, hashlib, json, os
 from datetime import date, datetime
 from pathlib import Path
+import sys
 import pandas as pd
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from scripts.constituent_weekly.audit_c1_corporate_actions import (
     START, END, load_action_year, load_member_intervals, match_member_keys, normalise_type
 )

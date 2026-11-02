@@ -816,3 +816,9 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - **NSE rights control:** The four-date PR archive probe is technical feasibility only. Current NSE Terms prohibit systematic automated website collection without consent and restrict use in simulation. The PR archive probe workflow is disabled for future runs, including manual dispatch.
 - **Next:** Build the recipient-encrypted queue for the 37 complex bonus/split/rights/merger-demerger member candidates from the TejHQ personal-use-only source. Upload only ciphertext as a one-day Actions artifact, emit aggregate counts only, and hold the private key outside GitHub. Verify using issuer-first-party disclosure pages where permitted; otherwise set SOURCE_UNRESOLVED and exclude affected stock-cycles.
 - **Phase:** C1 remains PARTIAL / NOT PASSED. C2 panel results remain accepted with C1 limitations; confirmatory C4 and strategy C5 remain gated. The registered research plan remains locked; no plan change is made.
+
+
+## 2026-11-03 — Private queue workflow first attempt
+
+- Encryption unit tests passed and the encrypted TejHQ cache restored. Candidate queue construction did not start: script import failed because the repository root was not on `sys.path` (E0128).
+- Corrected the import path. No cleartext candidate rows were generated or uploaded; the next protected run is the first actual queue build.
