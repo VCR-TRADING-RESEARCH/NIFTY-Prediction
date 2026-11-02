@@ -836,9 +836,9 @@
 ## GitHub Pages publication — 2026-11-02
 
 - Sanitised C1 status, source-feasibility reports, data-rights notes and machine-readable NSE/Dhan diagnostics were copied to `docs/research/constituent_weekly/` on main.
-- Pages deployment [41427532624](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41427532624) completed successfully.
+- Pages deployment [41427840788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41427840788) completed successfully.
 - Live C1 research page: https://vcr-trading-research.github.io/NIFTY-Prediction/research/constituent_weekly/
 - The page publishes only metadata, ratios, hashes, status and source links; no raw prices, event rows, ISIN values, tokens or credentials.
 
 
-- The Pages deployment was refreshed after clarifying the conflicting BAJAJFINSV ISIN date wording in NSE CML53597; latest deployment run [41427532624](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41427532624) succeeded.
+- The Pages deployment was refreshed after clarifying the conflicting BAJAJFINSV ISIN date wording in NSE CML53597; latest deployment run [41427840788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41427840788) succeeded.
