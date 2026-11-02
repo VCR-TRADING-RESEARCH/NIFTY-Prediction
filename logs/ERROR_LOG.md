@@ -714,7 +714,7 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Severity:** Medium — source retrieval would fail for the documented case-sensitive NSE archive paths.
 - **Root cause:** Static review found that the initial URL builder uppercased the entire historical archive path, including lowercase `/content/historical/`, rather than uppercasing only the month component.
 - **Correction:** Changed the builder to preserve `/content/historical/EQUITIES/` casing and uppercase only the three-letter month. Strengthened tests to assert the exact case-sensitive path.
-- **Impact:** The first automatic Actions run [41422655123](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422655123) had already checked out the pre-fix code; its archive-probe result must be treated as superseded/untrusted. A follow-up run is triggered by the corrective script/test commits.
+- **Impact:** The first automatic Actions run [41422655123](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422655123) did not reach the network stage because of E0110. Independently, the static URL-case defect was corrected before accepting any archive result; the follow-up run uses the corrected URL builder.
 - **Data/security:** No raw market or event data were changed or published. No credentials were exposed. The correction does not alter the C1 gate.
 - **Status:** Code correction committed; follow-up offline test and live archive probe still require completion and read-back.
 
