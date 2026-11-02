@@ -698,3 +698,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Verification:** Rerun [41343953567](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41343953567) succeeded, restored the prior encrypted cache, validated 3/3 direct NSE rows, wrote the supplemental encrypted CSV cache, and saved the new cache key.
 - **Impact:** No raw data or token was committed. Cache persistence and daily feature-panel merge are now complete. Successful daily run 41344197015 reports 106,392/106,392 valid OHLCV sessions.
 
+
+
+## E0108 — 2026-11-02 — C1 research-log update payload error (RESOLVED)
+
+- A GitHub contents update was mistakenly issued with an empty replacement body for STATUS.md, RESEARCH_LOG.md and CONVERSATION_LOG.md while preparing the source-feasibility log append.
+- Immediately restored all three complete files from the preceding known-good commit and then appended the intended source-feasibility/status entries.
+- Verified restoration by comparing recovered file lengths and prior blob SHAs; no earlier log history was intentionally removed.
+- No market data, credentials, or research results were changed. Follow-up read-back verification is required before treating the correction as closed.
