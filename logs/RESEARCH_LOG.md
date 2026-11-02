@@ -946,3 +946,13 @@
 - The 37-candidate bonus/split/rights/merger-demerger queue is complete and published as aggregate results.
 - Added a separate protected encrypted queue for the remaining 20 buybacks and 29 AGM/other candidates. It reuses the pinned TejHQ encrypted cache and existing recipient public key; it emits only aggregate counts and a one-day ciphertext artifact.
 - Dividend events (625) are not bundled into this queue because the locked protocol preserves NIFTY price-index semantics and does not mechanically reinvest cash dividends. They remain subject to forecast-time and affected-window review where relevant.
+
+
+## 2026-11-03 — Secondary 49-event review and corrected 711-candidate catalogue
+
+- Protected queue [41517328794](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41517328794) completed SUCCESS; 49 unique candidates joined to 49 point-in-time member keys with zero ambiguity.
+- Source review corrected the feed classes: 21 buybacks (one originally under “other”), 3 dividends (also under “other”) and 25 AGM/governance. Primary issuer/SEBI/exchange offer/record-date evidence was found for all 21 buybacks; issuer/exchange amount/date evidence for the 3 dividend corrections.
+- HCLTech ₹2/record 2018-08-06; TCS ₹4/record 2018-10-24; Nestlé India ₹135/record 2020-11-02; NTPC buyback ₹115/record 2020-11-13.
+- All AGM records remain excluded from predictive features until actual issuer/exchange notice timestamps are verified before the 10:00 IST forecast cutoff. No price factor is applied to buybacks, dividends or AGMs.
+- Corrected final 711 classification: 17 equity bonuses, 2 NCD distributions, 9 splits, 6 rights, 3 merger/demerger, 21 buybacks, 628 dividends and 25 AGM/governance. Full identity, adjusted-price continuity and affected-cycle exclusions remain open.
+- Reports: [C1_BUYBACK_AGM_REVIEW_AGGREGATE.md](research/constituent_weekly/C1_BUYBACK_AGM_REVIEW_AGGREGATE.md), [complex event aggregate](research/constituent_weekly/C1_ISSUER_EVENT_REVIEW_AGGREGATE.md).

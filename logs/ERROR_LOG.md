@@ -895,3 +895,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - Created a separate recipient-encrypted workflow so these two classes can be reviewed without changing or rerunning the completed 37-event queue. The queue is scoped to only these classes, has a 49-candidate acceptance count, and uploads ciphertext only.
 - No raw candidate rows, company identifiers, record dates, source subjects or prices are published.
 - Status: NEXT BOUNDED REVIEW BATCH.
+
+
+## E0132 — 2026-11-03 — “AGM/other” discovery bucket included buyback and dividend events (CLOSED AS FEED-CLASSIFICATION CORRECTION)
+
+- **Evidence:** Protected queue [41517328794](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41517328794) contained 49 unique secondary candidates. Source reconciliation reclassified one feed “other” as a buyback and three as dividends; 25 remained AGM/governance.
+- **Impact:** The initial bucket understated buybacks by one and dividends by three.
+- **Correction:** Corrected full 711-event classification to 17 equity bonuses, 2 non-equity NCD distributions, 9 splits, 6 rights, 3 mergers/demergers, 21 buybacks, 628 dividends and 25 AGM/governance. Arithmetic check = 711. No dividend, buyback or AGM adjustment factor is applied.
+- **Controls:** All 25 AGM entries are excluded from predictive features until actual public-notice timestamps are checked against the 10:00 IST forecast cutoff. Dividends preserve price-index semantics.
+- **Status:** CLOSED FOR CLASSIFICATION AND AGGREGATE COUNTS. Historical identity, adjusted-price continuity and affected-cycle exclusions remain open.

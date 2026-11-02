@@ -2,14 +2,14 @@
 
 **Last updated:** 2026-11-03  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 PARTIAL / NOT PASSED after the 37-candidate complex-event source review; C2 panel PASS WITH C1 LIMITATIONS; C3 exploratory results complete with no confirmed stock-model edge; confirmatory C4 and trading C5 gated  
+**Status:** C0 PASS; C1 PARTIAL / NOT PASSED after 37 complex and 49 secondary reviews; corrected 711-event catalogue reconciled; C2 PASS WITH C1 LIMITATIONS; C3 exploratory results complete with no confirmed stock-model edge; confirmatory C4 and trading C5 gated  
 **Prediction status:** C2 frozen panel accepted (258/258 cycles); C3 exploratory OOF/holdout stock models completed; no confirmatory bottom-up NIFTY forecast or predictive edge is accepted  
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Locked v1.3 plan and governance checks passed |
-| C1 — Point-in-time universe/data audit | PARTIAL / NOT PASSED | 258/258 intraday target cycles and 106,392/106,392 daily sessions pass coverage; 37 complex event candidates have terms/record-date source review; two bonus labels were reclassified as debenture distributions; full 711-event treatment and dated security identity/price continuity remain open |
+| C1 — Point-in-time universe/data audit | PARTIAL / NOT PASSED | 258/258 intraday target cycles and 106,392/106,392 daily sessions pass coverage; 37 complex + 49 secondary candidates reviewed; final classes 17 equity bonuses, 2 NCD distributions, 9 splits, 6 rights, 3 merger/demerger, 21 buybacks, 628 dividends and 25 AGM/governance; historical identity/price continuity and affected-cycle gates remain open |
 | C2 — Panel labels/features | PASS WITH C1 LIMITATIONS | Formal panel: 258/258 index targets; 258/258 cycles satisfy 47/94%; 12,807 stock-cycle rows; zero duplicate rows; holdout boundary fixed at cycle 206 |
 | C3 — Stock models/baselines | EXPLORATORY COMPLETE — NO EDGE | 7,512 OOF forecasts across 154 expiry cycles; on untouched holdout momentum accuracy 50.52%, versus logistic 48.12%, ExtraTrees 48.51% and HGB 46.69%; no classifier beat momentum |
 | C4 — Index aggregation/uncertainty | CONFIRMATORY GATED | Do not start confirmatory index aggregation until C1 identity/event exclusions and the registered C4 inputs are accepted |
@@ -847,3 +847,15 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Completed the 37 complex candidate source review and aggregate publication. The remaining non-dividend candidates are 20 buybacks and 29 AGM/other.
 - Added a separate encrypted queue workflow, manual dispatch supported, restricted to these two event classes with a 49-candidate reference count. The workflow reuses encrypted cached TejHQ partitions, emits only aggregate counts and uploads only ciphertext for one day.
 - The 625 dividend candidates remain separate under the NIFTY price-index rule. C1 remains PARTIAL / NOT PASSED until event-time, security identity and affected-cycle price treatment are accepted.
+
+
+## 2026-11-03 — Secondary review and full 711-event reconciliation
+
+- Protected encrypted secondary queue [41517328794](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41517328794) completed successfully; 49/49 candidates joined to point-in-time member keys with zero ambiguous matches.
+- Corrected discovery labels: 21 buybacks (one originally in “other”), 3 dividends (also originally in “other”), and 25 AGM/governance events. Primary issuer/SEBI/exchange offer/record-date evidence was found for all 21 buybacks; issuer/exchange amount/date records for all 3 dividend corrections.
+- HCLTech ₹2 (record 2018-08-06), TCS ₹4 (record 2018-10-24), Nestlé India ₹135 (record 2020-11-02). NTPC “other” entry was a buyback at ₹115 (record 2020-11-13).
+- All 25 AGM entries remain excluded from features until public-notice timestamps are verified against the 10:00 IST forecast cutoff. Cash dividends retain NIFTY price-index semantics; no reinvestment or total-return target substitution.
+- Corrected 711-event classification: 17 equity bonuses; 2 NCD distributions; 9 splits; 6 rights; 3 merger/demerger; 21 buybacks; 628 dividends; 25 AGM/governance. Sum = 711.
+- No buyback/dividend/AGM price factor, TERP or generic merger factor has been applied. Historical identity, adjusted-price continuity and affected stock-cycle exclusions remain open.
+- Reports: [C1_ISSUER_EVENT_REVIEW_AGGREGATE.md](C1_ISSUER_EVENT_REVIEW_AGGREGATE.md), [C1_BUYBACK_AGM_REVIEW_AGGREGATE.md](C1_BUYBACK_AGM_REVIEW_AGGREGATE.md), and machine summaries.
+- **Disposition:** C1 PARTIAL / NOT PASSED; C2 PASS WITH C1 LIMITATIONS; C3 exploratory complete/no confirmed edge; confirmatory C4 and trading C5 remain gated.

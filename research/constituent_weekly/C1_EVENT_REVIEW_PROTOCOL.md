@@ -89,7 +89,18 @@ This protocol does not grant data rights. The TejHQ catalogue remains personal-u
 
 ## 7. Remaining 49 buyback and AGM/other candidates
 
-- The 20 buyback and 29 AGM/other candidates are reviewed separately from the completed 37 complex event queue.
+- The 49 secondary candidates were reviewed separately from the completed 37 complex-event queue. Final corrected classification is 21 buybacks, 3 dividends reclassified from “other”, and 25 AGM/governance items.
 - Buybacks have no universal mechanical price factor. Review announcement date, board approval, tender/open-market route, price, ratio/size, record date, closure/extinguishment, and whether each item was public by the 10:00 forecast cutoff. Only use these as point-in-time known-event features; do not backdate knowledge from record/ex-date notices.
 - AGM/other is a discovery-feed umbrella, not a corporate-action class. Classify each item as board/AGM notice, dividend, buyback, split/bonus, rights, merger/demerger, delisting, name/ISIN change, or non-price-affecting governance announcement. Use the relevant specific rule, or SOURCE_UNRESOLVED and exclude affected cycle if event type/identity cannot be established.
-- The 625 ordinary dividend candidates remain separate. Do not mechanically reinvest dividends into the NIFTY price-index target. Retain only point-in-time features disclosed by the forecast cutoff; review price-bar effects only where the frozen label/feature methodology requires it.
+- The 628 dividend candidates remain separate (the original 625 plus three “other” records reclassified as dividends). Do not mechanically reinvest dividends into the NIFTY price-index target. Retain only point-in-time features disclosed by the forecast cutoff; review price-bar effects only where the frozen label/feature methodology requires it.
+
+
+## 8. Secondary 49-candidate review result — 2026-11-03
+
+- Protected queue [41517328794](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41517328794) passed; 49 candidates joined to 49 point-in-time member keys with no ambiguity.
+- Corrected classification: 21 buybacks, 3 dividends reclassified from “other”, and 25 AGM/governance entries. Primary offer/record-date evidence was found for all 21 buybacks; issuer/exchange evidence for the three dividend corrections.
+- Dividends: HCLTech ₹2 (record 2018-08-06), TCS ₹4 (record 2018-10-24), Nestlé India ₹135 (record 2020-11-02). No dividend reinvestment or total-return substitution in the NIFTY target.
+- NTPC “other” entry is a buyback at ₹115 with record date 2020-11-13.
+- All 25 AGM/governance items receive no price factor and remain excluded from model features until actual public-notice timestamps are checked against the 10:00 IST forecast cutoff.
+- Corrected total catalogue: 17 equity bonuses, 2 NCD distributions, 9 splits, 6 rights, 3 merger/demerger schemes, 21 buybacks, 628 dividends and 25 AGM/governance (711).
+- No manual factors, TERPs or generic merger factor applied. Private source mapping remains outside GitHub. Aggregate report: [C1_BUYBACK_AGM_REVIEW_AGGREGATE.md](C1_BUYBACK_AGM_REVIEW_AGGREGATE.md).

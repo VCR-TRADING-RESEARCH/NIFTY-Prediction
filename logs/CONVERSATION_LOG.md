@@ -561,3 +561,11 @@
 
 - After completing the 37 complex action terms review, prepared a second recipient-encrypted candidate queue for the remaining 20 buybacks and 29 AGM/other candidates. The workflow is separate from the completed 37-event queue and uses the same public recipient key with private-key material held outside GitHub.
 - The 625 dividend candidates remain a separate price-index semantics workstream. No raw event rows or source subjects are copied to the repository.
+
+
+## 2026-11-03 — Secondary queue reclassified and full 711 catalogue reconciled
+
+- Protected queue [41517328794](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41517328794) completed successfully; 49 unique candidates joined point-in-time member keys without ambiguity. Raw event rows and source mappings remain private.
+- Source review classified 21 buybacks, 3 dividends and 25 AGM/governance entries. One buyback and three dividends were mislabelled as “other”. HCLTech ₹2/record 6-Aug-2018; TCS ₹4/record 24-Oct-2018; Nestlé India ₹135/record 2-Nov-2020; NTPC buyback ₹115/record 13-Nov-2020.
+- Corrected full 711 catalogue: 17 equity bonuses, 2 NCD distributions, 9 splits, 6 rights, 3 merger/demerger, 21 buybacks, 628 dividends and 25 AGM/governance.
+- AGM features remain excluded pending verification of the notice timestamp before 10:00 IST. Dividends retain price-index semantics; no price factors/TERPs/generic merger adjustment applied. C1 partial; C4/C5 gated.

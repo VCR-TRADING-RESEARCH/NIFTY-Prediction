@@ -37,9 +37,9 @@ Source provenance across this queue: 35 candidate entries have issuer-first-part
 - Merger/demerger windows require scheme-specific predecessor/successor identity and price-series continuity. No generic factor or ticker-only price stitching is applied.
 - No new manual adjustment factor has been applied to the constituent panel and no candidate stock-cycle has been released into confirmatory fitting on the strength of this review alone.
 
-## Remaining catalogue scope
+## Updated full-catalogue reconciliation — 2026-11-03
 
-The remaining point-in-time member-event catalogue contains 625 dividend candidates, 20 buyback candidates and 29 AGM/other candidates. Dividends retain NIFTY price-index semantics: do not mechanically reinvest cash dividends or substitute a total-return target. Buybacks and other events need forecast-time availability and affected-cycle classification. The full 711-event catalogue and dated historical security identity audit remain open.
+The 49-candidate secondary review reclassified one “AGM/other” item as a buyback and three as dividends. Final corrected catalogue: 17 equity bonuses, 2 non-equity debenture distributions, 9 splits, 6 rights issues, 3 merger/demerger schemes, 21 buybacks, 628 dividends and 25 AGM/governance events (711 total). See [C1_BUYBACK_AGM_REVIEW_AGGREGATE.md](C1_BUYBACK_AGM_REVIEW_AGGREGATE.md). The 628 dividends retain NIFTY price-index semantics; all 25 AGM items are excluded from predictive features until public-notice timestamps are checked against the 10:00 IST cutoff. Buyback acceptance/completion and affected-cycle joins remain open. The full 711-event catalogue and dated historical security identity audit remain open.
 
 ## Source evidence (illustrative primary disclosures)
 
@@ -56,3 +56,8 @@ The private event-to-source decision ledger remains outside GitHub because the q
 ## Phase decision
 
 **C1 remains PARTIAL / NOT PASSED.** The 37-candidate terms review is complete, but identity, adjusted-price continuity and affected-cycle exclusions are not complete for the full 711-candidate catalogue. C2's panel remains accepted with C1 limitations under the existing progression decision; C3 remains exploratory only; confirmatory C4 and trading/execution C5 remain gated.
+
+
+## Secondary review and final catalogue counts
+
+See [C1_BUYBACK_AGM_REVIEW_AGGREGATE.md](C1_BUYBACK_AGM_REVIEW_AGGREGATE.md) for the 49-candidate review. Final breakdown: {"equity_bonus_share_actions":17,"bonus_labelled_non_equity_ncd_distributions":2,"stock_splits":9,"rights_issues":6,"merger_demerger_schemes":3,"buybacks":21,"dividends":628,"agm_governance":25,"total":711}. No manual price factor or rights TERP has been applied.
