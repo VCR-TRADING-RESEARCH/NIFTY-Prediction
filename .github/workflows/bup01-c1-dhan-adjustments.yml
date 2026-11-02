@@ -40,7 +40,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt -r live_api/requirements.txt pytest cryptography huggingface_hub pyarrow
       - name: Run offline factor-math tests
-        run: python -m pytest -q tests/test_c1_dhan_adjustments.py tests/test_c1_intraday_ca_diagnostic.py
+        run: python -m pytest -q tests/test_c1_dhan_adjustments.py tests/test_c1_intraday_ca_diagnostic.py tests/test_c1_intraday_ca_diagnostic.py
       - name: Restore encrypted TejHQ personal-use cache
         uses: actions/cache/restore@v4
         with:
@@ -94,7 +94,7 @@ jobs:
           for attempt in 1 2 3 4 5; do
             git fetch origin phase/constituent-weekly-outcomes-c1-data
             git reset --hard origin/phase/constituent-weekly-outcomes-c1-data
-            for file in research/constituent_weekly/C1_DHAN_ADJUSTMENT_DIAGNOSTIC.json research/constituent_weekly/C1_DHAN_ADJUSTMENT_DIAGNOSTIC.md; do
+            for file in research/constituent_weekly/C1_DHAN_ADJUSTMENT_DIAGNOSTIC.json research/constituent_weekly/C1_DHAN_ADJUSTMENT_DIAGNOSTIC.md research/constituent_weekly/C1_DHAN_INTRADAY_CA_DIAGNOSTIC.json research/constituent_weekly/C1_DHAN_INTRADAY_CA_DIAGNOSTIC.md; do
               saved="$RUNNER_TEMP/c1-dhan-publish/$(basename "$file")"
               if [[ -f "$saved" ]]; then cp "$saved" "$file"; fi
             done

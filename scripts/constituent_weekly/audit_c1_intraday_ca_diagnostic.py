@@ -4,11 +4,16 @@ import json
 from datetime import datetime, timezone
 from io import BytesIO
 from pathlib import Path
+import sys
 from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
 import requests
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from live_api.app import MASTER_URL
 from scripts.constituent_weekly.dhan_equity_preflight import (
@@ -18,7 +23,6 @@ from scripts.constituent_weekly.dhan_equity_preflight import (
     resolve_ids,
 )
 
-ROOT = Path(__file__).resolve().parents[2]
 OUT_JSON = ROOT / "research/constituent_weekly/C1_DHAN_INTRADAY_CA_DIAGNOSTIC.json"
 OUT_MD = ROOT / "research/constituent_weekly/C1_DHAN_INTRADAY_CA_DIAGNOSTIC.md"
 IST = ZoneInfo("Asia/Kolkata")

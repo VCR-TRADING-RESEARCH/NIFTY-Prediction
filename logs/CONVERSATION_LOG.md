@@ -491,3 +491,9 @@
 
 - During the C1 continuation, related status/log changes were committed sequentially rather than batched, causing repeated PR validation workflow activity. The work itself was limited to protocol and source adjudication documents; no model run was duplicated.
 - Recorded the process issue as E0120 and will batch future related repository edits into a single commit. No private reasoning or credentials are stored.
+
+
+## 2026-11-03 — First protected intraday diagnostic failed before data request
+
+- Dhan authentication and the two daily split/bonus checks succeeded on run 41507896770, but the intraday probe stopped at Python import because the repository root was missing from `sys.path`. No minute bars were requested.
+- Recorded E0121 and E0122; fixed the import path, daily identity override, tests and workflow status contract in one batched change. The new run must still establish the intraday classification. No raw data or credentials are copied.

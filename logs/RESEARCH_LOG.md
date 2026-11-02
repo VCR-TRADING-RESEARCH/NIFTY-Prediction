@@ -864,3 +864,10 @@
 
 - The C1 protocol and adjudication files were committed in multiple sequential branch writes. The open C1 PR consequently launched multiple path-filtered validation workflows. This did not affect research data, but was unnecessary CI churn.
 - Corrective rule: batch related branch-file changes into one Git tree/commit per logical step, then monitor the single resulting PR validation set. Recorded as E0120.
+
+
+## 2026-11-03 — First protected intraday adjustment attempt
+
+- Run [41507896770](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41507896770) successfully refreshed Dhan credentials and revalidated daily adjustment factors: RELIANCE 0.5 (9/9 sessions), BAJAJFINSV 0.1 (11/11 sessions). No intraday result was produced.
+- Intraday script failed before the API request due to missing repository-root Python path (E0121). The workflow's daily gate also expected an obsolete status string (E0122).
+- Correction batch adds the repository-root import bootstrap, a unit test for the adjudicated BAJAJFINSV date, and fail-closed gate checks against the actual machine result schemas. C1 remains PARTIAL.

@@ -120,3 +120,25 @@ def test_unchanged_isin_has_no_transition_date():
                                            "INE002A01018", "INE002A01018")
     assert result["isin_transition_verified"] is True
     assert result["observed_post_isin_first_date"] is None
+
+
+
+def test_bajaj_finserv_adjudicated_identity_override_is_explicit():
+    dates = ["2022-09-08", "2022-09-09", "2022-09-12", "2022-09-13", "2022-09-14", "2022-09-15"]
+    raw_rows, dhan_rows = [], []
+    for day in dates:
+        value = 100.0 if day < "2022-09-13" else 10.0
+        isin = "INE918I01018" if day < "2022-09-13" else "INE918I01026"
+        raw_rows.append({"session_date": day, "isin": isin, "open": value, "high": value + 1,
+                         "low": value - 1, "close": value, "volume": 100})
+        dhan_rows.append({"session_date": day, "open": value * 0.1 if day < "2022-09-13" else value,
+                          "high": (value + 1) * 0.1 if day < "2022-09-13" else value + 1,
+                          "low": (value - 1) * 0.1 if day < "2022-09-13" else value - 1,
+                          "close": value * 0.1 if day < "2022-09-13" else value, "volume": 100})
+    raw_rows[3]["isin"] = "INE918I01018"  # preserve the stale raw reference value
+    result = compute_adjustment_diagnostic(pd.DataFrame(dhan_rows), pd.DataFrame(raw_rows), dates,
+        "2022-09-13", 0.1, "INE918I01018", "INE918I01026", ["2022-09-13"])
+    assert result["status"] == "PASS_ADJUSTMENT_FACTOR"
+    assert result["identity_mismatch_dates"] == ["2022-09-13"]
+    assert result["identity_override_applied_dates"] == ["2022-09-13"]
+    assert result["identity_unresolved_dates"] == []

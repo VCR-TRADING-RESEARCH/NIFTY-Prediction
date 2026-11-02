@@ -807,3 +807,17 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** Multiple distinct C1 validation jobs were observed running for the same PR head. This added avoidable CI load and could resemble the duplicate-workflow problem previously reported by the user.
 - **Correction:** Batch future related file updates into one Git tree/commit per logical research step; inspect the PR workflow matrix before pushing; do not create separate commits for each log file.
 - **Status:** CLOSED as a process correction. No force-push, workflow rerun or model retraining was initiated.
+
+
+## E0121 — 2026-11-03 — Intraday diagnostic runner import path omitted (CLOSED IN CODE)
+
+- Run [41507896770](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41507896770) authenticated successfully and completed the Dhan daily adjustment step, then failed before the intraday request with `ModuleNotFoundError: No module named 'live_api'`.
+- Cause: standalone script did not add repository root to `sys.path` before importing project modules.
+- Correction: add repository-root bootstrap and include the new diagnostic tests in the protected workflow test command.
+- Status: fixed in code; next protected run must validate.
+
+## E0122 — 2026-11-03 — Daily adjustment workflow gate expected obsolete status string (CLOSED IN CODE)
+
+- The workflow expected `PASS_BONUS_ADJUSTMENT_FACTOR`, but the script emits `PASS_ALL_EVENT_ADJUSTMENTS` or `PARTIAL_OR_BLOCKED`.
+- Corrected the gate to require both registered daily event diagnostics to pass. The adjudicated BAJAJFINSV 2022-09-13 source mismatch is now handled through a date-limited derived identity override; the underlying TejHQ row remains unchanged and the override is reported.
+- Status: fixed in code; next protected run must validate.

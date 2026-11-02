@@ -49,6 +49,8 @@ EVENTS = [
         "issuer_source": "https://www.bajajfinserv.in/finserv-digital-annual-report-fy23/assets/pdf/Bajaj-Finserv-AnnualReport-2022-23.pdf",
         "exchange_source": "https://archives.nseindia.com/content/circulars/FAOP53548.pdf",
         "identity_source": "https://nsearchives.nseindia.com/content/circulars/CML53597.pdf",
+        "accepted_source_identity_mismatch_dates": ["2022-09-13"],
+        "identity_override_note": "NSE Clearing FAOP53644 and the trade-effective clause in NSE CML53597 adjudicate the new trading ISIN from the 2022-09-13 ex-date; the TejHQ row is preserved as stale source metadata."
     },
 ]
 
@@ -61,6 +63,7 @@ def compute_adjustment_diagnostic(
     expected_pre_factor: float,
     expected_pre_isin: str,
     expected_post_isin: str,
+    accepted_source_identity_mismatch_dates: list[str] | None = None,
 ) -> dict:
     """Compare adjusted OHLC with raw NSE bhavcopy; output ratios only, never prices."""
     required = {"session_date", *PRICE_FIELDS}
@@ -133,7 +136,10 @@ def compute_adjustment_diagnostic(
     lower, upper = expected_pre_factor * 0.95, expected_pre_factor * 1.05
     factor_ok = all(lower <= value <= upper for value in relative_factor.values())
     post_ok = all(POST_FACTOR_TOLERANCE[0] <= value <= POST_FACTOR_TOLERANCE[1] for value in post_median.values())
-    identity_ok = not identity_mismatch_dates
+    accepted_identity_dates = set(accepted_source_identity_mismatch_dates or [])
+    identity_override_applied_dates = sorted(set(identity_mismatch_dates) & accepted_identity_dates)
+    identity_unresolved_dates = sorted(set(identity_mismatch_dates) - accepted_identity_dates)
+    identity_ok = not identity_unresolved_dates
     if factor_ok and post_ok and identity_ok:
         diagnostic_status = "PASS_ADJUSTMENT_FACTOR"
     elif factor_ok and post_ok and not identity_ok:
@@ -148,6 +154,8 @@ def compute_adjustment_diagnostic(
         "raw_unique_isin_count": len(isin_values), "isin_transition_verified": identity_ok,
         "identity_mismatch_dates": identity_mismatch_dates,
         "identity_mismatch_type_by_date": identity_mismatch_types,
+        "identity_override_applied_dates": identity_override_applied_dates,
+        "identity_unresolved_dates": identity_unresolved_dates,
         "observed_post_isin_first_date": (min(observed_post_isin_dates) if observed_post_isin_dates else None) if expected_pre_isin.upper() != expected_post_isin.upper() else None,
         "expected_pre_ex_date_factor": float(expected_pre_factor),
         "pre_ex_date_median_dhan_to_raw_by_ohlc": {k: round(v, 6) for k, v in pre_median.items()},
@@ -162,7 +170,8 @@ def compute_adjustment_diagnostic(
 
 def public_event_metadata(event: dict) -> dict:
     keys = ("symbol", "action", "ex_date", "expected_pre_factor", "sample_dates",
-            "issuer_source", "exchange_source", "identity_source")
+            "issuer_source", "exchange_source", "identity_source",
+            "accepted_source_identity_mismatch_dates", "identity_override_note")
     return {key: event.get(key) for key in keys}
 
 
@@ -188,7 +197,9 @@ def write_report(result: dict) -> None:
                   f"- Issuer source: {item.get('issuer_source')}",
                   f"- Exchange adjustment source: {item.get('exchange_source')}",
                   f"- Security identity transition source: {item.get('identity_source')}",
-                  f"- ISIN transition verified: {d.get('isin_transition_verified')}",
+                  f"- ISIN transition verified after adjudication: {d.get('isin_transition_verified')}",
+                  f"- Source identity override dates: {d.get('identity_override_applied_dates', [])}",
+                  f"- Override note: {item.get('identity_override_note')}",
                   f"- Pre-event Dhan/raw median ratios: {d.get('pre_ex_date_median_dhan_to_raw_by_ohlc')}",
                   f"- Post-event Dhan/raw median ratios: {d.get('post_ex_date_median_dhan_to_raw_by_ohlc')}",
                   f"- Relative event factors: {d.get('relative_event_factor_by_ohlc')}",
@@ -286,6 +297,7 @@ def run() -> dict:
             diagnostic = compute_adjustment_diagnostic(
                 dhan_frame, raw_rows, sample_dates, event["ex_date"], event["expected_pre_factor"],
                 event["expected_pre_isin"], event["expected_post_isin"],
+                event.get("accepted_source_identity_mismatch_dates", []),
             )
             event_result["diagnostic"] = diagnostic
             event_result["status"] = diagnostic["status"]

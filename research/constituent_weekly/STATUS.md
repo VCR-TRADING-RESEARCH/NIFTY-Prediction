@@ -764,3 +764,10 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Derived mapping decision: new ISIN is effective for trades from 2022-09-13 inclusive. Preserve the TejHQ 13-Sep old-ISIN field unchanged and flag it as stale source metadata; do not rewrite raw rows.
 - Added [C1_BAJAJFINSV_ISIN_ADJUDICATION.md](C1_BAJAJFINSV_ISIN_ADJUDICATION.md); closed E0118 with source-based adjudication in the error log.
 - This closes only the one-day BAJAJFINSV identity-date dispute. It does not validate the other member events or the full 711-event catalogue. C1 remains PARTIAL; C2/C4 confirmatory remain GATED.
+
+
+## 2026-11-03 — Intraday diagnostic first-attempt correction
+
+- Run [41507896770](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41507896770) refreshed Dhan authentication and confirmed daily adjustment ratios: RELIANCE 0.5 across OHLC (9/9 sessions), BAJAJFINSV 0.1 across OHLC (11/11 sessions). The intraday test failed before calling Dhan because the script omitted the repository-root import path.
+- Corrected the import path, added a regression test for the source-adjudicated BAJAJFINSV 2022-09-13 identity override, and aligned the workflow gates with the current machine-result contracts. The old TejHQ identifier is still preserved unchanged.
+- No intraday result is claimed from the first attempt. C1 remains PARTIAL; C2/C4 confirmatory remain gated.
