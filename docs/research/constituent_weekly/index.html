@@ -14,7 +14,7 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <body>
 <p><a href="../../index.html">← Research home</a> · <a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction">Main repository</a></p>
 <h1>BUP-01 C1 — Constituent Corporate-Action Research</h1>
-<p><strong>Last updated:</strong> 2026-11-02</p>
+<p><strong>Last updated:</strong> 2026-11-03</p>
 <p class="status">C1: PARTIAL / NOT PASSED · C2: GATED</p>
 <p class="note">This page publishes sanitised research metadata and diagnostic summaries only. Raw market prices, raw corporate-action rows, ISIN values, API tokens and credentials are not published.</p>
 
@@ -25,7 +25,8 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <tr><td>Daily member-session OHLCV coverage</td><td>106,392 / 106,392 (100%)</td><td>Coverage complete, but corporate-action identity and adjustment gates remain open.</td></tr>
 <tr><td>Official NSE PR archive route/schema probe</td><td>4 / 4 dates passed</td><td>Corporate-action CSV, announcements and board-meeting members were present before and after the Oct-2025 naming transition. This is technical feasibility only.</td></tr>
 <tr><td>Reliance 1:1 bonus adjustment</td><td>0.5 relative OHLC factor</td><td>9/9 sessions matched; Dhan adjusted history passed this diagnostic.</td></tr>
-<tr><td>Bajaj Finserv 5:1 split + 1:1 bonus</td><td>0.1 relative OHLC factor</td><td>11/11 sessions matched and price factor passed. Identity date is ambiguous: NSE CML53597 says w.e.f. 14-Sep in one sentence and 13-Sep ex-date in the next; a BSE notice reproduction says 13-Sep; TejHQ rows transition on 14-Sep. Identity gate remains open.</td></tr>
+<tr><td>Bajaj Finserv 5:1 split + 1:1 bonus</td><td>0.1 relative OHLC factor</td><td>11/11 daily sessions matched. New trading ISIN adjudicated effective 2022-09-13 using NSE Clearing FAOP53644 and the explicit trade-effective clause in CML53597; original raw row is preserved and flagged as stale metadata.</td></tr>
+<tr><td>Intraday corporate-action scale (two events)</td><td>2/2 match Dhan adjusted daily OHLC</td><td>Same-session intraday OHLC aggregates matched the Dhan daily adjusted scale for RELIANCE bonus and BAJAJFINSV split+bonus. Sample only; not evidence for all 711 point-in-time event candidates.</td></tr>
 </tbody>
 </table>
 
@@ -35,7 +36,8 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <h2>Research files</h2>
 <ul>
 <li><a href="C1_NSE_PR_ARCHIVE_PROBE.md">NSE archive probe report</a> · <a href="C1_NSE_PR_ARCHIVE_PROBE.json">machine-readable probe result</a></li>
-<li><a href="C1_DHAN_ADJUSTMENT_DIAGNOSTIC.md">Dhan adjustment diagnostic report</a> · <a href="C1_DHAN_ADJUSTMENT_DIAGNOSTIC.json">machine-readable adjustment result</a></li>
+<li><a href="C1_DHAN_ADJUSTMENT_DIAGNOSTIC.md">Dhan daily adjustment diagnostic report</a> · <a href="C1_DHAN_ADJUSTMENT_DIAGNOSTIC.json">machine-readable daily result</a></li>
+<li><a href="C1_DHAN_INTRADAY_CA_DIAGNOSTIC.md">Dhan intraday corporate-action scale diagnostic</a> · <a href="C1_DHAN_INTRADAY_CA_DIAGNOSTIC.json">machine-readable intraday result</a></li>
 <li><a href="C1_DATA_RIGHTS_AND_ALTERNATIVES.md">Data rights gate and permitted alternatives</a></li>
 <li><a href="C1_OFFICIAL_CORPORATE_ACTION_SOURCE_FEASIBILITY.md">Official source feasibility and verification method</a></li>
 <li><a href="C1_EVENT_REVIEW_PROTOCOL.md">Event-level review protocol (711 matched candidates; prioritised validation and exclusion rules)</a></li>

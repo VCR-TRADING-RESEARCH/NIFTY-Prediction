@@ -1,0 +1,75 @@
+{
+  "auth_method": "reused_validated_prior_step_token",
+  "credentials_or_tokens_recorded": false,
+  "data_source": "DhanHQ v2 intraday historical API",
+  "events": [
+    {
+      "action": "1:1 bonus",
+      "diagnostic": {
+        "bar_count": 734,
+        "comparison_method": "same-session intraday OHLC aggregation / Dhan adjusted daily historical OHLC",
+        "daily_request_attempts": 1,
+        "ex_intraday_to_daily_adjusted_ohlc_ratios": {
+          "close": 1.0003,
+          "high": 1.0,
+          "low": 1.0,
+          "open": 1.0
+        },
+        "note": "This avoids the overnight return in a pre-close to ex-open ratio. Dhan daily OHLC is the adjusted-scale comparator; same-session scale matching is evidence for the sampled symbol/event only.",
+        "overnight_close_ratio_diagnostic": 1.002562,
+        "overnight_diagnostic_status": "ADJUSTED_SCALE_INTRADAY",
+        "pre_intraday_to_daily_adjusted_ohlc_ratios": {
+          "close": 1.000226,
+          "high": 0.997211,
+          "low": 1.0,
+          "open": 0.994008
+        },
+        "status": "INTRADAY_MATCHES_DHAN_DAILY_ADJUSTED_SCALE"
+      },
+      "ex_date": "2024-10-28",
+      "pre_date": "2024-10-25",
+      "symbol": "RELIANCE"
+    },
+    {
+      "action": "5:1 split plus 1:1 bonus",
+      "diagnostic": {
+        "bar_count": 734,
+        "comparison_method": "same-session intraday OHLC aggregation / Dhan adjusted daily historical OHLC",
+        "daily_request_attempts": 1,
+        "ex_intraday_to_daily_adjusted_ohlc_ratios": {
+          "close": 0.997899,
+          "high": 0.999756,
+          "low": 1.0,
+          "open": 1.0
+        },
+        "note": "This avoids the overnight return in a pre-close to ex-open ratio. Dhan daily OHLC is the adjusted-scale comparator; same-session scale matching is evidence for the sampled symbol/event only.",
+        "overnight_close_ratio_diagnostic": 1.04747,
+        "overnight_diagnostic_status": "ADJUSTED_SCALE_INTRADAY",
+        "pre_intraday_to_daily_adjusted_ohlc_ratios": {
+          "close": 1.006179,
+          "high": 0.997072,
+          "low": 1.000164,
+          "open": 0.996548
+        },
+        "status": "INTRADAY_MATCHES_DHAN_DAILY_ADJUSTED_SCALE"
+      },
+      "ex_date": "2022-09-13",
+      "pre_date": "2022-09-12",
+      "symbol": "BAJAJFINSV"
+    }
+  ],
+  "raw_bars_published": false,
+  "status": "COMPLETED_INTRADAY_SCALE_DIAGNOSTIC",
+  "summary": {
+    "ambiguous_or_unavailable": 0,
+    "events_tested": 2,
+    "matches_daily_adjusted_scale": 2,
+    "raw_scale_unadjusted": 0
+  },
+  "token_refresh_diagnostics": {
+    "source": "prior_profile_and_data_plan_validated_step",
+    "token_value_recorded": false
+  },
+  "token_refresh_status": "REUSED_WITHIN_SAME_ACTIONS_JOB",
+  "updated_at_utc": "2026-11-02T19:32:36.963359+00:00"
+}
