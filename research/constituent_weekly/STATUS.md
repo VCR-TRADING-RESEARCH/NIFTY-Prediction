@@ -737,3 +737,10 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - **BAJAJFINSV 5:1 split + 1:1 bonus, ex-date 2022-09-13:** 11/11 sessions matched. Relative event factor = 0.1 for all OHLC fields; price-adjustment diagnostic PASS. However, TejHQ raw rows retain the old ISIN on 2022-09-13 and show the new ISIN from 2022-09-14, while NSE Circular CML53597 says the new ISIN is effective from 2022-09-13. This one-session identity discrepancy is flagged; no correction was applied.
 - Sanitised [Dhan diagnostic report](C1_DHAN_ADJUSTMENT_DIAGNOSTIC.md) and [machine result](C1_DHAN_ADJUSTMENT_DIAGNOSTIC.json) are published. No raw prices or ISIN values are published.
 - Overall status remains PARTIAL_OR_BLOCKED because BAJAJFINSV identity validation is open. No full-panel adjustment factors have been applied. Dividends, rights, mergers/demergers and buybacks remain unverified. C1 corporate-action gate NOT PASSED; C1 overall PARTIAL; C2 remains gated.
+
+## GitHub Pages publication — 2026-11-02
+
+- Sanitised C1 status, source-feasibility reports, data-rights notes and machine-readable NSE/Dhan diagnostics were copied to `docs/research/constituent_weekly/` on main.
+- Pages deployment [41426944349](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426944349) completed successfully.
+- Live C1 research page: https://vcr-trading-research.github.io/NIFTY-Prediction/research/constituent_weekly/
+- The page publishes only metadata, ratios, hashes, status and source links; no raw prices, event rows, ISIN values, tokens or credentials.
