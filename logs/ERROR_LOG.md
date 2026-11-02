@@ -893,3 +893,27 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** During C3 preparation, locate and copy `C2_PANEL_BUILD.json` from the same downloaded C2 artifact into the runner workspace before reading ciphertext filenames, sizes, hashes or associated-data inputs. Verify the ciphertext against that paired manifest before decryption.
 - **Secondary correction:** Remove the unconditional `git add` of result files before checking they exist; the failure-safe publish step must not fail when the model runner has stopped before producing a Markdown report.
 - **Research impact:** No predictions were generated. C2 remains PASS; C3 is pending a successful paired-manifest rerun.
+
+
+## E0101 — 2026-11-02 — C3 orchestration failure before model execution
+
+- **Run:** [41398510316](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398510316).
+- **Observed:** GitHub CLI source-run discovery lacked GH_TOKEN; workflow stopped before artifact download. No model fit occurred.
+- **Correction:** GH_TOKEN is now supplied. Output staging is guarded against absent files.
+
+## E0102 — 2026-11-02 — C3 holdout leakage found and corrected before accepted result
+
+- **Observed:** Original four-cycle refits crossed into cycles 206–257, which could use earlier holdout labels to train later holdout predictions.
+- **Correction:** Development refits stop at cycle 205. The complete holdout is one prediction block, fitted only on cycles 0–205.
+
+## E0103 — 2026-11-02 — Stale C2 manifest did not match newer random-nonce ciphertext
+
+- **Run:** [41398595959](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398595959).
+- **Observed:** C3 branch held the earlier C2 report while the downloaded artifact carried new ciphertext hashes. The hash gate correctly stopped decryption/model fitting.
+- **Correction:** The current workflow copies C2_PANEL_BUILD.json from the exact same downloaded artifact before resolving files and verifying hashes.
+
+## E0104 — 2026-11-02 — C3 failed-run commit step attempted to stage missing report files
+
+- **Run:** [41398595959](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398595959).
+- **Observed:** The commit step attempted to stage C3_RESULTS.md even though the runner had failed before creating it.
+- **Correction:** Stage outputs only after confirming all required report files exist. The current run is not yet complete.

@@ -531,3 +531,9 @@
 - C3 run 41398510316 failed before modelling during source-run discovery; no C3 performance was produced.
 - Corrected three issues before rerunning: source discovery token/output staging; stale C2 manifest vs random-nonce ciphertext hash mismatch; and holdout leakage from rolling refits across cycles 206–257.
 - Holdout now remains completely untouched: every holdout prediction is fitted on cycles 0–205 only.
+
+
+## 2026-11-02 — C3 current execution
+
+- Run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) passed source-run discovery, C2 artifact download, and encrypted-file preparation. Dependency installation is in progress.
+- The latest runner corrects holdout leakage and binds the report to the exact encrypted C2 artifact; old runs 41398510316/41398595959 are recorded as failures before accepted modelling.

@@ -910,3 +910,11 @@
 - Holdout code review found the rolling refit loop crossed into cycles 206–257. Corrected: four-cycle refits apply only to development cycles 104–205; all holdout cycles are predicted from training cycles 0–205 only.
 - Verified that the C3 branch's C2 report was stale relative to the successful 41357141947 artifact's random-nonce ciphertext hashes. C3 now takes the report from the same artifact as the ciphertext before validating hashes and decrypting.
 - No C3 performance result is accepted until the corrected workflow passes all gates.
+
+
+## 2026-11-02 — C3 current run and corrected gates
+
+- Run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) is the current corrected C3 execution. Source-run discovery, encrypted artifact download, and preparation of the panel files have passed; dependency installation is in progress.
+- The exact C2 manifest from the downloaded artifact is copied into the workspace, so its ciphertext SHA-256 values match the two encrypted files.
+- The model runner now freezes holdout cycles 206–257: the entire holdout is predicted from a model trained only on cycles 0–205. No holdout refits are allowed.
+- Earlier failed runs 41398510316 and 41398595959 did not produce accepted model metrics. C3 is not yet complete.

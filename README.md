@@ -373,3 +373,8 @@ The pinned independent source returned 4/7 valid exact-date EQ OHLCV rows. Remai
 ## C3 gate corrections — 2026-11-02
 
 First C3 orchestration run [41398510316](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398510316) failed before model fitting. C3 now takes the exact sanitized manifest from the downloaded C2 artifact, verifies its paired ciphertext hashes, and decrypts only inside Actions. The workflow has guarded source discovery/output handling. A code-review correction also freezes the final 20% holdout (cycles 206–257): all holdout predictions are fitted exclusively on development cycles 0–205. No C3 model result is yet accepted.
+
+
+## C3 current execution — 2026-11-02
+
+Run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398692117) has passed C2 source discovery, encrypted artifact download and file preparation. Dependency installation is in progress. C3 uses the matching C2 manifest from that artifact and freezes holdout cycles 206–257 from all refitting. No C3 result or trading edge is yet accepted.
