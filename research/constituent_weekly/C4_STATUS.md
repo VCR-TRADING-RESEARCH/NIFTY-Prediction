@@ -5,7 +5,7 @@
 **C2:** Panel run passed with C1 limitations  
 **C3:** Exploratory stock-model run complete; no constituent model selected  
 **C3-X:** Separate exploratory NIFTY meta-model complete but inconclusive  
-**Trading:** NOT VALIDATED
+**Gate workflow:** [41411507365 — SUCCESS](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41411507365) — fail-closed C1-before-C4 check passed.\n**Trading:** NOT VALIDATED
 
 ## Why C4 remains gated
 
