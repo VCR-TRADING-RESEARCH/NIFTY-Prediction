@@ -790,19 +790,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Resolution:** Run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727) refreshed the token successfully via TOTP (HTTP 200, one attempt, approximately -1 second clock skew); profile/data plan passed. No user intervention is needed for authentication at this checkpoint. The remaining split/bonus identity warning is separately recorded as E0118.
 
 
-## E0118 — 2026-11-02 — BAJAJFINSV ISIN effective-date sources conflict (OPEN DATA DISCREPANCY)
+## E0118 — 2026-11-02 — BAJAJFINSV ISIN effective-date sources conflicted (CLOSED WITH ADJUDICATION)
 
-- **Severity:** Medium — price-adjustment factor passes, but point-in-time security identity does not.
-- **Evidence:** Dhan diagnostic run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727) compared 11 sessions around the 13-Sep-2022 split/bonus ex-date. All OHLC relative event factors equal 0.1 (the expected combined 10x adjustment). The raw reference has two ISINs; the old ISIN persists on 2022-09-13 and the new ISIN first appears on 2022-09-14.
-- **Primary source:** NSE Circular CML53597 contains two conflicting statements: line 9 says the change is w.e.f. 14-Sep-2022; line 11 says the new ISIN is effective for trades from the 13-Sep ex-date. Source: https://nsearchives.nseindia.com/content/circulars/CML53597.pdf. A MarketScreener reproduction of BSE Notice 20220908-17 also states 13-Sep, but the original BSE document was not independently retrieved: https://in.marketscreener.com/quote/stock/BSE-LIMITED-33930062/news/New-ISIN-Number-of-Bajaj-Finserv-Limited-Scrip-Code-532978-41723564/.
-- **Interpretation:** The observed 14-Sep transition aligns with the first sentence of the NSE circular but conflicts with its second sentence and the secondary BSE notice reproduction. Do not silently choose one date or overwrite the raw source row. The factor check is accepted as a price-adjustment diagnostic only; the BAJAJFINSV identity gate remains open.
-- **Impact:** No raw prices or ISIN values are published. No event adjustment factor is applied to the full panel. C1 remains PARTIAL / NOT PASSED and C2 remains gated.
-- **Next:** Seek independent permitted confirmation of the 13-Sep row identity or exclude/flag that session in the accepted identity panel. Do not restart NSE bulk archive scraping; the data-rights gate remains in force.
-
-
-## E0119 — 2026-11-03 — C3 AUC must be sourced from original artifact (CLOSED)
-
-- **Issue:** ROC-AUC was not included in the short README C3 summary. An earlier response correctly supplied AUC values but initially cited no underlying machine-readable artifact.
-- **Verification:** Downloaded the original C3 workflow artifact from run 41401986460 and read `C3_RESULTS.json` / `C3_RESULTS.md`. Untouched-holdout ROC-AUC: momentum 0.507727; symbol_frequency 0.519927; logistic 0.485333; extra_trees 0.479234; hist_gradient_boosting 0.488337.
-- **Correction:** Use the artifact values as authoritative. Do not infer AUC from accuracy or substitute the separate C3-X NIFTY meta-model AUC (0.4868).
-- **Status:** CLOSED. The artifact is retained by GitHub Actions until its listed expiry; no raw stock forecasts or secrets were copied into the public repository.
+- **Severity:** Medium — the raw reference row retains the old ISIN on the 2022-09-13 ex-date, while the security used for trades from the ex-date is the new ISIN.
+- **Original diagnostic:** Run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727) compared 11 sessions around the 13-Sep-2022 split/bonus. All OHLC relative event factors equal 0.1 (the expected combined 10x adjustment). The raw TejHQ reference first shows the new ISIN on 14-Sep.
+- **Adjudicating evidence:** NSE CML53597 explicitly says the new ISIN applies to trades on and from the 13-Sep ex-date; NSE Clearing FAOP53644 confirms the 5:1 split, 1:1 bonus, ex-date 13-Sep and combined adjustment factor 10; BSE Notice 20220908-17 reproduction likewise says the new ISIN applies to trades from 13-Sep. Sources: https://nsearchives.nseindia.com/content/circulars/CML53597.pdf ; https://archives.nseindia.com/content/circulars/FAOP53644.pdf ; https://www.marketscreener.com/quote/stock/BSE-LIMITED-33930062/news/New-ISIN-Number-of-Bajaj-Finserv-Limited-Scrip-Code-532978-41723564/
+- **Resolution:** Apply new ISIN INE918I01026 from 2022-09-13 inclusive in the derived point-in-time security mapping. Preserve the TejHQ row unchanged and flag its 13-Sep ISIN as stale source metadata; do not rewrite raw source data. The specific trade-effective clause controls over the preceding general 14-Sep wording.
+- **Implementation/evidence record:** [C1_BAJAJFINSV_ISIN_ADJUDICATION.md](research/constituent_weekly/C1_BAJAJFINSV_ISIN_ADJUDICATION.md).
+- **Status:** CLOSED WITH SOURCE-BASED ADJUDICATION. This closes only this one-day identity-date dispute; it does not close the wider 711-event corporate-action review or C1 overall.
