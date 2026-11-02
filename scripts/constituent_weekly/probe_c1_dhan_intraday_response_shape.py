@@ -160,20 +160,29 @@ def response_shape(
         if isinstance(body["status"], (str, int, float, bool)):
             result["provider_status_value"] = str(body["status"])[:40]
 
+    remarks = body.get("remarks")
+    nested_error = remarks if isinstance(remarks, dict) else {}
     message_fields = [
-        body.get("remarks"),
+        nested_error.get("error_message"),
+        nested_error.get("message"),
         body.get("message"),
         body.get("errorMessage"),
         body.get("error"),
+        remarks if isinstance(remarks, str) else None,
     ]
     message_text = next((x for x in message_fields if isinstance(x, str) and x), None)
-    error_code = body.get("errorCode")
-    error_type = body.get("errorType")
+    error_code = body.get("errorCode") or nested_error.get("error_code") or nested_error.get("errorCode")
+    error_type = body.get("errorType") or nested_error.get("error_type") or nested_error.get("errorType")
+    result["remarks_type"] = type(remarks).__name__ if remarks is not None else "MISSING"
     result["provider_message_category"] = classify_provider_text(message_text)
-    if str(error_code or "").strip().upper() == "DH-905":
-        # Dhan classifies DH-905 as an input/parameter validation exception.
-        # It is not proof that a historical security never had exchange data.
-        result["provider_message_category"] = "DHAN_INPUT_EXCEPTION_DH905"
+    if error_code is not None:
+        result["provider_error_code"] = str(error_code)[:40]
+    if error_type is not None:
+        result["provider_error_type"] = str(error_type)[:60]
+    code = str(error_code or "").strip().upper()
+    if code in {"DH-905", "DH-907"}:
+        # Input/data errors need endpoint and request-shape context; retain no raw message.
+        result["provider_message_category"] = f"DHAN_{code.replace('-', '_')}"
 
     payload = body.get("data") if isinstance(body.get("data"), dict) else body
     result["data_field_type"] = type(body["data"]).__name__ if "data" in body else "TOP_LEVEL_ARRAYS"
