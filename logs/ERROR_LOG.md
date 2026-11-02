@@ -956,3 +956,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Verification:** attempt 2 of run 41401986460 passed all workflow steps, including tests, chronological model execution, report/artifact upload and phase-branch publication.
 - **Research impact:** attempt 1 did not fit models; attempt 2 generated the C3 result. No model result is based on the failed attempt.
 - **Status:** RESOLVED.
+
+
+## E0107 — 2026-11-02 — C6 result summary status field was stale
+
+- **Severity:** Low — machine-readable status did not match the completed audit.
+- **Observed:** C6 status and audit report recorded PASS WITH LIMITATIONS; workflow [41411057657](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41411057657) succeeded, but C6_RESULTS_SUMMARY.json still said AUDIT_PENDING.
+- **Correction:** update the summary to AUDIT_PASS_WITH_LIMITATIONS, record the audit run and audit scope, and add an assertion to the independent audit script so the metadata cannot regress silently.
+- **Research effect:** no metrics, forecasts or conclusions changed. This is a reporting-consistency correction only.

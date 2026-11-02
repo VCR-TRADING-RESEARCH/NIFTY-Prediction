@@ -1,6 +1,6 @@
 {
   "phase": "C6",
-  "status": "AUDIT_PENDING",
+  "status": "AUDIT_PASS_WITH_LIMITATIONS",
   "c2": {
     "run_id": 41398864378,
     "status": "SUCCESS",
@@ -167,5 +167,7 @@
     "c4_confirmatory": "GATED",
     "c5": "BLOCKED_NOT_RUN",
     "trading_strategy": "NOT_VALIDATED"
-  }
+  },
+  "audit_run_id": 41411057657,
+  "audit_scope": "sanitised summary arithmetic, holdout accounting, manuscript and phase-gate checks; not raw-market-data re-performance or human external audit"
 }

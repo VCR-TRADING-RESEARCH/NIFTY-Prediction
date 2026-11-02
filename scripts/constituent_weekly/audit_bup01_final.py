@@ -13,6 +13,7 @@ def close(a: float, b: float, tol: float = 1e-9) -> bool:
 
 def main() -> None:
     d = json.loads((R / "C6_RESULTS_SUMMARY.json").read_text())
+    assert d["status"] == "AUDIT_PASS_WITH_LIMITATIONS"
     c2, c3, x = d["c2"], d["c3"], d["c3x"]
 
     assert c2["status"] == "SUCCESS"

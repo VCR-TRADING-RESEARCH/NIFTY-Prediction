@@ -938,3 +938,9 @@
 - Inference: no tested stock model earned selection or demonstrated an edge over the simple momentum baseline. This is exploratory, not confirmatory, because C1 identity and corporate-action review remains incomplete. Keep C4 confirmatory gated.
 - Existing separate C3-X v1.4 result contains an exploratory NIFTY meta-model on a 51-cycle holdout: 50.98% accuracy, 53.45% balanced accuracy, ROC-AUC 48.68%; meta-minus-lag accuracy difference 1.96 pp with a four-cycle bootstrap 95% interval [−25.49, +25.49] pp. This is underpowered/inconclusive and must remain separate due to its distinct sample and pipeline.
 - C5 cost/P&L gate has no eligible signal strategy to evaluate; no options/futures fills, Paytm Money costs or slippage are certified. C6 manuscript/audit is the next bounded closeout step.
+
+
+## 2026-11-02 — C6 machine-readable status reconciliation
+
+- Final C6 audit run [41411057657](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41411057657) passed arithmetic, phase-gate and manuscript checks. Its Markdown status and report correctly said PASS WITH LIMITATIONS, while the consolidated JSON still carried the pre-audit AUDIT_PENDING marker.
+- Correcting the JSON to AUDIT_PASS_WITH_LIMITATIONS and strengthening the audit script to assert that state. No research metrics or claims are changed; a follow-up Actions run will verify the repository state.
