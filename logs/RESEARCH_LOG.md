@@ -802,3 +802,14 @@
 - Added three offline regression tests and integrated the probe into the C1 corporate-action workflow's push-path and manual-dispatch paths.
 - **Runtime execution:** Actions run [41422655123](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422655123) started automatically on the matching branch push. Offline validation and cache restore passed; the catalogue step was still running at this log update. Static review caught and corrected a case-sensitive URL-path bug before trusting the source result; see E0109 in ERROR_LOG.md. The first run checked out the pre-fix revision and is not accepted as source evidence. The corrected script/test commits trigger a fresh run.
 - C1 remains PARTIAL / NOT PASSED; C2 remains gated; no holdout tuning or strategy test was started.
+
+
+## 2026-11-02 — Official NSE PR archive fixed-date probe PASS
+
+- Corrected probe-only Actions run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062) passed the offline tests, restored the encrypted archive cache, ran the probe, uploaded the sanitised artifact and published the reports to the C1 branch.
+- **4/4** selected trading dates passed: 2018-04-02, 2024-04-16, 2025-10-14 and 2026-04-17. The previously selected 17-Apr-2024 was an official market holiday (NSE CMTR/59722) and was correctly replaced by 16-Apr-2024.
+- Empirically confirmed website archive URL pattern: `https://nsearchives.nseindia.com/archives/equities/bhavcopy/pr/PRDDMMYY.zip`.
+- Each archive contained a corporate-action CSV, announcement text and board-meeting text. The corporate-action CSV schema was consistent across all four dates (10 columns: SERIES, SYMBOL, SECURITY, RECORD_DT, BC_STRT_DT, BC_END_DT, EX_DT, ND_STRT_DT, ND_END_DT, PURPOSE).
+- The final retest reused 4/4 encrypted archive cache entries. Raw bytes remain AES-GCM encrypted in Actions cache; public artifacts contain only metadata, hashes and headers.
+- Corrected publisher now preserves generated reports across branch synchronisation; read-back verified the new 4/4 report and machine result.
+- This is a bounded source/schema feasibility pass only—not proof of complete historical coverage or licence for bulk extraction. No candidate events were matched/adjudicated, no price factors calculated, and C1 remains PARTIAL / NOT PASSED; C2 remains gated.
