@@ -1,5 +1,21 @@
 # NIFTY Weekly Expiry Direction Research
 
+## Latest BUP-01 research status — 2026-11-02
+
+**Overall:** C1 PARTIAL; C2 panel PASS WITH C1 LIMITATIONS; C3 stock model EXPLORATORY COMPLETE / NO EDGE; C3-X NIFTY aggregation EXPLORATORY / INCONCLUSIVE; C4 confirmatory GATED; C5 BLOCKED; C6 manuscript and summary audit in progress.
+
+- **C2:** [run 41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378) passed all 15 steps and formal acceptance: 258/258 valid index targets; 12,807 constituent-cycle rows; 61 symbols; zero duplicate cycle keys.
+- **C3:** [run 41401986460, attempt 2](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41401986460) passed all workflow steps. 7,512 OOF stock forecasts over 154 cycles; final holdout 52 cycles/2,583 observations. Holdout accuracy: momentum 50.52%, logistic 48.12%, ExtraTrees 48.51%, HistGradientBoosting 46.69%. No model selected; logistic-minus-momentum cycle accuracy −2.37 pp (four-cycle bootstrap 95% CI −10.04 to +4.29 pp).
+- **C3-X:** separate plan-v1.4 exploratory NIFTY meta-model: 51 holdout cycles; accuracy 50.98%, balanced accuracy 53.45%, ROC-AUC 48.68%; meta-minus-lag accuracy difference +1.96 pp (four-cycle bootstrap 95% CI −25.49 to +25.49 pp). Inconclusive; not pooled with C3.
+- **C1:** unresolved dated identity and corporate-action review remains open (including 711 point-in-time member-event candidates). User-authorised progression is not a C1 pass.
+- **C4/C5:** confirmatory aggregation is gated; economic testing was not run because no robust predictive edge or instrument specification exists. No trading strategy is validated.
+- **C6:** [manuscript](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c6-audit/research/constituent_weekly/MANUSCRIPT.md) · [C6 status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c6-audit/research/constituent_weekly/C6_STATUS.md) · [C5 gate](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c5-costs/research/constituent_weekly/C5_COST_GATE.md).
+- Phase records: [C1 gate](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_DEVELOPER_GATE_REPORT.md) · [C2 panel](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c2-panel/research/constituent_weekly/C2_PANEL_BUILD.md) · [C3 results](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-models/research/constituent_weekly/C3_RESULTS.md) · [C3-X results](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-exploratory/research/constituent_weekly/EXPLORATORY_REPORT.md).
+
+**Decision:** no bottom-up stock classifier or NIFTY direction meta-model is accepted for live prediction; no strategy or profitability claim. The older automated research status below belongs to the separate direct-index track and is not evidence for BUP-01.
+
+---
+
 ## Current research status (BUP-01 — plan v1.3)
 
 **As of 2026-11-01:** C0 PASS; C1 PARTIAL / CONTINUOUS-COVERAGE GATE IN PROGRESS. The user directed that no ETF holdings versus official NIFTY index-weight comparison is needed. The active method does not require official IWF, ETF portfolio holdings or reconstructed weight data. It forecasts point-in-time constituent stocks and uses strictly out-of-fold stock probabilities/returns, unweighted predicted breadth, cross-sectional dispersion, sector breadth and member coverage to predict the **observed NIFTY 50 index direction**. Equal-weight constituent-basket measures are diagnostics only, not the actual NIFTY return.
