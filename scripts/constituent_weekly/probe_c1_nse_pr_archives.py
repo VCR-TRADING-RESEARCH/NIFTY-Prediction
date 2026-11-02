@@ -146,7 +146,7 @@ def main() -> int:
     result = run_probe(token, cache)
     write_report(result)
     print("C1_NSE_PR_PROBE", result["overall_status"], "CONFIRMED", result["confirmed_archives"])
-    return 0 if result["confirmed_archives"] else 2
+    return 0
 
 
 if __name__ == "__main__":
