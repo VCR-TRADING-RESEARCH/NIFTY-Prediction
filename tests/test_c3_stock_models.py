@@ -1,5 +1,6 @@
+import gzip
 import numpy as np, pandas as pd
-from scripts.constituent_weekly.run_c3_stock_models import weights, score, symbol_frequency, boot_ci
+from scripts.constituent_weekly.run_c3_stock_models import weights, score, symbol_frequency, boot_ci, encrypt, read_decrypted_csv
 
 def test_cycle_weights_equalize_cycle_totals():
     ids=pd.Series([1,1,2,2,2,3]); w=weights(ids); sums=pd.Series(w).groupby(ids).sum()
@@ -15,3 +16,12 @@ def test_symbol_frequency_only_uses_prior_training():
 
 def test_block_bootstrap_contract():
     x=boot_ci(np.linspace(-.2,.2,24)); assert x['replicates']==2000 and x['block_cycles']==4 and len(x['ci95'])==2
+
+
+def test_encrypted_csv_round_trip_uses_file_like_buffer(tmp_path):
+    token='unit-test-hf-token'; aad=b'unit-test-aad'
+    frame=pd.DataFrame({'cycle_idx':[1,2], 'symbol':['A','B'], 'stock_label':[1,0]})
+    raw=gzip.compress(frame.to_csv(index=False).encode())
+    path=tmp_path/'panel.aesgcm'; path.write_bytes(encrypt(raw,token,aad))
+    loaded=read_decrypted_csv(path,token,aad)
+    pd.testing.assert_frame_equal(loaded,frame)

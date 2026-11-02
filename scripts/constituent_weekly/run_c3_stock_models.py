@@ -1,5 +1,5 @@
 from __future__ import annotations
-import gzip, hashlib, json, os, traceback
+import gzip, hashlib, io, json, os, traceback
 from datetime import datetime, timezone
 from pathlib import Path
 import numpy as np, pandas as pd
@@ -24,13 +24,15 @@ def decrypt(path,token,aad):
     return AESGCM(key(token)).decrypt(b[:12],b[12:],aad)
 def encrypt(data,token,aad):
     n=os.urandom(12); return n+AESGCM(key(token)).encrypt(n,data,aad)
+def read_decrypted_csv(path,token,aad):
+    return pd.read_csv(io.BytesIO(gzip.decompress(decrypt(path,token,aad))))
 def load_panels():
     m=json.loads(MANIFEST.read_text()); assert m['status']=='COMPLETED' and m['methodology_version']=='bup01-c2-panel-v1'
     digest=m['input_manifest']['hash']; token=os.environ['HF_TOKEN']; frames=[]
     for name in ('stock','index'):
         meta=m['encrypted_panel_cache'][name]; path=PANEL_DIR/Path(meta['cache_relative_path']).name; raw=path.read_bytes()
         if len(raw)!=meta['ciphertext_bytes'] or hashlib.sha256(raw).hexdigest()!=meta['ciphertext_sha256']: raise ValueError(name+' ciphertext checksum mismatch')
-        aad=f"bup01-c2-panel-v1|frozen_panel|{digest}|{name}".encode(); frames.append(pd.read_csv(gzip.decompress(decrypt(path,token,aad))))
+        aad=f"bup01-c2-panel-v1|frozen_panel|{digest}|{name}".encode(); frames.append(read_decrypted_csv(path,token,aad))
     return frames[0],frames[1],m
 def weights(ids):
     c=ids.value_counts(); w=ids.map(lambda x:1/c.loc[x]).to_numpy(float); return w/w.mean()
