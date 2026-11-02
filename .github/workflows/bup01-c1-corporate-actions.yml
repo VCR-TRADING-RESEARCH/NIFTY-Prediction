@@ -12,7 +12,6 @@ on:
       - "scripts/constituent_weekly/security_identity.py"
       - "scripts/constituent_weekly/probe_c1_nse_pr_archives.py"
       - "tests/test_c1_nse_pr_archive_probe.py"
-      - ".github/workflows/bup01-c1-corporate-actions.yml"
   workflow_dispatch:
 
 permissions:
@@ -34,6 +33,196 @@ jobs:
         with:
           ref: phase/constituent-weekly-outcomes-c1-data
           fetch-depth: 0
+      - name: Determine changed C1 workstream
+        id: scope
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "catalogue=true" >> "$GITHUB_OUTPUT"
+            echo "probe=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" > /tmp/c1-changed-files.txt
+          if grep -Eq '^(scripts/constituent_weekly/audit_c1_corporate_actions.py|tests/test_c1_corporate_actions.py|data/constituent_weekly/nifty50_membership_intervals.csv|data/constituent_weekly/security_alias_history.csv|scripts/constituent_weekly/security_identity.py)        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install project and source dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r live_api/requirements.txt pytest cryptography huggingface_hub pyarrow
+      - name: Validate corporate-action audit offline
+        run: python -m pytest -q tests/test_c1_corporate_actions.py tests/test_c1_security_alias_history.py tests/test_c1_nse_pr_archive_probe.py
+      - name: Restore encrypted TejHQ personal-use cache
+        if: steps.scope.outputs.catalogue == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
+          restore-keys: |
+            bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-
+      - name: Restore encrypted official NSE PR archive probe cache
+        if: steps.scope.outputs.probe == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/nse-pr-encrypted
+          key: c1-nse-pr-encrypted-${{ runner.os }}-v1-${{ github.run_id }}
+          restore-keys: |
+            c1-nse-pr-encrypted-${{ runner.os }}-v1-
+      - name: Run pinned personal-use corporate-action catalogue
+        if: steps.scope.outputs.catalogue == 'true'
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TEJHQ_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/bup01-tejhq-encrypted
+          TEJHQ_PERSONAL_USE_ONLY: "1"
+        run: python scripts/constituent_weekly/audit_c1_corporate_actions.py
+      - name: Save encrypted TejHQ personal-use cache
+        if: always() && steps.scope.outputs.catalogue == 'true'
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
+      - name: Run bounded official NSE PR archive probe
+        if: steps.scope.outputs.probe == 'true'
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          NSE_PR_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/nse-pr-encrypted
+        run: python scripts/constituent_weekly/probe_c1_nse_pr_archives.py
+      - name: Save encrypted official NSE PR archive cache
+        if: always() && steps.scope.outputs.probe == 'true'
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/nse-pr-encrypted
+          key: c1-nse-pr-encrypted-${{ runner.os }}-v1-${{ github.run_id }}
+      - name: Upload sanitised corporate-action report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c1-corporate-action-catalogue-${{ github.run_id }}
+          path: |
+            research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT.json
+            research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT_REPORT.md
+            research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.json
+            research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.md
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Publish sanitised report to C1 branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            git fetch origin phase/constituent-weekly-outcomes-c1-data
+            git reset --hard origin/phase/constituent-weekly-outcomes-c1-data
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -f research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT.json
+            git add -f research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT_REPORT.md
+            git add -f research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.json
+            git add -f research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.md
+            if git diff --cached --quiet; then
+              echo "No new corporate-action audit output."
+              exit 0
+            fi
+            git commit -m "Record C1 corporate-action candidate catalogue"
+            if git push origin HEAD:phase/constituent-weekly-outcomes-c1-data; then
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
+ /tmp/c1-changed-files.txt; then
+            echo "catalogue=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "catalogue=false" >> "$GITHUB_OUTPUT"
+          fi
+          if grep -Eq '^(scripts/constituent_weekly/probe_c1_nse_pr_archives.py|tests/test_c1_nse_pr_archive_probe.py)        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install project and source dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r live_api/requirements.txt pytest cryptography huggingface_hub pyarrow
+      - name: Validate corporate-action audit offline
+        run: python -m pytest -q tests/test_c1_corporate_actions.py tests/test_c1_security_alias_history.py tests/test_c1_nse_pr_archive_probe.py
+      - name: Restore encrypted TejHQ personal-use cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
+          restore-keys: |
+            bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-
+      - name: Restore encrypted official NSE PR archive probe cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/nse-pr-encrypted
+          key: c1-nse-pr-encrypted-${{ runner.os }}-v1-${{ github.run_id }}
+          restore-keys: |
+            c1-nse-pr-encrypted-${{ runner.os }}-v1-
+      - name: Run pinned personal-use corporate-action catalogue
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TEJHQ_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/bup01-tejhq-encrypted
+          TEJHQ_PERSONAL_USE_ONLY: "1"
+        run: python scripts/constituent_weekly/audit_c1_corporate_actions.py
+      - name: Save encrypted TejHQ personal-use cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
+      - name: Run bounded official NSE PR archive probe
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          NSE_PR_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/nse-pr-encrypted
+        run: python scripts/constituent_weekly/probe_c1_nse_pr_archives.py
+      - name: Save encrypted official NSE PR archive cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/nse-pr-encrypted
+          key: c1-nse-pr-encrypted-${{ runner.os }}-v1-${{ github.run_id }}
+      - name: Upload sanitised corporate-action report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c1-corporate-action-catalogue-${{ github.run_id }}
+          path: |
+            research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT.json
+            research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT_REPORT.md
+            research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.json
+            research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.md
+          if-no-files-found: error
+          retention-days: 90
+      - name: Publish sanitised report to C1 branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            git fetch origin phase/constituent-weekly-outcomes-c1-data
+            git reset --hard origin/phase/constituent-weekly-outcomes-c1-data
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -f research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT.json
+            git add -f research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT_REPORT.md
+            git add -f research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.json
+            git add -f research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.md
+            if git diff --cached --quiet; then
+              echo "No new corporate-action audit output."
+              exit 0
+            fi
+            git commit -m "Record C1 corporate-action candidate catalogue"
+            if git push origin HEAD:phase/constituent-weekly-outcomes-c1-data; then
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
+ /tmp/c1-changed-files.txt; then
+            echo "probe=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "probe=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
