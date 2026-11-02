@@ -187,6 +187,8 @@ The earlier plan-v1.4 C3-X run created cycle-level summaries from strictly out-o
 
 ### 5.1 C3 stock direction: untouched holdout
 
+![C3 stock-model holdout accuracy](C3_HOLDOUT_ACCURACY.svg)
+
 | Model | Observations | Accuracy | Balanced accuracy | MCC | ROC-AUC | Brier | Log loss |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Momentum | 2,583 | 0.5052 | 0.5077 | 0.0153 | 0.5077 | 0.2520 | 0.6971 |
@@ -219,6 +221,8 @@ with a four-cycle moving-block bootstrap 95% interval:
 The point estimate favours momentum over logistic regression; the interval crosses zero. The evidence is therefore inconclusive about the size of the difference, but it does not support selecting logistic regression. ExtraTrees and HistGradientBoosting also failed to improve on the momentum baseline.
 
 ### 5.2 C3-X NIFTY direction: separate exploratory holdout
+
+![C3-X NIFTY holdout metrics](C3X_NIFTY_HOLDOUT_METRICS.svg)
 
 | Model | Cycles | Accuracy | Balanced accuracy | MCC | ROC-AUC | Brier |
 |---|---:|---:|---:|---:|---:|---:|
