@@ -792,3 +792,13 @@
 - Identified the daily PR/legacy archive corporate-action member as a plausible official mother-source cross-check for the 711 point-in-time member-event candidates; announcement and board-meeting files may provide additional event context.
 - Recorded a bounded archive/schema probe and event-matching protocol in C1_OFFICIAL_CORPORATE_ACTION_SOURCE_FEASIBILITY.md.
 - This was source discovery only: no raw source downloaded, no event adjudicated, no price factor applied. C1 remains PARTIAL / NOT PASSED; C2 remains gated.
+
+
+## 2026-11-02 — Official NSE PR archive probe implementation
+
+- Implemented a bounded fixed-date archive probe covering 2018-04-02, 2024-04-17, 2025-10-14 and 2026-04-17 to test both sides of NSE Circular NSE/CMTR/70563's 13-Oct-2025 naming transition.
+- Added URL candidate handling for the legacy `nuprDDMMYY.zip` and current `PRDDMMYY.zip` names, ZIP validation, corporate-action member detection, CSV-header-only schema inspection, and announcement/board-meeting member checks.
+- Raw archives are AES-GCM encrypted in the Actions cache; public report outputs contain hashes and schema metadata only.
+- Added three offline regression tests and integrated the probe into the C1 corporate-action workflow's push-path and manual-dispatch paths.
+- **No runtime result is claimed yet.** The workflow is expected to run from the matching branch push; its outcome must be inspected before deciding whether to continue to event-level matching.
+- C1 remains PARTIAL / NOT PASSED; C2 remains gated; no holdout tuning or strategy test was started.
