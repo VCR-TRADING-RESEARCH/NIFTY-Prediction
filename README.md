@@ -1,5 +1,13 @@
 # NIFTY Weekly Expiry Direction Research
 
+## Current BUP-01 correction — 2026-11-03
+
+**Important research-status correction (E0135):** The point-in-time expiry parser had excluded two exchange-verified, contract-present holiday-shifted weekly expiries: 2021-11-03 and 2025-10-20. Reconstructing the registered 2021-11-01 to 2026-10-30 sample with both yields **260 weekly cycles rather than 258**. This restores the 2021-11-08 to 2021-11-11 cycle and splits the October 2025 window into 2025-10-15 to 2025-10-20 and 2025-10-23 to 2025-10-28.
+
+The previous 258-cycle C2 panel, 37-event cycle-exclusion sensitivity and dependent C3 model metrics are **superseded and quarantined** until corrected workflows complete. C1/C2 parsing and regression tests have been updated. The first corrected C2 run (Actions [41529637670](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41529637670)) did not reach calendar or market-data acquisition because Dhan profile/data-plan authentication failed; offline tests passed. C1's extended Dhan coverage audit remains in progress. C3 now derives its final-20% holdout boundary from the actual panel size (cycle 208 for 260 cycles).
+
+Current phase records: [C1 status and E0135](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md) · [C2 status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c2-panel/research/constituent_weekly/STATUS.md) · [C3 status](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c3-models/research/constituent_weekly/C3_STATUS.md).
+
 ## Data rights and next source route
 
 Live research page: https://vcr-trading-research.github.io/NIFTY-Prediction/research/constituent_weekly/

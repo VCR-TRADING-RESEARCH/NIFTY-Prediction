@@ -15,13 +15,15 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <p><a href="../../index.html">← Research home</a> · <a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction">Main repository</a></p>
 <h1>BUP-01 C1 — Constituent Corporate-Action Research</h1>
 <p><strong>Last updated:</strong> 2026-11-03</p>
-<p class="status">C1: PARTIAL / NOT PASSED · C2: PANEL PASS WITH C1 LIMITATIONS · C3: EXPLORATORY COMPLETE / NO EDGE · C4–C5: GATED</p>
+<p class="status">C1: PARTIAL / EXPIRY-CALENDAR REBUILD IN VALIDATION · C2: QUARANTINED / REBUILD REQUIRED · C3: OLD METRICS SUPERSEDED · C4–C5: GATED</p>
+<p class="note"><strong>E0135 — important correction:</strong> the previous 258-cycle sample omitted two verified, contract-present holiday-shifted weekly expiries (2021-11-03 and 2025-10-20). The corrected registered calendar contains 260 cycles. The 258-cycle C2 panel, prior 37-event cycle-exclusion sensitivity and C3 metrics are superseded until corrected rebuilds pass. C1/C2 offline regression tests pass; the first corrected C2 attempt stopped before data acquisition because Dhan profile/data-plan authorization failed. C1 coverage refresh is running.</p>
 <p class="note">This page publishes sanitised research metadata and diagnostic summaries only. Raw market prices, raw corporate-action rows, ISIN values, API tokens and credentials are not published.</p>
 
 <h2>Current findings</h2>
 <table>
 <thead><tr><th>Work item</th><th>Result</th><th>Interpretation</th></tr></thead>
 <tbody>
+<tr><td>Verified weekly expiry calendar (E0135)</td><td>260 cycles expected; rebuild pending</td><td>Two contract-present holiday-shifted expiries were previously omitted. The old 258-cycle panel and dependent model results are superseded; corrected C1/C2 parsers and calendar regression tests are committed.</td></tr>
 <tr><td>Daily member-session OHLCV coverage</td><td>106,392 / 106,392 (100%)</td><td>Coverage complete, but corporate-action identity and adjustment gates remain open.</td></tr>
 <tr><td>Official NSE PR archive route/schema probe</td><td>4 / 4 dates passed</td><td>Corporate-action CSV, announcements and board-meeting members were present before and after the Oct-2025 naming transition. This is technical feasibility only.</td></tr>
 <tr><td>Reliance 1:1 bonus adjustment</td><td>0.5 relative OHLC factor</td><td>9/9 sessions matched; Dhan adjusted history passed this diagnostic.</td></tr>
@@ -30,7 +32,7 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <tr><td>37 complex issuer-event candidates</td><td>37 / 37 classified and source-reviewed</td><td>17 equity bonuses, 2 bonus-labelled NCD distributions reclassified as non-equity, 9 splits, 6 rights and 3 merger/demerger events. No TERP or manual adjustment factors applied.</td></tr>
 <tr><td>49 buyback / AGM-other candidates</td><td>49 / 49 reconciled; zero ambiguous member joins</td><td>21 buybacks, 3 dividends reclassified from “other”, and 25 AGM/governance items. All 21 buybacks have primary offer/record-date sources; 25 AGM items remain excluded from features pending proof of publication before 10:00 IST.</td></tr>
 <tr><td>Full 711-candidate taxonomy</td><td>711 / 711 classified at aggregate event-class level</td><td>17 equity bonuses, 2 NCD distributions, 9 splits, 6 rights, 3 merger/demerger, 21 buybacks, 628 dividends and 25 AGM/governance. Historical identity, price continuity and affected-cycle exclusions remain open.</td></tr>
-<tr><td>C2 panel / C3 exploratory stock tests</td><td>C2 PASS WITH C1 LIMITATIONS; C3 exploratory complete</td><td>12,807 stock-cycle rows; 7,512 OOF forecasts. No stock classifier beat the five-session momentum accuracy baseline on the untouched holdout. C4 confirmatory remains gated.</td></tr>
+<tr><td>C2 panel / C3 stock tests</td><td>SUPERSEDED — corrected rebuild required</td><td>The previous 258-cycle C2 panel and 7,512-row C3 forecast experiment used an incomplete expiry calendar. Do not use its accuracy/AUC metrics as current evidence. C3 will rerun automatically after a valid corrected C2 panel, with the final-20% holdout boundary derived from the actual cycle count.</td></tr>
 </tbody>
 </table>
 
@@ -55,6 +57,7 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 
 <h2>Open gates</h2>
 <ul>
+<li><strong>E0135:</strong> complete the corrected 260-cycle Dhan coverage refresh and C2 panel rebuild. The first C2 attempt failed its Dhan profile/data-plan authorization check before acquisition; offline tests passed. See <a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41529637670">run 41529637670</a>, the <a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/ERROR_LOG.md">C1 error log</a> and the <a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c2-panel/research/constituent_weekly/STATUS.md">C2 status</a>.</li>
 <li>BAJAJFINSV 2022-09-13 trade-effective ISIN date adjudicated using NSE Clearing, NSE listing and BSE notice evidence; raw TejHQ identifier retained and flagged as stale.</li>
 <li>The 37 complex and 49 secondary candidates have been classified and source-reviewed. All 25 AGM/governance notices remain excluded from predictive features until actual publication timestamps are verified before the 10:00 IST cutoff. The 21 buyback cases still need announcement, acceptance/completion and affected-cycle joins before they can become point-in-time features.</li>
 <li>All 628 dividends retain NIFTY price-index semantics; do not mechanically reinvest them or substitute a total-return target. Join announcement availability and assess any price-bar QA only where the frozen methodology requires it.</li>
