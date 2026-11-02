@@ -460,3 +460,10 @@
 - Bajaj Finserv has a one-session ISIN timing mismatch: the TejHQ raw row on 13-Sep-2022 still carries the old ISIN, while the official NSE circular says the new ISIN is effective from that ex-date; the new ISIN first appears in the source rows on 14-Sep. Logged as E0118, left unresolved.
 - Dhan report and machine result published. No raw prices or ISINs disclosed; no full-panel adjustment factors applied.
 - The NSE bulk archive route remains permission-gated. C1 corporate-action gate remains NOT PASSED; C1 overall PARTIAL; C2 remains gated. No hidden reasoning or credentials are recorded.
+
+## GitHub Pages publication — 2026-11-02
+
+- Sanitised C1 status, source-feasibility reports, data-rights notes and machine-readable NSE/Dhan diagnostics were copied to `docs/research/constituent_weekly/` on main.
+- Pages deployment [41426944349](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426944349) completed successfully.
+- Live C1 research page: https://vcr-trading-research.github.io/NIFTY-Prediction/research/constituent_weekly/
+- The page publishes only metadata, ratios, hashes, status and source links; no raw prices, event rows, ISIN values, tokens or credentials.
