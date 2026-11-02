@@ -709,3 +709,13 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Added offline unit tests and wired the probe into the C1 corporate-action workflow, including push-path and manual dispatch support.
 - **Execution result:** The first successful runtime probe [41422881110](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422881110) retrieved 3/4 archives and confirmed the corporate-action CSV schema on both sides of the 13-Oct-2025 naming transition. The missing 17-Apr-2024 date was an official NSE holiday, not a source gap (E0112). The updated probe-only run [41423379012](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423379012) completed with 4/4 archives confirmed (including 16-Apr-2024), and offline tests passed. However, branch read-back exposed a publisher bug that reset away generated reports after execution (E0113). The publisher now preserves report files across the reset; retest [163565d](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/163565db3f439e78aeb8d72aeaba52c4ca32e01f) is pending. No event verification or adjustment factor is claimed.
 - C1 corporate-action gate remains NOT PASSED; C1 overall remains PARTIAL; C2 remains gated. No modelling or holdout tuning was reopened.
+
+
+## Official NSE PR archive fixed-date probe — 2026-11-02 (PASS)
+
+- Corrected probe-only Actions run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062) passed offline regression tests and completed the archive probe.
+- **4/4** fixed trading dates retrieved and schema-confirmed: 2018-04-02, 2024-04-16, 2025-10-14 and 2026-04-17. This spans both sides of the 13-Oct-2025 nomenclature transition.
+- Confirmed website archive route: `https://nsearchives.nseindia.com/archives/equities/bhavcopy/pr/PRDDMMYY.zip`. All four archives contained the corporate-action CSV, announcements and board-meeting members.
+- Corporate-action CSV header was consistent across the four dates: SERIES, SYMBOL, SECURITY, RECORD_DT, BC_STRT_DT, BC_END_DT, EX_DT, ND_STRT_DT, ND_END_DT, PURPOSE.
+- Final rerun reused all four encrypted archives from Actions cache (4/4 cache hits); no raw archive/event rows were published. Sanitised report is now committed and verified: [probe report](C1_NSE_PR_ARCHIVE_PROBE.md), [machine result](C1_NSE_PR_ARCHIVE_PROBE.json).
+- This passes only the **fixed-date source/schema feasibility probe**. It does not establish full daily archive coverage, bulk-use rights, event-level matching, issuer verification or adjusted-return integrity. Corporate-action gate remains NOT PASSED; C1 remains PARTIAL; C2 stays gated.
