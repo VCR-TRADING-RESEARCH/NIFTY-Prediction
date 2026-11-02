@@ -216,3 +216,19 @@ def test_dhan_profile_fallback_is_not_used_for_non_totp_auth():
     assert profile.status_code == 401
     assert method == "provided_token_fallback"
     assert fallback == "NOT_NEEDED"
+
+
+
+def test_c2_parse_target_bars_preserves_only_sanitized_provider_error_fields():
+    from scripts.constituent_weekly.run_c2_panel_and_models import parse_target_bars
+
+    body = {
+        "errorCode": "DH-905",
+        "errorType": "Input_Exception",
+        "errorMessage": "private Dhan error detail",
+    }
+    result = parse_target_bars(body, {"2023-05-11"}, set(), require_volume=False)
+    assert result["2023-05-11"]["provider_error_code"] == "DH-905"
+    assert result["2023-05-11"]["provider_error_type"] == "Input_Exception"
+    assert result["2023-05-11"]["provider_message_category"] == "DHAN_INPUT_EXCEPTION_DH905"
+    assert "private Dhan error detail" not in str(result)

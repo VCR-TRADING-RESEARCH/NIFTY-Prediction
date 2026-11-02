@@ -970,3 +970,11 @@
 - C2 run [41530483274](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41530483274) passed compile and offline regression tests, authenticated via TOTP, retrieved the data profile successfully and completed 260-cycle panel construction. It saved encrypted cache and uploaded sanitized diagnostics.
 - The formal gate failed: 206/260 index target cycles (79.2308%) versus the required 98%. 206 cycles met the stock 47/94% rule; 10,194 stock target rows were created; all 62 symbols had sufficient daily EOD history. Missing intraday targets were 54 index cycles and 26 constituent-cycle observations. No C3 models were trained.
 - C1 and C2 intraday jobs overlapped; rate contention is plausible given Dhan's documented 5 requests/second Data API limit, but the error response codes were not captured, so causality is unproven. The next rebuild must serialize Dhan workflows, preserve sanitized error categories and retain the acceptance threshold.
+
+
+## 2026-11-03 — E0140 C2 request control and diagnostics
+- C2 now imports C1's whitelisted provider error classifier so failed intraday target observations preserve only Dhan error code, canonical error type and sanitised category. Raw provider text remains excluded.
+- Added sanitized error-code counts to failed C2 panel diagnostics and an offline regression test that rejects raw error text.
+- Reduced C2 inter-request pacing to one second and included the NIFTY index calls. C1 and C2 workflows share one live Dhan concurrency group; requests queue instead of overlapping.
+- Exact-window diagnostic [41534685957](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534685957) passed 7/7 previously failing index/active-stock requests. Root cause of the earlier HTTP 400s remains unproven.
+- C2 build [41530483274](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41530483274) failed at 79.23% index coverage. This change triggers a serialized rebuild; C3 remains gated until C2 passes formal acceptance.

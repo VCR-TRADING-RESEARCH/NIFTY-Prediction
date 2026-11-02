@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: bup01-c2-models-${{ github.ref_name }}
+  group: bup01-dhan-intraday-${{ github.repository }}-${{ github.event_name == 'pull_request' && github.workflow || 'live' }}
   cancel-in-progress: false
 
 jobs:

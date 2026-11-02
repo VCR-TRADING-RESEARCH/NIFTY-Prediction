@@ -33,7 +33,7 @@ from scripts.constituent_weekly.dhan_equity_preflight import (
 )
 from scripts.constituent_weekly.audit_c1_continuous_dhan_coverage import (
     CHUNK_DAYS, SPECIAL_EVENING_ONLY_SESSIONS, build_expiry_cycles, chunk_key, make_chunks,
-    request_intraday_window, verified_expiry_dates,
+    request_intraday_window, sanitized_provider_error_fields, verified_expiry_dates,
 )
 from scripts.constituent_weekly.audit_c1_daily_history import (
     decrypt_tejhq_cache_bytes, encrypt_tejhq_cache_bytes, parse_daily_payload,
@@ -89,7 +89,7 @@ MIN_HISTORY = 104
 MIN_META_HISTORY = 26
 MIN_MEMBERS = 47
 MIN_FRACTION = 0.94
-REQUEST_DELAY = 0.30
+REQUEST_DELAY = 1.0
 FEATURES = [
     "ret_1d", "ret_5d", "ret_10d", "ret_20d", "ret_60d",
     "vol_5d", "vol_20d", "vol_60d", "range_10d", "range_20d",
@@ -196,6 +196,21 @@ def panel_failure_diagnostics(local_state: dict) -> dict:
             "expiry_required": int(len(expiries)),
             "expiry_valid": int(sum(bool(index_snap.get(day, {}).get("expiry_ok")) for day in expiries)),
         }
+    provider_errors: dict[str, int] = defaultdict(int)
+    snapshots = [index_snap] if isinstance(index_snap, dict) else []
+    if isinstance(stock_snap, dict):
+        snapshots.extend(snap for snap in stock_snap.values() if isinstance(snap, dict))
+    for snapshot in snapshots:
+        for value in snapshot.values():
+            if not isinstance(value, dict):
+                continue
+            error_code = value.get("provider_error_code")
+            error_category = value.get("provider_message_category")
+            if error_code or error_category:
+                key = f"{error_code or 'NO_CODE'}|{error_category or 'NO_CATEGORY'}"
+                provider_errors[key] += 1
+    if provider_errors:
+        diagnostics["sanitized_provider_error_counts"] = dict(sorted(provider_errors.items()))
     return diagnostics
 
 
@@ -266,7 +281,16 @@ def parse_target_bars(body: object, anchor_dates: set[str], expiry_dates: set[st
     requested = anchor_dates | expiry_dates
     arrays = arrays_from_body(body, require_volume)
     if arrays is None:
-        return {d: {"anchor_ok": False, "expiry_ok": False, "status": "INVALID_OR_EMPTY_RESPONSE"} for d in requested}
+        error_fields = sanitized_provider_error_fields(body)
+        return {
+            d: {
+                "anchor_ok": False,
+                "expiry_ok": False,
+                "status": "INVALID_OR_EMPTY_RESPONSE",
+                **error_fields,
+            }
+            for d in requested
+        }
     frame = pd.DataFrame({
         "timestamp": pd.to_datetime(arrays["timestamp"], unit="s", utc=True, errors="coerce"),
         "open": pd.to_numeric(arrays["open"], errors="coerce"),
@@ -700,6 +724,8 @@ def main() -> int:
                 index_snap.update(saved)
                 intraday_hits += int(hit)
                 intraday_requests += attempts
+                if attempts:
+                    time.sleep(REQUEST_DELAY)
             for symbol, req in sorted(targets.items()):
                 sa = {d for d in req["anchor"] if date_chunk[d] == chunk_key(ch)}
                 se = {d for d in req["expiry"] if date_chunk[d] == chunk_key(ch)}

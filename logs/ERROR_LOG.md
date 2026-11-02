@@ -910,3 +910,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Next action:** Serialize all Dhan-heavy C1/C2 workflows, use a conservative shared request pace, preserve sanitized provider error codes, then rerun once. Do not lower the 98% acceptance threshold or silently impute missing index targets.
 - **Status:** Open. C2 remains failed pending a clean, serialized rebuild.
 - **Security:** No secrets, raw market prices, tokens or security IDs logged.
+
+
+## E0140 — 2026-11-03 — Shared Dhan request pacing and sanitized errors
+- **Evidence:** C1 exact-window diagnostic [41534685957](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534685957) passed 7/7 previously failing historical intraday requests. C2 run [41530483274](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41530483274) had 206/260 index targets and failed the registered 98% panel gate.
+- **Correction:** The C2 panel runner uses C1's sanitized provider error classifier. Failed target observations preserve only whitelisted code/type/category metadata, and C2 failure reports count sanitized provider errors. Request pacing is one second, including NIFTY index requests. C1/C2 workflows share one live Dhan concurrency group to prevent overlapping acquisitions.
+- **Retry policy:** Only explicit DH-904 rate-limit codes receive bounded backoff; DH-905 input errors, DH-907 data errors and Data API 805 are not blindly retried.
+- **Status:** Rebuild pending; C2 acceptance remains failed until 98% index target coverage, 105 eligible cycles and uniqueness checks pass. C3 remains gated.
+- **Qualification:** This is a safer acquisition control, not proof that rate limiting caused the earlier misses; the exact error codes from those old requests were not retained.

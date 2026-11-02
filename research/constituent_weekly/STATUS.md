@@ -1,3 +1,5 @@
+> **E0140 — controlled recovery update:** C1 exact-window test [41534685957](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534685957) passed 7/7 previously failing NIFTY/active-stock intraday requests from 2022, 2023 and 2024. C1/C2 now share a live Dhan concurrency group; both use one-second request pacing and sanitized provider error metadata. Only explicit DH-904 receives bounded retries; input/data errors and Data API code 805 are not blindly retried. No rate-limit root cause is claimed.
+
 > **E0139 — 2026-11-03 C2 corrected panel failed acceptance:** run [41530483274](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41530483274) built the 260-cycle panel but only 206/260 NIFTY target cycles passed (79.2308%; required 98%). Exactly 206 cycles also met the 47/94% constituent rule; 10,194 constituent target rows were built. Daily EOD features were available for all 62 symbols. The panel-only workflow stopped before C3 model training. Dhan auth/profile passed. C1 and C2 intraday jobs overlapped; rate-limit contention is a plausible hypothesis, not a confirmed cause. The detailed report is [C2_PANEL_BUILD.md](C2_PANEL_BUILD.md) and [C2_PANEL_BUILD.json](C2_PANEL_BUILD.json).
 
 > **E0135:** The previous 258-cycle data and model artifacts remain superseded; corrected calendar contains 260 cycles.
@@ -8,16 +10,16 @@
 
 # BUP-01 Research Status
 
-**Last updated:** 2026-11-03 — E0139  
+**Last updated:** 2026-11-03 — E0139/E0140  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 TARGET-COVERAGE FAIL / DIAGNOSIS OPEN; C2 PANEL ACCEPTANCE FAIL / REBUILD REQUIRED; C3 GATED
+**Status:** C0 PASS; C1 TARGET-COVERAGE FAIL / SERIAL REBUILD QUEUED; C2 PANEL ACCEPTANCE FAIL / SERIAL REBUILD QUEUED; C3 GATED
 **Prediction status:** Prior 258-cycle panel and dependent C3 metrics remain superseded; corrected 260-cycle rebuild currently has 79.23% NIFTY target coverage and fails the 98% gate
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Locked v1.3 plan and governance checks passed |
-| C1 — Point-in-time universe/data audit | TARGET-COVERAGE FAIL / DIAGNOSIS OPEN | Corrected audit returned only 26/260 index targets and 13/260 constituent cycles; exact request failure cause remains under investigation |
+| C1 — Point-in-time universe/data audit | TARGET-COVERAGE FAIL / DIAGNOSIS OPEN | Corrected audit returned only 26/260 index targets and 13/260 constituent cycles; exact-window requests passed 7/7; one-second pacing and sanitized error-code capture are in the next serialized rebuild |
 | C2 — Panel labels/features | FAILED ACCEPTANCE | Corrected panel has 206/260 valid NIFTY targets (79.23%); 206 cycles meet 47/94%, but required index coverage is 98%; no C3 models trained |
 | C3 — Stock models/baselines | GATED | Wait for corrected C2 panel acceptance; do not compute or cite new model metrics before it passes |
 
