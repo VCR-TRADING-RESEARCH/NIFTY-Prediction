@@ -736,3 +736,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Replaced the entire workflow file with a clean, complete YAML definition. The final workflow separates catalogue and archive-probe execution, keeps offline tests on every triggered run, preserves manual dispatch, and avoids rerunning the large TejHQ catalogue for probe-only changes.
 - **Validation:** The corrected workflow commit [98b4ba5](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/98b4ba5f0182a23140e1b649c41adcfc76f6553d) triggered run [41423171586](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423171586), queued behind the active run. YAML/runtime validation is pending.
 - **Impact:** No research data, raw archive, model output or credential was changed by the malformed workflow. The failure was caught before source probe results were accepted.
+
+
+
+## E0112 — 2026-11-02 — One fixed probe date was an NSE trading holiday (CORRECTED; FOURTH-DATE RETEST RUNNING)
+
+- **Severity:** Low — the date-selection design, not the archive source, caused one expected 404.
+- **Evidence:** Probe run [41422881110](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422881110) retrieved 3/4 archives. The missing date, 17-Apr-2024, was an official NSE equity-market holiday for Shri Ram Navami (NSE Circular NSE/CMTR/59722). Source: https://archives.nseindia.com/content/circulars/FAOP59723.pdf (the F&O holiday circular also lists the date; capital-market holiday circular NSE/CMTR/59722 is the corresponding cash-market notice).
+- **Correction:** Replaced the holiday with 16-Apr-2024 and simplified the probe to the verified website archive path `/archives/equities/bhavcopy/pr/PRDDMMYY.zip`. Added an exact URL unit test and made PASS require all four fixed dates plus both sides of the naming transition.
+- **Validation:** Corrected run [41423292302](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423292302) is executing the updated probe-only path after offline tests. Final 4/4 result is pending.
+- **Impact:** The earlier 3/4 result still confirms archive/schema availability on 2018-04-02, 2025-10-14 and 2026-04-17, but is superseded for the fixed four-date acceptance test. No event-level verification or adjustment factor was performed.
