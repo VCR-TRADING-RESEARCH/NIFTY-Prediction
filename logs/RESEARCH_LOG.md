@@ -832,3 +832,10 @@
 - **Identity warning:** NSE Circular CML53597 says the new BAJAJFINSV ISIN is effective from 13-Sep-2022, but the TejHQ raw rows retain the old ISIN on 13-Sep and first show the new ISIN on 14-Sep. Logged as E0118; not silently corrected. The factor pass is not an identity pass.
 - Overall diagnostic PARTIAL_OR_BLOCKED. No raw prices/ISINs published; no factor applied to the full panel. Dividends, rights, mergers/demergers and buybacks remain outside this two-event test. C1 remains PARTIAL / NOT PASSED; C2 remains gated.
 - Direct NSE bulk scraping remains prohibited absent written consent/agreement. See C1_DATA_RIGHTS_AND_ALTERNATIVES.md.
+
+## GitHub Pages publication — 2026-11-02
+
+- Sanitised C1 status, source-feasibility reports, data-rights notes and machine-readable NSE/Dhan diagnostics were copied to `docs/research/constituent_weekly/` on main.
+- Pages deployment [41426944349](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426944349) completed successfully.
+- Live C1 research page: https://vcr-trading-research.github.io/NIFTY-Prediction/research/constituent_weekly/
+- The page publishes only metadata, ratios, hashes, status and source links; no raw prices, event rows, ISIN values, tokens or credentials.
