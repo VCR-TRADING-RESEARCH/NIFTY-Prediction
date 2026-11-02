@@ -840,3 +840,10 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Remaining of the 711 catalogue: 625 dividends, 20 buybacks and 29 AGM/other candidates. Dividends must retain NIFTY price-index semantics; buybacks and other events require forecast-time and affected-cycle classification.
 - Report: [C1_ISSUER_EVENT_REVIEW_AGGREGATE.md](C1_ISSUER_EVENT_REVIEW_AGGREGATE.md); [sanitised machine summary](C1_ISSUER_EVENT_REVIEW_AGGREGATE.json).
 - Phase disposition: **C1 PARTIAL / NOT PASSED**; C2 panel **PASS WITH C1 LIMITATIONS**; C3 exploratory complete with no confirmed edge; confirmatory C4 and trading C5 remain gated.
+
+
+## 2026-11-03 — Next bounded review batch prepared
+
+- Completed the 37 complex candidate source review and aggregate publication. The remaining non-dividend candidates are 20 buybacks and 29 AGM/other.
+- Added a separate encrypted queue workflow, manual dispatch supported, restricted to these two event classes with a 49-candidate reference count. The workflow reuses encrypted cached TejHQ partitions, emits only aggregate counts and uploads only ciphertext for one day.
+- The 625 dividend candidates remain separate under the NIFTY price-index rule. C1 remains PARTIAL / NOT PASSED until event-time, security identity and affected-cycle price treatment are accepted.

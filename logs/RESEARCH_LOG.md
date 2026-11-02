@@ -939,3 +939,10 @@
 - The remaining 674 catalogue candidates comprise 625 dividends, 20 buybacks and 29 AGM/other events. Their review remains a separate bounded block. The 625 dividend candidates are not mechanically added back to the NIFTY price-index target.
 - Public aggregate report: [C1_ISSUER_EVENT_REVIEW_AGGREGATE.md](research/constituent_weekly/C1_ISSUER_EVENT_REVIEW_AGGREGATE.md). Sanitised machine summary: [C1_ISSUER_EVENT_REVIEW_AGGREGATE.json](research/constituent_weekly/C1_ISSUER_EVENT_REVIEW_AGGREGATE.json).
 - **Disposition:** 37-candidate source review complete; C1 overall **PARTIAL / NOT PASSED**; C2 panel remains PASS WITH C1 LIMITATIONS; C3 exploratory complete with no confirmed stock-model edge; confirmatory C4/C5 remain gated.
+
+
+## 2026-11-03 — Next bounded queue for 49 buyback and AGM/other candidates
+
+- The 37-candidate bonus/split/rights/merger-demerger queue is complete and published as aggregate results.
+- Added a separate protected encrypted queue for the remaining 20 buybacks and 29 AGM/other candidates. It reuses the pinned TejHQ encrypted cache and existing recipient public key; it emits only aggregate counts and a one-day ciphertext artifact.
+- Dividend events (625) are not bundled into this queue because the locked protocol preserves NIFTY price-index semantics and does not mechanically reinvest cash dividends. They remain subject to forecast-time and affected-window review where relevant.

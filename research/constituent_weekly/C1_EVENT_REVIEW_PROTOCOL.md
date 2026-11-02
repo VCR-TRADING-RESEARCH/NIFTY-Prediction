@@ -85,3 +85,11 @@ This protocol does not grant data rights. The TejHQ catalogue remains personal-u
 - The reviewed candidate terms and record dates have issuer-first-party evidence for 35 entries and official exchange-primary evidence for 2 entries where an issuer notice was not located in this bounded search. The event-level ledger remains outside GitHub; only aggregate counts are published in [C1_ISSUER_EVENT_REVIEW_AGGREGATE.md](C1_ISSUER_EVENT_REVIEW_AGGREGATE.md).
 - This does **not** close historical ISIN/predecessor-successor identity or full price-series continuity. Rights TERPs, scheme-specific predecessor/successor adjustments and affected-weekly-cycle exclusions have not been computed/applied. The 2-event Dhan scale test is not universal evidence.
 - Remaining catalogue: 625 dividends, 20 buybacks, 29 AGM/other. C1 remains PARTIAL / NOT PASSED.
+
+
+## 7. Remaining 49 buyback and AGM/other candidates
+
+- The 20 buyback and 29 AGM/other candidates are reviewed separately from the completed 37 complex event queue.
+- Buybacks have no universal mechanical price factor. Review announcement date, board approval, tender/open-market route, price, ratio/size, record date, closure/extinguishment, and whether each item was public by the 10:00 forecast cutoff. Only use these as point-in-time known-event features; do not backdate knowledge from record/ex-date notices.
+- AGM/other is a discovery-feed umbrella, not a corporate-action class. Classify each item as board/AGM notice, dividend, buyback, split/bonus, rights, merger/demerger, delisting, name/ISIN change, or non-price-affecting governance announcement. Use the relevant specific rule, or SOURCE_UNRESOLVED and exclude affected cycle if event type/identity cannot be established.
+- The 625 ordinary dividend candidates remain separate. Do not mechanically reinvest dividends into the NIFTY price-index target. Retain only point-in-time features disclosed by the forecast cutoff; review price-bar effects only where the frozen label/feature methodology requires it.

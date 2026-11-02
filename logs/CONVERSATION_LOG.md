@@ -555,3 +555,9 @@
 - Issuer/official exchange primary terms and record-date sources were checked for all 37 candidates; 35 had issuer-first-party evidence and 2 had official exchange-primary evidence where issuer notice was not located in the bounded search.
 - No rights TERP, manual adjustment factor or generic demerger factor was calculated/applied. The separate full historical identity and affected-cycle gates remain open. The remaining 674 catalogue candidates are 625 dividends, 20 buybacks and 29 other/AGM candidates.
 - Updated the aggregate report and phase status. No raw TejHQ rows, raw market bars, ISINs, private key or hidden reasoning are stored in GitHub logs or Pages.
+
+
+## 2026-11-03 — Separate buyback and AGM/other review batch
+
+- After completing the 37 complex action terms review, prepared a second recipient-encrypted candidate queue for the remaining 20 buybacks and 29 AGM/other candidates. The workflow is separate from the completed 37-event queue and uses the same public recipient key with private-key material held outside GitHub.
+- The 625 dividend candidates remain a separate price-index semantics workstream. No raw event rows or source subjects are copied to the repository.

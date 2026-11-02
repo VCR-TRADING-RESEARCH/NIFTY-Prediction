@@ -887,3 +887,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Reclassify both candidates as non-equity security distributions. Preserve the event flag and separately assess their effect on equity prices; do not apply an equity split/bonus factor.
 - **Evidence:** Issuer annual reports: https://media.britannia.co.in/Annual_Report_2019_20_b376843dc6.pdf ; https://media.britannia.co.in/Annual_Report_2020_21_be3a70d511.pdf ; https://media.britannia.co.in/Annual_Report_2021_22_6eb6f3ae88.pdf
 - **Status:** CLOSED FOR CLASSIFICATION. Affected-cycle price impact remains in the C1 exclusion/identity gate.
+
+
+## E0131 — 2026-11-03 — Remaining buyback and AGM/other review queue scoped separately (OPEN TASK, NOT AN ERROR)
+
+- After the 37 complex event candidates were reviewed, the remaining non-dividend event set is 49 candidates (20 buybacks and 29 AGM/other).
+- Created a separate recipient-encrypted workflow so these two classes can be reviewed without changing or rerunning the completed 37-event queue. The queue is scoped to only these classes, has a 49-candidate acceptance count, and uploads ciphertext only.
+- No raw candidate rows, company identifiers, record dates, source subjects or prices are published.
+- Status: NEXT BOUNDED REVIEW BATCH.
