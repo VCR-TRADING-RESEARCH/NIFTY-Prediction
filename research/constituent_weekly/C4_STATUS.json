@@ -1,0 +1,19 @@
+{
+  "phase": "C4",
+  "status": "GATED_NOT_STARTED",
+  "c1_status": "PARTIAL",
+  "c2_status": "PASS_WITH_C1_LIMITATIONS",
+  "c3_status": "EXPLORATORY_NO_EDGE",
+  "c3x_nifty_aggregation": "EXPLORATORY_INCONCLUSIVE",
+  "confirmatory_model_fitted": false,
+  "matched_panel_frozen": false,
+  "holdout_reused_for_tuning": false,
+  "decision": "Do not begin confirmatory aggregation until C1 identity and corporate-action gates are independently accepted.",
+  "reopen_requirements": [
+    "Complete dated security and ISIN identity closure",
+    "Independently verify point-in-time corporate-action events and affected-cycle exclusions",
+    "Accept a single frozen C2 panel",
+    "Generate strictly OOF constituent forecasts on the same accepted cycles",
+    "Evaluate matched direct-index and breadth/history baselines with a sealed holdout"
+  ]
+}
