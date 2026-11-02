@@ -12,6 +12,7 @@ on:
       - "scripts/constituent_weekly/security_identity.py"
       - "scripts/constituent_weekly/probe_c1_nse_pr_archives.py"
       - "tests/test_c1_nse_pr_archive_probe.py"
+      - ".github/workflows/bup01-c1-corporate-actions.yml"
   workflow_dispatch:
 
 permissions:
