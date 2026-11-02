@@ -20,7 +20,7 @@ MAX_BYTES = 40 * 1024 * 1024
 def candidate_urls(day: date) -> list[str]:
     stamp = day.strftime("%d%m%y")
     names = [f"PR{stamp}.zip", f"nupr{stamp}.zip"] if day >= TRANSITION else [f"nupr{stamp}.zip", f"PR{stamp}.zip"]
-    paths = [f"/content/historical/EQUITIES/{day:%Y}/{day:%b}".upper(), "/archives/equities/bhavcopy/pr"]
+    paths = [f"/content/historical/EQUITIES/{day:%Y}/{day.strftime('%b').upper()}", "/archives/equities/bhavcopy/pr"]
     return [BASE + path + "/" + name for path in paths for name in names]
 
 
