@@ -822,3 +822,10 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 
 - Encryption unit tests passed and the encrypted TejHQ cache restored. Candidate queue construction did not start: script import failed because the repository root was not on `sys.path` (E0128).
 - Corrected the import path. No cleartext candidate rows were generated or uploaded; the next protected run is the first actual queue build.
+
+
+## 2026-11-03 — Recipient key rotation for private issuer queue
+
+- First successful queue build [41513398732](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41513398732) uploaded recipient-encrypted data, but the matching private key was unavailable to the active review runtime. It could not be decrypted for the event review.
+- Rotated to a new RSA-3072 recipient keypair held outside GitHub: public key/fingerprint in queue builder; private key remains local with restrictive file permissions and is not committed or uploaded.
+- New protected queue run required. C1 remains PARTIAL; only the 37 complex event candidates are in this first review batch.

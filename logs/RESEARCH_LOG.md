@@ -921,3 +921,10 @@
 
 - Workflow [41513029040](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41513029040) passed two offline encryption tests and restored the encrypted TejHQ cache, but the queue script stopped before loading candidate rows because the repository root was missing from `sys.path` (E0128).
 - No cleartext candidate data was generated, written, logged, or uploaded. Added the root-path bootstrap before project imports; retry required.
+
+
+## 2026-11-03 — Recipient key rotation for private issuer-event queue
+
+- The successful private queue workflow [41513398732](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41513398732) emitted a recipient-encrypted ciphertext artifact, but the matching private key was not available in the active research runtime. The candidate queue therefore could not be reviewed event by event.
+- Generated an RSA-3072 recipient keypair outside GitHub. Only the public key and fingerprint are committed; the private key remains in the current local runtime with restrictive file permissions. No private-key bytes are logged, committed or uploaded.
+- Next step: run the encrypted queue builder again against the current public key, decrypt the one-day artifact locally, and proceed with issuer-first-party evidence collection. No TejHQ raw rows will be persisted to the repository or Pages.

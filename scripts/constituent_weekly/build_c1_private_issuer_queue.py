@@ -21,16 +21,18 @@ from scripts.constituent_weekly.audit_c1_daily_history import (
 
 ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_KEY_PEM = b"""-----BEGIN PUBLIC KEY-----
-MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAt1cWfCvy3poaLuNOA1i9
-ybvQPWUOaqZSTbCHFju15LsHMwBZU2Ui9y/tmMoIhxPbWStgIiiRwi8FnbI/y69V
-3bQjnz6V3ZnLIR93YJyfZjfL2bGQYjqkMVlL0MnZ0OCoyK6QtYufUvCV2l3PJukq
-CmJFxNgrpK3FLyKKxHDGbMiEOW00tcNypI2Raqik6SkUSzNC6O5rij4ReS5Ix5sx
-jYDHieEd/Y8iZjQ0voc1LmlKezNxIPffbHsH0Dg7/kcE7072aFeQYvt6FVwCizHw
-+0UL7TvTKtG9wRF7c1vyRDfdhvOiaEChfixZ66Q5eihwT86mK3mA8MzVKz3TRj9X
-a2xRlv88xrwq1A7TMLq7DyksSvY15VKVpFUYLIXGW3WfW23NbhYUtz189wgAOWMp
-PyEkZ/XPuaA67POyfg3WC7meX4HmM3YuTW1Gl3F7YLmPcfONxATnLkiuTGEHUUS1
-EnyK/OhRnZJnDcy5m/aFJ+fCY+kSTpsxHwtEc76bjYfNAgMBAAE=
+MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEArFT+FiO7ZWkWjHTQ4COZ
+gvzzNaoter3kBeauJ2qdmfaHT6HOex2JMwOQNCGv64YDsZHbCrpej0dqeJ7IwRr+
+GWggXFq6r6v2Kh0J5hKSARTfE/HamfZyfDTnFr97BlfEiWUBhqGK/IYL2fOWgtnk
+K2cr6kp433+bwmn8H4aQ3EsbZEp3sGvEBFXrJu9VDvtc6Ni1580HQxzseFuvC/Ov
+vGbgMc9F5Z/HoV901ZbNvzVOaWQgIOES6xBsngyMz6ajFh5sQ3CXv8iEQjQyJBIE
+3+JhJcoUzmn2vi4tpKIZKLUFRyUN5SnnrWO1DdbNiVsrF7nb3EVzI6zLKkjwNjBb
+hw5/mvXT5P3TbJXbclFn8/09eJJAXZku6L1dkEPRsWa6lUuNAnY6prVvkI8sbxGz
+QVUwwXh0m/qRJ2SP1a2o2GD4Dz6YPhXXpiP48pybJ0L1FQ2UVnnlIlho2F8vFEQh
+TIVkvSnmhD4YPDgf5HaGTn6LGGiCyBoQx0humoVq65NPAgMBAAE=
 -----END PUBLIC KEY-----"""
+PUBLIC_KEY_FINGERPRINT_SHA256 = "d27556cb8d3128f7e711917dfbb957e03495984a6d18b5c332233deaff2dc12f"
+
 REVIEW_CLASSES = {"bonus", "split", "rights", "merger_demerger"}
 AAD = b"BUP-01-C1-ISSUER-REVIEW-QUEUE-v1"
 YEARS = range(2018, 2027)
@@ -119,7 +121,8 @@ def main():
         "counts":summary["counts"],
         "partition_cache_hits":sum(x["encrypted_cache_hit"] for x in summary["partition_metadata"]),
         "partition_count":len(summary["partition_metadata"]),
-        "cleartext_rows_published":False},sort_keys=True))
+        "cleartext_rows_published":False,
+        "recipient_public_key_fingerprint_sha256":PUBLIC_KEY_FINGERPRINT_SHA256},sort_keys=True))
     print("C1_ISSUER_REVIEW_QUEUE_ENCRYPTED_SHA256",hashlib.sha256(payload).hexdigest())
     return 0
 

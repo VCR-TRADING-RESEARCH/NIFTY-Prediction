@@ -878,3 +878,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Cause:** The standalone script imported C1 package modules before adding the repository root to `sys.path`.
 - **Correction:** Added repository-root bootstrap before project imports. The failure occurred before any candidate queue was created or uploaded; no cleartext event details were logged.
 - **Status:** CLOSED IN CODE; a fresh protected run must validate the fix.
+
+
+## E0129 — 2026-11-03 — Recipient-encrypted event queue had no matching private key in the active research runtime (CLOSED BY KEY ROTATION)
+
+- **Evidence:** The private queue build [41513398732](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41513398732) succeeded and uploaded ciphertext, but only its public recipient key was present in the repository. No matching private key was accessible to the research runtime, so the queue could not be decrypted for issuer verification.
+- **Impact:** Candidate counts were obtainable from the aggregate workflow log, but event-level work could not proceed from the ciphertext. The artifact was not published to Git or Pages.
+- **Correction:** Generated a fresh RSA-3072 recipient keypair outside GitHub. The private half is held only in the active local research runtime with filesystem mode 0600; the matching public half and its SHA-256 fingerprint are embedded in the queue builder. The private key is not committed, attached to a workflow, or uploaded.
+- **Status:** CLOSED FOR THIS RUNTIME SESSION. A new ciphertext artifact must be produced with this public key, then decrypted locally; the private key must not be exposed in any GitHub log, workflow output, artifact or repository file.

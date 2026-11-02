@@ -540,3 +540,9 @@
 
 - The initial protected queue run passed encryption tests and restored the cache but stopped before candidate extraction with `ModuleNotFoundError: No module named 'scripts'`.
 - Logged E0128 and added the repository root to the Python import path before importing the C1 modules. No raw event data or identifiers were produced or exposed.
+
+
+## 2026-11-03 — Private issuer queue key management correction
+
+- The first recipient-encrypted queue run succeeded but its matching private key was unavailable in the active research runtime, so I could not inspect the encrypted candidate list. No ciphertext was decrypted and no raw event rows were exposed.
+- Generated a new RSA-3072 keypair outside GitHub. Committed only the public key and fingerprint; the matching private key remains local with restrictive permissions. The queue will be regenerated and decrypted locally in this session. No credentials or raw data are added to the repository.
