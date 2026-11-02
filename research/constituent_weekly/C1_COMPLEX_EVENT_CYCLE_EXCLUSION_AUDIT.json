@@ -1,0 +1,79 @@
+{
+  "complex_event_queue": {
+    "candidate_count": 37,
+    "encrypted_source_cache_hits": 9,
+    "feed_class_counts": {
+      "bonus": 19,
+      "merger_demerger": 3,
+      "rights": 6,
+      "split": 9
+    },
+    "membership_joins_unambiguous": true,
+    "source_partitions": 9
+  },
+  "controls": {
+    "c2_holdout_reused_for_tuning": false,
+    "c2_panel_modified": false,
+    "model_fitting_or_retraining_performed": false,
+    "personal_use_only_source_rows_published": false,
+    "private_key_or_token_published": false,
+    "raw_event_rows_written_to_disk": false,
+    "raw_isins_or_subjects_published": false,
+    "raw_prices_or_features_published": false
+  },
+  "coverage_after_conservative_event_exclusion": {
+    "baseline_passing_cycles": 258,
+    "cycles_checked": 258,
+    "maximum_additional_exclusions_in_one_cycle": 2,
+    "minimum_post_exclusion_member_fraction": 0.94,
+    "minimum_post_exclusion_valid_members": 47,
+    "post_exclusion_failing_cycles": 0,
+    "post_exclusion_passing_cycles": 258,
+    "status": "PASS_47_94_ALL_CYCLES"
+  },
+  "coverage_before_exclusion": {
+    "baseline_passing_cycles": 258,
+    "cycles_checked": 258,
+    "maximum_additional_exclusions_in_one_cycle": 0,
+    "minimum_post_exclusion_member_fraction": 0.94,
+    "minimum_post_exclusion_valid_members": 47,
+    "post_exclusion_failing_cycles": 0,
+    "post_exclusion_passing_cycles": 258,
+    "status": "PASS_47_94_ALL_CYCLES"
+  },
+  "cycle_intersections": {
+    "additional_primary_stock_cycle_rows_for_sensitivity_exclusion": 14,
+    "affected_cycles": 13,
+    "affected_pairs_absent_from_c2_stock_panel": 0,
+    "affected_pairs_already_excluded_by_c2_flags": 0,
+    "event_class_counts_with_any_cycle_overlap": {
+      "bonus": 7,
+      "merger_demerger": 3,
+      "rights": 2,
+      "split": 4
+    },
+    "events_not_overlapping_cycle_member_windows": 21,
+    "events_overlapping_any_member_window": 16,
+    "unique_affected_stock_cycle_pairs": 14
+  },
+  "decision": "SENSITIVITY_PRESERVES_47_94_FOR_ALL_258_CYCLES",
+  "frozen_c2": {
+    "first_anchor": "2021-11-12",
+    "input_manifest_sha256": "9d263e441f09c70693e30f1541440ac6b249c5293da61faceb0af729d699c305",
+    "last_expiry": "2026-10-27",
+    "methodology_version": "bup01-c2-panel-v1",
+    "scheduled_cycles": 258,
+    "source_commit": "bff9fae12dbc1396a9e322c3001096bf4d5b0709",
+    "source_run_id": 41398864378,
+    "stock_panel_rows": 12807
+  },
+  "method": {
+    "exclusion_rule": "exclude affected constituent-cycle; no manual price factors, TERP or generic merger adjustment",
+    "membership_and_cycle_source": "exact C2 source snapshot verified against frozen manifest",
+    "overlap_rule": "anchor_date < event_ex_date <= expiry_date"
+  },
+  "reviewed_at_utc": "2026-11-02T20:59:24.469306+00:00",
+  "schema_version": 1,
+  "scope": "conservative complex-event window exclusion sensitivity only; frozen C2 not modified",
+  "status": "COMPLETED"
+}
