@@ -1,0 +1,37 @@
+name: BUP-01 C4 confirmatory aggregation gate
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c4-aggregation
+    paths:
+      - "research/constituent_weekly/C4_STATUS.md"
+      - "research/constituent_weekly/C4_STATUS.json"
+      - ".github/workflows/bup01-c4-gate-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  c4-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c4-aggregation
+      - name: Enforce C1-before-C4 rule
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("research/constituent_weekly/C4_STATUS.json")
+          d = json.loads(p.read_text())
+          assert d["phase"] == "C4"
+          assert d["status"] == "GATED_NOT_STARTED"
+          assert d["c1_status"] == "PARTIAL"
+          assert d["confirmatory_model_fitted"] is False
+          assert d["matched_panel_frozen"] is False
+          assert d["holdout_reused_for_tuning"] is False
+          print("C4 correctly remains fail-closed until C1 acceptance.")
+          PY
