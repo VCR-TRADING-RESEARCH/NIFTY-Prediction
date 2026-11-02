@@ -719,3 +719,12 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Corporate-action CSV header was consistent across the four dates: SERIES, SYMBOL, SECURITY, RECORD_DT, BC_STRT_DT, BC_END_DT, EX_DT, ND_STRT_DT, ND_END_DT, PURPOSE.
 - Final rerun reused all four encrypted archives from Actions cache (4/4 cache hits); no raw archive/event rows were published. Sanitised report is now committed and verified: [probe report](C1_NSE_PR_ARCHIVE_PROBE.md), [machine result](C1_NSE_PR_ARCHIVE_PROBE.json).
 - This passes only the **fixed-date source/schema feasibility probe**. It does not establish full daily archive coverage, bulk-use rights, event-level matching, issuer verification or adjusted-return integrity. Corporate-action gate remains NOT PASSED; C1 remains PARTIAL; C2 stays gated.
+
+
+## C1 data-rights gate — 2026-11-02
+
+- A post-probe review of NSE's Terms of Use and Data Sharing/Non-Display policies found that systematic automated website collection requires express written consent or an applicable agreement; automated trading-decision algorithms may fall under non-display usage rules.
+- The four-date NSE archive test remains a technical feasibility PASS only. **No further automated NSE archive crawl is authorised by this research plan** until a written permission basis is established.
+- Next controlled route: use the existing Dhan Data API subscription for daily adjusted OHLCV; Dhan documents bonus/split adjustment. Test against the encrypted TejHQ candidate catalogue internally. This does not prove dividends, rights, mergers or other actions are adjusted.
+- See [C1 data rights and alternatives](C1_DATA_RIGHTS_AND_ALTERNATIVES.md).
+- Corporate-action event/ISIN verification and adjustment ledger remain NOT PASSED; overall C1 remains PARTIAL; C2 remains gated.
