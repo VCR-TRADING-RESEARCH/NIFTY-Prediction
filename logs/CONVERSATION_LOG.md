@@ -443,3 +443,12 @@
 - Final encrypted-cache rerun hit all four archive entries. The sanitised 4/4 report and JSON result were read back from the C1 branch after correcting the report publisher.
 - The 17-Apr-2024 initial sample was a market holiday; it was replaced with 16-Apr-2024. All implementation mistakes were recorded in ERROR_LOG.md and corrected.
 - Only source/schema feasibility is complete. Full archive coverage, event/ISIN matching, issuer verification and adjustment maths remain open; C1 stays PARTIAL / NOT PASSED and C2 remains gated. No hidden reasoning or credentials are recorded.
+
+
+## 2026-11-02 — Data-rights gate found; switch to Dhan route
+
+- After the 4/4 technical archive probe, reviewed current NSE website/data policies before expanding collection.
+- NSE terms prohibit systematic automated collection without express written consent; its non-display policy covers automated calculations/algorithms supporting trading decisions. No bulk NSE archive crawl will be started without an applicable permission basis.
+- Documented the restriction and alternate route in [C1_DATA_RIGHTS_AND_ALTERNATIVES.md](research/constituent_weekly/C1_DATA_RIGHTS_AND_ALTERNATIVES.md).
+- Next controlled step is to test Dhan daily adjusted OHLCV against the existing internal candidate catalogue. Dhan's help page confirms bonus/split adjustments only; other event types remain unproven.
+- C1 corporate-action gate remains NOT PASSED; C1 overall remains PARTIAL; C2 remains gated. No credentials or hidden reasoning are recorded.
