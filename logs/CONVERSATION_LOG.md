@@ -575,3 +575,9 @@
 
 - After adding the protected event-cycle audit, the first Actions run exposed a workflow authoring defect: the GitHub Actions expression markers contained a literal leading backslash, preventing secret and runner-path interpolation.
 - The defect was caught before the panel artifact was decrypted or event rows were accessed. Logged E0134 and corrected all expressions in one commit; no credentials or private data were exposed.
+
+## 2026-11-03 — Resume checkpoint: expiry-calendar defect found
+
+- User message: “Resume”.
+- The repository audit found that the verified-expiry parser excluded contract-present holiday-shifted expiry records. Corrected calendar reconstruction contains 260 cycles, pending automated market-data and panel validation.
+- Previous C2/C3 results are superseded until corrected rebuilds pass. Hidden reasoning is not copied into repository logs.

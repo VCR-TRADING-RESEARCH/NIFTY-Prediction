@@ -912,3 +912,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** The job had not reached C2 artifact decryption or TejHQ event-data access when the defect was identified. No credential or raw event row was exposed.
 - **Correction:** Removed the unintended backslash from all GitHub Actions expression markers. The corrected push-triggered run must complete before any coverage result is accepted.
 - **Status:** CLOSED IN CODE; the protected retry must validate the correction.
+
+## E0135 — 2026-11-03 — Verified holiday-shifted weekly expiries were excluded from the C1/C2 calendar (OPEN UNTIL REBUILDS PASS)
+
+- Severity: High — weekly targets are defined by actual contract expiry dates; omission changes target windows and chronological splits.
+- Evidence: expiry_verification.csv contains contract-present rows marked verified_shifted_nifty_weekly_expiry for 2021-11-03 and 2025-10-20. The parser accepted only verified_nifty_weekly_expiry.
+- Impact: The corrected 2021-11-01 to 2026-10-30 calendar contains 260 cycles rather than 258. It restores 2021-11-08 to 2021-11-11 and splits 2025-10-15 to 2025-10-28 into 2025-10-15 to 2025-10-20 and 2025-10-23 to 2025-10-28. The old C2 panel and C3 results are superseded.
+- Downstream: C3's fixed holdout 206 would not represent the final 20% of 260 cycles; the corrected boundary is 208.
+- Correction: C1 and C2 parsers now accept the two verified expiry statuses only when the contract-expiry flag is true. Regression tests cover both shifted expiries and the October 2025 cycle split. C3 now derives the holdout boundary from the final-20% fraction.
+- Validation: C1 coverage, C2 rebuild and C3 rerun remain pending. The old event-cycle sensitivity result is superseded until recalculated on the new frozen C2 manifest.
+- Status: OPEN until automated C1/C2/C3 runs pass and cycle counts, dates and holdout boundaries reconcile.

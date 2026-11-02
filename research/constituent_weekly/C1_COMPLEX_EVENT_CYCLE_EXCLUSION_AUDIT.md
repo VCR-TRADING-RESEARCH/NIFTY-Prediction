@@ -1,7 +1,9 @@
+> **Superseded on 2026-11-03:** This sensitivity used the incomplete 258-cycle calendar. Do not cite it as current acceptance evidence; recalculate against the corrected C2 manifest after the shifted-expiry calendar passes.
+
 # C1 Complex-Event Weekly-Cycle Exclusion Sensitivity
 
 Updated: 2026-11-02T20:59:24.469306+00:00
-Result: SENSITIVITY_PRESERVES_47_94_FOR_ALL_258_CYCLES
+Result: SUPERSEDED_BY_EXPIRY_CALENDAR_CORRECTION
 
 ## Frozen C2 source
 

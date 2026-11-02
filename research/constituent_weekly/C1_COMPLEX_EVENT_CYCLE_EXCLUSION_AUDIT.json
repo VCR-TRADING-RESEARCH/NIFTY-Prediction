@@ -56,7 +56,7 @@
     "events_overlapping_any_member_window": 16,
     "unique_affected_stock_cycle_pairs": 14
   },
-  "decision": "SENSITIVITY_PRESERVES_47_94_FOR_ALL_258_CYCLES",
+  "decision": "SUPERSEDED_PENDING_CORRECTED_C2_REBUILD",
   "frozen_c2": {
     "first_anchor": "2021-11-12",
     "input_manifest_sha256": "9d263e441f09c70693e30f1541440ac6b249c5293da61faceb0af729d699c305",
@@ -75,5 +75,10 @@
   "reviewed_at_utc": "2026-11-02T20:59:24.469306+00:00",
   "schema_version": 1,
   "scope": "conservative complex-event window exclusion sensitivity only; frozen C2 not modified",
-  "status": "COMPLETED"
+  "status": "SUPERSEDED_BY_EXPIRY_CALENDAR_CORRECTION",
+  "superseded_by": {
+    "error_id": "E0135",
+    "reason": "Verified holiday-shifted expiries were excluded from the 258-cycle panel used by this sensitivity.",
+    "revalidation_required": true
+  }
 }

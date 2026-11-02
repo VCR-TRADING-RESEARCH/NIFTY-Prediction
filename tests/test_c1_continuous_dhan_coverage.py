@@ -20,13 +20,29 @@ def epoch_ist(value: str) -> int:
     return int(datetime.fromisoformat(value).replace(tzinfo=ZoneInfo("Asia/Kolkata")).timestamp())
 
 
-def test_expiry_parser_uses_only_verified_contracts():
+def test_expiry_parser_accepts_verified_shifted_contracts_only_when_present():
     frame = pd.DataFrame({
-        "verified_expiry_trade_date": ["2026-10-13", "2026-10-19", "2026-10-20"],
-        "status": ["verified_nifty_weekly_expiry", "verified_nifty_weekly_expiry", "candidate"],
-        "contract_expiry_present": [True, True, True],
+        "verified_expiry_trade_date": ["2021-11-03", "2025-10-14", "2025-10-20", "2025-10-28", "2025-11-04"],
+        "status": ["verified_shifted_nifty_weekly_expiry", "verified_nifty_weekly_expiry", "verified_shifted_nifty_weekly_expiry", "candidate", "verified_nifty_weekly_expiry"],
+        "contract_expiry_present": [True, True, True, True, False],
     })
-    assert verified_expiry_dates(frame) == ["2026-10-13", "2026-10-19"]
+    assert verified_expiry_dates(frame) == ["2021-11-03", "2025-10-14", "2025-10-20"]
+
+
+def test_shifted_holiday_expiry_splits_adjacent_weekly_cycles():
+    membership = pd.DataFrame({
+        "symbol": ["AAA", "BBB"], "valid_from": ["2020-01-01", "2020-01-01"],
+        "valid_to": ["", ""], "member_type": ["equity_security", "equity_security"],
+        "market_data_required": ["TRUE", "TRUE"],
+    })
+    cycles = build_expiry_cycles(
+        ["2025-10-14", "2025-10-20", "2025-10-28"],
+        ["2025-10-14", "2025-10-15", "2025-10-16", "2025-10-17", "2025-10-20", "2025-10-21", "2025-10-23", "2025-10-24", "2025-10-27", "2025-10-28"],
+        membership, "2025-10-01", "2025-10-28", {"2025-10-21"},
+    )
+    assert [(c["anchor_date"], c["expiry_date"]) for c in cycles] == [
+        ("2025-10-15", "2025-10-20"), ("2025-10-23", "2025-10-28"),
+    ]
 
 
 def test_membership_uses_point_in_time_tradable_equity_only():

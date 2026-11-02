@@ -1,17 +1,19 @@
+> **Calendar correction — 2026-11-03:** The expiry parser excluded exchange-verified holiday-shifted expiries. Corrected reconstruction adds the 2021-11-08 to 2021-11-11 cycle and splits the 2025-10-15 to 2025-10-28 interval at the verified 2025-10-20 expiry. The prior 258-cycle panel, event-cycle sensitivity and C3 metrics are superseded pending rebuild.
+
 # BUP-01 Research Status
 
 **Last updated:** 2026-11-03  
 **Track:** Bottom-up NIFTY 50 constituent weekly-expiry prediction  
-**Status:** C0 PASS; C1 PARTIAL / NOT PASSED after 37 complex and 49 secondary reviews; corrected 711-event catalogue reconciled; C2 PASS WITH C1 LIMITATIONS; C3 exploratory results complete with no confirmed stock-model edge; confirmatory C4 and trading C5 gated  
-**Prediction status:** C2 frozen panel accepted (258/258 cycles); C3 exploratory OOF/holdout stock models completed; no confirmatory bottom-up NIFTY forecast or predictive edge is accepted  
+**Status:** C0 PASS; C1 PARTIAL / EXPIRY-CALENDAR CORRECTION IN VALIDATION; prior C2/C3 cycle outputs quarantined pending rebuild
+**Prediction status:** Prior 258-cycle C2 panel and dependent C3 metrics are superseded by E0135; corrected expiry-calendar build and out-of-sample rerun required
 **Trading status:** NOT VALIDATED; no strategy is approved or implied
 
 | Phase | Status | Next action |
 |---|---|---|
 | C0 — Registration/governance | PASS | Locked v1.3 plan and governance checks passed |
-| C1 — Point-in-time universe/data audit | PARTIAL / NOT PASSED | 258/258 intraday target cycles and 106,392/106,392 daily sessions pass coverage; 37 complex + 49 secondary candidates reviewed; final classes 17 equity bonuses, 2 NCD distributions, 9 splits, 6 rights, 3 merger/demerger, 21 buybacks, 628 dividends and 25 AGM/governance; historical identity/price continuity and affected-cycle gates remain open |
-| C2 — Panel labels/features | PASS WITH C1 LIMITATIONS | Formal panel: 258/258 index targets; 258/258 cycles satisfy 47/94%; 12,807 stock-cycle rows; zero duplicate rows; holdout boundary fixed at cycle 206 |
-| C3 — Stock models/baselines | EXPLORATORY COMPLETE — NO EDGE | 7,512 OOF forecasts across 154 expiry cycles; on untouched holdout momentum accuracy 50.52%, versus logistic 48.12%, ExtraTrees 48.51% and HGB 46.69%; no classifier beat momentum |
+| C1 — Point-in-time universe/data audit | PARTIAL / CALENDAR REBUILD REQUIRED | Include verified regular and holiday-shifted expiries; rerun Dhan coverage, C2 panel and downstream models |
+| C2 — Panel labels/features | QUARANTINED — REBUILD REQUIRED | Prior 258-cycle panel omitted verified shifted expiries; rebuild from corrected 260-cycle calendar |
+| C3 — Stock models/baselines | SUPERSEDED — RERUN REQUIRED | Old metrics used incomplete cycle calendar; rerun with dynamic final-20% boundary |
 | C4 — Index aggregation/uncertainty | CONFIRMATORY GATED | Do not start confirmatory index aggregation until C1 identity/event exclusions and the registered C4 inputs are accepted |
 | C5 — Economic/execution gate | GATED | Contract-level fills and date-effective Paytm Money costs required before any strategy claim |
 | C6 — Manuscript/independent audit | GATED | Complete manuscript, plots, tables, appendices and formula/repository audit

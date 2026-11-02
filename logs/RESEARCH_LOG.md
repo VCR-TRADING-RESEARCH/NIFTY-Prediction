@@ -962,3 +962,12 @@
 
 - The initial cycle-exclusion workflow run [41523805932](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41523805932) started, but review found GitHub Actions expression markers had been over-escaped in the committed YAML. Token and artifact/cache inputs would not resolve.
 - Corrected the workflow expressions in one batched commit. The first run is not a research result; the corrected run must validate artifact download, checksum verification, decryption, event joins and 47/94 sensitivity.
+
+## 2026-11-03 — Weekly expiry calendar correction discovered
+
+- The expiry parser filtered only regular weekly expiries and dropped contract-present rows explicitly marked as holiday-shifted weekly expiries.
+- Reconstruction from the official daily-session calendar changes the registered sample from 258 to 260 cycles. It restores the 2021-11-08 to 2021-11-11 cycle and splits the October 2025 window at the actual 2025-10-20 expiry.
+- The prior 258-cycle C2 panel, 37-event cycle-exclusion sensitivity and dependent C3 metrics are quarantined as historical artifacts, not current acceptance evidence.
+- C1 and C2 parsers now accept the two explicit verified status values only when the contract-expiry flag is true. Regression tests cover both shifted dates and the cycle split.
+- C3's holdout boundary is calculated as floor(80% of eligible cycles): 206 for 258 and 208 for 260.
+- Next: cached C1 coverage refresh, C2 panel-only rebuild, automatic C3 rerun, then recalculate event-cycle sensitivity against the new C2 manifest. No strategy or cost claim is authorised by this correction.
