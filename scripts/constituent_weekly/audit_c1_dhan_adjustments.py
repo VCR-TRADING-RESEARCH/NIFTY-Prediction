@@ -31,7 +31,7 @@ POST_FACTOR_TOLERANCE = (0.90, 1.05)
 EVENTS = [
     {
         "symbol": "RELIANCE", "action": "BONUS_1_TO_1", "ex_date": "2024-10-28",
-        "expected_pre_factor": 0.5, "sample_dates": [
+        "expected_pre_factor": 0.5, "expected_pre_isin": "INE002A01018", "expected_post_isin": "INE002A01018", "sample_dates": [
             "2024-10-21", "2024-10-22", "2024-10-23", "2024-10-24", "2024-10-25",
             "2024-10-28", "2024-10-29", "2024-10-30", "2024-11-04",
         ],
@@ -41,13 +41,14 @@ EVENTS = [
     },
     {
         "symbol": "BAJAJFINSV", "action": "SPLIT_5_TO_1_PLUS_BONUS_1_TO_1", "ex_date": "2022-09-13",
-        "expected_pre_factor": 0.1, "sample_dates": [
+        "expected_pre_factor": 0.1, "expected_pre_isin": "INE918I01018", "expected_post_isin": "INE918I01026", "sample_dates": [
             "2022-09-05", "2022-09-06", "2022-09-07", "2022-09-08", "2022-09-09", "2022-09-12",
             "2022-09-13", "2022-09-14", "2022-09-15", "2022-09-16", "2022-09-19",
         ],
         "raw_year": 2022,
         "issuer_source": "https://www.bajajfinserv.in/finserv-digital-annual-report-fy23/assets/pdf/Bajaj-Finserv-AnnualReport-2022-23.pdf",
         "exchange_source": "https://archives.nseindia.com/content/circulars/FAOP53548.pdf",
+        "identity_source": "https://nsearchives.nseindia.com/content/circulars/CML53597.pdf",
     },
 ]
 
@@ -58,6 +59,8 @@ def compute_adjustment_diagnostic(
     sample_dates: list[str],
     ex_date: str,
     expected_pre_factor: float,
+    expected_pre_isin: str,
+    expected_post_isin: str,
 ) -> dict:
     """Compare adjusted OHLC with raw NSE bhavcopy; output ratios only, never prices."""
     required = {"session_date", *PRICE_FIELDS}
@@ -72,12 +75,21 @@ def compute_adjustment_diagnostic(
     right["session_date"] = right["session_date"].astype(str)
     if left["session_date"].duplicated().any() or right["session_date"].duplicated().any():
         return {"status": "DUPLICATE_SESSION_ROWS", "dates_checked": 0, "dates_matched": 0}
-    isin_values = sorted(set(right["isin"].dropna().astype(str).str.strip()) - {""})
-    if len(isin_values) != 1:
-        return {"status": "AMBIGUOUS_OR_MISSING_ISIN", "dates_checked": 0, "dates_matched": 0,
+    isin_values = sorted(set(right["isin"].dropna().astype(str).str.strip().str.upper()) - {""})
+    expected_isins = {expected_pre_isin.upper(), expected_post_isin.upper()}
+    if set(isin_values) != expected_isins:
+        return {"status": "ISIN_SET_MISMATCH", "dates_checked": 0, "dates_matched": 0,
                 "raw_unique_isin_count": len(isin_values)}
 
     joined = left.merge(right, on="session_date", suffixes=("_dhan", "_raw"), validate="one_to_one")
+    for _, identity_row in joined.iterrows():
+        identity_day = str(identity_row["session_date"])
+        expected_isin = expected_pre_isin.upper() if identity_day < ex_date else expected_post_isin.upper()
+        actual_isin = str(identity_row["isin"]).strip().upper()
+        if actual_isin != expected_isin:
+            return {"status": "ISIN_TRANSITION_MISMATCH", "dates_checked": int(len(joined)),
+                    "dates_matched": int(len(joined)), "raw_unique_isin_count": len(isin_values),
+                    "isin_transition_verified": False}
     present_dates = set(joined["session_date"].astype(str))
     missing = sorted(set(sample_dates) - present_dates)
     if len(joined) != len(sample_dates):
@@ -117,7 +129,7 @@ def compute_adjustment_diagnostic(
         "dates_checked": int(len(joined)), "dates_matched": int(len(joined)),
         "pre_ex_date_session_count": int((joined["session_date"].astype(str) < ex_date).sum()),
         "post_ex_date_session_count": int((joined["session_date"].astype(str) >= ex_date).sum()),
-        "raw_unique_isin_count": 1,
+        "raw_unique_isin_count": len(isin_values), "isin_transition_verified": True,
         "expected_pre_ex_date_factor": float(expected_pre_factor),
         "pre_ex_date_median_dhan_to_raw_by_ohlc": {k: round(v, 6) for k, v in pre_median.items()},
         "post_ex_date_median_dhan_to_raw_by_ohlc": {k: round(v, 6) for k, v in post_median.items()},
@@ -150,6 +162,8 @@ def write_report(result: dict) -> None:
         lines += ["", f"### {item.get('symbol')} — {item.get('action')}", "",
                   f"- Issuer source: {item.get('issuer_source')}",
                   f"- Exchange adjustment source: {item.get('exchange_source')}",
+                  f"- Security identity transition source: {item.get('identity_source')}",
+                  f"- ISIN transition verified: {d.get('isin_transition_verified')}",
                   f"- Pre-event Dhan/raw median ratios: {d.get('pre_ex_date_median_dhan_to_raw_by_ohlc')}",
                   f"- Post-event Dhan/raw median ratios: {d.get('post_ex_date_median_dhan_to_raw_by_ohlc')}",
                   f"- Relative event factors: {d.get('relative_event_factor_by_ohlc')}",
@@ -212,7 +226,7 @@ def run() -> dict:
             summary, raw_rows = inspect_tejhq_member_rows(partitions[year], symbol, sample_dates)
             event_result = {k: event[k] for k in (
                 "symbol", "action", "ex_date", "expected_pre_factor", "sample_dates",
-                "issuer_source", "exchange_source",
+                "issuer_source", "exchange_source", "identity_source",
             )}
             event_result["tejhq_cache"] = {
                 "encrypted_cache_hit": bool(partition_meta[year].get("encrypted_cache_hit")),
@@ -222,7 +236,8 @@ def run() -> dict:
                 "unique_isin_count": summary.get("unique_isin_count"),
                 "raw_values_persisted": False,
             }
-            if summary.get("valid_session_dates") != sorted(sample_dates) or summary.get("unique_isin_count") != 1:
+            expected_isin_count = len({event["expected_pre_isin"], event["expected_post_isin"]})
+            if summary.get("valid_session_dates") != sorted(sample_dates) or summary.get("unique_isin_count") != expected_isin_count:
                 event_result["status"] = "BLOCKED_RAW_REFERENCE_QA"
                 event_result["raw_reference_qa"] = {
                     "valid_session_count": len(summary.get("valid_session_dates", [])),
@@ -246,7 +261,8 @@ def run() -> dict:
                 continue
 
             diagnostic = compute_adjustment_diagnostic(
-                dhan_frame, raw_rows, sample_dates, event["ex_date"], event["expected_pre_factor"]
+                dhan_frame, raw_rows, sample_dates, event["ex_date"], event["expected_pre_factor"],
+                event["expected_pre_isin"], event["expected_post_isin"],
             )
             event_result["diagnostic"] = diagnostic
             event_result["status"] = diagnostic["status"]
