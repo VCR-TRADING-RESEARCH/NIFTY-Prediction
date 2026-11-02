@@ -35,7 +35,7 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           EVENT_RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
-          if [ "$EVENT_NAME" = "workflow_run" ]; then echo "run_id=$EVENT_RUN_ID" >> "$GITHUB_OUTPUT"; else echo "run_id=41357141947" >> "$GITHUB_OUTPUT"; fi
+          if [ "$EVENT_NAME" = "workflow_run" ]; then echo "run_id=$EVENT_RUN_ID" >> "$GITHUB_OUTPUT"; else RUN_ID=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/bup01-c2-panel-build.yml/runs?branch=phase%2Fconstituent-weekly-outcomes-c2-panel&status=success&per_page=1" --jq ".workflow_runs[0].id"); test -n "$RUN_ID"; echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"; fi
       - name: Download encrypted C2 panel artifact
         uses: dawidd6/action-download-artifact@v6
         with:
@@ -57,7 +57,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt "cryptography>=42" scikit-learn scipy pandas numpy
+          python -m pip install -r requirements.txt "cryptography>=42" scikit-learn scipy pandas numpy pytest
       - name: Compile and run C3 offline tests
         run: |
           python -m py_compile scripts/constituent_weekly/run_c3_stock_models.py
