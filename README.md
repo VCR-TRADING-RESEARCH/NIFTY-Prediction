@@ -16,9 +16,9 @@
 
 ---
 
-## Current research status (BUP-01 — plan v1.3)
+## Historical BUP-01 gate snapshot — superseded by the latest status above
 
-**As of 2026-11-01:** C0 PASS; C1 PARTIAL / CONTINUOUS-COVERAGE GATE IN PROGRESS. The user directed that no ETF holdings versus official NIFTY index-weight comparison is needed. The active method does not require official IWF, ETF portfolio holdings or reconstructed weight data. It forecasts point-in-time constituent stocks and uses strictly out-of-fold stock probabilities/returns, unweighted predicted breadth, cross-sectional dispersion, sector breadth and member coverage to predict the **observed NIFTY 50 index direction**. Equal-weight constituent-basket measures are diagnostics only, not the actual NIFTY return.
+**Snapshot as of 2026-11-01 (retained for audit history):** C0 PASS; C1 PARTIAL / CONTINUOUS-COVERAGE GATE IN PROGRESS. The user directed that no ETF holdings versus official NIFTY index-weight comparison is needed. The active method does not require official IWF, ETF portfolio holdings or reconstructed weight data. It forecasts point-in-time constituent stocks and uses strictly out-of-fold stock probabilities/returns, unweighted predicted breadth, cross-sectional dispersion, sector breadth and member coverage to predict the **observed NIFTY 50 index direction**. Equal-weight constituent-basket measures are diagnostics only, not the actual NIFTY return.
 
 C1 evidence includes a 50/50 current-universe security-master check, 103 monthly membership reconciliations and separate 90-day Dhan stock-minute QA samples across 2021, 2022 and 2026. These are bounded samples, **not continuous five-year coverage**. The remaining C1 gates are continuous stock and NIFTY index 90-day-chunk coverage, verified weekly expiry dates, and complete dated ISIN/security-ID/corporate-action continuity. Accepted cycles need at least 47 valid constituent forecasts and at least 94% member coverage; at least 98% of scheduled eligible cycles must have valid observed NIFTY labels. No constituent panel, trained model, bottom-up forecast or cost-validated strategy exists.
 
