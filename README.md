@@ -668,3 +668,8 @@ The former combined C2 panel-and-model workflow has been retired because the loc
 - Root cause: C2 had used the rotating Dhan token to encrypt the frozen panel despite documenting HF_TOKEN as the stable key. The C2 writer now uses HF_TOKEN for frozen-panel ciphertext; Dhan access tokens remain for API access/source caches.
 - A fresh C2 run [41398864378](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398864378) is rebuilding the encrypted artifact. C3 will trigger automatically after its successful completion and will use the matching run manifest.
 - C3 also retains feature-missing observations for fold-local median imputation and does not reapply the C2 47/94 coverage gate after flat labels are removed.
+
+
+## BUP-01 C1 continuation — official corporate-action source route (2026-11-02)
+
+The next bounded C1 source route has been documented using NSE's official daily press-file bundle: legacy `nuprddmmyy.zip` / `Bcddmmyy.csv` and post-13-Oct-2025 `PRddmmyy.zip` / `bcdmmyyyy.csv`. NSE documents the corporate-action, announcement and board-meeting members; the 2025 circular confirms a filename-only transition. This is source feasibility, not event verification: no adjustment factors were calculated and C1 remains PARTIAL / NOT PASSED. See the [C1 official corporate-action source feasibility report](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/C1_OFFICIAL_CORPORATE_ACTION_SOURCE_FEASIBILITY.md). The next bounded action is a fixed-date archive/schema probe, subject to applicable data-use permissions. No model tuning or holdout reuse is planned.
