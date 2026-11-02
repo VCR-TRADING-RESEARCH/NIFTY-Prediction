@@ -1,0 +1,128 @@
+name: BUP-01 C1 complex-event weekly-cycle exclusion sensitivity
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c1-data
+    paths:
+      - "scripts/constituent_weekly/audit_c1_complex_event_cycle_exclusions.py"
+      - "tests/test_c1_complex_event_cycle_exclusions.py"
+      - ".github/workflows/bup01-c1-complex-event-cycle-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: bup01-c1-complex-event-cycle-audit-\${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  event-cycle-sensitivity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Checkout current C1 research branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c1-data
+          fetch-depth: 1
+
+      - name: Checkout exact frozen C2 input snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: VCR-TRADING-RESEARCH/NIFTY-Prediction
+          ref: bff9fae12dbc1396a9e322c3001096bf4d5b0709
+          path: c2-source-snapshot
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install research dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt "cryptography>=42" pandas numpy pytest huggingface_hub pyarrow
+
+      - name: Compile sensitivity audit and run offline tests
+        run: |
+          python -m py_compile scripts/constituent_weekly/audit_c1_complex_event_cycle_exclusions.py
+          python -m pytest -q tests/test_c1_complex_event_cycle_exclusions.py
+
+      - name: Download exact accepted C2 frozen-panel artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: bup01-c2-panel-41398864378
+          run-id: 41398864378
+          github-token: \${{ secrets.GITHUB_TOKEN }}
+          repository: VCR-TRADING-RESEARCH/NIFTY-Prediction
+          path: \${{ runner.temp }}/bup01-c2-panel-artifact
+
+      - name: Restore encrypted TejHQ personal-use cache
+        uses: actions/cache/restore@v4
+        with:
+          path: \${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-tejhq-raw-nse-encrypted-\${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-\${{ github.run_id }}
+          restore-keys: |
+            bup01-tejhq-raw-nse-encrypted-\${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-
+
+      - name: Run conservative complex-event cycle-exclusion sensitivity
+        env:
+          HF_TOKEN: \${{ secrets.HF_TOKEN }}
+          TEJHQ_ENCRYPTED_CACHE_DIR: \${{ runner.temp }}/bup01-tejhq-encrypted
+          TEJHQ_PERSONAL_USE_ONLY: "1"
+          C2_SOURCE_ROOT: c2-source-snapshot
+          C2_PANEL_ARTIFACT_DIR: \${{ runner.temp }}/bup01-c2-panel-artifact
+        run: python scripts/constituent_weekly/audit_c1_complex_event_cycle_exclusions.py
+
+      - name: Save encrypted TejHQ personal-use cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: \${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-tejhq-raw-nse-encrypted-\${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-\${{ github.run_id }}
+
+      - name: Upload sanitized event-cycle sensitivity report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c1-complex-event-cycle-exclusion-audit-\${{ github.run_id }}
+          path: |
+            research/constituent_weekly/C1_COMPLEX_EVENT_CYCLE_EXCLUSION_AUDIT.json
+            research/constituent_weekly/C1_COMPLEX_EVENT_CYCLE_EXCLUSION_AUDIT.md
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Publish sanitized report and research logs
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f research/constituent_weekly/C1_COMPLEX_EVENT_CYCLE_EXCLUSION_AUDIT.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/constituent_weekly/C1_COMPLEX_EVENT_CYCLE_EXCLUSION_AUDIT.json
+          git add research/constituent_weekly/C1_COMPLEX_EVENT_CYCLE_EXCLUSION_AUDIT.md
+          if ! git diff --cached --quiet; then git commit -m "Record C1 complex-event weekly-cycle exclusion sensitivity"; fi
+          git push origin HEAD:phase/constituent-weekly-outcomes-c1-data
+
+      - name: Enforce audit report schema
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("research/constituent_weekly/C1_COMPLEX_EVENT_CYCLE_EXCLUSION_AUDIT.json")
+          d = json.loads(p.read_text())
+          if d.get("status") != "COMPLETED":
+              raise SystemExit(f"Audit did not complete: {d.get('status')}")
+          if d.get("frozen_c2", {}).get("input_manifest_sha256") != "9d263e441f09c70693e30f1541440ac6b249c5293da61faceb0af729d699c305":
+              raise SystemExit("Unexpected C2 manifest.")
+          print("C1 complex-event cycle-exclusion sensitivity report validated.")
+          PY
