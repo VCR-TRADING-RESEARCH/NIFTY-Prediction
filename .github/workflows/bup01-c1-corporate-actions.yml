@@ -10,6 +10,9 @@ on:
       - "data/constituent_weekly/nifty50_membership_intervals.csv"
       - "data/constituent_weekly/security_alias_history.csv"
       - "scripts/constituent_weekly/security_identity.py"
+      - "scripts/constituent_weekly/probe_c1_nse_pr_archives.py"
+      - "tests/test_c1_nse_pr_archive_probe.py"
+      - ".github/workflows/bup01-c1-corporate-actions.yml"
   workflow_dispatch:
 
 permissions:
@@ -40,7 +43,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt -r live_api/requirements.txt pytest cryptography huggingface_hub pyarrow
       - name: Validate corporate-action audit offline
-        run: python -m pytest -q tests/test_c1_corporate_actions.py tests/test_c1_security_alias_history.py
+        run: python -m pytest -q tests/test_c1_corporate_actions.py tests/test_c1_security_alias_history.py tests/test_c1_nse_pr_archive_probe.py
       - name: Restore encrypted TejHQ personal-use cache
         uses: actions/cache/restore@v4
         with:
@@ -48,6 +51,13 @@ jobs:
           key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
           restore-keys: |
             bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-
+      - name: Restore encrypted official NSE PR archive probe cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/nse-pr-encrypted
+          key: c1-nse-pr-encrypted-${{ runner.os }}-v1-${{ github.run_id }}
+          restore-keys: |
+            c1-nse-pr-encrypted-${{ runner.os }}-v1-
       - name: Run pinned personal-use corporate-action catalogue
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -60,6 +70,17 @@ jobs:
         with:
           path: ${{ runner.temp }}/bup01-tejhq-encrypted
           key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
+      - name: Run bounded official NSE PR archive probe
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          NSE_PR_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/nse-pr-encrypted
+        run: python scripts/constituent_weekly/probe_c1_nse_pr_archives.py
+      - name: Save encrypted official NSE PR archive cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/nse-pr-encrypted
+          key: c1-nse-pr-encrypted-${{ runner.os }}-v1-${{ github.run_id }}
       - name: Upload sanitised corporate-action report
         if: always()
         uses: actions/upload-artifact@v4
@@ -68,6 +89,8 @@ jobs:
           path: |
             research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT.json
             research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT_REPORT.md
+            research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.json
+            research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.md
           if-no-files-found: error
           retention-days: 90
       - name: Publish sanitised report to C1 branch
@@ -81,6 +104,8 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -f research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT.json
             git add -f research/constituent_weekly/C1_CORPORATE_ACTION_AUDIT_REPORT.md
+            git add -f research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.json
+            git add -f research/constituent_weekly/C1_NSE_PR_ARCHIVE_PROBE.md
             if git diff --cached --quiet; then
               echo "No new corporate-action audit output."
               exit 0
