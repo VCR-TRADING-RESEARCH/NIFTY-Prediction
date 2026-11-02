@@ -747,3 +747,12 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 
 
 - The Pages deployment was refreshed after clarifying the conflicting BAJAJFINSV ISIN date wording in NSE CML53597; latest deployment run [41427840788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41427840788) succeeded.
+
+
+## 2026-11-03 — Event-review protocol registered
+
+- Added [C1_EVENT_REVIEW_PROTOCOL.md](C1_EVENT_REVIEW_PROTOCOL.md) to operationalise the existing locked C1 gate; the registered research plan was not changed.
+- The protocol separates price-index dividend treatment from split/bonus adjustments, prohibits double-adjusting Dhan's documented bonus/split-adjusted daily bars, and requires independent security identity evidence for every affected event window.
+- It prioritises the 37 matched bonus/split/rights/merger-demerger candidates, then buyback and AGM/other candidates; dividend events are handled according to price-index semantics and forecast-time availability.
+- This is a protocol/documentation deliverable only. No additional event has been verified, no adjustment factor has been applied, and no C1 gate has passed.
+- **C1 remains PARTIAL; C2 and confirmatory C4 remain GATED.** Next action: execute the bounded event review and identity reconciliation using permitted issuer evidence and Dhan diagnostics; publish only sanitised aggregate results.
