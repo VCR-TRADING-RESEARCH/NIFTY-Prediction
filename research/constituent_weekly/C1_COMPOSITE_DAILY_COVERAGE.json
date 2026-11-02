@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "methodology_version": "bup01-c1-composite-daily-residual-verification-v1",
+  "updated_at_utc": "2026-11-01T19:56:40.493291+00:00",
+  "status": "ALL_SEVEN_OFFICIAL_NSE_ROWS_VALIDATED_AND_MERGED",
+  "base_daily_audit": {
+    "status": "COMPLETE",
+    "valid_member_sessions_ohlcv": 106392,
+    "valid_member_sessions_ohlc": 106392,
+    "expected_member_sessions": 106392,
+    "remaining_missing_sessions": 0
+  },
+  "summary": {
+    "residual_security_date_pairs": 7,
+    "official_nse_verified_residual_rows": 7,
+    "composite_validation_count": 106392,
+    "expected_member_sessions": 106392,
+    "composite_validation_fraction": 1,
+    "raw_values_published": false,
+    "raw_feature_cache_integration": "MERGED_AND_DAILY_AUDIT_COMPLETE",
+    "encrypted_supplemental_cache_written": true,
+    "encrypted_cache_sha256": "b9855515b134fdc5ac1d997c67aecda314e57757fed595673ca53fd164ad9ea8",
+    "unresolved_member_session_gaps": 0
+  },
+  "sources": {
+    "direct_official_nse": {
+      "independent_of_third_party_mirror": true,
+      "legacy_archive_pattern": "https://archives.nseindia.com/content/historical/EQUITIES/YYYY/MON/cmDDMONYYYYbhav.csv.zip",
+      "modern_archive_pattern": "https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_YYYYMMDD_F_0000.csv.zip",
+      "publisher": "National Stock Exchange of India"
+    }
+  },
+  "results": [
+    {
+      "symbol": "HDFC",
+      "date": "2018-11-07",
+      "session": "Diwali Muhurat",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "MATCH",
+      "source_sha256": "34cb7742d962b69efaf6da9606dbd0386a0361c884bddfc63c3248a4d9c2b939"
+    },
+    {
+      "symbol": "HDFC",
+      "date": "2019-10-27",
+      "session": "Sunday Diwali Muhurat",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "MATCH",
+      "source_sha256": "b881a41ca300bb9c91d3e532e85cfa6e4f0b79b52840bfee5b921f19e6b38481"
+    },
+    {
+      "symbol": "HDFC",
+      "date": "2020-02-01",
+      "session": "Saturday Union Budget special session",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "MATCH",
+      "source_sha256": "ebed0938cc885e7f450c19d751fc70dcb8f905384fc96617bec889b9004ffd90"
+    },
+    {
+      "symbol": "HDFC",
+      "date": "2020-11-14",
+      "session": "Saturday Diwali Muhurat",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "MATCH",
+      "source_sha256": "652f8a54ba1481baa92032062aec5d3aa00a9db9e919001fec624d69771f1610"
+    },
+    {
+      "symbol": "HDFC",
+      "date": "2021-11-04",
+      "session": "Diwali Muhurat",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "MATCH",
+      "source_sha256": "3c6b0e631b0ff18946537ba98dd78a4307a9fbc60d70c85e8e529e8acd1de1d8"
+    },
+    {
+      "symbol": "HDFC",
+      "date": "2022-10-24",
+      "session": "Diwali Muhurat",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "MATCH",
+      "source_sha256": "c8aa044e671cdb4dd8d2f312d3894a30a3201d8bc17287963a88c937fcb8c208"
+    },
+    {
+      "symbol": "TATAMOTORS",
+      "date": "2025-10-21",
+      "session": "Diwali Muhurat",
+      "source": "Official NSE CM bhavcopy archive",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "ohlc_valid": true,
+      "volume_valid": true,
+      "identity_status": "MATCH",
+      "source_sha256": "729f028f4dfde2d7dca1abca7b0277a87c4ca950dd0fd5d180ba8fc48c0b6456"
+    }
+  ],
+  "interpretation": "All seven residual security/date pairs have been independently verified from official NSE cash-market bhavcopy archives (legacy CM format before 8 July 2024 and UDiFF format thereafter). Raw rows are stored only in the AES-GCM encrypted GitHub Actions cache and have been decrypted, validated and merged into the daily coverage audit. The daily coverage source-of-record JSON now reports COMPLETE: 106,392/106,392 OHLCV member sessions, zero per-symbol gaps and 100% minimum per-symbol coverage. Corporate-action adjustment validation remains a separate open gate.",
+  "limitations": [
+    "No raw price, OHLC or volume values are published in the repository or artifacts.",
+    "The seven residual official NSE rows are cached encrypted and integrated by the daily coverage auditor.",
+    "Corporate-action event verification and adjusted-return integrity remain incomplete; no adjusted returns are certified."
+  ]
+}

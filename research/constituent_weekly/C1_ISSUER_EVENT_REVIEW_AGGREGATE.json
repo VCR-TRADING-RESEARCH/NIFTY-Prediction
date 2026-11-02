@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-11-03",
+  "status": "COMPLEX_37_REVIEWED; SECONDARY_49_RECONCILED; C1_OVERALL_PARTIAL_NOT_PASSED",
+  "scope": "recipient-encrypted, personal-use-only candidate queue; aggregate only",
+  "queue": {
+    "candidates": 37,
+    "point_in_time_membership_matches": 37,
+    "ambiguous_membership_matches": 0,
+    "candidate_feed_counts": {
+      "bonus_labelled": 19,
+      "split": 9,
+      "rights": 6,
+      "merger_demerger": 3
+    }
+  },
+  "event_classification": {
+    "equity_bonus": 17,
+    "split": 9,
+    "rights": 6,
+    "merger_demerger": 3,
+    "bonus_label_reclassified_as_non_equity_debenture_distribution": 2,
+    "total": 37
+  },
+  "source_review": {
+    "event_terms_and_record_date_evidence": 37,
+    "issuer_first_party_sources": 35,
+    "official_exchange_primary_sources_where_issuer_notice_not_located": 2,
+    "unresolved_event_terms_in_this_37_candidate_batch": 0
+  },
+  "identity_and_price_gates": {
+    "membership_join_unambiguous": true,
+    "complete_historical_isin_and_predecessor_successor_identity_pass": false,
+    "full_event_price_series_reconciliation_pass": false,
+    "dhan_same_session_intraday_vs_daily_scale_samples_passed": 2,
+    "dhan_same_session_adjustment_scale_sample_is_universal_evidence": false
+  },
+  "adjustment_disposition": {
+    "manual_bonus_or_split_factors_applied_to_panel": 0,
+    "rights_terp_factors_computed": 0,
+    "merger_demerger_generic_factors_applied": 0,
+    "affected_stock_cycle_confirmatory_release": "NOT_APPROVED"
+  },
+  "remaining_711_catalogue_scope": {
+    "dividends": 628,
+    "buybacks": 21,
+    "agm_governance": 25,
+    "complex_candidates_reviewed": 37,
+    "secondary_candidates_reviewed": 49,
+    "total": 711
+  },
+  "key_corrections": {
+    "non_equity_debenture_distributions_reclassified": 2,
+    "issuer_corrigendum_record_date_updates_applied": 1,
+    "dated_bajaj_finserv_identity_adjudication_applied": 1
+  },
+  "publication_controls": {
+    "raw_tejhq_rows_published": false,
+    "raw_market_bars_published": false,
+    "raw_isins_published": false,
+    "source_subjects_or_cleartext_candidate_rows_published": false,
+    "recipient_private_key_published": false
+  },
+  "phase_disposition": {
+    "C1": "PARTIAL / NOT PASSED",
+    "C2": "PANEL PASS WITH C1 LIMITATIONS (per existing progression decision)",
+    "C3": "EXPLORATORY COMPLETE; no stock classifier beat the momentum accuracy baseline on untouched holdout",
+    "C4": "CONFIRMATORY GATED",
+    "C5": "TRADING / EXECUTION GATED"
+  },
+  "final_catalogue_reconciliation": {
+    "equity_bonus_share_actions": 17,
+    "bonus_labelled_non_equity_ncd_distributions": 2,
+    "stock_splits": 9,
+    "rights_issues": 6,
+    "merger_demerger_schemes": 3,
+    "buybacks": 21,
+    "dividends": 628,
+    "agm_governance": 25,
+    "total": 711,
+    "arithmetic_check": true
+  },
+  "secondary_queue": {
+    "feed_candidates": 49,
+    "point_in_time_membership_matches": 49,
+    "ambiguous_membership_matches": 0,
+    "corrected_classification": {
+      "buybacks": 21,
+      "dividends_reclassified_from_other": 3,
+      "agm_governance_events": 25
+    },
+    "buyback_primary_offer_record_date_sources_found": 21,
+    "dividend_amount_record_date_evidence_found": 3,
+    "agm_notice_timestamp_forecast_gate": "NOT PASSED; EXCLUDE ALL 25 FROM MODEL FEATURES UNTIL VERIFIED"
+  },
+  "secondary_source_links": {
+    "buybacks": [
+      "https://www.sebi.gov.in/sebi_data/attachdocs/aug-2018/1535088017164.pdf",
+      "https://investors.larsentoubro.com/upload/Announcements/LARSEN_%26_TUBRO_LIMITED_Buyback_ad.pdf",
+      "https://www.iocl.com/buyback-of-shares-by-indianoil",
+      "https://www.sebi.gov.in/sebi_data/attachdocs/mar-2019/1551418134010.pdf",
+      "https://www.sebi.gov.in/sebi_data/attachdocs/feb-2019/1550670210902.pdf",
+      "https://www.sebi.gov.in/sebi_data/attachdocs/mar-2019/1552973486748.pdf",
+      "https://www.adaniports.com/-/media/Project/Ports/CorporateGovernance/Buy-back/Letter-of-Offer-for-Buyback.pdf",
+      "https://www.wipro.com/content/dam/nexus/en/investor/buy-back/buyback2019/stock-exchange-public-announcement-for-buy-back-of-equity-shares.pdf",
+      "https://www.sebi.gov.in/sebi_data/attachdocs/nov-2020/1605951361683.pdf",
+      "https://www.sec.gov/Archives/edgar/data/1123799/000119312520298090/d11431dex992.htm",
+      "https://nsearchives.nseindia.com/corporate/NTPC_26112020195518_NTPCLOF.pdf",
+      "https://www.sebi.gov.in/sebi_data/attachdocs/jan-2021/1611747155575.pdf",
+      "https://www.sebi.gov.in/sebi_data/commondocs/feb-2022/TCS-DLO_p.pdf",
+      "https://www.wipro.com/content/dam/nexus/en/investor/buy-back/buyback2023/post-buyback-public-announcement.pdf",
+      "https://www.lnt.in/LSEQFRSept2023/",
+      "https://www.sebi.gov.in/sebi_data/commondocs/nov-2023/Tata_Consultancy_LOO_p.pdf",
+      "https://www.bseindia.com/xml-data/corpfiling/AttachHis/fb78f27e-699e-4e07-88d8-f22d404a8dec.pdf",
+      "https://www.infosys.com/investors/shareholder-services/documents/buyback-2025/letter-offer.pdf",
+      "https://www.sebi.gov.in/sebi_data/commondocs/jun-2026/Wipro%20Limited%20-%20LOF_p.pdf",
+      "https://legacy.bajajauto.com/-/media/images/bajajauto/media-kit/press-release/disclosures/newspaper-publications/fy2026-27/se-with-lof.pdf"
+    ],
+    "dividends": [
+      "https://www.hcltech.com/investor-relations/unpaid-dividend-information",
+      "https://www.mse-india.in/corporates/corporate-securities-information/corporate-update/default?symbol=HCLTECH&type=4&vmode=vm",
+      "https://www.tcs.com/investor-relations/dividend-payment-details",
+      "https://www.nestle.in/media/specialannouncements/outcome-meeting-board-directors-company-held-23rd-october-2020"
+    ]
+  },
+  "remaining_gate_status": {
+    "buyback_announcement_and_acceptance_cycle_join": false,
+    "agm_public_notice_timestamps_before_forecast_cutoff": false,
+    "dividend_announcement_timestamps_joined": false,
+    "full_historical_security_identity_and_price_continuity": false,
+    "rights_terp_and_merger_scheme_continuity": false
+  }
+}

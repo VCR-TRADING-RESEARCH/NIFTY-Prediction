@@ -1,0 +1,102 @@
+{
+  "adjustment_method_disposition": {
+    "agm_or_other": "Review source subject and issuer filing before classification.",
+    "bonus": "Verify source ratio semantics and issuer notice before calculating a factor; not applied.",
+    "buyback": "No mechanical price factor; keep as a separately dated event feature.",
+    "dividend": "Needs previous raw close and confirmed cash amount; candidate factor (previous_close-cash)/previous_close; not calculated.",
+    "merger_demerger": "No generic scaling or cross-security stitching; exclude affected cycles until scheme terms are verified.",
+    "rights": "TERP requires entitlement ratio and subscription price; manual review required.",
+    "split": "Check face_value_to/face_value_from against issuer/exchange notice; not applied.",
+    "unclassified": "Unknown event class; affected windows remain unresolved."
+  },
+  "ambiguous_member_events": 0,
+  "corporate_action_gate": "NOT_PASSED",
+  "deduplicated_events": 18361,
+  "duplicate_rows": 32,
+  "end_date": "2026-10-30",
+  "events_by_type": {
+    "agm_or_other": 5628,
+    "bonus": 337,
+    "buyback": 253,
+    "dividend": 11485,
+    "merger_demerger": 94,
+    "rights": 246,
+    "split": 318
+  },
+  "events_by_year": {
+    "2018": 1804,
+    "2019": 1995,
+    "2020": 2050,
+    "2021": 2162,
+    "2022": 2334,
+    "2023": 2446,
+    "2024": 2623,
+    "2025": 1850,
+    "2026": 1097
+  },
+  "independent_exchange_or_issuer_verification": "NOT_COMPLETED",
+  "limitations": [
+    "Discovery catalogue only; no adjustment factors calculated or applied.",
+    "Source-reported ISIN may be stale across restructurings; symbol/date matching is not proof of identity.",
+    "Rights, mergers, demergers, buybacks and unclassified actions need event-specific handling.",
+    "Independent exchange/issuer circular review is still required.",
+    "TejHQ terms do not grant exchange-data rights; exchange terms apply independently."
+  ],
+  "matched_events_by_type": {
+    "agm_or_other": 29,
+    "bonus": 19,
+    "buyback": 20,
+    "dividend": 625,
+    "merger_demerger": 3,
+    "rights": 6,
+    "split": 9
+  },
+  "matched_pit_member_events": 711,
+  "missing_isin_events": 0,
+  "raw_event_rows_published": false,
+  "raw_rows_in_window": 18393,
+  "source": {
+    "dataset": "tejhq/indian-markets",
+    "encrypted_cache_hits": 0,
+    "license_scope": "PERSONAL_USE_ONLY; no client/business use; no raw redistribution; exchange terms apply independently",
+    "partition_sha256": {
+      "2018": "380dd16ae96b656d7cd76370ca08f1aa60f3d3951ef0b99043b9ea760e536b7b",
+      "2019": "2137ebdb1bef39c230f2a9a176e6d4e5f3240880d8866f6e66922ab8ed3acb58",
+      "2020": "7f4f1574bc2120cf7fd65e10c8771520df9b61fa9e9aed521d8b748745adfc02",
+      "2021": "f930d37ca3e42b6c8e45191bfe0a6670d3ed8627f1a6a0fdf5d89533c2ccc0e6",
+      "2022": "ab07e4aba0fccc2fc8cba54daefb210468b43ef3005f35bcf57efa91a142c6a6",
+      "2023": "e429d70c45bb1c60b60eedfc72dd83a9e684e7414dee32d496490be9d4ff1b53",
+      "2024": "5455e6076cf7f7052c223cbb1d9722f0116b5aeb2d4775b5aae80d026f707d68",
+      "2025": "12318eae7787f039fa1230d88570d9c5d6ea2a7107106d257569e7fc9879a356",
+      "2026": "91837c29ad487ea6909e6637c0050a3ebed0b9ec887911e0120db89e9c694145"
+    },
+    "partitions_downloaded": 9,
+    "raw_data_persisted_to_repo_or_artifact": false,
+    "revision": "f576704883fff86a6facdcde336db6ce19502063",
+    "years": [
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025,
+      2026
+    ]
+  },
+  "start_date": "2018-04-01",
+  "status": "COMPLETED_WITH_REVIEW_REQUIRED",
+  "unique_event_fingerprints": 18361,
+  "unmatched_or_non_member_events": 17650,
+  "unresolved_events_by_type": {
+    "agm_or_other": 5599,
+    "bonus": 318,
+    "buyback": 233,
+    "dividend": 10860,
+    "merger_demerger": 91,
+    "rights": 240,
+    "split": 309
+  },
+  "updated_at_utc": "2026-11-01T14:54:00.799437+00:00"
+}

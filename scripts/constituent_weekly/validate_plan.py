@@ -40,14 +40,30 @@ def validate() -> list[str]:
         for heading in REQUIRED_PLAN_HEADINGS:
             if heading not in plan:
                 errors.append(f"Missing plan section: {heading}")
-        if "Plan version:** 1.0" not in plan:
-            errors.append("Plan version 1.0 registration marker missing")
+        version_line = next(
+            (line.strip() for line in plan.splitlines() if line.strip().startswith("**Plan version:**")),
+            None,
+        )
+        if not version_line:
+            errors.append("Plan version registration marker missing")
+        else:
+            registered_version = version_line.split("**Plan version:**", 1)[1].strip()
+            version_parts = registered_version.split(".")
+            if len(version_parts) != 2 or not all(part.isdigit() for part in version_parts):
+                errors.append("Plan version registration marker is malformed")
+            else:
+                history_marker = f"- **v{registered_version} —"
+                if history_marker not in plan:
+                    errors.append(f"Plan version {registered_version} has no matching version-history entry")
+        for token in ("15:00 through 15:14 IST", "15:15 expiry proxy", "official 15:30 close"):
+            if token not in plan:
+                errors.append(f"Missing controlled expiry-target definition: {token}")
         for phase in REQUIRED_PHASES:
             if f"| {phase} —" not in plan:
                 errors.append(f"Missing phase definition: {phase}")
         if "Pre-registered hypotheses" not in plan:
             errors.append("Pre-registered hypotheses section missing")
-        for token in ("98%", "104", "20261031", "Paytm Money", "free-float"):
+        for token in ("98%", "94%", "47", "104", "20261031", "Paytm Money", "out of fold"):
             if token not in plan:
                 errors.append(f"Missing mandatory protocol item: {token}")
 
@@ -69,9 +85,9 @@ def validate() -> list[str]:
         "Result: PASS",
         "",
         "Validated required plan, literature, source register, status and manuscript outline files.",
-        "Checked research questions, objectives, formal target, data hierarchy, model scope, validation, stop rules, all seven phases, free-float coverage, minimum history, fixed bootstrap seed and transaction-cost requirements.",
+        "Checked research questions, objectives, formal target, data hierarchy, stock/meta-model scope, out-of-fold aggregation, member-count/index-label coverage, validation, stop rules, all seven phases, minimum history, fixed bootstrap seed and transaction-cost requirements.",
         "",
-        "This is a structural governance check only. It does not validate market data, historical constituents, stock prices, weights, models or trading performance.",
+        "This is a structural governance check only. It does not validate market data, historical constituents, stock prices, models or trading performance.",
         "",
         "Run locally: python scripts/constituent_weekly/validate_plan.py",
     ]

@@ -3,7 +3,7 @@ name: Bottom-up NIFTY constituent research
 on:
   push:
     branches:
-      - "phase/constituent-*"
+      - phase/constituent-weekly-outcomes-c0
     paths:
       - "research/constituent_weekly/**"
       - "scripts/constituent_weekly/**"
@@ -32,10 +32,10 @@ jobs:
     if: github.event_name == 'push' || inputs.phase == 'c0-governance'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout phase branch
+      - name: Checkout C0 governance branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: phase/constituent-weekly-outcomes-c0
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -62,5 +62,5 @@ jobs:
       - name: Fail closed until the phase implementation is registered
         run: |
           echo "The selected phase does not yet have an implementation in this branch."
-          echo "Create and review the dedicated phase branch and data gate before dispatch."
+          echo "Use the dedicated phase branch workflow, not the C0 registration workflow."
           exit 1

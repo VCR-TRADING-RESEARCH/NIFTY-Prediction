@@ -1,0 +1,120 @@
+name: BUP-01 C1 continuous Dhan stock and NIFTY target coverage
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c1-data
+    paths:
+      - "scripts/constituent_weekly/audit_c1_continuous_dhan_coverage.py"
+      - "scripts/constituent_weekly/update_c1_continuous_status.py"
+      - "tests/test_c1_continuous_dhan_coverage.py"
+      - "data/constituent_weekly/nifty50_membership_intervals.csv"
+      - "data/reconciliation/expiry_verification.csv"
+      - "data/reconciliation/nifty50_official_daily.csv"
+  pull_request:
+    branches:
+      - phase/constituent-weekly-outcomes-c0
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bup01-dhan-intraday-${{ github.repository }}-${{ github.event_name == 'pull_request' && github.workflow || 'live' }}
+  cancel-in-progress: false
+
+jobs:
+  continuous-coverage:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout C1 data branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c1-data
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install project and live API dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r live_api/requirements.txt pytest
+      - name: Validate continuous coverage logic offline
+        run: python -m pytest -q tests/test_c1_continuous_dhan_coverage.py
+      - name: Run resumable 90-day Dhan stock and NIFTY target audit
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+        run: python scripts/constituent_weekly/audit_c1_continuous_dhan_coverage.py
+      - name: Upload sanitized coverage artifact before publication
+        if: always() && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: c1-continuous-coverage-${{ github.run_id }}
+          path: research/constituent_weekly/C1_CONTINUOUS_COVERAGE.json
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Publish sanitized coverage files and status
+        if: always() && github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_json="research/constituent_weekly/C1_CONTINUOUS_COVERAGE.json"
+          if [ ! -s "$source_json" ]; then
+            echo "No sanitized coverage JSON was created; cannot publish."
+            exit 1
+          fi
+          cp "$source_json" "$RUNNER_TEMP/C1_CONTINUOUS_COVERAGE.json"
+          for attempt in 1 2 3 4 5; do
+            echo "Publish attempt $attempt of 5"
+            git fetch origin phase/constituent-weekly-outcomes-c1-data
+            git reset --hard origin/phase/constituent-weekly-outcomes-c1-data
+            cp "$RUNNER_TEMP/C1_CONTINUOUS_COVERAGE.json" "$source_json"
+            python scripts/constituent_weekly/update_c1_continuous_status.py
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -f "$source_json"
+            git add -f research/constituent_weekly/C1_CONTINUOUS_COVERAGE_REPORT.md
+            git add -f research/constituent_weekly/STATUS.md
+            git add -f logs/RESEARCH_LOG.md logs/ERROR_LOG.md 2>/dev/null || true
+            if git diff --cached --quiet; then
+              echo "No new sanitized publication content."
+              exit 0
+            fi
+            git commit -m "Record continuous C1 stock and NIFTY target coverage audit"
+            if git push origin HEAD:phase/constituent-weekly-outcomes-c1-data; then
+              echo "Sanitized coverage result committed."
+              exit 0
+            fi
+            echo "Concurrent branch update detected; reset and regenerate status files."
+            sleep 2
+          done
+          echo "Could not publish sanitized coverage result after five non-forced attempts."
+          exit 1
+      - name: Enforce registered data-coverage gate
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("research/constituent_weekly/C1_CONTINUOUS_COVERAGE.json")
+          if not path.is_file():
+              raise SystemExit("C1_CONTINUOUS_COVERAGE_GATE_FAILED: report missing.")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          print("AUDITOR_STATUS", data.get("status"))
+          print("TARGET_COVERAGE_STATUS", data.get("target_coverage_status"))
+          print("IDENTITY_STATUS", data.get("identity_status"))
+          if data.get("target_coverage_status") != "PASS":
+              raise SystemExit("C1_CONTINUOUS_COVERAGE_GATE_FAILED: data coverage thresholds not satisfied.")
+          print("C1_CONTINUOUS_COVERAGE_GATE_PASSED; identity/action review remains a separate gate.")
+          PY

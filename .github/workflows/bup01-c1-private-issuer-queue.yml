@@ -1,0 +1,66 @@
+name: BUP-01 C1 private issuer-event review queue
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c1-data
+    paths:
+      - "scripts/constituent_weekly/build_c1_private_issuer_queue.py"
+      - "tests/test_c1_private_issuer_queue.py"
+      - ".github/workflows/bup01-c1-private-issuer-queue.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bup01-c1-private-issuer-queue-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  encrypted-private-queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout C1 data branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c1-data
+          fetch-depth: 1
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install data-processing dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pytest cryptography huggingface_hub pyarrow
+      - name: Test private queue encryption
+        run: python -m pytest -q tests/test_c1_private_issuer_queue.py
+      - name: Restore encrypted TejHQ personal-use cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
+          restore-keys: |
+            bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-
+      - name: Build encrypted private event queue
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TEJHQ_ENCRYPTED_CACHE_DIR: ${{ runner.temp }}/bup01-tejhq-encrypted
+          TEJHQ_PERSONAL_USE_ONLY: "1"
+          C1_PRIVATE_QUEUE_PATH: ${{ runner.temp }}/c1-issuer-review-queue.enc.json
+        run: python scripts/constituent_weekly/build_c1_private_issuer_queue.py
+      - name: Save encrypted TejHQ personal-use cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/bup01-tejhq-encrypted
+          key: bup01-tejhq-raw-nse-encrypted-${{ runner.os }}-f576704883fff86a6facdcde336db6ce19502063-${{ github.run_id }}
+      - name: Upload encrypted recipient-only issuer queue
+        uses: actions/upload-artifact@v4
+        with:
+          name: c1-private-issuer-review-queue-${{ github.run_id }}
+          path: ${{ runner.temp }}/c1-issuer-review-queue.enc.json
+          if-no-files-found: error
+          retention-days: 1

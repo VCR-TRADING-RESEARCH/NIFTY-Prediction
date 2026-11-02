@@ -239,3 +239,723 @@
 ## Dhan authentication attempt — run 41145607225
 - Status: FAILED or incomplete. The public archive route will still be attempted.
 - Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.
+
+
+## E0024 — 2026-10-31 — Dhan equity preflight blocked at profile authentication
+- **Run:** [41181684573](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181684573).
+- **Observed:** The Dhan equity preflight workflow completed successfully and its nine offline response-validation tests passed. The live `/v2/profile` request returned HTTP 401 after the configured TOTP refresh/fallback path.
+- **Impact:** No active data-plan confirmation, scrip-master equity ID resolution, 2018 daily-history request or stock intraday bars were obtained. This is not evidence that the stock historical endpoint lacks coverage; the request was blocked before those endpoints.
+- **Correction/next step:** Keep the workflow fail-closed. Verify token/client binding and account/data-plan entitlement against Dhan's current authentication/profile requirements. Do not infer or hard-code security IDs, and do not attempt historical equity requests until profile authentication succeeds.
+- **Security:** No credential, token, PIN, TOTP or raw provider response was copied to the repository.
+
+E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access token; profile rejected fallback
+
+- **Run:** [41181948126](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41181948126).
+- **Observed:** 10/10 mocked response tests passed. Live token-generation endpoint returned HTTP 200 but the JSON contained only `message` and `status` keys; no access-token field was present. The supplied `DHAN_ACCESS_TOKEN` fallback was then used, but the documented profile check returned HTTP 401.
+- **Correction attempted:** changed the profile check to send only the `access-token` header, exactly as shown in Dhan's v2 documentation. The result remained HTTP 401.
+- **Interpretation:** no data-plan response or market-data request was reached. This points to an account-secret/token validity issue, not evidence of missing equity history. The sanitized diagnostic deliberately omits provider message values.
+- **Next step:** verify that `DHAN_CLIENT_ID`, `DHAN_PIN`, `DHAN_TOTP_SECRET` all belong to the same account, TOTP is enabled for API authentication, the PIN is current and six digits, and the fallback token is freshly generated (24-hour validity). Only rerun data probes after profile returns 200.
+- **Security:** no credentials, tokens, PINs, TOTP values or raw provider messages were committed.
+
+
+## E0026 — 2026-10-31 — Dhan TOTP endpoint returned no token
+- **Observed:** Corrected shared helper now uses POST; BUP-01 preflight independently uses POST. Live endpoint returned HTTP 200 with only `message` and `status` keys. No `accessToken` field was present. The fallback profile request returned HTTP 401.
+- **Impact:** No authenticated profile, data-plan confirmation, security-master resolution or equity price history was reached.
+- **Correction:** Added sanitized classification of known authentication failure families without storing provider message text, plus regression coverage. Re-run is pending/in progress.
+- **Security:** No credentials, token values or raw provider response text are stored.
+- **Status:** OPEN — awaiting safe classification and, if confirmed by Dhan, correction of the relevant GitHub Actions secret(s).
+
+
+## 2026-10-31 — Dhan authentication succeeded; constituent coverage partially verified
+
+- Follow-up Actions run [41182679514](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182679514) completed successfully. The fresh TOTP request returned a valid access token; the profile authenticated (HTTP 200); the Data API plan is active; all 5/5 current scrip-master probe symbols resolved.
+- Historical daily probe passed with 22 bars for 2018-01-01 to 2018-02-01. Historical one-minute probes passed for all 5 symbols on 2022-10-31 (374 bars each, including the 10:00 anchor and 15:25–15:29 close window).
+- Recent-session probe on 2026-10-30 returned 359 bars per symbol and 10:00 anchors, but no 15:25–15:29 bars; targeted close-window requests returned empty arrays (0/5). Overall status remains PARTIAL_OR_BLOCKED; do not treat the recent session as complete.
+- Offline Dhan tests: 11 passed. No credentials, token values, raw bars, prices or security IDs were stored.
+- A one-date follow-up probe for 2026-10-29 has been committed and its Actions run is pending/in progress; this will distinguish a date-specific gap from a recent-history limitation. C1 remains blocked pending point-in-time weights, current membership, identifier/corporate-action history and full coverage validation.
+
+
+## 2026-10-31 — Follow-up date probe inconclusive; Dhan workflow hardened
+
+- The 2026-10-30 preflight result remains the verified successful run: fresh TOTP token, profile HTTP 200, active Data API plan, 5/5 current symbols resolved, 22 historical daily bars, and 5/5 historical intraday windows on 2022-10-31. The 2026-10-30 recent-session sample had 10:00 anchors but no 15:25–15:29 close bars (0/5).
+- Follow-up run [41182764467](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41182764467) attempted the 2026-10-29 probe but could not obtain a fresh token (HTTP 200 without accessToken); fallback profile returned HTTP 401. No price endpoints were called. This run is INCONCLUSIVE, not evidence that 2026-10-29 bars are unavailable.
+- Hardened workflow so pull-request checks run offline tests only, Dhan calls are serialized, and editing the workflow file alone does not consume another TOTP token. Offline tests passed 11/11 on the last live preflight.
+- Dhan official guidance states access tokens are valid for 24 hours, API-key/secret authentication is the intended automation route, and at most five active tokens may be retained simultaneously. Avoid repeated token-generation loops. Sources: https://dhanhq.co/docs/v2/authentication/ and https://dhan.co/support/platforms/dhanhq-api/how-many-access-tokens-can-i-generate-for-my-dhan-account/.
+- C1 remains BLOCKED: recent-session close coverage and point-in-time index data/rights gates remain unresolved. No constituent model or trading result exists.
+
+## E0027 — 2026-10-31 — C1 source rights and coverage
+- Official NIFTY IWF methodology requires exclusions beyond ordinary promoter/public ownership roll-ups; quarterly ownership summaries are not official index weights.
+- NSE website terms restrict systematic automated collection and copying/reuse. Remote NSE scraping remains disabled pending permission/licence confirmation.
+- Dhan v2 historical intraday documentation covers active instruments and 90-day request windows; it does not guarantee inactive/delisted constituent history.
+- Impact: C1 remains blocked; no panel/model was created. No further TOTP refresh was attempted.
+
+## E0028 — 2026-10-31 — Membership dataset is not a free-float weight dataset
+- **Observed:** An openly licensed CC BY 4.0 NIFTY 50 membership history is available, but the source's `weightage` column is blank. Its separate quarterly ownership table contains promoter/FII/DII/public/pledge roll-ups, not official IWF.
+- **Impact:** Membership intervals can reduce survivorship and membership-date errors, but cannot support index-weighted forecasts or exact basket reconstruction. Do not fill weights with equal weights, ownership percentages or market-cap proxies and call them NIFTY weights.
+- **Correction:** Import only the NIFTY 50 membership subset under its data licence with attribution, add the official 2026-09-30 WIPRO-to-BSE replacement and 103 month-end cardinality tests. Keep weights/IDs/corporate-actions and Dhan coverage as independent C1 blockers.
+- **Status:** Membership sub-gate PASS WITH LIMITATIONS; overall C1 OPEN/BLOCKED; no C2 model or strategy produced.
+
+## E0029 — 2026-10-31 — C1 membership audit under-specified Tata Motors corporate action
+- **Original issue:** Earlier 103/103 month-end assertion expected exactly 50 members on every date and did not account for the official temporary zero-price `DUMMYTATAM` index placeholder. The dataset also carried the new `TMPV` ticker backwards before its NSE effective date.
+- **Evidence:** NSE Indices 2025-10-07 release adds DUMMYTATAM at zero price effective 2025-10-14; 2025-11-13 release removes TMCV effective 2025-11-17. NSE circular NSE/FAOP/70882 changes TATAMOTORS -> TMPV effective 2025-10-24.
+- **Correction:** Replace historical TMPV alias with TATAMOTORS to 2025-10-23; start TMPV on 2025-10-24; add the dummy interval 2025-10-14 to 2025-11-17 with `market_data_required=FALSE`. Update count expectations to 50 for 102 month-ends and 51 only for 2025-10-31.
+- **Impact:** The earlier all-50 cardinality claim is superseded. Previous Actions run 41184751617 validated only the earlier four-test revision. New six-test workflow run is pending. No model or result used the flawed timeline.
+- **Status:** CORRECTED IN DATA; membership integrity CI passed in run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548), 6 tests. E0029 is closed for the point-in-time Tata symbol/dummy correction; broader C1 IWF/security/bar-coverage gates remain blocked.
+
+## E0030 — 2026-10-31 — Membership CSV serialization and audit sequencing caused CI failures
+- **Runs:** [41184902797](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41184902797) and [41184934278](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41184934278), both failed in the membership test step.
+- **Observed:** An unquoted comma inside the DUMMYTATAM `notes` field was parsed as an extra CSV column, shifting `member_type` / `market_data_required`. The second assertion saw the earlier 84-row machine audit because the test revision triggered before the updated audit JSON had landed.
+- **Correction:** Re-serialized the dummy row with valid CSV quoting and a comma-free note; verified 86 data rows × 11 columns, 85 unique symbols and no nonblank weightage. Ensured the updated audit JSON was committed before the next path-triggered test run.
+- **Status:** CLOSED. Post-fix run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) succeeded with 6 tests. No market/model data was changed or used.
+
+### E0030 resolution — 2026-10-31
+- Corrective run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548) succeeded; the dedicated membership workflow confirms **6 passed**. CSV column alignment and audit artifact sequencing issues are resolved.
+- E0030 is **CLOSED** for this test/data-format defect. Do not reopen unless a regression occurs. Broader C1 gates remain blocked independently.
+
+### E0029 resolution — 2026-10-31
+- The corrected 86-row membership ledger, Tata symbol boundaries and temporary zero-price placeholder are now validated by the six-test Actions run [41185169548](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41185169548).
+- E0029 is **CLOSED** for this specific corporate-action/interval correction. This does not certify all historic transitions, IWF weights or security-ID mappings.
+
+
+## E0031 — 2026-11-01 — Five-year-edge QA fixture counted special session as post-market
+
+- **Run:** [41252703953](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41252703953), test `test_analyse_intraday_range_excludes_2021_muhurat_date_and_postmarket_rows`.
+- **Observed:** 25 tests passed and one failed. The fixture expected `outside_regular_hours_bar_count == 1`, but the implementation returned 2 because the count used total rows minus regular-session rows and therefore included both the 2021-11-04 Muhurat special-session row and the 2021-11-05 15:45 post-market row.
+- **Correction:** Count post-market rows as outside regular hours only when they are not on an explicitly excluded special-session date; record special-session rows in the separate `special_session_excluded_bar_count`. The revised test suite passed 26/26 in run [41263593605](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41263593605).
+- **Impact:** This closes the offline counter/test defect only. The 2021-11-01–2022-01-29 full-universe data request has not passed; the later live attempt was blocked by Dhan authentication.
+- **Status:** CLOSED — offline logic and regression test. Historical 2021 coverage remains unverified.
+
+## E0032 — 2026-11-01 — Dhan live preflight blocked while Actions job appeared green
+
+- **Run:** [41263593605](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41263593605).
+- **Observed:** Dhan token generation returned HTTP 200 but no access-token field in two attempts. Sanitized diagnostics classify the provider response as `TOTP_REJECTED_OR_INVALID`; the configured access-token fallback then received profile HTTP 401. No security-master or equity-history endpoints were called. The preflight JSON correctly records `BLOCKED_PROFILE_HTTP_401`, but the script's reporting path exited with code zero, allowing the overall Actions job to appear successful.
+- **Correction:** Added a final workflow gate after sanitized diagnostics are committed. For non-PR/live runs, it requires `C1_DHAN_PREFLIGHT.json.status == PASS_ACTIVE_EQUITIES`; blocked/partial/no-result states now fail the Actions run. PR validation continues to run offline tests without secrets.
+- **Security:** No token, PIN, TOTP seed, raw provider body, security ID or raw candle was added to logs.
+- **Impact:** No new market data was acquired in this run. Prior successful samples remain valid only for their stated dates and scope.
+- **Status:** CLOSED for the authentication blocker. Protected run [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250) generated a fresh token on the first attempt, confirmed an active Data API plan and recorded a 0-second Dhan-server/runner clock difference. This proves the current protected flow works operationally; it does not establish which factor caused the previous response anomaly or imply that the user's configuration was incorrect. The same run correctly failed its separate data-quality gate because SHREECEM had one negative-volume row in the five-year-edge window.
+
+
+## E0033 — 2026-11-01 — Workflow status gate initially preceded diagnostics commit
+
+- **Observed during review:** The first workflow-gate patch in commit [8e31a7d](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8e31a7d813019733ccf23b07129f24d2a7cb7884) placed the new failing status check before the sanitized diagnostics commit step. A blocked live run could therefore have stopped before preserving its result.
+- **Correction:** Moved the gate to the end of the workflow, after the diagnostics commit, in commit [02c8074](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/02c8074750a65642ddf6078dd4abafce48c3f1fc). Read-back verified that the commit step precedes the fail-closed gate.
+- **Impact:** No live workflow was dispatched between the two revisions; no diagnostic result was lost. The corrected workflow commits sanitized evidence first and only then returns a failing conclusion for a blocked/partial live preflight.
+- **Status:** CLOSED — runtime verified in run [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250): sanitized diagnostics committed first; final gate then exited non-zero on `PARTIAL_OR_BLOCKED` as designed.
+
+### Runtime clarification — 2026-11-01
+- Inspection of the executed job steps for run [41263593605](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41263593605) shows that it did not execute the `Enforce live Dhan preflight result` step. The current C1 workflow source does contain that step after the sanitized diagnostics commit, but that later workflow revision has not yet been exercised by a subsequent protected live run.
+- Therefore run 41263593605 must be described as **offline tests PASS (26/26), live data gate BLOCKED, Actions job conclusion SUCCESS due to older workflow revision**. The later protected run [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250) executed the gate after diagnostics were committed; it failed on the explicit `PARTIAL_OR_BLOCKED` data status. The workflow's fail-closed runtime behavior is now verified.
+- Dhan authentication was subsequently recovered and is now CLOSED: protected run [41266897788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266897788) generated a fresh token on attempt one, confirmed profile HTTP 200 and an active Data API plan, and passed the final Dhan data gate. The diagnostic clock difference was -1 second.
+- This clarification does not change C1/C2 acceptance status.
+
+
+## E0044 — 2026-11-01 — Offline Dhan authentication tests missing runtime dependencies
+
+- **Run:** [41266339150](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266339150).
+- **Observed:** The newly added offline CI step failed during test collection with `ModuleNotFoundError: No module named 'pyotp'`. The membership workflow installed pytest only, but the imported Dhan token module and shared TOTP helper require `pyotp` (and requests).
+- **Correction:** Added explicit `pyotp` and `requests` installation to the offline workflow. Follow-up run [41266377005](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266377005) completed SUCCESS with **12 passed**.
+- **Impact:** No live auth request or market-data request was affected by this failed offline job. It was a CI dependency-setup error, not a TOTP/provider credential finding.
+- **Status:** CLOSED — required dependencies are explicit and the corrected offline suite passes.
+
+
+## E0045 — 2026-11-01 — SHREECEM five-year-edge data contains one negative-volume row
+
+- **Run:** [41266155250](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266155250).
+- **Observed:** In the 2021-11-01–2022-01-29 90-day edge check, SHREECEM returned all 61 regular sessions, all 61 anchor sessions and all 61 15:00–15:14 expiry-proxy sessions; timestamps were unique and OHLC/numeric checks passed. Exactly one finite negative volume row caused the OHLCV invariant to fail. The other 49 point-in-time constituents passed all checks.
+- **Correction/investigation:** Added a bounded, single-symbol diagnostic workflow to identify the offending timestamp only. It records no price/volume values, token or security ID. Its offline test caught an unsupported pandas `.dt.isoformat()` call before the live request; corrected it to format individual Timestamp values.
+- **Status:** CLOSED — the single-symbol diagnostic [41266690449](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266690449) located the negative-volume row at **2021-12-30 15:29 IST**. This is after the locked 15:15 target cutoff and outside the target-scope data. The QA checker now validates OHLCV strictly through 15:14 and separately records post-cutoff anomalies. The corrected full 50-stock edge range then passed 50/50 in [run 41266897788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266897788).
+
+
+## E0046 — 2026-11-01 — Standalone SHREECEM diagnostic could not import repository module
+
+- **Run:** [41266604463](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266604463).
+- **Observed:** Offline diagnostic tests passed 2/2, but direct execution of the diagnostic script failed before any Dhan request with ModuleNotFoundError: No module named live_api. Direct script execution had not added the repository root to sys.path.
+- **Correction:** Added the resolved repository root to sys.path before importing live_api or project scripts (commit 34e067d).
+- **Impact:** No authentication or data endpoint call was made by this failed diagnostic attempt. The full-universe Dhan preflight result from run 41266155250 is unchanged.
+- **Status:** CLOSED — corrected diagnostic run [41266690449](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266690449) passed. Repository root is added to `sys.path` before project imports; no Dhan requests were made by the failed run.
+
+
+## E0047 — 2026-11-01 — Pandas datetime accessor does not implement vectorized isoformat
+
+- **Run:** [41266547991](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266547991).
+- **Observed:** The bounded SHREECEM diagnostic's offline test failed with `AttributeError: 'DatetimeProperties' object has no attribute 'isoformat'`. Pandas supports `Timestamp.isoformat()` on individual values, not `.dt.isoformat()` as a vectorized accessor.
+- **Correction:** Convert the selected timestamp values to Python/Pandas Timestamp objects and call `isoformat()` per value.
+- **Verification:** The next diagnostic workflow [41266604463](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266604463) passed both offline tests before reaching the separate import-path issue E0046.
+- **Status:** CLOSED — regression test now protects the timestamp serialization.
+
+## E0048 — 2026-11-01 — 15:15 target-scope refactor referenced an uninitialised post-cutoff frame
+
+- **Runs:** [41266827905](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266827905) and [41266830527](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266830527).
+- **Observed:** Offline range tests failed with `NameError: post_cutoff_frame is not defined` after the first partial edit moved the volume diagnostic but had not yet created the post-cutoff frame in `analyse_intraday_range`.
+- **Correction:** Constructed `post_cutoff_frame` and the corresponding 15:15–15:30 mask explicitly, with target QA restricted to 09:15–15:14.
+- **Verification:** Live protected preflight [41266897788](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266897788) passed its 50-stock data gate; offline regressions [41266922851](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41266922851) passed **43/43**.
+- **Status:** CLOSED — the target cutoff is covered by tests for both negative in-scope and out-of-scope volume cases.
+
+
+## E0049 — 2026-11-01 — IWF unit-test file initially omitted from pytest invocation
+
+- **Runs:** [41269416939](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269416939) and [41269424179](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269424179).
+- **Observed:** The workflow path filter included tests/test_iwf_math.py, but its pytest command still listed only the pre-existing test files. The run passed **43 tests**, but none of the seven newly added IWF tests were executed. This was a CI coverage gap, not a test failure.
+- **Correction:** Added tests/test_iwf_math.py explicitly to the pytest command in commit 12d997bf51c12a5780abcd6a9836d69853327bd0.
+- **Verification:** Corrected push run [41269516064](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269516064) and PR run [41269519499](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269519499) both passed **50 tests**, including the seven IWF cases.
+- **Status:** CLOSED — path trigger and test command now both include the IWF test module.
+
+## E0050 — 2026-11-01 — Potential share-capital denominator mismatch in third-party IWF reconstruction candidate
+
+- **Observed during mathematical audit:** The third-party parser documents its reported shareholding-percentage base as total shares less shares underlying depository receipts (A+B+C2). The official NSE IWF guideline's worked example explicitly calculates IWF using (Total Shares - excluded shares) / Total Shares, then rounds to six decimals. These are different denominators and must not be conflated.
+- **Impact:** No project IWF, constituent weight, model or forecast was calculated from the third-party parser, so no model result is affected. The issue was caught before any data import.
+- **Correction/guard:** Added the official example as a regression fixture; the arithmetic helper accepts full total share capital and a deduplicated list of unique excluded positions, not percentage rollups. Added a separate 22-item exclusion-coverage check. All tests pass in [run 41269516064](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41269516064).
+- **Status:** OPEN as a source-reconciliation gate — verify denominator, share classes and C1/DR treatment against authoritative source records before any IWF reconstruction. No unlicensed source data was fetched.
+
+
+## E0051 — 2026-11-01 — Partial multi-file create and duplicate retry during public-source proxy implementation
+
+- **Observed:** A batched file-create operation committed some of the requested new proxy artifacts before returning an interrupted/blocked response. A retry against the already-created utility file returned GitHub HTTP 422 because the path existed and the create operation did not include its current SHA.
+- **Correction:** Re-read the branch tree and fetched the existing utility/report/aggregate-summary files; verified their contents and blob SHAs. Created the one missing test file separately and then wired it into the workflow.
+- **Impact:** No existing file was overwritten, no data artifact was duplicated, and no research calculation was affected.
+- **Status:** CLOSED — all expected proxy files were individually read back. Workflow regression run is the next verification step.
+
+
+## E0052 — 2026-11-01 — BUP-01 plan validator rejected v1.2 due missing version-history line
+
+- **Run:** [41272355566](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272355566).
+- **Observed:** The first v1.2 plan edit changed the registered plan version but the text patch did not add the exact required history marker `- **v1.2 —`. The structural governance workflow correctly failed before running governance tests.
+- **Correction:** Appended a controlled v1.2 version-history entry documenting the user's public-source ETF-proxy amendment. No pre-registered statistical thresholds or original outcome definitions were removed.
+- **Verification:** Corrected push/PR governance validation is pending; no empirical test or model was run under the failed plan validation.
+- **Status:** CLOSED — C0 validation run [41272603916](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272603916) completed successfully with the corrected v1.2 validator and regression suite.
+
+
+## E0053 — 2026-11-01 — BUP-01 plan tests still asserted the previous protocol version
+
+- **Run:** [41272427814](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272427814).
+- **Observed:** After the v1.2 validator fix, structural validation passed, but two legacy assertions in `tests/test_constituent_weekly_plan.py` still expected plan version 1.1 and the old stop-rule wording ("Stop at C1").
+- **Correction:** Updated the assertions to require v1.2, retain the v1.1 expiry-proxy history, verify the v1.2 ETF-replica amendment, and check the new split between the confirmatory and exploratory gates.
+- **Impact:** The plan methodology was not invalid; this was stale regression-test text.
+- **Status:** CLOSED — C0 validation run [41272603916](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272603916) completed successfully with plan v1.2 assertions.
+
+
+## E0054 — 2026-11-01 — C1 commit fan-out ran C0 governance and duplicated PR/push checks
+
+- **Observed:** On the C1 branch push, the broad phase/constituent-* trigger in constituent-weekly-research.yml ran the C0 registration job (run [41272603916](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272603916)). This was a successful but semantically misplaced governance run. The offline-regression workflow also listed tests/test_iwf_math.py twice and ran the same suite on both push and PR events. The authorised-source audit likewise ran twice for the same C1 change.
+- **Correction:** Restrict the governance workflow push trigger to phase/constituent-weekly-outcomes-c0; make the offline-regression and authorised-source audit workflows PR/manual checks rather than repeated push+PR checks; remove the duplicate IWF test invocation.
+- **Impact:** No data, labels or model output was affected. The correction reduces redundant runs and prevents C1 changes from being misrepresented as C0 registration activity.
+- **Verification:** Latest pre-correction runs [41272606532](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272606532), [41272606507](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272606507) and [41272606502](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41272606502) all succeeded. Corrected workflow validation is pending.
+- **Status:** CLOSED — C0 governance trigger is restricted to the C0 branch; subsequent C1 validation runs completed without C0 governance fan-out.
+
+
+## E0055 — 2026-11-01 — AMC metadata probe workflow omitted pytest
+
+- **Run:** [41274822097](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274822097).
+- **Observed:** Python dependency installation succeeded, but the parser-regression step stopped before source retrieval because the dedicated probe workflow installed requests, BeautifulSoup, pandas and xlrd but not pytest.
+- **Correction:** Added pytest explicitly to the workflow dependency install command. The source-probe step will run only after its tests execute.
+- **Impact:** No AMC workbook was requested or parsed by this failed run; it does not indicate a source-access or data-availability failure.
+- **Status:** CLOSED — subsequent probe resolved and parsed both required recent monthly workbooks.
+
+
+## E0056 — 2026-11-01 — AMC page rendered archive links not discoverable as ordinary .xls anchors in runner HTML
+
+- **Run:** [41274888924](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274888924).
+- **Observed:** All four parser tests passed. The discovery parser returned no matching links for September 2026, February 2026 or April 2019, although the rendered official AMC archive page lists those monthly portfolio items. No direct workbook request was made in that run.
+- **Investigation:** The rendered official page exposes direct download URLs for September 2026 and February 2026; the underlying page response available to the runner does not expose those as ordinary anchor hrefs matching the initial parser's assumptions. The AMC links use a regular month-end filename pattern.
+- **Correction:** Retain page discovery when available and add a deterministic month-end URL fallback. The filename pattern is checked against the direct September 2026 and February 2026 download URLs surfaced from the official AMC page. April 2019 remains a candidate to be empirically checked in the next run.
+- **Impact:** No holdings workbook was downloaded in the failed discovery run; no data or research result is affected.
+- **Status:** FIX COMMITTED — close after the new run's HTTP and schema results are inspected.
+
+
+## E0057 — 2026-11-01 — AMC workbooks served as XLSX despite .xls filenames; report commit raced with concurrent push
+
+- **Run:** [41274969265](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41274969265).
+- **Observed:** The five parser tests passed. September 2026 and February 2026 URLs returned HTTP 200, but the payloads were XLSX containers while the filenames ended in .xls; xlrd correctly rejected those files. The guessed April 2019 URL returned HTTP 404. The workflow created the sanitised report, but its commit push was rejected because another commit had advanced the same C1 branch during the job.
+- **Correction:** Detect workbook type by file signature (XLSX ZIP signature -> openpyxl; legacy OLE XLS -> xlrd), install openpyxl in the workflow, and rebase the sanitized report commit onto the latest branch before pushing.
+- **Impact:** No constituent holdings values were published. Two recent AMC files are reachable, but schema parsing and the historical URL remain unverified.
+- **Status:** FIX COMMITTED — validate in the next probe run; close only after successful schema parsing and a successful report push.
+
+
+## E0058 — 2026-11-01 — Recent AMC download responses returned unrecognised file signatures
+
+- **Run:** [41275027813](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275027813).
+- **Observed:** Seven offline parser and file-signature tests passed. The September 2026 and February 2026 requests both returned HTTP 200, but the downloaded bytes did not begin with either the XLSX ZIP signature or the legacy XLS OLE signature; the guessed April 2019 URL returned HTTP 404. The metadata probe therefore failed closed before reading workbook contents.
+- **Correction/investigation:** Added a browser-style User-Agent, Accept and Referer header; the next run records only response content type, byte count, SHA-256 and the first 12 bytes as hex. No response body, workbook rows or holdings values are emitted.
+- **Impact:** No constituent holdings or weights were parsed or admitted. A 200 status alone is not treated as successful file retrieval.
+- **Status:** CLOSED — run [41275178244](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275178244) found valid XLSX ZIP signatures and parsed both recent workbooks.
+
+
+## E0059 — 2026-11-01 — XLSX signature predicate was double-escaped in the first container-detection implementation
+
+- **Run:** [41275096839](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275096839).
+- **Observed:** The run's report showed content type application/vnd.ms-excel, 1,352,141 bytes and ZIP magic prefix 504b03041400060008000000 for September 2026, and 1,206,358 bytes with the same ZIP prefix for February 2026. Yet workbook_engine rejected both because its Python bytes literal contained double-escaped backslashes rather than the ZIP bytes.
+- **Correction:** Replaced string-style signature literals with bytes.fromhex("504b0304") for XLSX and bytes.fromhex("d0cf11e0") for legacy XLS; updated unit fixtures accordingly. The same commit adds the pull --rebase command to the report-commit step (the earlier run used the workflow version before that correction).
+- **Impact:** No raw workbook body or holdings values were recorded. The direct archive URL works at the transport layer, but actual schema is still unverified. April 2019 candidate remains HTTP 404.
+- **Status:** CLOSED — exact-byte XLSX signature detection passed; E0060 separately tracks the concurrent report-push issue.
+
+
+## E0060 — 2026-11-01 — AMC probe report auto-commit raced with parallel C1 branch updates
+
+- **Run:** [41275178244](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275178244).
+- **Observed:** The parser and schema probe completed successfully, but the report auto-commit's single git pull/rebase was followed by another C1 branch update before push. GitHub rejected the push because the ref had advanced again.
+- **Correction:** The successful sanitised report is committed through the repository Git data API. The workflow publisher is upgraded to bounded fetch/rebase/push retries; it never force-pushes.
+- **Impact:** No research result or raw data was lost. The report is now committed at C1; no raw holdings or workbook data are stored.
+- **Status:** CLOSED — bounded publisher verified by successful workflow [41275487989](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41275487989); all probe steps and report publication completed successfully without force-push.
+
+
+## E0061 — 2026-11-01 — Official Nippon archive lower bound was under-reported
+
+- **Observed:** The initial historical archive note said the visible Nippon India monthly portfolio index began in September 2013.
+- **Root cause:** The earlier page inspection did not inspect the final older archive lines.
+- **Correction:** Re-opened and searched the full rendered official archive. It explicitly lists monthly portfolio files down to 30 September 2012 (lines 555–561 of the source page), including the April 2019 entry elsewhere in the same index.
+- **Impact:** The archive discovery range is corrected to September 2012. This does not imply every file in the range is downloadable, legally reusable, or present without gaps.
+- **Status:** CLOSED — audit, status, source register and README summaries updated. No model input or empirical data were altered.
+
+
+## E0062 — 2026-11-01 — AMC metadata probe regression test mixed AMC and scheme records
+
+- **Run:** [41276748532](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41276748532).
+- **Observed:** Three of four metadata sanitisation tests passed. One fixture placed both AMC and scheme records in the same list; the generic recursive matcher correctly returned the scheme record for the “Nippon” filter as well, while the test incorrectly expected an AMC-only result.
+- **Root cause:** The fixture did not reflect the actual distinct `/amcs` and `/amc/{id}` endpoint payloads.
+- **Correction:** Split the test into independent AMC-list and scheme-detail payload fixtures. Keep the recursive matcher unchanged; it is intentionally designed to search nested manifest structures.
+- **Impact:** The failure occurred before any network probe. No API data or holdings files were requested, and no source or model result was affected.
+- **Status:** CLOSED — follow-up [run 41277022940](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41277022940) passed all 4 tests, fetched the metadata endpoints successfully, and committed the sanitized report. The manifest returned no historical source links; that is a source-discovery outcome, not a test failure.
+
+## E0063 — 2026-11-01 — Membership cross-source regression had an incorrect expected month count
+
+- **Run:** [41289838557](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289838557).
+- **Observed:** The membership comparison reached the assertion that expected 79 monthly observations, but the generated date list contained 103 month-ends.
+- **Root cause:** A manual tally was wrong. The period April 2018 through October 2026 inclusive is 103 calendar month-ends; the comparison loop itself covered the full period and found no membership-set differences.
+- **Correction:** Changed the regression assertion and test name to 103 month-ends, then reran the full C1 regression suite.
+- **Result:** [Run 41289992040](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41289992040) completed SUCCESS. The membership regression and all other tests passed.
+- **Impact:** No membership mismatch or data change was found; this was a test expectation/reporting arithmetic error.
+- **Status:** CLOSED — corrected test passed in CI.
+
+
+
+## E0064 — 2026-11-01 — Double-escaped month regex hid valid YYYY-MM labels in source metadata
+
+- **Observed:** The mfdata month parser used a raw regular expression containing a doubled backslash before the digit token. The regex therefore searched for a literal backslash rather than matching calendar digits.
+- **Root cause:** Regex escaping was doubled when the source code was generated or edited; the original test fixture did not expose it.
+- **Correction:** Fixed the recursive mfdata month parser. Added month-gap coverage tests and a first/last month extraction check.
+- **Validation:** [Actions run 41297143071](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41297143071) passed all 13 metadata/parser tests after the fix.
+- **Impact:** This was a date-metadata parsing defect only. The original discovery result contained no admitted holdings values; no historical data were fabricated or modelled.
+- **Status:** CLOSED — corrected parser and regression suite passed.
+
+
+## E0065 — 2026-11-01 — mfdata.in discovery endpoints returned HTTP 522 from hosted Actions runner
+
+- **Run:** [41297143071](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41297143071).
+- **Observed:** The documented /api/v1/search, the /api/v1/families catalogue fallback, and the legacy /api/v1/schemes search fallback each returned HTTP 522 with no response body. No family ID was available and the dedicated family holdings-history route was not called.
+- **Interpretation:** This is an upstream/gateway timeout for all bounded discovery requests. It is **not** evidence that the service has no NIFTY 50 families or no historical month records.
+- **Control:** Three discovery routes only; no repeated polling, no token/secrets use, and no holdings-value endpoint was called. The workflow completed, tested offline logic and committed the sanitised status.
+- **Next action:** Leave this source inconclusive. Revisit only when the provider responds from an authorised/reliable network route; do not loop requests. Cross-check another independent AMC archive in parallel if the phase gate requires further progress.
+- **Status:** OPEN / EXTERNAL SOURCE ACCESS BLOCKER. No model inputs were admitted.
+
+
+
+## E0066 — 2026-11-01 — New mother-source URL tests omitted the private payload-shape import
+
+- **Run:** [41298283454](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41298283454).
+- **Observed:** 13 existing tests passed; two newly added tests failed with NameError because the test module called _payload_shape without importing it.
+- **Root cause:** The test cases were appended after the import block without adding their helper to that block.
+- **Correction:** Import _payload_shape explicitly in tests/test_amcs_fund_metadata.py. No production code or source data were changed by the failed run.
+- **Impact:** The metadata API probe was skipped by the workflow's test gate; no live source request was made.
+- **Validation:** Follow-up [Actions run 41298336318](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41298336318) completed SUCCESS; the offline metadata-sanitisation tests, live metadata probe, job summary and sanitized report commit all completed.
+- **Status:** CLOSED — missing import fixed and workflow rerun passed.
+
+
+
+## E0067 — 2026-11-01 — v1.3 plan regression fixtures retained two obsolete strings
+
+- **Runs:** [41299407476](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41299407476) and [41299414057](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41299414057).
+- **Observed:** The shared offline regression step reported 43 passed and 2 failed. Both failures were assertion text mismatches: the membership bullet begins with a capital letter, and the legacy assertion expected the v1.2 phrase "exploratory gate" after v1.3 had retired the ETF proxy path.
+- **Root cause:** Unit-test strings were not aligned with the final v1.3 wording; no mathematical, data, authentication or prediction-code failure was observed.
+- **Impact:** The Dhan live test step was correctly skipped because its preceding offline test gate failed. These runs do **not** indicate a Dhan authentication/API failure.
+- **Correction:** Updated assertions to match the current plan wording and to check the explicit v1.3 exclusion of historical free-float/ETF weights from the active gates.
+- **Status:** FIX COMMITTED — awaiting automatic offline validation.
+
+
+## E0068 — 2026-11-01 — C1 continuous coverage auditor first-pass corrections
+
+- **Status:** FIX COMMITTED — validate in offline regression workflow.
+- **Issues found during resumed review:** the new test module contained invalid Python identifiers beginning with digits; the member-fraction calculation divided a list by an integer instead of dividing its length; the accepted-cycle counter retained an old field name; the output printer retained stale variable names after refactoring; and partial target-day results were being marked cache-complete.
+- **Corrections:** use legal test names; calculate member fraction as len(valid_members)/member_count; require 104 prior accepted coverage cycles; print from the canonical summary dictionary; mark a chunk cache-complete only when every requested target date passes; respect the Dhan five-year floor with its one-day margin; explicitly flag HDFC Ltd merger and Tata Motors demerger target-crossing cycles for exclusion from the coverage-eligible panel.
+- **Important distinction:** the coverage audit reports data availability separately from complete corporate-action treatment. A passing data-coverage gate does not itself pass C1 identity/action governance or authorise C2 modelling.
+
+
+## E0069 — 2026-11-01 — Canonical membership ticker differed from point-in-time exchange symbol (LTIM/LTM)
+
+- **Observed:** The project membership ledger stores the LTIMindtree NIFTY 50 interval 2023-07-13 to 2024-09-30 under canonical symbol LTM, but the exchange-traded symbol during those dates was LTIM. NSE circulars confirm LTIM→LTM effective only 2026-02-27.
+- **Root cause:** The canonical membership source normalizes rename chains to the terminal/current symbol; it is not by itself a point-in-time traded-ticker ledger.
+- **Correction:** Added security_alias_history.csv, security_corporate_action_events.csv and a tested point_in_time_symbol() resolver. The resolver maps canonical LTM to actual LTIM for dates before 2026-02-27, and records other major symbol changes and action events.
+- **Impact:** The C1 data coverage audit still requests the current LTIMindtree instrument using the current security ID, which resolves the same listed security. The correction is needed for point-in-time feature panels, provenance and historical labels. No model or stock return label was trained on the incorrect alias.
+- **Validation:** [Actions 41302695594](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41302695594) passed 61 tests including the new alias regressions.
+- **Status:** CORRECTED FOR C2 IDENTITY RESOLUTION; exhaustive corporate-action/adjustment audit remains OPEN.
+
+
+## E0070 — 2026-11-01 — C1 intraday coverage passed but publication rebase conflicted
+
+- **Run:** [41301447865](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41301447865).
+- **Observed:** Dhan audit completed SUCCESS and reported 258/258 valid NIFTY target pairs; 258/258 stock coverage cycles met the 47 / at least 94% gate; 154 confirmatory cycles after warm-up; zero unresolved active symbols; 1,083 requests across 21 windows. The final explicit gate step printed PASS.
+- **Failure point:** The later git pull --rebase conflicted on STATUS.md and RESEARCH_LOG.md due concurrent C1 commits.
+- **Artifact issue:** No Actions artifact upload step existed, so per-cycle/per-symbol QA was not retained. Logs preserve aggregate counts and the partial-window caveat.
+- **Correction:** A durable summary JSON/report is committed. The workflow now uploads sanitized artifacts before publication and regenerates status/logs from the latest branch with bounded retries.
+- **Impact:** Intraday target-data sub-gate PASS; C1 overall remains NOT PASSED pending daily OHLCV feature history and full corporate-action adjustment validation.
+- **Status:** DATA RESULT RECORDED; publisher fix committed for next validation.
+
+
+## C1 daily OHLCV coverage audit — 2026-11-01T12:47:45.759152+00:00
+
+- **Status:** PARTIAL_OR_BLOCKED_RUNTIME_ERROR.
+- **Sanitized failure category:** NameError.
+- **Requests completed:** 1.
+- **Impact:** daily feature-source coverage remains unproven; C2 is not unlocked.
+
+## E0072 — 2026-11-01 — Daily audit regression fixture/dependency corrections
+
+- **Observed:** The combined offline suite ran after the daily-auditor syntax correction: 84 tests passed and 3 failed.
+- **Causes:** the common offline workflow did not install `cryptography`, required by the AES-GCM cache test; the synthetic NSE fixture incorrectly counted a BE-series row as EQ; and the test module omitted the `Path` import.
+- **Corrections:** install `cryptography` in the common offline workflow; count only the matching ticker and EQ series in the fixture expectation; add the missing `Path` import.
+- **Interpretation:** these were test harness/fixture defects, not evidence of a live data-source failure. No live TejHQ/HDFC fallback result is claimed until the corrected test gate passes.
+
+## E0073 — 2026-11-01 — Earlier incomplete intraday coverage summary superseded by full artifact
+
+- **Observed:** The interim result JSON retained a prior incomplete run summary (77/258 NIFTY targets; 64 accepted cycles) even though a later full run had been uploaded as a sanitized artifact.
+- **Evidence:** Full run [41309632317](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41309632317), artifact 13086220727, contains all 258 cycle results and date-level index chunk QA. It reports 258/258 NIFTY target pairs and 258/258 stock-input cycles accepted; 154 confirmatory cycles after warm-up; 98% minimum member coverage; zero unresolved active symbols; and 1,083 requests.
+- **Partial-window root cause:** 2024-04-26's 15:14 check failed while its 10:00 anchor passed. 26-Apr was an anchor-only date for the cycle ending 2024-05-02; the actual 2-May expiry proxy passed. The generic 15:14 check on every day in the 90-day window incorrectly made the window appear partial for a date that was not an expiry target.
+- **Correction:** Updated the authoritative result JSON, coverage report, status and README to identify the later full artifact as current evidence. The earlier 77/258 run remains historical evidence but is superseded.
+- **Impact:** Intraday target-data sub-gate PASS. Overall C1 remains NOT PASSED pending daily OHLCV gap resolution and exhaustive corporate-action/adjusted-return validation.
+
+## E0074 — 2026-11-01 — Daily fallback residual-date diagnostics were stale or incomplete
+
+- **Observed:** The live daily audit completed with 106,385/106,392 valid member sessions (99.9934%). HDFC received 1,295 valid TejHQ fallback sessions, leaving six missing sessions, but its displayed missing-date sample still showed the first 20 Dhan-unavailable dates. The TATAMOTORS cross-check reported only 2/3 dates checked and matched, without identifying the missing comparison date.
+- **Root cause:** The fallback merge updated the residual missing count but did not recompute its date sample after accepted fallback rows. The cross-source comparator retained only aggregate match counts and omitted per-source date-presence diagnostics.
+- **Correction:** Recompute exact residual date samples only when the source sample is complete; preserve an explicit incomplete marker when it is truncated. Emit sanitized date-only Dhan/TejHQ presence and missing-date arrays for cross-source comparisons. Keep Tata acceptance strict: every registered comparison date must have one row from each source and match; no bar is inferred or inserted when the comparison is incomplete.
+- **Validation:** Added regression tests for post-fallback residual dates, truncated missing-date samples and date-only Tata source diagnostics. The next daily workflow rerun is the live validation.
+- **Impact:** Reporting/diagnostic correction only. The 99.9934% first audited coverage remains provisional pending exact residual-date review; no stock label, model or trading strategy is changed, and C2 remains gated.
+
+
+## E0075 — 2026-11-01 — Encrypted TejHQ cache path mismatch
+
+- **Observed:** Consecutive daily audits re-downloaded all seven TejHQ annual NSE partitions and reported zero encrypted cache hits, despite successful Actions cache restore/save steps.
+- **Root cause:** The configured cache path contained a literal leading `~`. Python `Path()` does not expand that token, so the audit wrote encrypted files to a relative directory while GitHub Actions cached the runner's home-directory path.
+- **Correction:** Added `resolve_tejhq_encrypted_cache_dir()` using `Path.expanduser().resolve()` and a regression test for both home-relative and explicit absolute paths.
+- **Validation:** Commit [021aac8](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/021aac89ce7d26d808e53fffc79fd7c1037ac669) triggered run [41317402483](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41317402483). The first corrected run had no previous cache to restore, downloaded seven partitions and successfully saved the encrypted cache (87,911,829 bytes) under the pinned revision/run-specific key. A subsequent run must confirm nonzero cache hits before reuse is declared verified.
+- **Impact:** No market-data values or daily coverage counts changed. This is a repeat-download/cache-location defect; raw market rows and credentials were not committed.
+
+
+## E0076 — 2026-11-01 — First corporate-action cache was cold, not a path failure
+
+- **Observed:** The corporate-action workflow restored the existing daily-history cache successfully but reported zero action-partition cache hits and downloaded nine annual action partitions.
+- **Root cause:** The restored daily cache contained the seven raw NSE equity bhavcopy partitions, not the separate `actions/nse_YYYY.parquet` corporate-action partitions. The action-specific cache entries did not exist yet. The corporate-action run then saved its nine encrypted action partitions to its own run-keyed cache entry.
+- **Correction:** No code-path correction was needed for this first action-cache miss. The daily and corporate-action workflows use the same absolute `${{ runner.temp }}/bup01-tejhq-encrypted` directory, and both use the same revision-scoped restore prefix. Added an encrypted action-partition round-trip regression to prove that a first call downloads/encrypts and a second call decrypts/reuses without downloading again.
+- **Validation:** Corporate-action run [41319736877](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41319736877) restored the cache created by 41318960367 and reported 9/9 yearly action partition hits; zero action partitions were downloaded. Its 13/13 action/identity tests also passed. Cache reuse is now verified.
+- **Impact:** No event counts, market values or labels changed. This is cache warm-up, not a data-integrity failure.
+
+## E0077 — 2026-11-01 — Corporate-action catalogue is not an adjustment ledger
+
+- **Observed:** The first pinned NSE candidate catalogue found 18,393 rows (18,361 deduplicated), including 711 point-in-time constituent-symbol matches.
+- **Risk:** Treating source labels as confirmed events or applying a generic factor could corrupt return targets, particularly for rights, merger/demerger, buyback and extraordinary dividends. NSE's listed F&O contract-adjustment rules are not a universal total-return adjustment recipe for cash-equity historical features.
+- **Correction/guard:** Keep all factors unapplied. Require per-event exchange/issuer confirmation, event terms, ISIN/security identity, effective/ex-date, prior raw close and event-family-specific formula checks. Rights must use TERP inputs; merger/demerger must be scheme-specific; buybacks remain event features, not mechanical scale factors.
+- **Validation:** Candidate catalogue workflow [41318287855](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41318287855) succeeded; corporate-action gate remains NOT PASSED.
+- **Impact:** No stock label or target was adjusted. C2 remains locked.
+
+
+## E0085 — 2026-11-02 — Special-session calendar classification risk
+- Severity: Medium / data-calendar QA.
+- Observation: Seven residual daily OHLCV gaps were reported without a linked special-session calendar classification.
+- Cause: The coverage report exposed date-level gaps but not the exchange session type and hours. Ordinary daytime assumptions are unsafe for Muhurat dates and exceptional Saturday Budget sessions.
+- Evidence and correction: NSE circulars confirm all seven dates were genuine exchange trading sessions. The dated reconciliation is recorded in `research/constituent_weekly/C1_SPECIAL_SESSION_CALENDAR_RECONCILIATION.md`. All seven dates remain in the expected-session denominator; no value was imputed and no gap was waived.
+- Follow-up: independently obtain and validate each security/date bar, or document a pre-registered evidence-based exclusion. No model data or labels were changed.
+
+## E0086 — 2026-11-02 — Special-session audit parser precheck failed
+- **Severity:** Medium — audit execution blocked before external data retrieval.
+- **Run:** [41340624209](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41340624209).
+- **Symptom:** Five parser tests passed; the ISO-date UDIFF test failed because pandas with `dayfirst=True` interpreted an ISO string ambiguously, causing the target row to be missed. The live market-data query was skipped, so this run produced no bar-level finding.
+- **Root cause:** The normalizer applied day-first parsing to both ISO (YYYY-MM-DD) and day-month text dates.
+- **Correction:** Split ISO dates from non-ISO dates and parse the ISO subset with explicit `%Y-%m-%d`; retain day-first parsing only for exchange text formats. Add the regression assertion and make artifact/publish steps success-gated so precheck failures do not create cascading publish failures.
+- **Status:** Correction committed; rerun required. No prices were changed, no missing bars were imputed, and no coverage credit was granted.
+- **Prevention:** Keep regression tests for legacy CM, modern sec_bhavdata_full and UDIFF date schemas; require offline tests to pass before any network request.
+
+## E0087 — 2026-11-02 — Independent-source calendar coverage limitation
+
+- Class: Data-source coverage limitation, not a market-data disagreement.
+- Observed: pinned independent NSE bhavcopy mirror returned 4/7 valid exact-date EQ OHLCV rows; 3 dates had no EQ row in that mirror.
+- Limitation: the mirror collector enumerates weekdays only. It cannot prove absence for Sunday 2019-10-27 or Saturdays 2020-02-01 / 2020-11-14, all genuine special sessions.
+- Correction: treat mirror no-row as INCONCLUSIVE; retain all seven dates in the denominator; use a source with explicit special-session capture for remaining dates. No price was imputed.
+- Impact: no change to 106,385/106,392 daily coverage. C1 remains PARTIAL and C2 remains gated.
+
+## E0088 — 2026-11-02 — Direct NSE legacy bhavcopy parser used the wrong trade-date column
+
+- **Class:** Parser/schema mismatch; corrected before accepting the direct-NSE result.
+- **Observed:** Initial exact-date audit reported zero HDFC rows for three special sessions despite successfully downloading valid NSE ZIP/CSV archives.
+- **Cause:** Legacy CM bhavcopy headers use `TIMESTAMP` and `OPEN/HIGH/LOW/CLOSE`; the first parser expected `DATE1` and modern `*_PRICE` names. The OHLC fallback already supported legacy price columns, but the date parser did not read `TIMESTAMP`.
+- **Correction:** Parse `TIMESTAMP` as a supported trade-date field; rerun the exact three archives; verify one EQ row, OHLC invariants, nonnegative volume and matching ISIN per date.
+- **Outcome:** 3/3 direct NSE rows validated. The earlier 0/3 result is superseded and must not be used. Parser fix is committed; the expanded official-NSE audit subsequently validated 7/7 residual sessions.
+- **Impact:** No raw values were published. Original Dhan/TejHQ coverage remains unchanged until supplemental encrypted-cache integration.
+
+## E0089 — 2026-11-02 — Encrypted direct-NSE cache writer imported project module without its runtime dependencies
+
+- **Class:** Workflow dependency omission; corrected.
+- **Observed:** Initial cache-enhancement run failed with `ModuleNotFoundError: pyotp` while importing the shared encryption helper from the daily-history module.
+- **Correction:** Removed the heavy module import and implemented the exact same AES-GCM key derivation locally (`SHA-256` over the established BUP01 cache-key prefix plus the HF token), preserving compatibility with the shared cache format. The workflow now installs only requests and cryptography.
+- **Verification:** Rerun [41343953567](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41343953567) succeeded, restored the prior encrypted cache, validated 3/3 direct NSE rows, wrote the supplemental encrypted CSV cache, and saved the new cache key.
+- **Impact:** No raw data or token was committed. Cache persistence and daily feature-panel merge are now complete. Successful daily run 41344197015 reports 106,392/106,392 valid OHLCV sessions.
+
+
+
+## E0108 — 2026-11-02 — C1 research-log update payload error (RESOLVED)
+
+- A GitHub contents update was mistakenly issued with an empty replacement body for STATUS.md, RESEARCH_LOG.md and CONVERSATION_LOG.md while preparing the source-feasibility log append.
+- Immediately restored all three complete files from the preceding known-good commit and then appended the intended source-feasibility/status entries.
+- Verified restoration by comparing recovered file lengths and prior blob SHAs; no earlier log history was intentionally removed.
+- No market data, credentials, or research results were changed. Follow-up read-back verification is required before treating the correction as closed.
+
+
+
+## E0109 — 2026-11-02 — NSE archive probe URL path case (RESOLVED IN CODE; VALIDATION PENDING)
+
+- **Severity:** Medium — source retrieval would fail for the documented case-sensitive NSE archive paths.
+- **Root cause:** Static review found that the initial URL builder uppercased the entire historical archive path, including lowercase `/content/historical/`, rather than uppercasing only the month component.
+- **Correction:** Changed the builder to preserve `/content/historical/EQUITIES/` casing and uppercase only the three-letter month. Strengthened tests to assert the exact case-sensitive path.
+- **Impact:** The first automatic Actions run [41422655123](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422655123) did not reach the network stage because of E0110. Independently, the static URL-case defect was corrected before accepting any archive result; the follow-up run uses the corrected URL builder.
+- **Data/security:** No raw market or event data were changed or published. No credentials were exposed. The correction does not alter the C1 gate.
+- **Status:** **Resolved:** final run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062) passed with 4/4 schema-confirmed archives; canonical website archive route is recorded in the probe report.
+
+
+## E0110 — 2026-11-02 — NSE archive probe failed to import shared cache helpers (RESOLVED)
+
+- **Severity:** Medium — the live probe stopped before attempting any NSE archive request.
+- **Evidence:** Actions run [41422655123](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422655123), job log: `ModuleNotFoundError: No module named 'scripts'` when importing the shared AES-GCM cache helpers.
+- **Root cause:** Unlike the existing corporate-action auditor, the new standalone script had not inserted the repository root into `sys.path` before importing the shared helper module.
+- **Correction:** Added the repository root to `sys.path` before the import. The corrective commit triggers a new workflow run.
+- **Impact:** No NSE URL was requested and no archive/event data was acquired in the failed run. The probe report was not produced; the pre-existing catalogue artifact was still uploaded. No credentials were exposed.
+- **Status:** **Resolved:** run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062) imported the helper successfully, passed offline tests and completed the probe.
+
+
+## E0111 — 2026-11-02 — C1 workflow patch produced malformed YAML (RESOLVED)
+
+- **Severity:** Medium — one intermediate workflow revision was not valid and its run [41423069931](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423069931) failed before creating a job.
+- **Root cause:** A string-based edit inserted the changed-workstream shell block at an incorrect boundary and left malformed YAML.
+- **Correction:** Replaced the entire workflow file with a clean, complete YAML definition. The final workflow separates catalogue and archive-probe execution, keeps offline tests on every triggered run, preserves manual dispatch, and avoids rerunning the large TejHQ catalogue for probe-only changes.
+- **Validation:** The corrected workflow commit [98b4ba5](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/98b4ba5f0182a23140e1b649c41adcfc76f6553d) triggered run [41423171586](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423171586), queued behind the active run. **Resolved:** the corrected workflow was loaded in run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062); scope detection, offline tests, probe, cache save, artifact upload and report publishing all passed.
+- **Impact:** No research data, raw archive, model output or credential was changed by the malformed workflow. The failure was caught before source probe results were accepted.
+
+
+
+## E0112 — 2026-11-02 — One fixed probe date was an NSE trading holiday (RESOLVED)
+
+- **Severity:** Low — the date-selection design, not the archive source, caused one expected 404.
+- **Evidence:** Probe run [41422881110](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422881110) retrieved 3/4 archives. The missing date, 17-Apr-2024, was an official NSE equity-market holiday for Shri Ram Navami (NSE Capital Market Circular NSE/CMTR/59722 lists 17-Apr-2024 as Shri Ram Navmi. Source: https://nsearchives.nseindia.com/content/circulars/CMTR59722.pdf.
+- **Correction:** Replaced the holiday with 16-Apr-2024 and simplified the probe to the verified website archive path `/archives/equities/bhavcopy/pr/PRDDMMYY.zip`. Added an exact URL unit test and made PASS require all four fixed dates plus both sides of the naming transition.
+- **Validation:** Corrected run [41423292302](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423292302) is executing the updated probe-only path after offline tests. **Resolved:** corrected probe run [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062) confirmed 4/4 dates, including 16-Apr-2024.
+- **Impact:** The earlier 3/4 result still confirms archive/schema availability on 2018-04-02, 2025-10-14 and 2026-04-17, but is superseded for the fixed four-date acceptance test. No event-level verification or adjustment factor was performed.
+
+
+## E0113 — 2026-11-02 — Workflow discarded generated report files before publishing (RESOLVED)
+
+- **Severity:** Medium — the successful 4/4 runtime result was present in the Actions workspace/artifact but the branch report files remained at the prior 3/4 revision.
+- **Evidence:** Actions run [41423379012](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423379012) logged `C1_NSE_PR_PROBE PASS_FIXED_PROBE CONFIRMED 4`, but branch read-back still showed the older 09:45:49Z report. The publish step executed `git reset --hard origin/phase/constituent-weekly-outcomes-c1-data` after generation, discarding uncommitted report outputs before staging them.
+- **Correction:** Updated the publish step to copy all generated sanitised reports to a runner-temporary directory before the branch reset, restore them afterwards, then stage/commit/push. Removed self-triggering workflow-file path and retained targeted probe/test triggers.
+- **Retest:** Test commit [163565d](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/163565db3f439e78aeb8d72aeaba52c4ca32e01f) triggers a probe-only run using the corrected publisher. **Resolved:** corrected publisher ran successfully in [41423606062](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423606062); both the Markdown and JSON reports were fetched from the C1 branch and verified at 4/4.
+- **Data/security:** Raw archives remain encrypted in Actions cache; no raw event rows or credentials were published.
+
+
+## E0114 — 2026-11-02 — Known ISIN transition on split/bonus event initially treated as ambiguous (METHOD RESOLVED; SOURCE DISCREPANCY OPEN)
+
+- **Severity:** Medium — the first combined split/bonus sample was blocked by a too-strict one-ISIN-per-event assumption.
+- **Evidence:** Run [41425134622](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425134622) showed 11/11 valid raw sessions but two ISINs for BAJAJFINSV around the 13-Sep-2022 ex-date. NSE Circular NSE/CML/53597 confirms the new ISIN INE918I01026 was effective for trades from the ex-date; the previous ISIN was INE918I01018.
+- **Correction:** The diagnostic now checks the exact pre-ex-date and post-ex-date ISIN mapping from the official circular, rather than rejecting a valid corporate-action identity transition. Raw ISIN values are not published.
+- **Sources:** https://nsearchives.nseindia.com/content/circulars/CML53597.pdf ; https://archives.nseindia.com/content/circulars/FAOP53548.pdf
+- **Resolution:** Final run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727) verified the adjustment factor and exposed the exact one-session source identity discrepancy, now tracked separately as E0118.
+
+## E0115 — 2026-11-02 — ISIN-transition negative test had too few sessions (RESOLVED)
+
+- **Severity:** Low — the negative test returned the earlier insufficient-sessions guard before reaching the intended ISIN-transition assertion.
+- **Evidence:** Run [41425450786](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425450786): 5 tests passed, 1 failed; the fixture contained only one pre-ex-date session and two post-ex-date sessions, below the three-per-side minimum.
+- **Correction:** Expanded the fixture to three pre- and three post-ex-date sessions so the test reaches the intended transition check.
+- **Status:** Corrected in commit [8910990](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8910990d8892091dc9de27f50f39910a5a1f19a9); included and passed in final run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727).
+
+## E0116 — 2026-11-02 — Optional identity-source metadata caused a possible event-loop KeyError (RESOLVED BEFORE LIVE EXECUTION)
+
+- **Severity:** Low — RELIANCE has no ISIN-transition source field, while BAJAJFINSV does.
+- **Root cause:** Event metadata construction used direct dictionary indexing for an optional identity-source field.
+- **Correction:** Added a safe metadata helper using optional lookup and a regression test covering both events.
+- **Impact:** The earlier run failed in offline tests before executing the live diagnostic, so this defect did not affect any Dhan result or source data; the corrected final run passed the tests.
+- **Status:** Corrected in commit [8910990](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8910990d8892091dc9de27f50f39910a5a1f19a9); included in run [41425623117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425623117).
+
+
+## E0117 — 2026-11-02 — Dhan TOTP refresh transiently failed; bounded retry succeeded (RESOLVED)
+
+- **Severity:** High — the combined split/bonus diagnostic could not access Dhan daily history.
+- **Evidence:** Run [41425871917](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425871917) reported `auth_method=provided_token_fallback`, `token_refresh_status=FAILED_FALLBACK_USED`, then `BLOCKED_PROFILE_HTTP_401`. No Dhan daily-history request was made and no market data was acquired in this run.
+- **Context:** The preceding Dhan preflight on 2026-11-01 had a successful TOTP refresh (HTTP 200, one attempt, runner/server clock skew approximately -1 second). This is therefore a new authentication failure, not evidence that the API plan is inactive.
+- **Correction:** Added sanitised token-refresh diagnostics (HTTP status, response field names/types, attempt count and clock skew only; no token or secret values) to the next diagnostic report.
+- **Resolution:** Run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727) refreshed the token successfully via TOTP (HTTP 200, one attempt, approximately -1 second clock skew); profile/data plan passed. No user intervention is needed for authentication at this checkpoint. The remaining split/bonus identity warning is separately recorded as E0118.
+
+
+## E0118 — 2026-11-02 — BAJAJFINSV ISIN effective-date sources conflicted (CLOSED WITH ADJUDICATION)
+
+- **Severity:** Medium — the raw reference row retains the old ISIN on the 2022-09-13 ex-date, while the security used for trades from the ex-date is the new ISIN.
+- **Original diagnostic:** Run [41426184727](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41426184727) compared 11 sessions around the 13-Sep-2022 split/bonus. All OHLC relative event factors equal 0.1 (the expected combined 10x adjustment). The raw TejHQ reference first shows the new ISIN on 14-Sep.
+- **Adjudicating evidence:** NSE CML53597 explicitly says the new ISIN applies to trades on and from the 13-Sep ex-date; NSE Clearing FAOP53644 confirms the 5:1 split, 1:1 bonus, ex-date 13-Sep and combined adjustment factor 10; BSE Notice 20220908-17 reproduction likewise says the new ISIN applies to trades from 13-Sep. Sources: https://nsearchives.nseindia.com/content/circulars/CML53597.pdf ; https://archives.nseindia.com/content/circulars/FAOP53644.pdf ; https://www.marketscreener.com/quote/stock/BSE-LIMITED-33930062/news/New-ISIN-Number-of-Bajaj-Finserv-Limited-Scrip-Code-532978-41723564/
+- **Resolution:** Apply new ISIN INE918I01026 from 2022-09-13 inclusive in the derived point-in-time security mapping. Preserve the TejHQ row unchanged and flag its 13-Sep ISIN as stale source metadata; do not rewrite raw source data. The specific trade-effective clause controls over the preceding general 14-Sep wording.
+- **Implementation/evidence record:** [C1_BAJAJFINSV_ISIN_ADJUDICATION.md](research/constituent_weekly/C1_BAJAJFINSV_ISIN_ADJUDICATION.md).
+- **Status:** CLOSED WITH SOURCE-BASED ADJUDICATION. This closes only this one-day identity-date dispute; it does not close the wider 711-event corporate-action review or C1 overall.
+
+
+## E0120 — 2026-11-03 — Sequential repository writes caused avoidable repeated PR validation (CLOSED)
+
+- **Severity:** Low — workflow churn/time only; no research data or model result was affected.
+- **Cause:** The C1 protocol, status and log updates were committed as several sequential GitHub Contents API writes on an open PR branch instead of one batched tree/commit. Each branch update can re-trigger the PR's path-filtered C1 validation workflows.
+- **Impact:** Multiple distinct C1 validation jobs were observed running for the same PR head. This added avoidable CI load and could resemble the duplicate-workflow problem previously reported by the user.
+- **Correction:** Batch future related file updates into one Git tree/commit per logical research step; inspect the PR workflow matrix before pushing; do not create separate commits for each log file.
+- **Status:** CLOSED as a process correction. No force-push, workflow rerun or model retraining was initiated.
+
+
+## E0121 — 2026-11-03 — Intraday diagnostic runner import path omitted (CLOSED IN CODE)
+
+- Run [41507896770](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41507896770) authenticated successfully and completed the Dhan daily adjustment step, then failed before the intraday request with `ModuleNotFoundError: No module named 'live_api'`.
+- Cause: standalone script did not add repository root to `sys.path` before importing project modules.
+- Correction: add repository-root bootstrap and include the new diagnostic tests in the protected workflow test command.
+- Status: CLOSED. Protected queue run [41514027613](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41514027613) passed, including queue build and ciphertext upload.
+
+## E0122 — 2026-11-03 — Daily adjustment workflow gate expected obsolete status string (CLOSED IN CODE)
+
+- The workflow expected `PASS_BONUS_ADJUSTMENT_FACTOR`, but the script emits `PASS_ALL_EVENT_ADJUSTMENTS` or `PARTIAL_OR_BLOCKED`.
+- Corrected the gate to require both registered daily event diagnostics to pass. The adjudicated BAJAJFINSV 2022-09-13 source mismatch is now handled through a date-limited derived identity override; the underlying TejHQ row remains unchanged and the override is reported.
+- Status: fixed in code; next protected run must validate.
+
+
+## E0123 — 2026-11-03 — Second Dhan TOTP request in one job returned no token (CLOSED IN CODE)
+
+- **Evidence:** Protected run [41508838557](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41508838557) refreshed a valid token for the daily diagnostic, then the separate intraday script attempted another TOTP refresh. The second refresh returned HTTP 200 without an access-token field; the provided-token fallback was rejected by profile with HTTP 401. No intraday history request was made.
+- **Cause:** The workflow requested a second Dhan token within the same job even though the first step had just authenticated and verified the active Data API plan.
+- **Correction:** Export the validated ephemeral token only through GitHub Actions' private `GITHUB_ENV` file, mark it masked, and reuse it in the intraday step. Do not write the token to repository files, logs, artifacts or public Pages.
+- **Status:** CLOSED. Run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625) successfully reused the masked token, completed both daily and intraday tests, and passed both protected gates.
+
+
+## E0124 — 2026-11-03 — Ephemeral Dhan token handoff encoded a literal backslash-n (CLOSED IN CODE)
+
+- **Evidence:** Intraday diagnostic run [41509666199](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41509666199) completed the protected daily diagnostic and reached the intraday script, but the intraday result was `BLOCKED_RUNTIME_ERROR` with no minute-bar observations. The code review showed the `GITHUB_ENV` writer used a double-escaped newline, appending the literal two-character sequence `\\n` to the token value instead of terminating the environment assignment with a real line break.
+- **Impact:** The next workflow step received a malformed token value; the intraday API authorization failed before a valid data result was produced. No raw bars were published.
+- **Correction:** Changed the writer and its regression tests to use a real newline character and to reject actual CR/LF characters in the token. Token remains masked and transient in the Actions environment only.
+- **Status:** CLOSED. Run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625) confirms the token handoff and completed intraday classifications.
+
+
+## E0125 — 2026-11-03 — First intraday scale test conflated overnight movement with corporate-action adjustment (OPEN METHOD IMPROVEMENT)
+
+- **Evidence:** Protected run [41510216099](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510216099) successfully reused the single validated token and returned two preliminary close-to-close scale ratios: RELIANCE 1.002562; BAJAJFINSV 1.047470. Both fell near 1 rather than the raw event factors 0.5 and 0.1.
+- **Limitation:** The method compared the last five cum-date closes with the first five ex-date opens. The result includes the overnight market return, so it is not sufficiently strong as a corporate-action adjustment test even when the ratio is near 1.
+- **Correction:** Replace the primary gate with a same-session, cross-endpoint comparison: aggregate intraday OHLC for each sample date and compare with Dhan's adjusted daily OHLC for the same date. A pre-event scale near 1 indicates common adjusted scale; a pre-event ratio near 1/factor indicates unadjusted intraday bars against adjusted daily history. Retain the overnight ratio as a secondary diagnostic only.
+- **Result:** The same-session comparison passed both sampled events in run [41510761625](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41510761625): all pre-event and ex-date intraday/daily OHLC ratios were within 0.9940–1.0062 (RELIANCE) and 0.9965–1.0062 (BAJAJFINSV).
+- **Status:** CLOSED FOR THE TWO REGISTERED SAMPLES only. The earlier overnight test remains exploratory. Do not infer universal adjustment coverage from two event samples.
+
+
+## E0126 — 2026-11-03 — Intraday report retained obsolete overnight-method description (CLOSED)
+
+- **Cause:** The machine result and table used the stronger same-session intraday-versus-daily OHLC comparison, but the Markdown report's introductory method paragraph still described the earlier pre-close-to-ex-open method.
+- **Correction:** Updated the report generator and published report to state the actual same-session method, including the 2x/10x raw-scale alternative.
+- **Status:** CLOSED. The numerical output and acceptance gate were unaffected; the documentation is now aligned with the executed test.
+
+## E0127 — 2026-11-03 — NSE automated archive extraction rights gate formalised (CLOSED BY WORKFLOW RESTRICTION)
+
+- NSE's current Terms of Use prohibit systematic/automated website data collection without express written consent and restrict website-data use for gaming, virtual trading and simulation. NSE's Data Sharing & Usage Policy governs historical/corporate market data through agreements and restricts redistribution.
+- The four-date archive probe demonstrates technical availability only, not rights for a 711-event automated crawl or for this trading research/backtest.
+- Disabled the PR archive probe branch in `bup01-c1-corporate-actions.yml`, including manual dispatch. No further automated NSE PR archive fetch will occur absent written permission/suitable agreement covering the intended use.
+- Use Dhan's subscribed API for price-scale tests and issuer-first-party documents for event terms where access permits; otherwise mark event SOURCE_UNRESOLVED and exclude affected stock-cycles.
+- Status: CLOSED as a source-control measure; corporate-action C1 gate remains open.
+- Sources: https://www.nseindia.com/static/nse-terms-of-use ; https://www.nseindia.com/static/market-data/nse-data-policy
+
+
+## E0128 — 2026-11-03 — Private issuer queue script omitted repository-root import bootstrap (CLOSED IN CODE)
+
+- **Evidence:** Protected workflow [41513029040](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41513029040) passed the encryption unit tests, restored the existing encrypted TejHQ cache and then failed before queue construction with `ModuleNotFoundError: No module named 'scripts'`.
+- **Cause:** The standalone script imported C1 package modules before adding the repository root to `sys.path`.
+- **Correction:** Added repository-root bootstrap before project imports. The failure occurred before any candidate queue was created or uploaded; no cleartext event details were logged.
+- **Status:** CLOSED IN CODE; a fresh protected run must validate the fix.
+
+
+## E0129 — 2026-11-03 — Recipient-encrypted event queue had no matching private key in the active research runtime (CLOSED BY KEY ROTATION)
+
+- **Evidence:** The private queue build [41513398732](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41513398732) succeeded and uploaded ciphertext, but only its public recipient key was present in the repository. No matching private key was accessible to the research runtime, so the queue could not be decrypted for issuer verification.
+- **Impact:** Candidate counts were obtainable from the aggregate workflow log, but event-level work could not proceed from the ciphertext. The artifact was not published to Git or Pages.
+- **Correction:** Generated a fresh RSA-3072 recipient keypair outside GitHub. The private half is held only in the active local research runtime with filesystem mode 0600; the matching public half and its SHA-256 fingerprint are embedded in the queue builder. The private key is not committed, attached to a workflow, or uploaded.
+- **Status:** CLOSED. The replacement key produced a successful ciphertext artifact in [run 41514027613](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41514027613), which was authenticated and decrypted only in the private runtime. The private key remains uncommitted and unuploaded.
+
+
+## E0130 — 2026-11-03 — Two bonus-labelled candidates were non-equity debenture distributions (CLOSED AS CATALOGUE RECLASSIFICATION)
+
+- **Finding:** Issuer annual reports show two entries classified by the discovery feed as equity bonus events were actually distributions of non-convertible debentures to equity holders: one secured ₹30 debenture per share and one unsecured ₹29 debenture per share. They do not issue additional equity shares and must not be assigned a stock bonus factor.
+- **Impact:** Treating the rows as 1:1 equity bonuses would misstate share-count adjustment and risk double-adjusting the target/feature history. No such adjustment was applied to the frozen panel in this review.
+- **Correction:** Reclassify both candidates as non-equity security distributions. Preserve the event flag and separately assess their effect on equity prices; do not apply an equity split/bonus factor.
+- **Evidence:** Issuer annual reports: https://media.britannia.co.in/Annual_Report_2019_20_b376843dc6.pdf ; https://media.britannia.co.in/Annual_Report_2020_21_be3a70d511.pdf ; https://media.britannia.co.in/Annual_Report_2021_22_6eb6f3ae88.pdf
+- **Status:** CLOSED FOR CLASSIFICATION. Affected-cycle price impact remains in the C1 exclusion/identity gate.
+
+
+## E0131 — 2026-11-03 — Remaining buyback and AGM/other review queue scoped separately (OPEN TASK, NOT AN ERROR)
+
+- After the 37 complex event candidates were reviewed, the remaining non-dividend event set is 49 candidates (20 buybacks and 29 AGM/other).
+- Created a separate recipient-encrypted workflow so these two classes can be reviewed without changing or rerunning the completed 37-event queue. The queue is scoped to only these classes, has a 49-candidate acceptance count, and uploads ciphertext only.
+- No raw candidate rows, company identifiers, record dates, source subjects or prices are published.
+- Status: NEXT BOUNDED REVIEW BATCH.
+
+
+## E0132 — 2026-11-03 — “AGM/other” discovery bucket included buyback and dividend events (CLOSED AS FEED-CLASSIFICATION CORRECTION)
+
+- **Evidence:** Protected queue [41517328794](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41517328794) contained 49 unique secondary candidates. Source reconciliation reclassified one feed “other” as a buyback and three as dividends; 25 remained AGM/governance.
+- **Impact:** The initial bucket understated buybacks by one and dividends by three.
+- **Correction:** Corrected full 711-event classification to 17 equity bonuses, 2 non-equity NCD distributions, 9 splits, 6 rights, 3 mergers/demergers, 21 buybacks, 628 dividends and 25 AGM/governance. Arithmetic check = 711. No dividend, buyback or AGM adjustment factor is applied.
+- **Controls:** All 25 AGM entries are excluded from predictive features until actual public-notice timestamps are checked against the 10:00 IST forecast cutoff. Dividends preserve price-index semantics.
+- **Status:** CLOSED FOR CLASSIFICATION AND AGGREGATE COUNTS. Historical identity, adjusted-price continuity and affected-cycle exclusions remain open.
+
+
+## E0134 — 2026-11-03 — GitHub Actions expressions were over-escaped in the new cycle-audit workflow (CLOSED IN CODE)
+
+- **Evidence:** Initial workflow push [41523805932](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41523805932) started the audit job, but code review found that GitHub Actions expressions for the token, artifact path and cache path were committed with a leading backslash. Those inputs would be treated as literal strings instead of runtime expressions.
+- **Impact:** The job had not reached C2 artifact decryption or TejHQ event-data access when the defect was identified. No credential or raw event row was exposed.
+- **Correction:** Removed the unintended backslash from all GitHub Actions expression markers. The corrected push-triggered run must complete before any coverage result is accepted.
+- **Status:** CLOSED IN CODE; the protected retry must validate the correction.
+
+## E0135 — 2026-11-03 — Verified holiday-shifted weekly expiries were excluded from the C1/C2 calendar (OPEN UNTIL REBUILDS PASS)
+
+- Severity: High — weekly targets are defined by actual contract expiry dates; omission changes target windows and chronological splits.
+- Evidence: expiry_verification.csv contains contract-present rows marked verified_shifted_nifty_weekly_expiry for 2021-11-03 and 2025-10-20. The parser accepted only verified_nifty_weekly_expiry.
+- Impact: The corrected 2021-11-01 to 2026-10-30 calendar contains 260 cycles rather than 258. It restores 2021-11-08 to 2021-11-11 and splits 2025-10-15 to 2025-10-28 into 2025-10-15 to 2025-10-20 and 2025-10-23 to 2025-10-28. The old C2 panel and C3 results are superseded.
+- Downstream: C3's fixed holdout 206 would not represent the final 20% of 260 cycles; the corrected boundary is 208.
+- Correction: C1 and C2 parsers now accept the two verified expiry statuses only when the contract-expiry flag is true. Regression tests cover both shifted expiries and the October 2025 cycle split. C3 now derives the holdout boundary from the final-20% fraction.
+- Validation: C1 coverage, C2 rebuild and C3 rerun remain pending. The old event-cycle sensitivity result is superseded until recalculated on the new frozen C2 manifest.
+- Status: OPEN until automated C1/C2/C3 runs pass and cycle counts, dates and holdout boundaries reconcile.
+
+
+## E0137 — 2026-11-03 — C1 historical intraday requests rejected with HTTP 400
+- **Severity:** High — C1 historical target-coverage gate blocked.
+- **Run:** [41529572895](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41529572895).
+- **Observed:** Dhan profile authentication succeeded (HTTP 200) and the data plan was active. The 90-day audit completed 1,083 historical-data requests. Two index chunks and 70 stock-symbol chunks returned usable responses; 19 index chunks and 992 stock-symbol chunks were rejected with HTTP 400. Only 26/260 index target cycles and 13/260 stock-plus-index cycles passed.
+- **Diagnostic limitation:** The request helper currently reduces non-2xx responses to an HTTP status marker and discards the provider's response body. Therefore the exact Dhan rejection reason is not yet established; do not attribute it to date range, rate limiting, subscription entitlement, or a malformed payload without evidence.
+- **Next correction:** Preserve only sanitized provider error code/message fields (never headers, tokens, IDs, or raw market data), run a bounded single-request diagnostic against one known failing 90-day window, and test a shorter-window fallback only if the returned error supports it. Keep the C1 gate failed until coverage thresholds are genuinely met.
+- **Status:** Open. Existing report/artifact is retained as evidence; no C3 inference is authorized from the failed coverage run.
+- **External reference:** Dhan's current v2 documentation specifies 1-minute intraday candles, a maximum 90-day request window, epoch timestamps, and OHLCV response arrays: https://dhanhq.co/docs/v2/historical-data/.
+- **Security:** No credentials, access tokens, security IDs, raw prices, or private reasoning recorded.
+
+
+## E0138 — 2026-11-03 — Dhan response-diagnostic regression label mismatch
+- **Severity:** Low — diagnostic test gate only; no market-data conclusion affected.
+- **Run:** [41533794946](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41533794946).
+- **Symptom:** The new offline test expected `DHAN_INPUT_EXCEPTION_DH905`, while the classifier emitted `DHAN_DH_905`. Six other diagnostic tests passed; the live-provider probe was correctly skipped after the offline test gate failed.
+- **Correction:** Map `DH-905` to `DHAN_INPUT_EXCEPTION_DH905` and `DH-907` to `DHAN_DATA_ERROR_DH907`, without retaining provider message text.
+- **Follow-up:** Run [41534173076](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534173076) found one second assertion still expected the old `DHAN_DH_905` label (95 passed, 1 failed). Correct that remaining assertion too. The provider probe was skipped by the workflow's success gate.
+- **Status:** Offline regression suite passed in [41535628639](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535628639); bounded live diagnostic passed in [41534685957](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534685957).
+- **Prevention:** Update all existing assertions whenever a public diagnostic label changes.
+- **Security:** No credentials, raw provider messages, tokens, security IDs, or private reasoning recorded.
+
+
+## E0140 — 2026-11-03 — Serialize Dhan intraday acquisition and preserve sanitized provider errors
+- **Severity:** High — corrective control for repeated historical-data coverage failures.
+- **Evidence:** The expanded bounded diagnostic [41534685957](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41534685957) returned valid payloads for all seven exact index/active-stock requests covering failed C1 windows from 2022, 2023 and 2024. The same run passed the 16-symbol request burst. The only three failures among 33 cases were legacy HDFC daily-history requests returning DH-905 (input exception), outside the intraday target audit.
+- **Unresolved cause:** The original five-year C1 request helper discarded HTTP error bodies, so the specific error code for its 1,011 HTTP-400 requests is unknowable. C1 and C2 had overlapping Dhan acquisition jobs; combined configured request pacing may have contributed, but this is not proven. Dhan's documentation distinguishes DH-904 rate-limit errors from DH-905 input errors and Data API code 805 ("too many requests or connections; further requests may result in blocking"). Historical intraday rate guidance is stated differently across the API overview/release notes; do not assign rate limiting as the root cause without captured evidence.
+- **Correction:** Add whitelisted, sanitised Dhan error-code/type/category fields; never retain provider message bodies. Retry only explicit DH-904 with bounded backoff. Do not automatically retry DH-905, DH-907 or Data API 805. Pace each job at one request per second and place C1/C2 on a shared Actions concurrency group so their live Dhan jobs do not overlap.
+- **Status:** Offline regression tests passed; serialized five-year C1 rebuild [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975) is in progress. C2 rebuild [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) is queued behind it.
+- **Security:** No raw provider messages, tokens, credentials, security IDs or market prices are recorded.
+
+
+
+## E0141 cross-phase update — stable C2 cache key
+- C2's daily/intraday AES-GCM cache previously used the rotating Dhan access token as its encryption key. It now uses the stable HF_TOKEN-derived key, so source cache data can persist across Dhan token refreshes.
+- Original queued C2 run [41535897423](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535897423) was cancelled before execution when this fix was committed. Replacement [41536746133](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41536746133) is queued behind C1 run [41535616975](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41535616975).

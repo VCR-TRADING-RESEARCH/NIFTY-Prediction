@@ -1,0 +1,103 @@
+name: BUP-01 Dhan equity data preflight
+
+on:
+  push:
+    branches:
+      - "phase/constituent-weekly-outcomes-c1-data"
+    paths:
+      - "scripts/refresh_dhan_token.py"
+      - "scripts/dhan_auth.py"
+      - "scripts/constituent_weekly/update_c1_dhan_status.py"
+      - "live_api/app.py"
+  pull_request:
+    branches:
+      - "phase/constituent-weekly-outcomes-c0"
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bup01-c1-market-data-${{ github.repository }}-${{ github.event_name == 'pull_request' && github.workflow || 'push' }}
+  cancel-in-progress: false
+
+jobs:
+  dhan-equity-preflight:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout C1 data branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install project and live API dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r live_api/requirements.txt pytest
+      - name: Run offline C1 Dhan, membership and v1.3 plan regressions
+        run: python -m pytest -q tests/test_constituent_weekly_dhan_preflight.py tests/test_bup01_membership_intervals.py tests/test_constituent_weekly_plan.py
+      - name: Test current Dhan profile, security master and equity candles
+        if: github.event_name != 'pull_request'
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+        run: python scripts/constituent_weekly/dhan_equity_preflight.py
+      - name: Update sanitized C1 Dhan status
+        if: always() && github.event_name != 'pull_request'
+        run: python scripts/constituent_weekly/update_c1_dhan_status.py
+      - name: Publish sanitized result to job summary
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          if [ -f research/constituent_weekly/C1_DHAN_PREFLIGHT.json ]; then
+            cat research/constituent_weekly/C1_DHAN_PREFLIGHT.json >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f research/constituent_weekly/STATUS.md ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "The phase status was updated; no token, security ID or raw price values are included." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Commit compact Dhan diagnostics only
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f research/constituent_weekly/C1_DHAN_PREFLIGHT.json research/constituent_weekly/STATUS.md
+          git add -f research/constituent_weekly/C1_DHAN_LAST_SUCCESS.json 2>/dev/null || true
+          git status --short
+          git diff --cached --stat
+          if ! git diff --cached --quiet; then
+            target_branch="${{ github.head_ref || github.ref_name }}"
+            git commit -m "Update sanitized Dhan C1 diagnostics"
+            git pull --rebase origin "$target_branch"
+            git push origin "HEAD:$target_branch"
+          fi
+
+      - name: Enforce live Dhan preflight result
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          result_path = Path("research/constituent_weekly/C1_DHAN_PREFLIGHT.json")
+          if not result_path.is_file():
+              print("DHAN_PREFLIGHT_GATE_FAILED: current sanitized result is missing.")
+              raise SystemExit(1)
+          result = json.loads(result_path.read_text(encoding="utf-8"))
+          status = result.get("status")
+          if status != "PASS_ACTIVE_EQUITIES":
+              print(f"DHAN_PREFLIGHT_GATE_FAILED: live preflight status={status!r}. Sanitized diagnostics were committed above.")
+              raise SystemExit(1)
+          print("DHAN_PREFLIGHT_GATE_PASSED: all configured live equity preflight checks passed.")
+          PY

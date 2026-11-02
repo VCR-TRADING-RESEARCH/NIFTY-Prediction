@@ -1,0 +1,88 @@
+from __future__ import annotations
+
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+STATUS = ROOT / "research" / "constituent_weekly" / "STATUS.md"
+RESULT = ROOT / "research" / "constituent_weekly" / "C1_DHAN_PREFLIGHT.json"
+LAST_SUCCESS = ROOT / "research" / "constituent_weekly" / "C1_DHAN_LAST_SUCCESS.json"
+WEIGHT_AUDIT = ROOT / "research" / "constituent_weekly" / "C1_NIFTY50_WEIGHT_AUDIT.json"
+START = "<!-- C1_DHAN_STATUS_START -->"
+END = "<!-- C1_DHAN_STATUS_END -->"
+
+
+def main() -> int:
+    data = json.loads(RESULT.read_text(encoding="utf-8")) if RESULT.exists() else {"status": "NO_PREFLIGHT_RESULT"}
+    last_success = json.loads(LAST_SUCCESS.read_text(encoding="utf-8")) if LAST_SUCCESS.exists() else {}
+    weight = json.loads(WEIGHT_AUDIT.read_text(encoding="utf-8")) if WEIGHT_AUDIT.exists() else {"status": "NOT_RUN"}
+
+    probes = data.get("intraday_probe", [])
+    passed = sum(1 for probe in probes if probe.get("status") == "PASS")
+    expected = data.get("intraday_probe_expected", len(probes))
+    legacy = data.get("legacy_identity_probe", [])
+    legacy_passed = sum(1 for probe in legacy if probe.get("status") == "PASS")
+    proxy_times = sorted({probe.get("expiry_proxy_bar_time_ist") for probe in probes if probe.get("expiry_proxy_bar_time_ist")})
+    range_probes = data.get("ninety_day_range_probe", [])
+    range_passed = sum(1 for probe in range_probes if probe.get("status") == "PASS")
+    range_expected = data.get("ninety_day_range_probe_expected", len(range_probes))
+    range_dates = sorted({(probe.get("from_date"), probe.get("to_date")) for probe in range_probes if probe.get("from_date") and probe.get("to_date")})
+    range_sessions = sorted({probe.get("session_count") for probe in range_probes if probe.get("session_count") is not None})
+    nonstandard_dates = sorted({date for probe in range_probes for date in probe.get("non_standard_session_dates", [])})
+    full_range_dates = data.get("full_universe_90d_range_date", {})
+    full_range_passed = data.get("full_universe_90d_range_passed", 0)
+    full_range_expected = data.get("full_universe_90d_range_expected", 0)
+    full_range_resolved = data.get("full_universe_90d_range_resolved", 0)
+    historical_range_date = data.get("historical_universe_90d_range_date", {})
+    historical_range_passed = data.get("historical_universe_90d_range_passed", 0)
+    historical_range_expected = data.get("historical_universe_90d_range_expected", 0)
+    historical_range_resolved = data.get("historical_universe_90d_range_resolved", 0)
+    edge_range_date = data.get("five_year_edge_90d_date", {})
+    edge_range_passed = data.get("five_year_edge_90d_passed", 0)
+    edge_range_expected = data.get("five_year_edge_90d_expected", 0)
+    edge_range_resolved = data.get("five_year_edge_90d_resolved", 0)
+
+    lines = [
+        START,
+        "## Latest Dhan equity preflight",
+        "",
+        f"- Recorded at (UTC): {data.get('finished_at_utc', datetime.now(timezone.utc).isoformat())}",
+        f"- Dhan auth method/status: {data.get('auth_method', 'NOT_RECORDED')} / {data.get('token_refresh_status', 'NOT_RECORDED')}",
+        f"- Profile HTTP status: {data.get('profile_status', 'NOT_RECORDED')}",
+        f"- Status: {data.get('status')}",
+        f"- Last successful Dhan preflight: {last_success.get('status', 'NONE')} at {last_success.get('finished_at_utc', 'NOT_RECORDED')}; preserved separately from latest attempt.",
+        f"- Data plan active: {data.get('data_plan_active')}",
+        f"- Current NIFTY 50 universe resolved in current Dhan master: {data.get('current_universe_resolved_count', 'NOT_RUN')}/{data.get('current_universe_symbol_count', 'NOT_RUN')}",
+        f"- Historical membership symbol aliases matched in current Dhan master: {data.get('historical_membership_symbols_found_in_current_master_count', 'NOT_RUN')}/{data.get('historical_membership_symbol_count', 'NOT_RUN')}",
+        f"- Five-symbol one-minute anchor/expiry-proxy checks: {passed}/{expected}",
+        f"- Full point-in-time NIFTY 50 probe: {data.get('full_universe_probe_passed', 'NOT_RUN')}/{data.get('full_universe_probe_expected', 'NOT_RUN')} passed; resolved {data.get('full_universe_probe_resolved', 'NOT_RUN')}; date {data.get('full_universe_probe_date', 'NOT_RUN')}",
+        f"- 90-day Dhan one-minute range: {range_passed}/{range_expected} symbols passed; date range {range_dates if range_dates else 'NOT_RUN'}; standard-session counts {range_sessions if range_sessions else 'NOT_RUN'}; non-standard session dates {nonstandard_dates if nonstandard_dates else 'none recorded'}",
+        f"- Full-universe 90-day Dhan range: {full_range_passed}/{full_range_expected} passed; security IDs {full_range_resolved}/{full_range_expected}; dates {full_range_dates if full_range_dates else 'NOT_RUN'}",
+        f"- Historical 2022 point-in-time 90-day range: {historical_range_passed}/{historical_range_expected} passed; security IDs {historical_range_resolved}/{historical_range_expected}; dates {historical_range_date if historical_range_date else 'NOT_RUN'}",
+        f"- Five-year edge 2021 90-day range: {edge_range_passed}/{edge_range_expected} passed; security IDs {edge_range_resolved}/{edge_range_expected}; dates {edge_range_date if edge_range_date else 'NOT_RUN'}",
+        f"- Accepted expiry proxy: last returned one-minute candle at/before {data.get('expiry_proxy_cutoff_ist', '15:15:00')} IST; sample proxy timestamp(s): {', '.join(proxy_times) if proxy_times else 'NOT_RECORDED'}",
+        f"- Historic HDFC Ltd legacy-security-ID probes: {legacy_passed}/{len(legacy)} passed",
+        f"- Deep daily-history probe: {data.get('daily_history_probe', {}).get('status', 'NOT_RUN')}",
+        f"- Historical-weight candidate cache: {weight.get('status', 'NOT_RUN')}; {weight.get('rows', 'N/A')} rows, {weight.get('ticker_columns', 'N/A')} ticker columns, {weight.get('first_date', 'N/A')} to {weight.get('last_date', 'N/A')}",
+        f"- Weight candidate licence: {weight.get('license', 'NOT_RECORDED')}; commercial use permitted: {weight.get('commercial_use_permitted', 'NOT_RECORDED')}",
+        "- The one-day 50-stock probe and three-symbol 90-day batch probe are not a complete five-year point-in-time constituent panel.",
+        "- Raw bars, prices, security IDs, credentials and tokens are not stored in this report.",
+        "- C1 remains gated by official/authorised point-in-time weights, the 2025-09 onward weight gap, full historical security identity and coverage, and index-basket reconciliation.",
+        END,
+    ]
+    block = "\n".join(lines)
+    current = STATUS.read_text(encoding="utf-8")
+    if START in current and END in current:
+        before = current.split(START, 1)[0].rstrip()
+        after = current.split(END, 1)[1].lstrip()
+        updated = before + "\n\n" + block + "\n\n" + after
+    else:
+        updated = current.rstrip() + "\n\n" + block + "\n"
+    STATUS.write_text(updated, encoding="utf-8")
+    print(f"Updated BUP-01 status with Dhan preflight result: {data.get('status')}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,356 @@
+{
+  "limitations": [
+    "The pinned mirror maintainer documents NSE archive inputs, but its MIT software licence is not a market-data licence.",
+    "A mirror-only row is not accepted as a confirmed observation; direct exchange evidence remains required.",
+    "The mirror collector enumerates weekdays, so absence of weekend Muhurat or Budget sessions is not evidence that the exchange archive lacks them.",
+    "A valid daily bar does not close point-in-time security identity, membership, or corporate-action continuity gates.",
+    "No OHLCV values are persisted in this report."
+  ],
+  "methodology": "c1-special-session-source-crosscheck-v1",
+  "mirror_files": {
+    "2018-11": {
+      "bytes": 1173234,
+      "file_sha256": "e46d30d4d13e0ac9380e4f3ad87b14b207967a8f7b4e532fce58544ecde1c238",
+      "filename": "2018-11.parquet",
+      "http_status": 200,
+      "row_count": 37696,
+      "status": "LOADED"
+    },
+    "2019-10": {
+      "bytes": 1259256,
+      "file_sha256": "ffb7067c3f3710197c03b0113a5df046e3d58cce52a8ba844aa1c8d208a7a013",
+      "filename": "2019-10.parquet",
+      "http_status": 200,
+      "row_count": 36901,
+      "status": "LOADED"
+    },
+    "2020-02": {
+      "bytes": 1283187,
+      "file_sha256": "88525b34243582b19630d65ca1e298723480f51e0c4efaca57664b145979d349",
+      "filename": "2020-02.parquet",
+      "http_status": 200,
+      "row_count": 37054,
+      "status": "LOADED"
+    },
+    "2020-11": {
+      "bytes": 1349929,
+      "file_sha256": "f03c7861967e24a90aa16931eeb553bff320104ac81732e7b948da76d024f252",
+      "filename": "2020-11.parquet",
+      "http_status": 200,
+      "row_count": 37870,
+      "status": "LOADED"
+    },
+    "2021-11": {
+      "bytes": 1576321,
+      "file_sha256": "d3a0e9ef35bac8610f0b3e4cfaffce0a06d00b805d255335b6108645b34e3119",
+      "filename": "2021-11.parquet",
+      "http_status": 200,
+      "row_count": 42383,
+      "status": "LOADED"
+    },
+    "2022-10": {
+      "bytes": 1584235,
+      "file_sha256": "6378ae28df3482fbcdb9aeba26929f437572401b1278dce6688b56581b077dc5",
+      "filename": "2022-10.parquet",
+      "http_status": 200,
+      "row_count": 43217,
+      "status": "LOADED"
+    },
+    "2025-10": {
+      "bytes": 2468182,
+      "file_sha256": "1084887d80358e747411fd582405c1166cce44a18eebef8902baea75e6a1b243",
+      "filename": "2025-10.parquet",
+      "http_status": 200,
+      "row_count": 63704,
+      "status": "LOADED"
+    }
+  },
+  "results": [
+    {
+      "date": "2018-11-07",
+      "direct_nse": {
+        "attempts": [
+          {
+            "http_status": 404,
+            "source": "sec_bhavdata_full"
+          },
+          {
+            "http_status": 200,
+            "isin_present": true,
+            "ohlc_valid": true,
+            "response_sha256": "34cb7742d962b69efaf6da9606dbd0386a0361c884bddfc63c3248a4d9c2b939",
+            "row_count": 1,
+            "row_sha256": "73df36b9b7083c8b1b085b9f002748b6f4f2a9c598642b11bc6ba7583fc2feff",
+            "source": "legacy_cm_bhavcopy",
+            "status": "VALID",
+            "valid": true,
+            "volume_valid": true
+          }
+        ],
+        "isin_present": true,
+        "row_sha256": "73df36b9b7083c8b1b085b9f002748b6f4f2a9c598642b11bc6ba7583fc2feff",
+        "selected_source": "legacy_cm_bhavcopy",
+        "status": "VALID_OFFICIAL_NSE_ROW"
+      },
+      "disposition": "DIRECT_NSE_AND_PINNED_MIRROR_MATCH",
+      "issuer": "HDFC Limited",
+      "mirror": {
+        "file": "2018-11.parquet",
+        "isin_present": true,
+        "ohlc_valid": true,
+        "row_count": 1,
+        "row_sha256": "73df36b9b7083c8b1b085b9f002748b6f4f2a9c598642b11bc6ba7583fc2feff",
+        "status": "VALID",
+        "valid": true,
+        "volume_valid": true
+      },
+      "mirror_exact_match_to_nse": true,
+      "series_expected": "EQ",
+      "symbol": "HDFC"
+    },
+    {
+      "date": "2019-10-27",
+      "direct_nse": {
+        "attempts": [
+          {
+            "http_status": 200,
+            "isin_present": false,
+            "ohlc_valid": true,
+            "response_sha256": "8d3132b911ac615052928b43942013b74c6cf22052684d85c6902a0a783c8a17",
+            "row_count": 1,
+            "row_sha256": "846086691abf7eeffdbb421c089671b39e8f484473aca6f7dc97d6b706109023",
+            "source": "sec_bhavdata_full",
+            "status": "VALID",
+            "valid": true,
+            "volume_valid": true
+          }
+        ],
+        "isin_present": false,
+        "row_sha256": "846086691abf7eeffdbb421c089671b39e8f484473aca6f7dc97d6b706109023",
+        "selected_source": "sec_bhavdata_full",
+        "status": "VALID_OFFICIAL_NSE_ROW"
+      },
+      "disposition": "DIRECT_NSE_VALIDATED",
+      "issuer": "HDFC Limited",
+      "mirror": {
+        "file": "2019-10.parquet",
+        "row_count": 0,
+        "row_sha256": null,
+        "status": "NO_EQ_ROW",
+        "valid": false
+      },
+      "mirror_exact_match_to_nse": false,
+      "series_expected": "EQ",
+      "symbol": "HDFC"
+    },
+    {
+      "date": "2020-02-01",
+      "direct_nse": {
+        "attempts": [
+          {
+            "http_status": 200,
+            "isin_present": false,
+            "ohlc_valid": true,
+            "response_sha256": "d6ead310945cd1941f68d5613ab82686b656b70d7a49d1535e873c410f5b6416",
+            "row_count": 1,
+            "row_sha256": "09f3d0994ec0d0e4fc4a45f943a78fc222bd65a3451a699bc730b20a1b344f72",
+            "source": "sec_bhavdata_full",
+            "status": "VALID",
+            "valid": true,
+            "volume_valid": true
+          }
+        ],
+        "isin_present": false,
+        "row_sha256": "09f3d0994ec0d0e4fc4a45f943a78fc222bd65a3451a699bc730b20a1b344f72",
+        "selected_source": "sec_bhavdata_full",
+        "status": "VALID_OFFICIAL_NSE_ROW"
+      },
+      "disposition": "DIRECT_NSE_VALIDATED",
+      "issuer": "HDFC Limited",
+      "mirror": {
+        "file": "2020-02.parquet",
+        "row_count": 0,
+        "row_sha256": null,
+        "status": "NO_EQ_ROW",
+        "valid": false
+      },
+      "mirror_exact_match_to_nse": false,
+      "series_expected": "EQ",
+      "symbol": "HDFC"
+    },
+    {
+      "date": "2020-11-14",
+      "direct_nse": {
+        "attempts": [
+          {
+            "http_status": 200,
+            "isin_present": false,
+            "ohlc_valid": true,
+            "response_sha256": "e75ce09b52df6f5555f4bce7bd3b1ac7856c2689ad12a98ad96ea27f5ae6c834",
+            "row_count": 1,
+            "row_sha256": "f0017a495161a56db4c1f9974b2cd2f25b4197993ef9f54e44b052edb7d35a68",
+            "source": "sec_bhavdata_full",
+            "status": "VALID",
+            "valid": true,
+            "volume_valid": true
+          }
+        ],
+        "isin_present": false,
+        "row_sha256": "f0017a495161a56db4c1f9974b2cd2f25b4197993ef9f54e44b052edb7d35a68",
+        "selected_source": "sec_bhavdata_full",
+        "status": "VALID_OFFICIAL_NSE_ROW"
+      },
+      "disposition": "DIRECT_NSE_VALIDATED",
+      "issuer": "HDFC Limited",
+      "mirror": {
+        "file": "2020-11.parquet",
+        "row_count": 0,
+        "row_sha256": null,
+        "status": "NO_EQ_ROW",
+        "valid": false
+      },
+      "mirror_exact_match_to_nse": false,
+      "series_expected": "EQ",
+      "symbol": "HDFC"
+    },
+    {
+      "date": "2021-11-04",
+      "direct_nse": {
+        "attempts": [
+          {
+            "http_status": 200,
+            "response_sha256": "83fc13238e395b394dc49b567368505d6fab224ee8e6e57761fe4f77bc6b504a",
+            "row_count": 0,
+            "source": "sec_bhavdata_full",
+            "status": "NO_EQ_ROW",
+            "valid": false
+          },
+          {
+            "http_status": 200,
+            "isin_present": true,
+            "ohlc_valid": true,
+            "response_sha256": "3c6b0e631b0ff18946537ba98dd78a4307a9fbc60d70c85e8e529e8acd1de1d8",
+            "row_count": 1,
+            "row_sha256": "aee4117127bc82adf9d7a7c6d3dcc98fa37d2c77e5972e4bcae83a518e1826ca",
+            "source": "legacy_cm_bhavcopy",
+            "status": "VALID",
+            "valid": true,
+            "volume_valid": true
+          }
+        ],
+        "isin_present": true,
+        "row_sha256": "aee4117127bc82adf9d7a7c6d3dcc98fa37d2c77e5972e4bcae83a518e1826ca",
+        "selected_source": "legacy_cm_bhavcopy",
+        "status": "VALID_OFFICIAL_NSE_ROW"
+      },
+      "disposition": "DIRECT_NSE_AND_PINNED_MIRROR_MATCH",
+      "issuer": "HDFC Limited",
+      "mirror": {
+        "file": "2021-11.parquet",
+        "isin_present": true,
+        "ohlc_valid": true,
+        "row_count": 1,
+        "row_sha256": "aee4117127bc82adf9d7a7c6d3dcc98fa37d2c77e5972e4bcae83a518e1826ca",
+        "status": "VALID",
+        "valid": true,
+        "volume_valid": true
+      },
+      "mirror_exact_match_to_nse": true,
+      "series_expected": "EQ",
+      "symbol": "HDFC"
+    },
+    {
+      "date": "2022-10-24",
+      "direct_nse": {
+        "attempts": [
+          {
+            "http_status": 200,
+            "isin_present": false,
+            "ohlc_valid": true,
+            "response_sha256": "5bf8e096a872233e454c803624e0954f1b55d51e215def9829d3a4b74eb1cf9b",
+            "row_count": 1,
+            "row_sha256": "25623cbc9bcaaada87bad8e3bf059e6a38c9e866d8d6bba9ebbce4c5bb1b2f07",
+            "source": "sec_bhavdata_full",
+            "status": "VALID",
+            "valid": true,
+            "volume_valid": true
+          }
+        ],
+        "isin_present": false,
+        "row_sha256": "25623cbc9bcaaada87bad8e3bf059e6a38c9e866d8d6bba9ebbce4c5bb1b2f07",
+        "selected_source": "sec_bhavdata_full",
+        "status": "VALID_OFFICIAL_NSE_ROW"
+      },
+      "disposition": "DIRECT_NSE_AND_PINNED_MIRROR_MATCH",
+      "issuer": "HDFC Limited",
+      "mirror": {
+        "file": "2022-10.parquet",
+        "isin_present": false,
+        "ohlc_valid": true,
+        "row_count": 1,
+        "row_sha256": "25623cbc9bcaaada87bad8e3bf059e6a38c9e866d8d6bba9ebbce4c5bb1b2f07",
+        "status": "VALID",
+        "valid": true,
+        "volume_valid": true
+      },
+      "mirror_exact_match_to_nse": true,
+      "series_expected": "EQ",
+      "symbol": "HDFC"
+    },
+    {
+      "date": "2025-10-21",
+      "direct_nse": {
+        "attempts": [
+          {
+            "http_status": 200,
+            "isin_present": false,
+            "ohlc_valid": true,
+            "response_sha256": "2ff512dd89d84f1890c7236a81dc533cfaccbdb192dd2a7d77005e2f8e95f0bd",
+            "row_count": 1,
+            "row_sha256": "c5bdc471b0755c0d5c8aa30291d28e13914726d13c9ae4264d39777458901bec",
+            "source": "sec_bhavdata_full",
+            "status": "VALID",
+            "valid": true,
+            "volume_valid": true
+          }
+        ],
+        "isin_present": false,
+        "row_sha256": "c5bdc471b0755c0d5c8aa30291d28e13914726d13c9ae4264d39777458901bec",
+        "selected_source": "sec_bhavdata_full",
+        "status": "VALID_OFFICIAL_NSE_ROW"
+      },
+      "disposition": "DIRECT_NSE_AND_PINNED_MIRROR_MATCH",
+      "issuer": "Tata Motors Passenger Vehicles Limited (dated alias TMPV)",
+      "mirror": {
+        "file": "2025-10.parquet",
+        "isin_present": false,
+        "ohlc_valid": true,
+        "row_count": 1,
+        "row_sha256": "c5bdc471b0755c0d5c8aa30291d28e13914726d13c9ae4264d39777458901bec",
+        "status": "VALID",
+        "valid": true,
+        "volume_valid": true
+      },
+      "mirror_exact_match_to_nse": true,
+      "series_expected": "EQ",
+      "symbol": "TATAMOTORS"
+    }
+  ],
+  "schema_version": 1,
+  "source_controls": {
+    "market_data_licence": "No separate market-data licence identified; software MIT only; raw files temporary-only",
+    "mirror_repository": "floyds1995/Auto-Index-Constituents-Tracker",
+    "mirror_revision": "aa57b1050383c33e436f81844230ad2a4d52c949",
+    "raw_data_persisted": false,
+    "raw_data_redistributed": false
+  },
+  "status": "ALL_SEVEN_DIRECT_NSE_ROWS_VALID",
+  "summary": {
+    "exact_mirror_matches_to_direct_nse": 4,
+    "targets": 7,
+    "unresolved_pairs": 0,
+    "valid_direct_nse_rows": 7,
+    "valid_mirror_rows": 4
+  },
+  "updated_at_utc": "2026-11-01T19:16:24.188453+00:00"
+}

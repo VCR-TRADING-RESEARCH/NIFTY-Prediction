@@ -1,0 +1,31 @@
+{
+  "track": "BUP-01",
+  "source_run_id": 41223923790,
+  "source_run_url": "https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41223923790",
+  "run_conclusion": "success",
+  "created_at_utc": "2026-10-31T17:19:41.448239Z",
+  "status": "BLOCKED_PROFILE_HTTP_401",
+  "credentials_or_tokens_recorded": false,
+  "raw_market_bars_saved": false,
+  "auth_method": "provided_token_fallback",
+  "token_refresh_status": "FAILED_FALLBACK_USED",
+  "profile_status": "HTTP_401",
+  "token_refresh_diagnostics": {
+    "body_type": "dict",
+    "response_keys": [
+      "message",
+      "status"
+    ],
+    "data_keys": [],
+    "provider_error_category": "UNCLASSIFIED_PROVIDER_RESPONSE",
+    "access_token_field_type": "missing",
+    "access_token_length": 0,
+    "token_container": null,
+    "http_status": 200,
+    "fallback_available": true
+  },
+  "daily_history_probe": {},
+  "intraday_probe": [],
+  "targeted_expiry_close_probe": [],
+  "note": "Authentication-only retry. Token endpoint returned HTTP 200 without a usable accessToken; fallback profile authentication returned HTTP 401. No scrip-master or market-data requests were made."
+}

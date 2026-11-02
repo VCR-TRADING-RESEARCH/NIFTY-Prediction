@@ -1,0 +1,128 @@
+{
+  "github_actions_run_id": "41344104457",
+  "limitations": [
+    "Legacy CSV is checked by symbol/series/timestamp and ISIN when present.",
+    "Modern UDiFF CSV is checked by TckrSymb/SctySrs/TradDt and ISIN.",
+    "HTTP 404 is unavailable, not proof of no trade.",
+    "Raw rows are persisted only in AES-GCM encrypted Actions cache, not repository or artifacts.",
+    "Daily feature panel and corporate-action adjusted returns are separate gates."
+  ],
+  "methodology_version": "bup01-c1-direct-nse-residuals-v2",
+  "results": [
+    {
+      "date": "2018-11-07",
+      "identity_status": "MATCH",
+      "isin": "INE001A01036",
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
+      "session": "Diwali Muhurat",
+      "source_archive_sha256": "34cb7742d962b69efaf6da9606dbd0386a0361c884bddfc63c3248a4d9c2b939",
+      "source_url": "https://archives.nseindia.com/content/historical/EQUITIES/2018/NOV/cm07NOV2018bhav.csv.zip",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "symbol": "HDFC",
+      "volume_valid": true
+    },
+    {
+      "date": "2019-10-27",
+      "identity_status": "MATCH",
+      "isin": "INE001A01036",
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
+      "session": "Sunday Diwali Muhurat",
+      "source_archive_sha256": "b881a41ca300bb9c91d3e532e85cfa6e4f0b79b52840bfee5b921f19e6b38481",
+      "source_url": "https://archives.nseindia.com/content/historical/EQUITIES/2019/OCT/cm27OCT2019bhav.csv.zip",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "symbol": "HDFC",
+      "volume_valid": true
+    },
+    {
+      "date": "2020-02-01",
+      "identity_status": "MATCH",
+      "isin": "INE001A01036",
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
+      "session": "Saturday Union Budget special session",
+      "source_archive_sha256": "ebed0938cc885e7f450c19d751fc70dcb8f905384fc96617bec889b9004ffd90",
+      "source_url": "https://archives.nseindia.com/content/historical/EQUITIES/2020/FEB/cm01FEB2020bhav.csv.zip",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "symbol": "HDFC",
+      "volume_valid": true
+    },
+    {
+      "date": "2020-11-14",
+      "identity_status": "MATCH",
+      "isin": "INE001A01036",
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
+      "session": "Saturday Diwali Muhurat",
+      "source_archive_sha256": "652f8a54ba1481baa92032062aec5d3aa00a9db9e919001fec624d69771f1610",
+      "source_url": "https://archives.nseindia.com/content/historical/EQUITIES/2020/NOV/cm14NOV2020bhav.csv.zip",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "symbol": "HDFC",
+      "volume_valid": true
+    },
+    {
+      "date": "2021-11-04",
+      "identity_status": "MATCH",
+      "isin": "INE001A01036",
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
+      "session": "Diwali Muhurat",
+      "source_archive_sha256": "3c6b0e631b0ff18946537ba98dd78a4307a9fbc60d70c85e8e529e8acd1de1d8",
+      "source_url": "https://archives.nseindia.com/content/historical/EQUITIES/2021/NOV/cm04NOV2021bhav.csv.zip",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "symbol": "HDFC",
+      "volume_valid": true
+    },
+    {
+      "date": "2022-10-24",
+      "identity_status": "MATCH",
+      "isin": "INE001A01036",
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
+      "session": "Diwali Muhurat",
+      "source_archive_sha256": "c8aa044e671cdb4dd8d2f312d3894a30a3201d8bc17287963a88c937fcb8c208",
+      "source_url": "https://archives.nseindia.com/content/historical/EQUITIES/2022/OCT/cm24OCT2022bhav.csv.zip",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "symbol": "HDFC",
+      "volume_valid": true
+    },
+    {
+      "date": "2025-10-21",
+      "identity_status": "MATCH",
+      "isin": "INE155A01022",
+      "ohlc_valid": true,
+      "raw_values_published": false,
+      "row_count": 1,
+      "session": "Diwali Muhurat",
+      "source_archive_sha256": "729f028f4dfde2d7dca1abca7b0277a87c4ca950dd0fd5d180ba8fc48c0b6456",
+      "source_url": "https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_20251021_F_0000.csv.zip",
+      "status": "VALID_DIRECT_NSE_EQ_OHLCV_ROW",
+      "symbol": "TATAMOTORS",
+      "volume_valid": true
+    }
+  ],
+  "schema_version": 2,
+  "source": {
+    "independent_of_third_party_mirror": true,
+    "legacy_archive_pattern": "https://archives.nseindia.com/content/historical/EQUITIES/YYYY/MON/cmDDMONYYYYbhav.csv.zip",
+    "modern_archive_pattern": "https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_YYYYMMDD_F_0000.csv.zip",
+    "publisher": "National Stock Exchange of India"
+  },
+  "status": "PASS_ALL_SEVEN",
+  "summary": {
+    "encrypted_cache_sha256": "b9855515b134fdc5ac1d997c67aecda314e57757fed595673ca53fd164ad9ea8",
+    "encrypted_supplemental_cache_written": true,
+    "raw_feature_cache_integration": "PERSISTED_NOT_YET_MERGED",
+    "raw_prices_or_volume_published": false,
+    "residual_sessions": 7,
+    "valid_direct_nse_rows": 7
+  },
+  "updated_at_utc": "2026-11-01T19:54:48.343345+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "track": "BUP-01",
+  "checked_at_utc": "2026-11-01T02:52:54.530587+00:00",
+  "source": "AMP4010 Historical Nifty 50 Constituent Weights (Rolling 20-Year Window)",
+  "creator": "Sukrit Bera",
+  "citation": "Bera, S. (2025), Figshare DOI 10.6084/m9.figshare.30217915",
+  "source_url": "https://huggingface.co/datasets/AMP4010/Historical_Nifty_50_Constituent_Weights_20Y/resolve/c15498388ae4d346f42291c4e5937235e56ae67c/weights.csv",
+  "source_revision": "c15498388ae4d346f42291c4e5937235e56ae67c",
+  "license": "CC BY-NC-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "commercial_use_permitted": false,
+  "source_method_limitations": [
+    "Dataset card says weights are compiled from official Nifty Indices reports.",
+    "Intra-month reconstitution weights are estimated/extrapolated in some cases.",
+    "Corporate-action handling and normalization are performed by the dataset author.",
+    "The dataset card reports coverage through 2025-08-31; it does not cover 2025-09 onward."
+  ],
+  "status": "CACHE_VALIDATED",
+  "rows": 216,
+  "ticker_columns": 100,
+  "first_date": "2008-01-31",
+  "last_date": "2025-08-31",
+  "min_row_sum": 99.99999999999996,
+  "max_row_sum": 100.00000000000004,
+  "max_abs_row_sum_deviation": 4.263256414560601e-14,
+  "sha256": "3a3441a997b64a54363b38ebc02807e82cc0e0affd2efda147d1b7758a0b10cb"
+}

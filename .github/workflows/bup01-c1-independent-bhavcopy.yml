@@ -1,0 +1,61 @@
+name: BUP-01 C1 independent NSE bhavcopy residual check
+
+on:
+  push:
+    branches:
+      - phase/constituent-weekly-outcomes-c1-data
+    paths:
+      - "scripts/constituent_weekly/audit_c1_independent_bhavcopy.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bup01-c1-independent-bhavcopy
+  cancel-in-progress: false
+
+jobs:
+  targeted-independent-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout C1 research branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/constituent-weekly-outcomes-c1-data
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install bounded audit dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy pyarrow requests
+      - name: Run exact-date independent EQ bhavcopy check
+        run: python scripts/constituent_weekly/audit_c1_independent_bhavcopy.py --root . --run-id "$GITHUB_RUN_ID"
+      - name: Publish sanitized report and phase logs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f research/constituent_weekly/C1_INDEPENDENT_BHAVCOPY_AUDIT.json
+          git add -f research/constituent_weekly/C1_INDEPENDENT_BHAVCOPY_AUDIT.md
+          git add -f research/constituent_weekly/STATUS.md README.md logs/RESEARCH_LOG.md logs/ERROR_LOG.md logs/CONVERSATION_LOG.md
+          if git diff --cached --quiet; then
+            echo "No report changes to publish."
+            exit 0
+          fi
+          git commit -m "Record independent C1 residual bhavcopy check"
+          git push origin HEAD:phase/constituent-weekly-outcomes-c1-data
+      - name: Show research result
+        if: always()
+        run: |
+          if [ -f research/constituent_weekly/C1_INDEPENDENT_BHAVCOPY_AUDIT.md ]; then
+            cat research/constituent_weekly/C1_INDEPENDENT_BHAVCOPY_AUDIT.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "No data coverage gate is waived by this source check." >> "$GITHUB_STEP_SUMMARY"
