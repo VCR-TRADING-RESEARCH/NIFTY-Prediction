@@ -717,3 +717,13 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Impact:** The first automatic Actions run [41422655123](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422655123) had already checked out the pre-fix code; its archive-probe result must be treated as superseded/untrusted. A follow-up run is triggered by the corrective script/test commits.
 - **Data/security:** No raw market or event data were changed or published. No credentials were exposed. The correction does not alter the C1 gate.
 - **Status:** Code correction committed; follow-up offline test and live archive probe still require completion and read-back.
+
+
+## E0110 — 2026-11-02 — NSE archive probe failed to import shared cache helpers (RESOLVED IN CODE; VALIDATION PENDING)
+
+- **Severity:** Medium — the live probe stopped before attempting any NSE archive request.
+- **Evidence:** Actions run [41422655123](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41422655123), job log: `ModuleNotFoundError: No module named 'scripts'` when importing the shared AES-GCM cache helpers.
+- **Root cause:** Unlike the existing corporate-action auditor, the new standalone script had not inserted the repository root into `sys.path` before importing the shared helper module.
+- **Correction:** Added the repository root to `sys.path` before the import. The corrective commit triggers a new workflow run.
+- **Impact:** No NSE URL was requested and no archive/event data was acquired in the failed run. The probe report was not produced; the pre-existing catalogue artifact was still uploaded. No credentials were exposed.
+- **Status:** Code correction committed; follow-up workflow and tests must be read back before source feasibility can be assessed.
