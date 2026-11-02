@@ -497,3 +497,9 @@
 
 - Dhan authentication and the two daily split/bonus checks succeeded on run 41507896770, but the intraday probe stopped at Python import because the repository root was missing from `sys.path`. No minute bars were requested.
 - Recorded E0121 and E0122; fixed the import path, daily identity override, tests and workflow status contract in one batched change. The new run must still establish the intraday classification. No raw data or credentials are copied.
+
+
+## 2026-11-03 — Intraday diagnostic second attempt blocked by duplicate token refresh
+
+- Run 41508838557 passed 14 offline tests and both daily adjusted-price event samples (RELIANCE 0.5; BAJAJFINSV 0.1). Intraday did not call the market-data endpoint because its second token-refresh request in the same job returned HTTP 200 without an access token and fallback profile returned HTTP 401.
+- Added E0123. Correction is to reuse the first validated token within the same protected job via private, masked Actions environment only. No token or data is stored in the repository.

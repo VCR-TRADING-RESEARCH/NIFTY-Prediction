@@ -55,6 +55,21 @@ EVENTS = [
 ]
 
 
+
+
+def publish_ephemeral_workflow_token(token: str) -> bool:
+    """Pass a validated token to the next GitHub Actions step via its private environment file."""
+    env_file = os.environ.get("GITHUB_ENV", "").strip()
+    if not env_file:
+        return False
+    if not token or "\\n" in token or "\\r" in token:
+        raise ValueError("Refusing to publish an invalid ephemeral token.")
+    print(f"::add-mask::{token}")
+    with Path(env_file).open("a", encoding="utf-8") as handle:
+        handle.write(f"DHAN_EPHEMERAL_ACCESS_TOKEN={token}\\n")
+    return True
+
+
 def compute_adjustment_diagnostic(
     dhan_frame: pd.DataFrame,
     raw_frame: pd.DataFrame,
@@ -240,6 +255,10 @@ def run() -> dict:
             result["status"] = "BLOCKED_DATA_PLAN_NOT_ACTIVE"
             return result
         result["data_plan_active"] = True
+        result["ephemeral_token_handoff"] = (
+            "PUBLISHED_TO_PRIVATE_GITHUB_ENV" if publish_ephemeral_workflow_token(token)
+            else "NOT_RUNNING_IN_GITHUB_ACTIONS"
+        )
 
         master_response = requests.get(MASTER_URL, timeout=45)
         master_response.raise_for_status()

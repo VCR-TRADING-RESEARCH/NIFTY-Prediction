@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime, timezone
 from io import BytesIO
 from pathlib import Path
@@ -185,14 +186,27 @@ def run() -> dict:
         "credentials_or_tokens_recorded": False,
         "events": [],
     }
-    token, client_id, auth_method, refresh_status, auth_diagnostics = acquire_access_token()
+    shared_token = os.environ.get("DHAN_EPHEMERAL_ACCESS_TOKEN", "").strip()
+    client_id = os.environ.get("DHAN_CLIENT_ID", "").strip()
+    if shared_token:
+        token = shared_token
+        auth_method = "reused_validated_prior_step_token"
+        refresh_status = "REUSED_WITHIN_SAME_ACTIONS_JOB"
+        auth_diagnostics = {"token_value_recorded": False, "source": "prior_profile_and_data_plan_validated_step"}
+    else:
+        token, client_id, auth_method, refresh_status, auth_diagnostics = acquire_access_token()
     result["auth_method"] = auth_method
     result["token_refresh_status"] = refresh_status
     result["token_refresh_diagnostics"] = auth_diagnostics
-    profile = request_profile(token)
-    if not profile.ok:
-        result["status"] = f"BLOCKED_PROFILE_HTTP_{profile.status_code}"
+    if not token or not client_id:
+        result["status"] = "BLOCKED_TOKEN_OR_CLIENT_ID_MISSING"
         return result
+    # When reused, the preceding protected step already validated this token against profile and data-plan APIs.
+    if not shared_token:
+        profile = request_profile(token)
+        if not profile.ok:
+            result["status"] = f"BLOCKED_PROFILE_HTTP_{profile.status_code}"
+            return result
     master_response = requests.get(MASTER_URL, timeout=45)
     master_response.raise_for_status()
     master = pd.read_csv(BytesIO(master_response.content), low_memory=False)

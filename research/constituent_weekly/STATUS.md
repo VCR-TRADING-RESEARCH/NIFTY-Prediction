@@ -771,3 +771,10 @@ The earlier 77/258 / 64-cycle result belongs to an earlier incomplete run and is
 - Run [41507896770](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41507896770) refreshed Dhan authentication and confirmed daily adjustment ratios: RELIANCE 0.5 across OHLC (9/9 sessions), BAJAJFINSV 0.1 across OHLC (11/11 sessions). The intraday test failed before calling Dhan because the script omitted the repository-root import path.
 - Corrected the import path, added a regression test for the source-adjudicated BAJAJFINSV 2022-09-13 identity override, and aligned the workflow gates with the current machine-result contracts. The old TejHQ identifier is still preserved unchanged.
 - No intraday result is claimed from the first attempt. C1 remains PARTIAL; C2/C4 confirmatory remain gated.
+
+
+## 2026-11-03 — Daily adjustment validation passed; intraday API call still pending
+
+- Protected run [41508838557](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41508838557) completed 14 offline tests and the two registered Dhan daily adjusted OHLC checks: RELIANCE 0.5 (9/9) and BAJAJFINSV 0.1 (11/11). The Bajaj source identity discrepancy is accepted only through the documented 2022-09-13 derived override; raw source rows were not altered.
+- Intraday did not reach the API because it requested a second TOTP token in the same job and the provider returned no token (E0123). The next run reuses the first validated token through private GitHub Actions environment handoff.
+- **This is only a two-event daily diagnostic pass, not full C1 acceptance.** The 711-event catalogue remains open; C1 is PARTIAL, C2/C4 confirmatory remain gated.

@@ -118,6 +118,22 @@ jobs:
           path = Path('research/constituent_weekly/C1_DHAN_ADJUSTMENT_DIAGNOSTIC.json')
           result = json.loads(path.read_text())
           print('C1_DHAN_ADJUSTMENT_STATUS', result.get('status'))
-          if result.get('status') != 'PASS_BONUS_ADJUSTMENT_FACTOR':
+          if result.get('status') != 'PASS_ALL_EVENT_ADJUSTMENTS' or len(result.get('events', [])) != 2:
+              raise SystemExit(1)
+          if any(item.get('status') != 'PASS_ADJUSTMENT_FACTOR' for item in result['events']):
+              raise SystemExit(1)
+          PY
+      - name: Enforce intraday diagnostic completion
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path('research/constituent_weekly/C1_DHAN_INTRADAY_CA_DIAGNOSTIC.json').read_text())
+          allowed = {'RAW_SCALE_UNADJUSTED_INTRADAY', 'ADJUSTED_SCALE_INTRADAY'}
+          statuses = [item.get('diagnostic', {}).get('status') for item in result.get('events', [])]
+          print('C1_DHAN_INTRADAY_CA_STATUS', result.get('status'), statuses)
+          if result.get('status') != 'COMPLETED_INTRADAY_SCALE_DIAGNOSTIC' or len(statuses) != 2:
+              raise SystemExit(1)
+          if any(s not in allowed for s in statuses):
               raise SystemExit(1)
           PY

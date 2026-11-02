@@ -142,3 +142,20 @@ def test_bajaj_finserv_adjudicated_identity_override_is_explicit():
     assert result["identity_mismatch_dates"] == ["2022-09-13"]
     assert result["identity_override_applied_dates"] == ["2022-09-13"]
     assert result["identity_unresolved_dates"] == []
+
+
+
+def test_ephemeral_token_is_written_only_to_actions_environment_file(tmp_path, monkeypatch):
+    from scripts.constituent_weekly.audit_c1_dhan_adjustments import publish_ephemeral_workflow_token
+    env_file = tmp_path / "github-env"
+    monkeypatch.setenv("GITHUB_ENV", str(env_file))
+    assert publish_ephemeral_workflow_token("test-token-value") is True
+    assert env_file.read_text() == "DHAN_EPHEMERAL_ACCESS_TOKEN=test-token-value\\n"
+
+
+def test_ephemeral_token_rejects_newlines(tmp_path, monkeypatch):
+    from scripts.constituent_weekly.audit_c1_dhan_adjustments import publish_ephemeral_workflow_token
+    monkeypatch.setenv("GITHUB_ENV", str(tmp_path / "github-env"))
+    import pytest
+    with pytest.raises(ValueError):
+        publish_ephemeral_workflow_token("bad\\ntoken")

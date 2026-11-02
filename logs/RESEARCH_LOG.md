@@ -871,3 +871,10 @@
 - Run [41507896770](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41507896770) successfully refreshed Dhan credentials and revalidated daily adjustment factors: RELIANCE 0.5 (9/9 sessions), BAJAJFINSV 0.1 (11/11 sessions). No intraday result was produced.
 - Intraday script failed before the API request due to missing repository-root Python path (E0121). The workflow's daily gate also expected an obsolete status string (E0122).
 - Correction batch adds the repository-root import bootstrap, a unit test for the adjudicated BAJAJFINSV date, and fail-closed gate checks against the actual machine result schemas. C1 remains PARTIAL.
+
+
+## 2026-11-03 — Daily corporate-action sub-gate passed; intraday token handoff correction
+
+- Run [41508838557](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41508838557) passed all 14 offline math/diagnostic tests and the protected daily adjusted-price diagnostic. Dhan authentication succeeded; RELIANCE bonus factor was 0.5 across OHLC (9/9 sessions) and BAJAJFINSV split+bonus factor was 0.1 across OHLC (11/11 sessions). The 13-Sep identity discrepancy was handled with the documented derived override while the raw source row remained unchanged.
+- The intraday step made no price request: it attempted a second TOTP refresh in the same workflow, which returned no token, and the fallback profile check returned HTTP 401. Logged as E0123.
+- Correction: hand off the first profile/data-plan validated token only through private Actions `GITHUB_ENV`, masked, and reuse it for the intraday request; no token is retained in the repository or artifact. The same run also exposed that the previous workflow file still contained the stale gate status string; its check is now being replaced with the actual machine status contract.

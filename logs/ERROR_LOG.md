@@ -821,3 +821,11 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - The workflow expected `PASS_BONUS_ADJUSTMENT_FACTOR`, but the script emits `PASS_ALL_EVENT_ADJUSTMENTS` or `PARTIAL_OR_BLOCKED`.
 - Corrected the gate to require both registered daily event diagnostics to pass. The adjudicated BAJAJFINSV 2022-09-13 source mismatch is now handled through a date-limited derived identity override; the underlying TejHQ row remains unchanged and the override is reported.
 - Status: fixed in code; next protected run must validate.
+
+
+## E0123 — 2026-11-03 — Second Dhan TOTP request in one job returned no token (CLOSED IN CODE)
+
+- **Evidence:** Protected run [41508838557](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41508838557) refreshed a valid token for the daily diagnostic, then the separate intraday script attempted another TOTP refresh. The second refresh returned HTTP 200 without an access-token field; the provided-token fallback was rejected by profile with HTTP 401. No intraday history request was made.
+- **Cause:** The workflow requested a second Dhan token within the same job even though the first step had just authenticated and verified the active Data API plan.
+- **Correction:** Export the validated ephemeral token only through GitHub Actions' private `GITHUB_ENV` file, mark it masked, and reuse it in the intraday step. Do not write the token to repository files, logs, artifacts or public Pages.
+- **Status:** CLOSED IN CODE; the next protected run must validate the handoff.
