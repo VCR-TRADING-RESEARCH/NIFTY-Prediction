@@ -779,3 +779,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Added a safe metadata helper using optional lookup and a regression test covering both events.
 - **Impact:** The prior Dhan run failed in offline tests before executing the live diagnostic, so this defect did not affect any Dhan result or source data.
 - **Status:** Corrected in commit [8910990](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/8910990d8892091dc9de27f50f39910a5a1f19a9); included in run [41425623117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425623117).
+
+
+## E0117 — 2026-11-02 — Dhan TOTP refresh failed; fallback access token returned HTTP 401 (RETRY WITH DIAGNOSTICS)
+
+- **Severity:** High — the combined split/bonus diagnostic could not access Dhan daily history.
+- **Evidence:** Run [41425871917](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41425871917) reported `auth_method=provided_token_fallback`, `token_refresh_status=FAILED_FALLBACK_USED`, then `BLOCKED_PROFILE_HTTP_401`. No Dhan daily-history request was made and no market data was acquired in this run.
+- **Context:** The preceding Dhan preflight on 2026-11-01 had a successful TOTP refresh (HTTP 200, one attempt, runner/server clock skew approximately -1 second). This is therefore a new authentication failure, not evidence that the API plan is inactive.
+- **Correction:** Added sanitised token-refresh diagnostics (HTTP status, response field names/types, attempt count and clock skew only; no token or secret values) to the next diagnostic report.
+- **Status:** One bounded retry is triggered by commit [2f6bb41](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/2f6bb4160c10224da4f648064fa111dd3f746e51). If refresh still fails, stop and request user intervention to verify/renew Dhan authentication secrets; do not repeat retries.
