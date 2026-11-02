@@ -625,3 +625,6 @@ The former combined C2 panel-and-model workflow has been retired because the loc
 - C3 now has a separate automated workflow: [bup01-c3-stock-models.yml](.github/workflows/bup01-c3-stock-models.yml). It starts automatically after a successful C2 workflow and also supports manual dispatch.
 - Registered models: expanding symbol-frequency and five-session momentum baselines, regularised Logistic Regression, ExtraTrees, HistGradientBoosting, and Ridge return regression. Complete expiry cycles remain indivisible; 104 prior-cycle warm-up; refit every four cycles; final holdout starts at cycle 206.
 - Per-stock OOF forecasts are AES-GCM encrypted; only aggregate metrics and cycle-level results are published. C3 has not yet reported model performance. C4 and trading remain gated.
+
+
+- **C3 execution launched:** [GitHub Actions run 41398510316](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41398510316). It downloads the latest successful C2 encrypted artifact, verifies both ciphertext hashes, decrypts only in the Actions runner, runs cycle-grouped stock models, and uploads aggregate metrics plus encrypted OOF predictions.
