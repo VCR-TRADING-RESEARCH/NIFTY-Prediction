@@ -394,3 +394,10 @@ Run [41398692117](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actio
 - C1 remains partial; C4 confirmatory and C5 costs/trading remain blocked. No strategy, return claim or live signal.
 
 See [C3 status](research/constituent_weekly/C3_STATUS.md), [machine results](research/constituent_weekly/C3_RESULTS.json), [report](research/constituent_weekly/C3_RESULTS.md), [research log](logs/RESEARCH_LOG.md), and [error log](logs/ERROR_LOG.md).
+
+
+## C4 confirmatory aggregation gate — 2026-11-02
+
+**Status: GATED_NOT_STARTED.** C1 identity and corporate-action review remains PARTIAL, so the confirmatory NIFTY meta-model was not fitted. The fail-closed gate workflow [41411507365](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41411507365) passed. The separate C3-X result is exploratory only and is not used to unlock or tune C4.
+
+See [C4 gate status](research/constituent_weekly/C4_STATUS.md) and [C4 machine-readable state](research/constituent_weekly/C4_STATUS.json).
