@@ -746,3 +746,12 @@ E0025 — 2026-10-31 — Dhan TOTP endpoint returned HTTP 200 without an access 
 - **Correction:** Replaced the holiday with 16-Apr-2024 and simplified the probe to the verified website archive path `/archives/equities/bhavcopy/pr/PRDDMMYY.zip`. Added an exact URL unit test and made PASS require all four fixed dates plus both sides of the naming transition.
 - **Validation:** Corrected run [41423292302](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423292302) is executing the updated probe-only path after offline tests. Final 4/4 result is pending.
 - **Impact:** The earlier 3/4 result still confirms archive/schema availability on 2018-04-02, 2025-10-14 and 2026-04-17, but is superseded for the fixed four-date acceptance test. No event-level verification or adjustment factor was performed.
+
+
+## E0113 — 2026-11-02 — Workflow discarded generated report files before publishing (RESOLVED IN WORKFLOW; RETEST PENDING)
+
+- **Severity:** Medium — the successful 4/4 runtime result was present in the Actions workspace/artifact but the branch report files remained at the prior 3/4 revision.
+- **Evidence:** Actions run [41423379012](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41423379012) logged `C1_NSE_PR_PROBE PASS_FIXED_PROBE CONFIRMED 4`, but branch read-back still showed the older 09:45:49Z report. The publish step executed `git reset --hard origin/phase/constituent-weekly-outcomes-c1-data` after generation, discarding uncommitted report outputs before staging them.
+- **Correction:** Updated the publish step to copy all generated sanitised reports to a runner-temporary directory before the branch reset, restore them afterwards, then stage/commit/push. Removed self-triggering workflow-file path and retained targeted probe/test triggers.
+- **Retest:** Test commit [163565d](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/commit/163565db3f439e78aeb8d72aeaba52c4ca32e01f) triggers a probe-only run using the corrected publisher. Final branch read-back is pending.
+- **Data/security:** Raw archives remain encrypted in Actions cache; no raw event rows or credentials were published.
