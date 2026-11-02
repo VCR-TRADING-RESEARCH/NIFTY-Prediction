@@ -15,7 +15,7 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <p><a href="../../index.html">← Research home</a> · <a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction">Main repository</a></p>
 <h1>BUP-01 C1 — Constituent Corporate-Action Research</h1>
 <p><strong>Last updated:</strong> 2026-11-03</p>
-<p class="status">C1: PARTIAL / NOT PASSED · C2: GATED</p>
+<p class="status">C1: PARTIAL / NOT PASSED · C2: PANEL PASS WITH C1 LIMITATIONS · C3: EXPLORATORY COMPLETE / NO EDGE · C4–C5: GATED</p>
 <p class="note">This page publishes sanitised research metadata and diagnostic summaries only. Raw market prices, raw corporate-action rows, ISIN values, API tokens and credentials are not published.</p>
 
 <h2>Current findings</h2>
@@ -27,11 +27,13 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <tr><td>Reliance 1:1 bonus adjustment</td><td>0.5 relative OHLC factor</td><td>9/9 sessions matched; Dhan adjusted history passed this diagnostic.</td></tr>
 <tr><td>Bajaj Finserv 5:1 split + 1:1 bonus</td><td>0.1 relative OHLC factor</td><td>11/11 daily sessions matched. New trading ISIN adjudicated effective 2022-09-13 using NSE Clearing FAOP53644 and the explicit trade-effective clause in CML53597; original raw row is preserved and flagged as stale metadata.</td></tr>
 <tr><td>Intraday corporate-action scale (two events)</td><td>2/2 match Dhan adjusted daily OHLC</td><td>Same-session intraday OHLC aggregates matched the Dhan daily adjusted scale for RELIANCE bonus and BAJAJFINSV split+bonus. Sample only; not evidence for all 711 point-in-time event candidates.</td></tr>
+<tr><td>37 complex issuer-event candidates</td><td>37 / 37 terms and record-date evidence reviewed</td><td>17 equity bonuses, 9 splits, 6 rights and 3 merger/demerger events; two bonus-labelled distributions reclassified as non-equity debentures. No TERP or manual adjustment factors applied.</td></tr>
+<tr><td>C2 panel / C3 exploratory stock tests</td><td>C2 PASS WITH C1 LIMITATIONS; C3 exploratory complete</td><td>12,807 stock-cycle rows; 7,512 OOF forecasts. No stock classifier beat the five-session momentum accuracy baseline on the untouched holdout. C4 confirmatory remains gated.</td></tr>
 </tbody>
 </table>
 
 <h2>Data-rights control</h2>
-<p>NSE website terms prohibit systematic automated collection without express written consent or an applicable agreement. The project will not expand the four-date probe into a bulk NSE archive crawl. Dhan Data API is the current adjusted-price route tested for bonus/split events. The TejHQ personal-use-only reference data remains encrypted and internal; raw data is not redistributed. The Bajaj Finserv identity date is unresolved because NSE CML53597 contains conflicting dates; a BSE notice reproduction supports the ex-date while TejHQ rows transition the next day.</p>
+<p>NSE website terms prohibit systematic automated collection without express written consent or an applicable agreement. The project will not expand the four-date probe into a bulk NSE archive crawl. Dhan Data API is the current adjusted-price route tested for bonus/split events. The TejHQ personal-use-only reference data remains encrypted and internal; raw data is not redistributed. Bajaj Finserv's trading-ISIN date is adjudicated effective from 2022-09-13 inclusive using the explicit trade-effective clause in NSE CML53597, NSE Clearing FAOP53644 and the BSE notice. The TejHQ source row is preserved unchanged and the stale 13-Sep identifier is flagged in the derived mapping.</p>
 
 <h2>Research files</h2>
 <ul>
@@ -42,6 +44,7 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <li><a href="C1_DATA_RIGHTS_AND_ALTERNATIVES.md">Data rights gate and permitted alternatives</a></li>
 <li><a href="C1_OFFICIAL_CORPORATE_ACTION_SOURCE_FEASIBILITY.md">Official source feasibility and verification method</a></li>
 <li><a href="C1_EVENT_REVIEW_PROTOCOL.md">Event-level review protocol (711 matched candidates; prioritised validation and exclusion rules)</a></li>
+<li><a href="C1_ISSUER_EVENT_REVIEW_AGGREGATE.md">Issuer-source review of 37 complex candidates (aggregate report)</a> · <a href="C1_ISSUER_EVENT_REVIEW_AGGREGATE.json">machine-readable summary</a></li>
 <li><a href="C1_BAJAJFINSV_ISIN_ADJUDICATION.md">BAJAJFINSV ISIN effective-date adjudication (2022-09-13)</a></li>
 <li><a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/research/constituent_weekly/STATUS.md">Detailed C1 phase status</a></li>
 <li><a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/RESEARCH_LOG.md">Research log</a> · <a href="https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/blob/phase/constituent-weekly-outcomes-c1-data/logs/ERROR_LOG.md">Error log</a></li>
@@ -50,9 +53,10 @@ a{color:#075aa8} code{overflow-wrap:anywhere}
 <h2>Open gates</h2>
 <ul>
 <li>BAJAJFINSV 2022-09-13 trade-effective ISIN date adjudicated using NSE Clearing, NSE listing and BSE notice evidence; raw TejHQ identifier retained and flagged as stale.</li>
-<li>Build a recipient-encrypted review queue for the 37 complex bonus/split/rights/merger-demerger candidates, verify issuer-first-party terms where permitted, then review 20 buybacks and 29 AGM/other candidates; handle 625 dividends under price-index semantics.</li>
+<li>The 37 complex candidates have been reviewed for event terms and dates. Remaining catalogue: 20 buybacks and 29 AGM/other candidates need classification/forecast-time review; 625 dividends must retain price-index semantics and must not be mechanically reinvested into the target.</li>
+<li>Complete full historical ISIN/predecessor-successor identity checks, price-series continuity, rights TERP calculations where required, scheme-specific merger/demerger treatment and affected stock-cycle exclusions. No manual adjustment factor has been applied to the panel.</li>
 <li>Do not apply adjustment factors to the full panel until event-level identity, terms and price reconciliation pass.</li>
-<li>C1 remains PARTIAL / NOT PASSED; C2 and subsequent phases remain gated. No executable trading strategy is approved.</li>
+<li>C1 remains PARTIAL / NOT PASSED; C2 panel is accepted with C1 limitations, C3 stock modelling is exploratory with no demonstrated edge, confirmatory C4 and trading/execution C5 remain gated. No executable trading strategy is approved.</li>
 </ul>
 <p><small>Generated from the research branch; see the linked machine-readable files for the exact sanitised diagnostic outputs.</small></p>
 </body>
