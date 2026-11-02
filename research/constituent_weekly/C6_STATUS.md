@@ -1,14 +1,14 @@
 # C6 Final Manuscript and Independent Summary Audit — Status
 
 - **Phase:** C6 — closeout manuscript and independent summary audit
-- **Status:** <badge> AUTOMATED SUMMARY AUDIT PASS WITH LIMITATIONS
+- **Status:** AUTOMATED SUMMARY AUDIT PASS WITH LIMITATIONS
 - **Audit workflow:** [41411057657 — SUCCESS](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41411057657)
 - **C1:** PARTIAL
 - **C2:** PASS WITH C1 LIMITATIONS
 - **C3:** EXPLORATORY COMPLETE — NO STOCK EDGE
 - **C3-X:** EXPLORATORY COMPLETE — NIFTY AGGREGATION INCONCLUSIVE
-- **C4 confirmatory:** GATED
-- **C5:** BLOCKED / NOT RUN
+- **C4 confirmatory:** GATED — [gate audit passed](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41411507365)
+- **C5:** BLOCKED / NOT RUN — [fail-closed audit passed](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41410573458)
 - **Trading:** NOT VALIDATED
 
 ## Automated audit outcome
