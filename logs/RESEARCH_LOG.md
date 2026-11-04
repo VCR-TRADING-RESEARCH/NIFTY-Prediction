@@ -435,3 +435,14 @@
 ## 2026-11-02 — C6 summary status consistency verified
 
 The C6 JSON status was corrected from AUDIT_PENDING to AUDIT_PASS_WITH_LIMITATIONS to match C6_STATUS.md and C6_AUDIT_REPORT.md. The independent audit script now asserts the status. Follow-up run [41419571678](https://github.com/VCR-TRADING-RESEARCH/NIFTY-Prediction/actions/runs/41419571678) passed all checks. No results changed.
+
+
+## Automated run 41830518138 — 2026-11-04T12:37:37.509615+00:00
+- Status: pipeline completed; empirical findings remain exploratory until calendar and instrument-cost gates pass.
+- Source files read: 20; valid minute bars: 885839.
+- Weekly labels: 398; binary rows: 398; feature-complete rows: 398.
+- Development rows / held-out rows: 318 / 80.
+- Development-selected model: extra_trees.
+- Calendar gate: OFFICIAL_EXPIRY_AND_EOD_CLOSE; ANCHOR_SOURCE_PROVISIONAL — The 10:00 anchor remains minute-archive-derived and independently unvalidated; executable contract-level performance is not tested.
+- Usable trading strategy: NOT VALIDATED. No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.
+- Artifacts: data/processed/weekly_labels_features.csv, research/results/holdout_metrics.csv, research/results/summary.json and the associated plots.
