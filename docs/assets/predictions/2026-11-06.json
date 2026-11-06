@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "as_of_date": "2026-11-06",
+  "generated_at_utc": "2026-11-06T12:48:58.870086+00:00",
+  "error": "This workflow attempt failed before producing a fresh prediction. Check the linked Actions run; an older result was not reused.",
+  "workflow_outcome": "failure"
+}\n
