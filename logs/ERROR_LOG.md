@@ -552,3 +552,14 @@ The double-escaped fallback-token newline guard was corrected in commit c8253e9.
 - Date: 2026-11-10
 - Status: FAILED; inspect the linked Actions run for the failing step.
 - No secrets or provider response bodies are copied into logs.
+
+
+## Dhan authentication attempt — run 43018234696
+- Status: FAILED or incomplete. The public archive route will still be attempted.
+- Sensitive response fields and secrets were withheld. Inspect the Dhan-auth step status in Actions.
+
+
+## GitHub Actions failure — run 43018234696
+- Status: BLOCKED. One or more workflow steps failed; inspect the Actions run for the exact failing step.
+- The workflow is configured to continue with public data when the optional Dhan branch fails.
+- No secrets, access tokens, PINs or TOTP values should be copied from runner diagnostics into repository logs.

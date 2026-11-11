@@ -1,5 +1,5 @@
 {
-  "run_utc": "2026-11-04T12:37:20.807361+00:00",
+  "run_utc": "2026-11-11T12:14:05.286427+00:00",
   "observations_total_labels": 398,
   "binary_rows": 398,
   "feature_complete_binary_rows": 398,
@@ -14,11 +14,11 @@
   "usable_trading_strategy_validated": false,
   "trading_strategy_blocker": "No verified historical futures/options fills, contract-specific price series, dated Paytm Money cost schedule and bid-ask/slippage data have been joined. Spot-direction classification is not executable P&L.",
   "important_warning": "All results remain exploratory until the anchor and realistic trading costs are validated.",
-  "run_id": "41830518138",
+  "run_id": "43018234696",
   "source_quality": {
     "source_files_read": 20,
-    "valid_in_session_rows": 885839,
-    "daily_sessions": 2364,
+    "valid_in_session_rows": 887339,
+    "daily_sessions": 2368,
     "data_quality_warnings": 0,
     "independent_close_check_available": true,
     "independent_close_check_mismatches": 0,
@@ -38,7 +38,7 @@
     "latest_forecast_generated": false,
     "latest_forecast_error": "The next nominal expiry derived from the latest verified calendar has already passed. Refresh the official expiry/calendar data before issuing another current forecast.",
     "data_quality_status": "BLOCKED",
-    "generated_at_utc": "2026-11-04T12:37:37.503225+00:00",
+    "generated_at_utc": "2026-11-11T12:14:20.839955+00:00",
     "payload_schema_valid": true,
     "temporal_leakage_checks": "PASS"
   }

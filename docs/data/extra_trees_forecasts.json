@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-04T12:37:37.503225+00:00",
+  "generated_at_utc": "2026-11-11T12:14:20.839955+00:00",
   "timezone": "Asia/Kolkata",
   "model": {
     "name": "ExtraTreesClassifier",
@@ -128,7 +128,7 @@
       "as_of_time_ist": "10:00-or-first-valid-bar-by-10:03",
       "target_expiry_date": "2025-05-22",
       "direction": "UP",
-      "p_up": 0.5213527570084836,
+      "p_up": 0.5213527570084837,
       "training_rows": 324,
       "trained_through_expiry_date": "2025-05-15",
       "prediction_kind": "LOCKED_CHRONOLOGICAL_HOLDOUT",
@@ -227,7 +227,7 @@
       "as_of_time_ist": "10:00-or-first-valid-bar-by-10:03",
       "target_expiry_date": "2025-07-24",
       "direction": "UP",
-      "p_up": 0.5143689395769946,
+      "p_up": 0.5143689395769944,
       "training_rows": 333,
       "trained_through_expiry_date": "2025-07-17",
       "prediction_kind": "LOCKED_CHRONOLOGICAL_HOLDOUT",
