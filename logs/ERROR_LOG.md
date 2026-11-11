@@ -563,3 +563,9 @@ The double-escaped fallback-token newline guard was corrected in commit c8253e9.
 - Status: BLOCKED. One or more workflow steps failed; inspect the Actions run for the exact failing step.
 - The workflow is configured to continue with public data when the optional Dhan branch fails.
 - No secrets, access tokens, PINs or TOTP values should be copied from runner diagnostics into repository logs.
+
+
+## Scheduled prediction failure — run 43021096813
+- Date: 2026-11-11
+- Status: FAILED; inspect the linked Actions run for the failing step.
+- No secrets or provider response bodies are copied into logs.
