@@ -587,3 +587,9 @@ The double-escaped fallback-token newline guard was corrected in commit c8253e9.
 - Date: 2026-11-16
 - Status: FAILED; inspect the linked Actions run for the failing step.
 - No secrets or provider response bodies are copied into logs.
+
+
+## Scheduled prediction failure — run 44100617452
+- Date: 2026-11-17
+- Status: FAILED; inspect the linked Actions run for the failing step.
+- No secrets or provider response bodies are copied into logs.
